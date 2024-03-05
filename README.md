@@ -7,7 +7,7 @@ SIGE IE
 Release 1 <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/1">Ir para milestone da release 1</a>
 
 ### Sobre este projeto
-O projeto é um aplicativo web mobile desenvolvido pela Univerisdade de Brasília para o gerenciamento de instalações elétricas.
+O projeto é um aplicativo web mobile desenvolvido para a Universidade de Brasília para o gerenciamento de instalações elétricas.
 #### Posição
 O SIGE IE é um sistema da Universidade de Brasília para o gerenciamento de instalações elétricas com o objetivo de facilitar o cadastro das informações de instalação elétrica, sendo acessível tanto para uma pessoa comum quanto para um profissional da área. Ele permite a automatização da geração de relatórios das instalações elétricas para um determinado lugar e a gerencia dessas informações por parte dos responsáveis pelas instalações deste lugar. As pessoas devem usar o SIGE IE porque ele simplifica e agiliza o processo de gerenciamento de instalações elétricas, garantindo maior eficiência e segurança nas operações.
 
@@ -67,6 +67,20 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 ### Como subir o projeto
 
 ### Como contribuir
+1. Faça um fork do repositório do projeto.
+2. Clone o fork na sua máquina:
+   
+   `git clone https://github.com/{seu-usuario}/T2G3-Sistema-Instalacao-Eletrica.git`
+   
+3. Comente na issue que deseja contribuir ou crie uma issue nova.
+4. Entre no repositório clonado na sua máquina:
+    
+   `cd T2G3-Sistema-Instalacao-Eletrica`
+   
+5. Após enviar suas contribuições para o fork do seu repositório, faça um pull request.
+6. Aguarde a revisão. 
+
+   
 
 ### Documentação
 - [Cronograma](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/3)
