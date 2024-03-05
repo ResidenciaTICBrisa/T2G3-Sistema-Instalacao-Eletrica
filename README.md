@@ -19,7 +19,13 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
   
 | Nome | Versão | Uso | Configuração |
 |---|---|---|---|
-  
+| Python | 3.11.8| Linguagem | `sudo apt-get install python3.11` `sudo apt-get install python3-pip` |
+| Django | 4.2 | Framework web | `python -m pip install Django==4.2` |
+| Django rest framework | 3.14 | API rest | `pip install djangorestframework` |
+| Redis | 7.2 | Banco de dados cache para sessão | - |
+| MySQL | 8.1 | Banco de dados | - |
+
+
 </div>
 
 ##### Front-end
