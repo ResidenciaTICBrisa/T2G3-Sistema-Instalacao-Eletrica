@@ -19,9 +19,9 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
   
 | Nome | Versão | Uso | Configuração |
 |---|---|---|---|
-| Python | 3.11.8| Linguagem | `sudo apt-get install python3.11` `sudo apt-get install python3-pip` |
-| Django | 4.2 | Framework web | `python3 -m pip install Django==4.2` |
-| Django rest framework | 3.14 | API rest | `pip install djangorestframework` |
+| Python | 3.11.8| Linguagem | [Site oficial do Python](https://www.python.org/downloads/) |
+| Django | 4.2 | Framework web | [Site oficial do Django](https://www.djangoproject.com/download/) |
+| Django REST framework | 3.14 | API REST | [Site oficial do Django REST framework](https://www.django-rest-framework.org/#installation) |
 | Redis | 7.2 | Banco de dados cache para sessão | - |
 | MySQL | 8.1 | Banco de dados | - |
 
@@ -71,6 +71,29 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 </div>
 
 ### Como subir o projeto
+#### Como subir o back-end:
+1. Instale o python, pip e o virtualenv:
+
+   `sudo apt-get install python3.11` (Python)
+
+   `sudo apt-get install python3-pip` (Pip)
+
+   `pip install virtualenv` (Virtualenv)
+   
+2. Ative o ambiente virtual: `source env/bin/activate`
+3. Encaminhe para a pasta raiz do projeto:
+
+    `cd T2G3-Sistema-Instalacao-Eletrica/api`
+
+4. Dentro da pasta raiz, instale as dependências:
+
+   `pip install -r requirements.txt`
+
+5. Inicie o servidor de desenvolvimento:
+
+   `python3 manage.py runserver`
+
+#### Como subir o front-end:
 
 ### Como contribuir
 1. Faça um fork do repositório do projeto.
@@ -85,8 +108,6 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
    
 5. Após enviar suas contribuições para o fork do seu repositório, faça um pull request.
 6. Aguarde a revisão. 
-
-   
 
 ### Documentação
 - [Cronograma](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/3)
