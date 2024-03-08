@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -76,11 +77,11 @@ WSGI_APPLICATION = 'sigeie.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sigeie_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'NAME': 'sigeie_db',
         'OPTIONS': {
             'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'"
         }

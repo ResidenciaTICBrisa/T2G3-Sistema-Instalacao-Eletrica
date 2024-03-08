@@ -71,28 +71,43 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 </div>
 
 ### Como subir o projeto
-#### Como subir o back-end:
-1. Instale o python, pip e o virtualenv:
+#### Como subir o back-end (Linux OS):
 
-   `sudo apt-get install python3.11` (Python)
+Primeiramente, interrompa qualquer processo que use o porto 8080 e 3306.
 
-   `sudo apt-get install python3-pip` (Pip)
+1. Instale o python e pip:
 
-   `pip install virtualenv` (Virtualenv)
-   
-2. Ative o ambiente virtual: `source env/bin/activate`
-3. Encaminhe para a pasta raiz do projeto:
+   `sudo apt-get install python3.11`
 
-    `cd T2G3-Sistema-Instalacao-Eletrica/api`
+   `sudo apt-get install python3-pip`
 
-4. Dentro da pasta raiz, instale as dependências:
+2. Instale o virutalenv para criar um ambiente virtual para instalar todas as dependências e ative ele:
 
-   `pip install -r requirements.txt`
+   `pip install virtualenv`
 
-5. Inicie o servidor de desenvolvimento:
+   `source env/bin/activate`
+
+3. Com o ambiente virtual ativado, instale as dependências:
+
+   `pip install -r ./api/requirements.txt`
+
+4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez. (Depois não será mais necessário criar a imagem):
+
+    `docker-compose build`
+
+5. Suba a imagem:
+
+    `docker-compose up`
+
+6. Ainda no diretório raiz `api`, aplique as migrações: 
+
+    `python3 manage.py migrate`
+
+5. Inicie o servidor:
 
    `python3 manage.py runserver`
 
+Pronto, o servidor já está rodando com o banco de dados configurado.
 #### Como subir o front-end:
 
 ### Como contribuir
