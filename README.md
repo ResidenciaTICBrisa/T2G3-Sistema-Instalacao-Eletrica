@@ -22,18 +22,23 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 | Python | 3.11.8| Linguagem | [Site oficial do Python](https://www.python.org/downloads/) |
 | Django | 4.2 | Framework web | [Site oficial do Django](https://www.djangoproject.com/download/) |
 | Django REST framework | 3.14 | API REST | [Site oficial do Django REST framework](https://www.django-rest-framework.org/#installation) |
-| Redis | 7.2 | Banco de dados cache para sessão | - |
-| MySQL | 8.1 | Banco de dados | - |
+| Docker | 25.0.4 | Conteiner e imagem | [Site oficial do Docker](https://docs.docker.com/desktop/install/ubuntu/) |
+| Redis | 7.2 | Banco de dados cache para sessão | Automático via Docker |
+| MySQL | 8.1 | Banco de dados | Automático via Docker |
 
 
 </div>
 
-##### Front-end
+##### Front-end mobile
 
 <div align="center">
   
 | Nome | Versão | Uso | Configuração |
 |---|---|---|---|
+| Flutter | 3.19.3 | Framework frontend | [Site oficial do Flutter](https://docs.flutter.dev/get-started/install/linux) |
+| Android Studio | Iguana | IDE para desenvolvimento Android com Android SDK | [Site oficial do Android Studio](https://developer.android.com/studio/index.html) |
+
+
   
 </div>
 
@@ -71,7 +76,8 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 </div>
 
 ### Como subir o projeto
-#### Como subir o back-end (Linux OS):
+Estas etapas são válidas para Linux OS e WSL.
+#### Como subir o back-end:
 
 Primeiramente, interrompa qualquer processo que use o porto 8080 e 3306.
 
