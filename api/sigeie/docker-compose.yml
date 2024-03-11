@@ -5,8 +5,13 @@ services:
     environment:
       MYSQL_DATABASE: 'sigeie_db'
       MYSQL_ROOT_PASSWORD: 'root'
-    container_name: mysql_db
+    container_name: sigeie_mysql_db
     ports:
       - "3306:3306"
     volumes:
       - ./data/mysql/db:/var/lib/mysql
+  redis:
+    image: redis:7.2
+    container_name: sigeie_redis_db
+    ports:
+      - "6379:6379"

@@ -25,7 +25,7 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 | Docker | 25.0.4 | Conteiner e imagem | [Site oficial do Docker](https://docs.docker.com/desktop/install/ubuntu/) |
 | Redis | 7.2 | Banco de dados cache para sessão | Automático via Docker |
 | MySQL | 8.1 | Banco de dados | Automático via Docker |
-
+| mysqlclient | 2.2.4 | Cliente para se conectar com MySQL | [Site do Pypi com as configurações](https://pypi.org/project/mysqlclient/)
 
 </div>
 
@@ -81,39 +81,41 @@ Estas etapas são válidas para Linux OS e WSL.
 
 Primeiramente, interrompa qualquer processo que use o porto 8080 e 3306.
 
-1. Instale o python e pip:
+1. Instale o Python, Pip e os Cabeçalhos do Python e MySQL:
 
-   `sudo apt-get install python3.11`
-
-   `sudo apt-get install python3.11-dev`
-
-   `sudo apt-get install python3-pip`
-
-2. Instale o virutalenv para criar um ambiente virtual para instalar todas as dependências e ative ele:
-
-   `pip install virtualenv`
+   `sudo apt-get install python3.11` (Instalar Python)
    
-   `virtualenv -p python3.11 venv`
+   `sudo apt-get install python3-pip` (Instalar Pip)
 
-   `source venv/bin/activate`
+   `sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config` (Instalar cabeçalhos)
 
-3. Com o ambiente virtual ativado, instale as dependências:
+2. Instale o virtualenv para criar um ambiente virtual do projeto:
 
-   `pip install -r ./api/requirements.txt`
+    `pip install virtualenv` (Instalar Virtualenv)
 
-4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez. (Depois não será mais necessário criar a imagem):
+3. Cria o ambiente virtual e o ative:
+
+   `virtualenv -p python3.11 venv` (Criar ambiente virtual)
+
+   `source venv/bin/activate` (Ativar ambiente)
+
+4. Com o ambiente virtual ativado, instale as dependências:
+
+   `pip install -r requirements.txt`
+
+5. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
 
     `docker-compose build`
 
-5. Suba a imagem:
+6. Suba a imagem:
 
     `docker-compose up`
 
-6. Ainda no diretório raiz `api`, aplique as migrações: 
+7. Ainda no diretório raiz `api`, aplique as migrações: 
 
     `python3 manage.py migrate`
 
-5. Inicie o servidor:
+8. Inicie o servidor:
 
    `python3 manage.py runserver`
 
