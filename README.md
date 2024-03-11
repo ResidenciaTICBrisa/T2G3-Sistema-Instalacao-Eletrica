@@ -18,19 +18,6 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 #### Tecnologias
 ##### Back-end
 
-Atualmente o Django Rest Framework suporta estas versões do Python e do Django, respectivamente:
-
-Python (3.6, 3.7, 3.8, 3.9, 3.10, 3.11);
-
-Django (3.0, 3.1, 3.2, 4.0, 4.1, 4.2);
-
-A versão LTS mais recente (2024) do Django é a 4.2, portanto, escolhemos configurar o projeto usando Python 3.11.
-<div align="center">
-Versões do Django - Roadmap de lançamento.
-<img src="./doc/img/release-roadmap.4cf783b31fbe.png" alt="Texto Alternativo" width="700">
-
-Fonte: [djangoproject.com](https://www.djangoproject.com/download/)
-</div>
 <div align="center">
 
 | Nome | Versão | Uso | Configuração |
@@ -39,9 +26,27 @@ Fonte: [djangoproject.com](https://www.djangoproject.com/download/)
 | Django | 4.2 (LTS) | Framework web | Automática |
 | Django REST framework | 3.14 | API REST | Automática |
 | Docker | 25.0.4 | Conteiner e imagem | [Site oficial do Docker](https://docs.docker.com/desktop/install/ubuntu/) |
-| Redis | 7.2 | Banco de dados cache para sessão | Automático via Docker |
-| MySQL | 8.1 | Banco de dados | Automático via Docker |
+| Redis | 7.2 | Banco de dados cache para sessão | Automática via Docker |
+| MySQL | 8.1 | Banco de dados | Automática via Docker |
 | mysqlclient | 2.2.4 | Cliente para se conectar com MySQL | [Site do Pypi com as configurações](https://pypi.org/project/mysqlclient/)
+
+</div>
+
+Atualmente o Django Rest Framework suporta estas versões do Python e do Django, respectivamente:
+
+Python (3.6, 3.7, 3.8, 3.9, 3.10, 3.11)
+
+Django (3.0, 3.1, 3.2, 4.0, 4.1, 4.2)
+
+A versão LTS mais recente (2024) do Django é a 4.2, portanto, escolhemos configurar o projeto usando Python 3.11.
+
+<div align="center">
+
+Versões do Django - Roadmap de lançamento
+
+<img src="./doc/img/release-roadmap.4cf783b31fbe.png" alt="Texto Alternativo" width="500">
+
+Fonte: [djangoproject.com](https://www.djangoproject.com/download/)
 
 </div>
 
@@ -54,8 +59,6 @@ Fonte: [djangoproject.com](https://www.djangoproject.com/download/)
 | Flutter | 3.19.3 | Framework frontend | [Site oficial do Flutter](https://docs.flutter.dev/get-started/install/linux) |
 | Android Studio | Iguana | IDE para desenvolvimento Android com Android SDK | [Site oficial do Android Studio](https://developer.android.com/studio/index.html) |
 
-
-  
 </div>
 
 ### Contribuidores 
@@ -95,11 +98,11 @@ Fonte: [djangoproject.com](https://www.djangoproject.com/download/)
 Estas etapas são válidas para Linux OS e WSL.
 #### Como subir o back-end:
 
-Primeiramente, interrompa qualquer processo que use o porto 8080 e 3306.
+Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379.
 
 Em seguida, caso já não tenha instalado:
 
-1. Instale o Python, Pip e os cabeçalhos do Python e MySQL:
+- Instale o Python, Pip e os cabeçalhos do Python e MySQL:
 
    `sudo apt-get install python3.11` (Python)
    
@@ -107,13 +110,13 @@ Em seguida, caso já não tenha instalado:
 
    `sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config` (Cabeçalhos)
 
-2. Instale o virtualenv para criar um ambiente virtual do projeto:
+- Instale o virtualenv para criar um ambiente virtual do projeto:
 
     `pip install virtualenv` (Virtualenv)
 
-Após a instalação, dentro da pasta raiz chamada api:
+Dentro da pasta raiz `api`:
 
-1. Cria o ambiente virtual e o ative:
+1. Cria o ambiente virtual e ative-o:
 
    `virtualenv -p python3.11 venv` (Criar ambiente virtual)
 
