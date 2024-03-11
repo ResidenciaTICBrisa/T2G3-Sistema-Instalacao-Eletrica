@@ -85,6 +85,8 @@ Primeiramente, interrompa qualquer processo que use o porto 8080 e 3306.
 
    `sudo apt-get install python3.11`
 
+   `sudo apt-get install python3.11-dev`
+
    `sudo apt-get install python3-pip`
 
 2. Instale o virutalenv para criar um ambiente virtual para instalar todas as dependências e ative ele:
