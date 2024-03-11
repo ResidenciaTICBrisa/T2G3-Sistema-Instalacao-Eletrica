@@ -1,5 +1,7 @@
 <h1 align="center">
 
+![Versões do Django](./doc/img/sige-ie-img.png)
+
 SIGE IE
 </h1>
 
@@ -15,13 +17,27 @@ O SIGE IE é um sistema da Universidade de Brasília para o gerenciamento de ins
 Simplificar o cadastro e gerenciamento de informações de instalações elétricas e automatizar a geração de relatórios.
 #### Tecnologias
 ##### Back-end
+
+Atualmente o Django Rest Framework suporta estas versões do Python e do Django, respectivamente:
+
+Python (3.6, 3.7, 3.8, 3.9, 3.10, 3.11);
+
+Django (3.0, 3.1, 3.2, 4.0, 4.1, 4.2);
+
+A versão LTS mais recente (2024) do Django é a 4.2, portanto, escolhemos configurar o projeto usando Python 3.11.
 <div align="center">
-  
+Versões do Django - Roadmap de lançamento.
+<img src="./doc/img/release-roadmap.4cf783b31fbe.png" alt="Texto Alternativo" width="700">
+
+Fonte: [djangoproject.com](https://www.djangoproject.com/download/)
+</div>
+<div align="center">
+
 | Nome | Versão | Uso | Configuração |
 |---|---|---|---|
 | Python | 3.11.8| Linguagem | [Site oficial do Python](https://www.python.org/downloads/) |
-| Django | 4.2 | Framework web | [Site oficial do Django](https://www.djangoproject.com/download/) |
-| Django REST framework | 3.14 | API REST | [Site oficial do Django REST framework](https://www.django-rest-framework.org/#installation) |
+| Django | 4.2 (LTS) | Framework web | Automática |
+| Django REST framework | 3.14 | API REST | Automática |
 | Docker | 25.0.4 | Conteiner e imagem | [Site oficial do Docker](https://docs.docker.com/desktop/install/ubuntu/) |
 | Redis | 7.2 | Banco de dados cache para sessão | Automático via Docker |
 | MySQL | 8.1 | Banco de dados | Automático via Docker |
@@ -81,41 +97,45 @@ Estas etapas são válidas para Linux OS e WSL.
 
 Primeiramente, interrompa qualquer processo que use o porto 8080 e 3306.
 
-1. Instale o Python, Pip e os Cabeçalhos do Python e MySQL:
+Em seguida, caso já não tenha instalado:
 
-   `sudo apt-get install python3.11` (Instalar Python)
+1. Instale o Python, Pip e os cabeçalhos do Python e MySQL:
+
+   `sudo apt-get install python3.11` (Python)
    
-   `sudo apt-get install python3-pip` (Instalar Pip)
+   `sudo apt-get install python3-pip` (Pip)
 
-   `sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config` (Instalar cabeçalhos)
+   `sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config` (Cabeçalhos)
 
 2. Instale o virtualenv para criar um ambiente virtual do projeto:
 
-    `pip install virtualenv` (Instalar Virtualenv)
+    `pip install virtualenv` (Virtualenv)
 
-3. Cria o ambiente virtual e o ative:
+Após a instalação, dentro da pasta raiz chamada api:
+
+1. Cria o ambiente virtual e o ative:
 
    `virtualenv -p python3.11 venv` (Criar ambiente virtual)
 
    `source venv/bin/activate` (Ativar ambiente)
 
-4. Com o ambiente virtual ativado, instale as dependências:
+2. Com o ambiente virtual ativado, instale as dependências:
 
    `pip install -r requirements.txt`
 
-5. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
+3. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
 
     `docker-compose build`
 
-6. Suba a imagem:
+4. Suba a imagem:
 
     `docker-compose up`
 
-7. Ainda no diretório raiz `api`, aplique as migrações: 
+5. Ainda no diretório raiz `api`, aplique as migrações: 
 
     `python3 manage.py migrate`
 
-8. Inicie o servidor:
+6. Inicie o servidor:
 
    `python3 manage.py runserver`
 
