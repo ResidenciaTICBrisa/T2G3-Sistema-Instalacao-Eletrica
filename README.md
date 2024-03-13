@@ -104,43 +104,71 @@ Em seguida, caso já não tenha instalado:
 
 - Instale o Python, Pip e os cabeçalhos do Python e MySQL:
 
-   `sudo apt-get install python3.11` (Python)
-   
-   `sudo apt-get install python3-pip` (Pip)
+  Python:
+  ```
+  sudo apt-get install python3.11
+  ```
 
-   `sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config` (Cabeçalhos)
+  Pip:
+  ```
+   sudo apt-get install python3-pip
+  ```
+
+  Cabeçalhos:
+  ```
+  sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config
+  ```
 
 - Instale o virtualenv para criar um ambiente virtual do projeto:
 
-    `pip install virtualenv` (Virtualenv)
+    Virtualenv:
+    ```
+    pip install virtualenv
+    ```
 
 Dentro da pasta raiz `api`:
 
 1. Cria o ambiente virtual e ative-o:
 
-   `virtualenv -p python3.11 venv` (Criar ambiente virtual)
+    Criar ambiente virtual:
+     ```
+     virtualenv -p python3.11 venv
+     ``` 
+  
+    Ativar ambiente:
+     ```
+     source venv/bin/activate
+     ``` 
 
-   `source venv/bin/activate` (Ativar ambiente)
+3. Com o ambiente virtual ativado, instale as dependências:
 
-2. Com o ambiente virtual ativado, instale as dependências:
+   ```
+   pip install -r requirements.txt
+   ```
 
-   `pip install -r requirements.txt`
+4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
 
-3. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
+   ```
+   docker-compose build
+   ```
 
-    `docker-compose build`
+6. Suba a imagem:
 
-4. Suba a imagem:
+   ```
+   docker-compose up
+   ```
 
-    `docker-compose up`
+8. Ainda no diretório raiz `api`, aplique as migrações:
 
-5. Ainda no diretório raiz `api`, aplique as migrações: 
+   ```
+   python3 manage.py migrate
+   ```
 
-    `python3 manage.py migrate`
+10. Inicie o servidor:
 
-6. Inicie o servidor:
-
-   `python3 manage.py runserver`
+    ```
+    python3 manage.py runserver
+    ```
 
 Pronto, o servidor já está rodando com o banco de dados configurado.
 #### Como subir o front-end:
@@ -149,15 +177,19 @@ Pronto, o servidor já está rodando com o banco de dados configurado.
 1. Faça um fork do repositório do projeto.
 2. Clone o fork na sua máquina:
    
-   `git clone https://github.com/{seu-usuario}/T2G3-Sistema-Instalacao-Eletrica.git`
+   ```
+   git clone https://github.com/{seu-usuario}/T2G3-Sistema-Instalacao-Eletrica.git
+   ```
    
-3. Comente na issue que deseja contribuir ou crie uma issue nova.
-4. Entre no repositório clonado na sua máquina:
+4. Comente na issue que deseja contribuir ou crie uma issue nova.
+5. Entre no repositório clonado na sua máquina:
     
-   `cd T2G3-Sistema-Instalacao-Eletrica`
+   ```
+   cd T2G3-Sistema-Instalacao-Eletrica
+   ```
    
-5. Após enviar suas contribuições para o fork do seu repositório, faça um pull request.
-6. Aguarde a revisão. 
+7. Após enviar suas contribuições para o fork do seu repositório, faça um pull request.
+8. Aguarde a revisão. 
 
 ### Documentação
 - [Cronograma](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/3)
