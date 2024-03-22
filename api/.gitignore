@@ -2,7 +2,7 @@
 *.log
 *.pot
 *.pyc
-__pycache__
+sigeie/__pycache__
 db.sqlite3
 media
 sigeie/data/mysql/db/
