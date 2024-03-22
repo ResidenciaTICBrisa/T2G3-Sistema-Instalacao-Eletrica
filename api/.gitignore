@@ -2,10 +2,11 @@
 *.log
 *.pot
 *.pyc
-sigeie/__pycache__
+*/__pycache__/
 db.sqlite3
-media
-sigeie/data/mysql/db/
+media/
+*/data/
+
 
 # Backup files # 
 *.bak 
@@ -137,3 +138,5 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+data/
+
