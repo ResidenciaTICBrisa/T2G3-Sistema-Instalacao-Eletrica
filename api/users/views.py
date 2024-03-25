@@ -2,30 +2,31 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+
+from .permissions import IsOwner
+from .serializers import UserSerializer
+
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from rest_framework.authentication import TokenAuthentication
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from rest_framework import generics
-from .serializers import UserSerializer 
-from django.contrib.auth.models import User
 
 @method_decorator(csrf_exempt, name='dispatch')
-class UserListView(generics.ListCreateAPIView):
+class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = []
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = []
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = []
-    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsOwner, IsAuthenticated]
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     authentication_classes = []
     permission_classes = []
@@ -41,7 +42,6 @@ class LoginView(APIView):
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
-    authentication_classes = [SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, format=None):
