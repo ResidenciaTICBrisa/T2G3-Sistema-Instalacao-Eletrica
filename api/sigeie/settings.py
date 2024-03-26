@@ -62,8 +62,7 @@ DATABASES = {
         'PASSWORD': 'root',
         'NAME': 'sigeie_db',
         'OPTIONS': {
-            'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'",
-            'create_db': True
+            'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'"
         }
     }
 }
