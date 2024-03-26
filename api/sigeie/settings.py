@@ -62,7 +62,8 @@ DATABASES = {
         'PASSWORD': 'root',
         'NAME': 'sigeie_db',
         'OPTIONS': {
-            'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'"
+            'init_command': "SET sql_mode ='STRICT_TRANS_TABLES'",
+            'create_db': True
         }
     }
 }
@@ -77,7 +78,7 @@ CACHES = {
     }
 }
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 SESSION_CACHE_ALIAS = 'default'
 
