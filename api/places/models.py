@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
-class Places(models.Model):
+class Place(models.Model):
 
     name = models.CharField(max_length=50)
-    user = models.ForeignKey(User, verbose_name=("donos"), on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name=("creator"), on_delete=models.CASCADE)
