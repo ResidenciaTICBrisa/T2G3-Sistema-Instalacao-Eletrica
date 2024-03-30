@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,9 +9,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool rememberMe = false;
   final _loginScreen = GlobalKey<FormState>();
   final _loginFormKey = GlobalKey<FormState>();
-  bool rememberMe = false;
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -182,7 +181,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (_loginScreen.currentState!.validate()) {
-                                // Mostra um SnackBar indicando o processamento
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text('Processando dados')),
@@ -192,16 +190,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     usernameController.text,
                                     passwordController.text);
 
-                                // Esconde o SnackBar anterior, se ainda estiver visível
                                 ScaffoldMessenger.of(context)
                                     .hideCurrentSnackBar();
 
                                 if (success) {
-                                  // Se o login for bem-sucedido, navega para a próxima página
                                   Navigator.of(context)
-                                      .pushReplacementNamed('/nextScreen');
+                                      .pushReplacementNamed('/?');
                                 } else {
-                                  // Mostra um SnackBar em caso de falha no login
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text(
@@ -209,7 +204,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                 }
                               } else {
-                                // Mostra um SnackBar se o formulário não for válido
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(

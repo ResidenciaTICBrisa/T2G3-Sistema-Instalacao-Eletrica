@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sige_ie/screens/login.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -10,8 +12,37 @@ class RegisterScreen extends StatefulWidget {
 
 // Definição da classe da tela de Registro
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool terms = true;
   final _registerScreen = GlobalKey<FormState>();
-  bool rememberPass = true;
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+
+  Future<bool> register(
+      String username, String name, String password, String email) async {
+    var url = Uri.parse('http://127.0.0.1:8000/api/users/');
+    try {
+      var response = await http.post(url, body: {
+        'username': username,
+        'name': name,
+        'password': password,
+        'email': email,
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = jsonDecode(response.body);
+        print("Registro bem-sucedido: $data");
+        return true;
+      } else {
+        print("Falha no registro: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("Erro ao tentar registrar: $e");
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   color: Colors.black)),
                           const SizedBox(height: 35),
                           TextFormField(
+                            controller: usernameController,
                             decoration: InputDecoration(
                               label: const Text('Username'),
                               labelStyle: const TextStyle(color: Colors.black),
@@ -88,6 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           // Campo de nome e decoração da borda de inserção dos dados
                           TextFormField(
+                            controller: nameController,
                             decoration: InputDecoration(
                               label: const Text('Nome'),
                               labelStyle: const TextStyle(color: Colors.black),
@@ -118,6 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
+                              controller: emailController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Insira um email valido';
@@ -147,6 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               )),
                           const SizedBox(height: 20),
                           TextFormField(
+                            controller: passwordController,
                             obscureText: true,
                             obscuringCharacter: '*',
                             validator: (value) {
@@ -180,8 +215,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: true,
                             obscuringCharacter: '*',
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por Favor Insira uma Senha válida';
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value != passwordController.text) {
+                                return 'As senhas não coincidem';
                               }
                               return null;
                             },
@@ -207,10 +244,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Row(
                                 children: [
                                   Checkbox(
-                                      value: rememberPass,
+                                      value: terms,
                                       onChanged: (bool? value) {
                                         setState(() {
-                                          rememberPass = value!;
+                                          terms = value!;
                                         });
                                       },
                                       activeColor:
@@ -230,20 +267,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: 200,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () {
-                                if (_registerScreen.currentState!.validate() &&
-                                    rememberPass) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Processando Dados'),
-                                    ),
-                                  );
-                                } else if (!rememberPass) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                              onPressed: () async {
+                                if (_registerScreen.currentState!.validate()) {
+                                  if (terms) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Processando Dados'),
+                                      ),
+                                    );
+                                    bool success = await register(
+                                        usernameController.text,
+                                        nameController.text,
+                                        passwordController.text,
+                                        emailController.text);
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+
+                                    if (success) {
+                                      Navigator.of(context).pushReplacementNamed(
+                                          '/home'); // Certifique-se de que esta é a rota correta.
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Registro falhou, por favor tente novamente.'),
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
                                         content: Text(
-                                            'Por Favor, concorde com o processamento de dados pessoais')),
-                                  );
+                                            'Por Favor, concorde com o processamento de dados pessoais'),
+                                      ),
+                                    );
+                                  }
                                 }
                               },
                               child: const Text(
