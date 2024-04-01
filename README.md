@@ -162,6 +162,10 @@ Dentro da pasta raiz `api`:
 8. Ainda no diretório raiz `api`, aplique as migrações:
 
    ```
+   python manage.py makemigrations
+   ```
+
+   ```
    python3 manage.py migrate
    ```
 
