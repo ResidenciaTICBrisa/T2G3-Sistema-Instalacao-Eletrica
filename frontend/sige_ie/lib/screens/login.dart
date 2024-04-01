@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -7,8 +9,33 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool rememberMe = false;
   final _loginScreen = GlobalKey<FormState>();
-  bool rememberPass = true;
+  final _loginFormKey = GlobalKey<FormState>();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<bool> login(String username, String password) async {
+    var url = Uri.parse('http://127.0.0.1:8000/api/login/');
+    try {
+      var response = await http.post(url, body: {
+        'username': username,
+        'password': password,
+      });
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print("Login bem-sucedido: $data");
+        return true;
+      } else {
+        print("Falha no login: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("Erro ao tentar fazer login: $e");
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 35),
                         TextFormField(
+                            controller: usernameController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, insira um username válido';
@@ -82,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             )),
                         const SizedBox(height: 20),
                         TextFormField(
+                          controller: passwordController,
                           obscureText: true,
                           obscuringCharacter: '*',
                           validator: (value) {
@@ -118,10 +147,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             Row(
                               children: [
                                 Checkbox(
-                                    value: rememberPass,
+                                    value: rememberMe,
                                     onChanged: (bool? value) {
                                       setState(() {
-                                        rememberPass = value!;
+                                        rememberMe = value!;
                                       });
                                     },
                                     activeColor:
@@ -150,19 +179,35 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 200,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (_loginScreen.currentState!.validate() &&
-                                  rememberPass) {
+                            onPressed: () async {
+                              if (_loginScreen.currentState!.validate()) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Processando dados'),
-                                  ),
+                                      content: Text('Processando dados')),
                                 );
-                              } else if (!rememberPass) {
+
+                                bool success = await login(
+                                    usernameController.text,
+                                    passwordController.text);
+
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+
+                                if (success) {
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('/?');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            'Login falhou, verifique suas credenciais')),
+                                  );
+                                }
+                              } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                       content: Text(
-                                          'Por favor, concorde com o processamento de dados pessoais')),
+                                          'Por favor, preencha todos os campos')),
                                 );
                               }
                             },
