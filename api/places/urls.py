@@ -3,5 +3,5 @@ from .views import PlaceViewSet, RoomViewSet
 from rest_framework.routers import SimpleRouter
 
 router = SimpleRouter()
-router.register('places',PlaceViewSet)
-router.register('rooms', RoomViewSet)
+router.register(r'places',PlaceViewSet)
+router.register(r'rooms', RoomViewSet)

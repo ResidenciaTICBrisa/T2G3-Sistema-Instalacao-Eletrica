@@ -9,7 +9,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
-        fields = ['id', 'name', 'floor', 'place_id']
+        fields = ['id', 'name', 'floor', 'place_id', 'systems']
         extra_kwargs = {
             'name': {'required': True},
             'floor': {'required': True},
