@@ -14,7 +14,7 @@ from .permissions import IsOwnerOrReadOnly
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     @action(detail=True, methods=['get'])
     def rooms(self, request, pk=None):
@@ -32,4 +32,4 @@ class PlaceViewSet(viewsets.ModelViewSet):
 class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = []

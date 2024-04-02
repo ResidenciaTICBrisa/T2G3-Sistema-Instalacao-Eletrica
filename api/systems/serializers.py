@@ -4,4 +4,4 @@ from .models import System
 class SystemSerializer(serializers.ModelSerializer):
     class Meta:
         model = System
-        fields = ['id', 'name', 'rooms']
+        fields = ['id', 'name']
