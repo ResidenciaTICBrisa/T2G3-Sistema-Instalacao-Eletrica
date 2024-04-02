@@ -10,13 +10,13 @@ theme:
         icon: material/toggle-switch-off-outline
         name: Modo Escuro
       primary: Blue
-      accent: #8ECDDD
+      accent: Yellow
     - scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Modo Claro  
       primary: Blue
-      accent: #8ECDDD
+      accent: Yellow
   favicon: assets/favicon.ico
   logo: assets/favicon.ico
 
@@ -34,3 +34,8 @@ theme:
     - navigation.tracking
     - navigation.tabs.sticky
 
+nav:
+  - Ínicio: index.md
+  - Fase do projeto:
+    - Release 1: release1.md
+    
