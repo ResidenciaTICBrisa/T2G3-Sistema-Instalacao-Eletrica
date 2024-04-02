@@ -36,6 +36,7 @@ theme:
 
 nav:
   - Ínicio: index.md
-  - Fase do projeto:
-    - Release 1: release1.md
-    
+  - Subir o projeto:
+    - Backend: info/backend.md
+    - Frontend: info/frontend.md
+    - Contribuições: info/contribuir.md
