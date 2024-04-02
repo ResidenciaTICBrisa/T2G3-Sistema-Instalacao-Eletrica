@@ -6,7 +6,7 @@ SECRET_KEY = 'django-insecure-vy00e(4im2%orzf_b+dv6k$6)%c$8zfjgb6vb^hd^ugxfqpk1)
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '10.0.2.2']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'users',
     'places',
     'systems'
@@ -24,6 +25,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,3 +120,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAUthenticatedOrReadOnly',
     }
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
