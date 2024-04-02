@@ -16,12 +16,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<bool> login(String username, String password) async {
-    var url = Uri.parse('http://127.0.0.1:8000/api/login/');
+    var url = Uri.parse('http://10.0.2.2:8000/api/login/');
     try {
-      var response = await http.post(url, body: {
-        'username': username,
-        'password': password,
-      });
+      var response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+          }));
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print("Login bem-sucedido: $data");

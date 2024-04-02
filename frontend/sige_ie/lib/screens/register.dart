@@ -20,15 +20,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController emailController = TextEditingController();
 
   Future<bool> register(
-      String username, String name, String password, String email) async {
-    var url = Uri.parse('http://127.0.0.1:8000/api/users/');
+      String username, String firstName, String password, String email) async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/users/');
     try {
-      var response = await http.post(url, body: {
-        'username': username,
-        'name': name,
-        'password': password,
-        'email': email,
-      });
+      var response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'username': username,
+            'first_name': firstName,
+            'password': password,
+            'email': email,
+          }));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = jsonDecode(response.body);
         print("Registro bem-sucedido: $data");
@@ -285,7 +289,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                     if (success) {
                                       Navigator.of(context).pushReplacementNamed(
-                                          '/home'); // Certifique-se de que esta é a rota correta.
+                                          '/loginScreen'); // Certifique-se de que esta é a rota correta.
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
