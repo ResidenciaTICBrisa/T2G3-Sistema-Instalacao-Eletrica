@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:sige_ie/screens/login.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
@@ -288,8 +287,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         .hideCurrentSnackBar();
 
                                     if (success) {
-                                      Navigator.of(context).pushReplacementNamed(
-                                          '/loginScreen'); // Certifique-se de que esta é a rota correta.
+                                      FocusScope.of(context).unfocus();
+                                      Navigator.of(context)
+                                          .pushReplacementNamed('/loginScreen');
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
