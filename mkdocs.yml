@@ -36,6 +36,12 @@ theme:
 
 nav:
   - Ínicio: index.md
+  
+  - Subir o projeto:
+    - Backend: info/backend.md
+    - Frontend: info/frontend.md
+    - Contribuições: info/contribuir.md
+  
   - Subir o projeto:
     - Backend: info/backend.md
     - Frontend: info/frontend.md
