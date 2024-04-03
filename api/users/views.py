@@ -8,7 +8,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework import generics
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from .permissions import IsOwner
-from .serializers import UserSerializer, UserSerializerP
+from .serializers import UserSerializer, UserLoginSerializer
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -19,7 +19,6 @@ class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = []
-    authentication_classes = []
 
 @method_decorator(csrf_protect, name='dispatch')
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -31,7 +30,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 class LoginView(APIView):
     permission_classes = []
     def post(self, request, format=None):          
-            serializer = UserSerializerP(data=request.data)
+            serializer = UserLoginSerializer(data=request.data)
             if(serializer.is_valid()):
                 username = serializer.validated_data["username"]
                 password = serializer.validated_data["password"]
@@ -40,12 +39,11 @@ class LoginView(APIView):
                     login(request, user)
                     return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
                 else:
-                    print(user)
                     return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
             return JsonResponse(serializer.errors)
-    
+
 class LogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         logout(request)
