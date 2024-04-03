@@ -3,16 +3,31 @@ from django.http import JsonResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import BasicAuthentication
 from rest_framework import generics
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from .permissions import IsOwner
 from .serializers import UserSerializer, UserLoginSerializer
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
+
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class GetCSRFToken(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        return Response({'success':'CSRF Cookie Set'})
+
+@method_decorator(csrf_protect, name='dispatch')
+class CheckAuthenticatedView(APIView):
+    permission_classes=[AllowAny]
+    def get(self, request):
+        if request.user.is_authenticated:
+            return Response({'isAuthenticated': True})
+        else:
+            return Response({'isAuthenticated': False})
 
 @method_decorator(csrf_protect, name='dispatch')
 class UserCreateView(generics.CreateAPIView):
