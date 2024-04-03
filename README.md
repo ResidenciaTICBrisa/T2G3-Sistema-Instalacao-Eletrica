@@ -93,7 +93,14 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
 Estas etapas são válidas para Linux OS e WSL.
 #### Como subir o back-end:
 
-Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379.
+Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379. Então atualize o seu sistema:
+  ```
+  sudo apt-get update
+  ```
+
+  ```
+  sudo apt-get upgrade
+  ```
 
 Em seguida, caso já não tenha instalado:
 
@@ -124,10 +131,10 @@ Em seguida, caso já não tenha instalado:
 
     Virtualenv:
     ```
-    pip install virtualenv
+    sudo pip3 install virtualenv
     ```
 
-Dentro da pasta raiz `api`:
+Vá para dentro da pasta raiz `api`:
 
 1. Cria o ambiente virtual e ative-o:
 
