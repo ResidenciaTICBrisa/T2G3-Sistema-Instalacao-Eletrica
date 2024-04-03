@@ -40,3 +40,6 @@ nav:
     - Backend: info/backend.md
     - Frontend: info/frontend.md
     - Contribuições: info/contribuir.md
+  - Arquitetura e protótipo:
+    - Arquitetura: 
+    - Protótipo: info/prototipo.md
