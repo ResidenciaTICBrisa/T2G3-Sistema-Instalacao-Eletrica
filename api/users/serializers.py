@@ -15,3 +15,15 @@ class UserSerializer(serializers.ModelSerializer):
             'date_joined': {'read_only': True},
             'groups': {'read_only': True}
         }
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+        username=validated_data['username'],
+        password=validated_data['password'],
+        email=validated_data.get('email')  # use get se o email for opcional
+        )
+        return user
+
+class UserSerializerP(serializers.Serializer):
+    username = serializers.CharField(max_length=200)
+    password = serializers.CharField(max_length=200)
