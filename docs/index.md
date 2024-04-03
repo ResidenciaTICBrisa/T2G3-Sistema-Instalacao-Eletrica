@@ -54,6 +54,6 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
     <td align="center"><a href="https://github.com/kauan2872"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/103394028?v=4" width="100px;" alt=""/><br /><sub><b>Kauan José</b></sub></a><br />
      <td align="center"><a href="https://github.com/OscarDeBrito"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/98489703?v=4" width="100px;" alt=""/><br /><sub><b>Oscar de Brito</b></sub></a><br />
     <td align="center"><a href="https://github.com/AlefMemTav"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/97984278?v=4" width="100px;" alt=""/><br /><sub><b>Pedro Lucas</b></sub></a><br />
-    <td align="center"><a href="https://github.com/ramires31"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/139188097?v=4" width="100px;" alt=""/><br /><sub><b>Ramires</b></sub></a><br /><a href="Link git" title="Rocketseat"></a></td>
+    <td align="center"><a href="https://github.com/ramires31"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/139188097?v=4" width="100px;" alt=""/><br /><sub><b>Ramires Rocha</b></sub></a><br /><a href="Link git" title="Rocketseat"></a></td>
   </tr>
 </table>

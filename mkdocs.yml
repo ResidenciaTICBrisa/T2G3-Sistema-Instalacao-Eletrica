@@ -42,7 +42,9 @@ nav:
     - Frontend: info/frontend.md
     - Contribuições: info/contribuir.md
   
-  - Subir o projeto:
-    - Backend: info/backend.md
-    - Frontend: info/frontend.md
+  - Atas de Reunião:
+    - Ata 1: atas/ata1.md
+    - Ata 2: atas/ata2.md
     - Contribuições: info/contribuir.md
+
+
