@@ -14,12 +14,30 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  Future<String> fetchCsrfToken() async {
+    const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      String cookie = response.headers['set-cookie']!;
+      print(cookie);
+      String csrfToken = cookie.split(';')[0].substring('csrftoken='.length);
+      return csrfToken;
+    } else {
+      throw Exception('Falha ao obter o token CSRF: ${response.statusCode}');
+    }
+  }
+
   Future<bool> login(String username, String password) async {
+    var csrfToken = await fetchCsrfToken();
+    print(csrfToken);
     var url = Uri.parse('http://10.0.2.2:8000/api/login/');
     try {
       var response = await http.post(url,
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'Cookie': 'csrftoken=$csrfToken',
           },
           body: jsonEncode({
             'username': username,

@@ -18,13 +18,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
 
+ Future<String> fetchCsrfToken() async {
+    const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      String cookie = response.headers['set-cookie']!;
+      print(cookie);
+      String csrfToken = cookie.split(';')[0].substring('csrftoken='.length);
+      return csrfToken;
+    } else {
+      throw Exception('Falha ao obter o token CSRF: ${response.statusCode}');
+    }
+  }
+
   Future<bool> register(
-      String username, String firstName, String password, String email) async {
+    String username, String firstName, String password, String email) async {
+    var csrfToken = await fetchCsrfToken();
     var url = Uri.parse('http://10.0.2.2:8000/api/users/');
     try {
       var response = await http.post(url,
           headers: {
             'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'Cookie': 'csrftoken=$csrfToken',
           },
           body: jsonEncode({
             'username': username,
