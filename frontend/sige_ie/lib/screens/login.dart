@@ -216,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 if (success) {
                                   Navigator.of(context)
-                                      .pushReplacementNamed('/?');
+                                      .pushReplacementNamed('/homeScreen');
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
