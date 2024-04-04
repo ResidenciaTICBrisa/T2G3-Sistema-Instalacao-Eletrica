@@ -5,10 +5,10 @@
 SIGE IE
 </h1>
 
-## Fase do projeto
+## Fase
 Release 1 <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/1">Ir para milestone da release 1</a>
 
-## O produto
+## Visão geral do produto
 
 ### Sobre 
 Aplicativo web mobile desenvolvido para a Universidade de Brasília com objetivo de gerenciar as instalações elétricas e dar suporte ao retrofitting das instalações.
@@ -59,9 +59,42 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
 
 </div>
 
-## O projeto
+### Contribuidores 
+<div align="center">
+  <table>
+    <tbody>
+      <tr>
+        <td>AlefMemTav</td>
+        <td>Pedro Lucas</td>
+        <td><img src="https://avatars.githubusercontent.com/u/97984278?v=4" alt="Contribuidor" width="42px;" ></td>
+      </tr>
+      <tr>
+        <td>EngDann</td>
+        <td>Danilo</td>
+        <td><img src="https://avatars.githubusercontent.com/u/137555908?v=4" alt="Contribuidor" width="42px;" ></td>
+      </tr>
+      <tr>
+        <td>kauan2872</td>
+        <td>Kauan</td>
+        <td><img src="https://avatars.githubusercontent.com/u/103394028?v=4" alt="Contribuidor" width="42px;" ></td>
+      </tr>
+      <tr>
+        <td>OscarDeBrito</td>
+        <td>Oscar</td>
+        <td><img src="https://avatars.githubusercontent.com/u/98489703?v=4" alt="Contribuidor" width="42px;" ></td>
+      </tr>
+      <tr>
+        <td>ramires31</td>
+        <td>Ramires</td>
+        <td><img src="https://avatars.githubusercontent.com/u/139188097?v=4" alt="Contribuidor" width="42px;" ></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-### Orgnanização 
+## Visão geral do projeto
+
+### Organização 
 <div align="center">
 
 | Papel | Atribuições | Responsável | Participantes |
@@ -72,44 +105,6 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
 | UX design | Projetar a interface do usuário, criar protótipos e realizar entrevistas com os clientes | Danilo | Danilo |
 | Analista de requisitos | Levantar requisitos, gerenciar a documentação, validar com cliente | Oscar | Oscar, Ramires, Pedro |
 
-</div>
-
-### Contribuidores 
-<div align="center">
-  <table>
-    <tbody>
-      <tr>
-        <td>AlefMemTav</td>
-        <td>Fullstack</td>
-        <td>Pedro Lucas</td>
-        <td><img src="https://avatars.githubusercontent.com/u/97984278?v=4" alt="Contribuidor" width="42px;" ></td>
-      </tr>
-      <tr>
-        <td>EngDann</td>
-        <td>Frontend</td>
-        <td>Danilo</td>
-        <td><img src="https://avatars.githubusercontent.com/u/137555908?v=4" alt="Contribuidor" width="42px;" ></td>
-      </tr>
-      <tr>
-        <td>kauan2872</td>
-        <td>Backend</td>
-        <td>Kauan</td>
-        <td><img src="https://avatars.githubusercontent.com/u/103394028?v=4" alt="Contribuidor" width="42px;" ></td>
-      </tr>
-      <tr>
-        <td>OscarDeBrito</td>
-        <td>Documentação</td>
-        <td>Oscar</td>
-        <td><img src="https://avatars.githubusercontent.com/u/98489703?v=4" alt="Contribuidor" width="42px;" ></td>
-      </tr>
-      <tr>
-        <td>ramires31</td>
-        <td>Frontend</td>
-        <td>Ramires</td>
-        <td><img src="https://avatars.githubusercontent.com/u/139188097?v=4" alt="Contribuidor" width="42px;" ></td>
-      </tr>
-    </tbody>
-  </table>
 </div>
 
 ## Configuração do ambiente
