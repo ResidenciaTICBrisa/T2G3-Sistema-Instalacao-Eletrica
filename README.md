@@ -5,18 +5,21 @@
 SIGE IE
 </h1>
 
-### Fase do projeto
+## Fase do projeto
 Release 1 <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/1">Ir para milestone da release 1</a>
 
-### Sobre este projeto
+## O produto
+
+### Sobre 
 Aplicativo web mobile desenvolvido para a Universidade de Brasília com objetivo de gerenciar as instalações elétricas e dar suporte ao retrofitting das instalações.
-#### Posição
+
+### Posição
 O SIGE IE é um sistema da Universidade de Brasília para o gerenciamento de instalações elétricas com o objetivo de facilitar o cadastro das informações de instalação elétrica para ajudar na reforma da parte elétrica dos prédios e salas. Ele permite a automatização da geração de relatórios das instalações elétricas de cada lugar e a centralização dessas informações para uso dos responsáveis pelas instalações. As pessoas devem usar o SIGE IE porque ele simplifica e agiliza o processo de gerenciamento, principalmente do retrofitting de instalações elétricas, garantindo maior eficiência e segurança.
 
-#### Objetivos
+### Objetivos
 Simplificar o cadastro e gerenciamento de informações de instalações elétricas e automatizar a geração de relatórios.
-#### Tecnologias
-##### Back-end
+### Tecnologias
+#### Back-end
 
 <div align="center">
 
@@ -32,7 +35,7 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 
 </div>
 
-###### Observação
+##### Observação
 Atualmente o Django REST Framework suporta as seguintes versões do Python e do Django:
 
 <div align="center">
@@ -45,7 +48,7 @@ Atualmente o Django REST Framework suporta as seguintes versões do Python e do 
 
 Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar o projeto usando Python 3.11. 
 
-##### Front-end mobile
+#### Front-end mobile
 
 <div align="center">
   
@@ -56,32 +59,52 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
 
 </div>
 
+## O projeto
+
+### Orgnanização 
+<div align="center">
+
+| Papel | Atribuições | Responsável | Participantes |
+| --- | --- | --- | --- |
+| Cliente | Validar as entregas | Loana | Loana, Alex |
+| Desenvolvedor back-end | Codificar o backend, configurar a infraestrutura | Pedro | Pedro, Kauan, Oscar |
+| Desenvolvedor frontend | Codificar o frontend, realizar integração com backend | Danilo | Danilo, Ramires, Pedro |
+| UX design | Projetar a interface do usuário, criar protótipos e realizar entrevistas com os clientes | Danilo | Danilo |
+| Analista de requisitos | Levantar requisitos, gerenciar a documentação, validar com cliente | Oscar | Oscar, Ramires, Pedro |
+
+</div>
+
 ### Contribuidores 
 <div align="center">
   <table>
     <tbody>
       <tr>
         <td>AlefMemTav</td>
+        <td>Fullstack</td>
         <td>Pedro Lucas</td>
         <td><img src="https://avatars.githubusercontent.com/u/97984278?v=4" alt="Contribuidor" width="42px;" ></td>
       </tr>
       <tr>
         <td>EngDann</td>
+        <td>Frontend</td>
         <td>Danilo</td>
         <td><img src="https://avatars.githubusercontent.com/u/137555908?v=4" alt="Contribuidor" width="42px;" ></td>
       </tr>
       <tr>
         <td>kauan2872</td>
+        <td>Backend</td>
         <td>Kauan</td>
         <td><img src="https://avatars.githubusercontent.com/u/103394028?v=4" alt="Contribuidor" width="42px;" ></td>
       </tr>
       <tr>
         <td>OscarDeBrito</td>
+        <td>Documentação</td>
         <td>Oscar</td>
         <td><img src="https://avatars.githubusercontent.com/u/98489703?v=4" alt="Contribuidor" width="42px;" ></td>
       </tr>
       <tr>
         <td>ramires31</td>
+        <td>Frontend</td>
         <td>Ramires</td>
         <td><img src="https://avatars.githubusercontent.com/u/139188097?v=4" alt="Contribuidor" width="42px;" ></td>
       </tr>
@@ -89,6 +112,7 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
   </table>
 </div>
 
+## Configuração do ambiente
 ### Como subir o projeto
 Estas etapas são válidas para Linux OS e WSL.
 #### Como subir o back-end:
@@ -183,7 +207,7 @@ Vá para dentro da pasta raiz `api`:
     ```
 
 Pronto, o servidor já está rodando com o banco de dados configurado.
-#### Como Subir o Front-end:
+#### Como subir o front-end:
 
 Antes de começar, verifique se o Flutter SDK está atualizado e compatível com o projeto. Siga as instruções específicas para sua plataforma (Windows, macOS, Linux) disponíveis na [documentação oficial do Flutter](https://flutter.dev/docs/get-started/install).
 
@@ -230,7 +254,7 @@ Com o ambiente preparado, siga os passos abaixo:
 
 Pronto, o Front end já está rodando e você pode utilizá-lo.
 
-
+## Contribuição
 ### Como contribuir
 1. Faça um fork do repositório do projeto.
 2. Clone o fork na sua máquina:
@@ -249,8 +273,10 @@ Pronto, o Front end já está rodando e você pode utilizá-lo.
 7. Após enviar suas contribuições para o fork do seu repositório, faça um pull request.
 8. Aguarde a revisão. 
 
-### Documentação
+## Documentação
+- [Requisitos de software](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/1)
 - [Cronograma](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/3)
-- [Requisitos](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/1)
+- [Backlog do produto](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/9)
+- [Releases](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestones)
 - [Arquitetura](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/2)
 - [Atas de reunião](https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/issues/4)
