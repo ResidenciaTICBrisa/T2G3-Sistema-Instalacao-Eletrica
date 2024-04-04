@@ -30,7 +30,7 @@ class CheckAuthenticatedView(APIView):
             return Response({'isAuthenticated': False})
 
 @method_decorator(csrf_protect, name='dispatch')
-class UserCreateView(generics.CreateAPIView):
+class UserCreateView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = []
@@ -40,6 +40,14 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsOwner, IsAuthenticated]
+
+class AuthenticatedUserView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 @method_decorator(csrf_protect, name='dispatch')
 class LoginView(APIView):
