@@ -44,13 +44,11 @@ nav:
   - Atas de Reunião:
     - Ata 1: atas/ata1.md
     - Ata 2: atas/ata2.md
-    - Contribuições: info/contribuir.md
-
 
   - Arquitetura e Protótipo:
     - Protótipo: info/prototipo.md
-    - Arquitetura: info/frontend.md
-    - Contribuições: info/contribuir.md
+    - Arquitetura: info/arquitetura.md
+    - Bando de dados: info/contribuir.md
 
 plugins:
   - search
