@@ -48,7 +48,7 @@ nav:
   - Arquitetura e Protótipo:
     - Protótipo: info/prototipo.md
     - Arquitetura: info/arquitetura.md
-    - Bando de dados: info/contribuir.md
+    - Modelagem Banco de dados: info/modelagemBD.md
 
 plugins:
   - search
