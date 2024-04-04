@@ -19,7 +19,6 @@ theme:
       accent: Yellow
   favicon: assets/favicon.ico
   logo: assets/favicon.ico
-
   font:
     text: Roboto
   language: pt
@@ -48,3 +47,11 @@ nav:
     - Contribuições: info/contribuir.md
 
 
+  - Arquitetura e Protótipo:
+    - Protótipo: info/prototipo.md
+    - Arquitetura: info/frontend.md
+    - Contribuições: info/contribuir.md
+
+plugins:
+  - search
+  - with-pdf
