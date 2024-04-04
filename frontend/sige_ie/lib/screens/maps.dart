@@ -8,6 +8,10 @@ class MapsPage extends StatefulWidget {
 class _MapsPageState extends State<MapsPage> {
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Scaffold(
+        appBar: AppBar(
+      title: Text('App de Navegação'),
+      automaticallyImplyLeading: false,
+    ));
   }
 }

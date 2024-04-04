@@ -8,6 +8,10 @@ class FacilitiesPage extends StatefulWidget {
 class _FacilitiesPageState extends State<FacilitiesPage> {
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Scaffold(
+        appBar: AppBar(
+      title: Text('App de Navegação'),
+      automaticallyImplyLeading: false,
+    ));
   }
 }
