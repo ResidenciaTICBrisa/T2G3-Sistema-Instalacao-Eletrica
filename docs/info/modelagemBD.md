@@ -4,6 +4,5 @@ A estrutura do banco de dados é projetada para uma aplicação de gerenciamento
 
 A complexidade dos relacionamentos indica uma solução robusta capaz de lidar com uma grande variedade de informações operacionais, mantendo a integridade e a eficiência dos dados. Cada entidade é projetada para armazenar informações específicas, permitindo consultas detalhadas e relatórios sobre o estado e uso dos equipamentos e sistemas.
 
-<iframe width="768" height="432" src="https://miro.com/app/board/uXjVKfB8Vrg=/" frameborder="0" scrolling="no" allowfullscreen></iframe>
-
+<iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVKXr37Fs=/?moveToViewport=-3050,-1609,6249,3163&embedId=263286308364" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
 
