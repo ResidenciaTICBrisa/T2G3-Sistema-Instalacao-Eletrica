@@ -50,6 +50,9 @@ nav:
     - Arquitetura: info/arquitetura.md
     - Modelagem Banco de dados: info/modelagemBD.md
 
+  - RoadMap:
+    - RoadMap: info/Roadmap.md
+
 plugins:
   - search
   - with-pdf
