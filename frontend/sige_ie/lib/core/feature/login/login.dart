@@ -1,6 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:sige_ie/core/data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -9,53 +8,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  AuthService authService = AuthService();
   bool rememberMe = false;
   final _loginScreen = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  Future<String> fetchCsrfToken() async {
-    const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      String cookie = response.headers['set-cookie']!;
-      print(cookie);
-      String csrfToken = cookie.split(';')[0].substring('csrftoken='.length);
-      return csrfToken;
-    } else {
-      throw Exception('Falha ao obter o token CSRF: ${response.statusCode}');
-    }
-  }
-
-  Future<bool> login(String username, String password) async {
-    var csrfToken = await fetchCsrfToken();
-    print(csrfToken);
-    var url = Uri.parse('http://10.0.2.2:8000/api/login/');
-    try {
-      var response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-            'Cookie': 'csrftoken=$csrfToken',
-          },
-          body: jsonEncode({
-            'username': username,
-            'password': password,
-          }));
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        print("Login bem-sucedido: $data");
-        return true;
-      } else {
-        print("Falha no login: ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      print("Erro ao tentar fazer login: $e");
-      return false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,9 +164,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                       content: Text('Processando dados')),
                                 );
 
-                                bool success = await login(
+                                bool success = await authService.login(
                                     usernameController.text,
                                     passwordController.text);
+
+                                bool isAuth =
+                                    await authService.checkAuthenticated();
+                                print(isAuth);
 
                                 ScaffoldMessenger.of(context)
                                     .hideCurrentSnackBar();

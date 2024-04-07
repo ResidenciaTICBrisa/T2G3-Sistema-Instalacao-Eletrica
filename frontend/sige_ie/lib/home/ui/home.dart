@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 // Importe suas páginas personalizadas
-import 'profile.dart';
-import 'facilities.dart';
-import 'maps.dart';
+import '../../users/feature/profile.dart';
+import '../../screens/facilities.dart';
+import '../../maps/feature/maps.dart';
 
 class HomePage extends StatefulWidget {
   @override

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/users/data/user_model.dart';
+import 'package:sige_ie/users/data/user_service.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -6,6 +8,22 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  UserService userService = UserService();
+  UserModel userModel = UserModel(email: '', firstname: '', username: '');
+
+  @override
+  void initState() {
+    super.initState();
+    userService.fetchProfileData().then((userModel) {
+      setState(() {
+        this.userModel = userModel;
+      });
+    }).catchError((error) {
+      // Handle error
+      print(error);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,14 +42,19 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             TextField(
               decoration: InputDecoration(labelText: 'Email'),
+              controller: TextEditingController(text: userModel.email),
+              onChanged: (value) => userModel.email = value,
             ),
             SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(labelText: 'Nome'),
+              controller: TextEditingController(text: userModel.firstname),
+              onChanged: (value) => userModel.firstname = value,
             ),
             SizedBox(height: 10),
             TextField(
               decoration: InputDecoration(labelText: 'Username'),
+              controller: TextEditingController(text: userModel.username),
               enabled: false,
             ),
             SizedBox(height: 20),

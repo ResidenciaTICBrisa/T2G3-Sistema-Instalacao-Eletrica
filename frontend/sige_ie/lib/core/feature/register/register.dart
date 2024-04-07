@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
+import 'package:sige_ie/users/data/user_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -17,51 +16,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-
- Future<String> fetchCsrfToken() async {
-    const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      String cookie = response.headers['set-cookie']!;
-      print(cookie);
-      String csrfToken = cookie.split(';')[0].substring('csrftoken='.length);
-      return csrfToken;
-    } else {
-      throw Exception('Falha ao obter o token CSRF: ${response.statusCode}');
-    }
-  }
-
-  Future<bool> register(
-    String username, String firstName, String password, String email) async {
-    var csrfToken = await fetchCsrfToken();
-    var url = Uri.parse('http://10.0.2.2:8000/api/users/');
-    try {
-      var response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-            'Cookie': 'csrftoken=$csrfToken',
-          },
-          body: jsonEncode({
-            'username': username,
-            'first_name': firstName,
-            'password': password,
-            'email': email,
-          }));
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var data = jsonDecode(response.body);
-        print("Registro bem-sucedido: $data");
-        return true;
-      } else {
-        print("Falha no registro: ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      print("Erro ao tentar registrar: $e");
-      return false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +249,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         content: Text('Processando Dados'),
                                       ),
                                     );
-                                    bool success = await register(
+                                    bool success = await UserService.register(
                                         usernameController.text,
                                         nameController.text,
                                         passwordController.text,

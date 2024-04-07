@@ -1,0 +1,109 @@
+import 'dart:convert';
+import 'package:cookie_jar/cookie_jar.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_interceptor/http_interceptor.dart';
+import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/main.dart';
+
+class AuthService {
+  static Future<String> fetchCsrfToken() async {
+    const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      String cookie = response.headers['set-cookie']!;
+      String csrfToken = cookie.split(';')[0].substring('csrftoken='.length);
+      return csrfToken;
+    } else {
+      throw Exception('Falha ao obter o token CSRF: ${response.statusCode}');
+    }
+  }
+
+  static Future<String> fetchSessionCookie() async {
+    const url = 'http://10.0.2.2:8000/api/sessioncookie/';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final cookies = response.headers['set-cookie']?.split(',');
+
+      String? sessionid;
+      if (cookies != null) {
+        for (var cookie in cookies) {
+          if (cookie.contains('sessionid')) {
+            sessionid = cookie.split(';')[0].split('=')[1];
+            break;
+          }
+        }
+      }
+
+      print(sessionid);
+      return sessionid!;
+    } else {
+      throw Exception('Failed to fetch session cookie: ${response.statusCode}');
+    }
+  }
+
+  Future<bool> checkAuthenticated() async {
+    var client = InterceptedClient.build(
+      interceptors: [AuthInterceptor(cookieJar)],
+    );
+
+    final response =
+        await client.get(Uri.parse('http://10.0.2.2:8000/api/checkauth/'));
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      return data['isAuthenticated'];
+    } else {
+      throw Exception('Failed to check authentication');
+    }
+  }
+
+  Future<bool> login(String username, String password) async {
+    var csrfToken = await fetchCsrfToken();
+
+    var url = Uri.parse('http://10.0.2.2:8000/api/login/');
+
+    try {
+      var response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'Cookie': 'csrftoken=$csrfToken',
+          },
+          body: jsonEncode({
+            'username': username,
+            'password': password,
+          }));
+      final cookies = response.headers['set-cookie']?.split(',');
+
+      String? sessionid;
+      if (cookies != null) {
+        for (var cookie in cookies) {
+          if (cookie.contains('sessionid')) {
+            sessionid = cookie.split(';')[0].split('=')[1];
+            break;
+          }
+        }
+      }
+
+      final cookie = Cookie('sessionid', sessionid!);
+      cookieJar.saveFromResponse(
+          Uri.parse('http://10.0.2.2:8000/api/login/'), [cookie]);
+
+      // print('Session ID: $sessionid');
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        print("Login bem-sucedido: $data");
+        return true;
+      } else {
+        print("Falha no login: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("Erro ao tentar fazer login: $e");
+      return false;
+    }
+  }
+}
