@@ -1,5 +1,5 @@
 # views.py
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -19,6 +19,15 @@ class GetCSRFToken(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
         return Response({'success':'CSRF Cookie Set'})
+
+class GetSessionCookie(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        sessionid = request.COOKIES.get('sessionid')
+        response = HttpResponse()
+        response.set_cookie('sessionid', sessionid)
+        return response
 
 @method_decorator(csrf_protect, name='dispatch')
 class CheckAuthenticatedView(APIView):
