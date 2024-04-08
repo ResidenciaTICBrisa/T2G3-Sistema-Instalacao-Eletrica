@@ -7,16 +7,15 @@ import 'package:sige_ie/main.dart';
 import 'package:sige_ie/users/data/user_model.dart';
 
 class UserService {
+
   static Future<bool> register(
       String username, String firstName, String password, String email) async {
-    var csrfToken = await AuthService.fetchCsrfToken();
+    //var csrfToken = await AuthService.fetchCsrfToken();
     var url = Uri.parse('http://10.0.2.2:8000/api/users/');
     try {
       var response = await http.post(url,
           headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-            'Cookie': 'csrftoken=$csrfToken',
+            'Content-Type': 'application/json'
           },
           body: jsonEncode({
             'username': username,
@@ -30,6 +29,38 @@ class UserService {
         return true;
       } else {
         print("Falha no registro: ${response.body}");
+        return false;
+      }
+    } catch (e) {
+      print("Erro ao tentar registrar: $e");
+      return false;
+    }
+  }
+
+  Future<bool> update(String id, String firstName, String email) async {
+    
+     var client = InterceptedClient.build(
+      interceptors: [AuthInterceptor(cookieJar)],
+    );
+
+    //var csrfToken = await AuthService.fetchCsrfToken();
+    
+    var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
+    try {
+      var response = await client.put(url,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode({
+            'first_name': firstName,
+            'email': email,
+          }));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = jsonDecode(response.body);
+        print("Atualizado com sucesso: $data");
+        return true;
+      } else {
+        print("Falha: ${response.body}");
         return false;
       }
     } catch (e) {

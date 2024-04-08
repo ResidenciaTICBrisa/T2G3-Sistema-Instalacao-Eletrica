@@ -8,13 +8,12 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework import generics
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect, csrf_exempt
 from .permissions import IsOwner
-from .serializers import UserSerializer, UserLoginSerializer
+from .serializers import UserSerializer, UserLoginSerializer, UserUpdateSerializer
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 
-@method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
@@ -29,7 +28,6 @@ class GetSessionCookie(APIView):
         response.set_cookie('sessionid', sessionid)
         return response
 
-@method_decorator(csrf_protect, name='dispatch')
 class CheckAuthenticatedView(APIView):
     permission_classes=[AllowAny]
     def get(self, request):
@@ -38,17 +36,15 @@ class CheckAuthenticatedView(APIView):
         else:
             return Response({'isAuthenticated': False})
 
-@method_decorator(csrf_protect, name='dispatch')
 class UserCreateView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = []
 
-@method_decorator(csrf_protect, name='dispatch')
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsOwner, IsAuthenticated]
+    serializer_class = UserUpdateSerializer
+    permission_classes = [IsOwner, AllowAny]
 
 class AuthenticatedUserView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -58,9 +54,8 @@ class AuthenticatedUserView(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
-@method_decorator(csrf_protect, name='dispatch')
 class LoginView(APIView):
-    permission_classes = []
+    permission_classes = [AllowAny]
     def post(self, request, format=None):          
             serializer = UserLoginSerializer(data=request.data)
             if(serializer.is_valid()):
@@ -75,7 +70,7 @@ class LoginView(APIView):
             return JsonResponse(serializer.errors)
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         logout(request)

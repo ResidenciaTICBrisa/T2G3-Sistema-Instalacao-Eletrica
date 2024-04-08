@@ -6,6 +6,7 @@ import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
 
 class AuthService {
+
   static Future<String> fetchCsrfToken() async {
     const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
     final response = await http.get(Uri.parse(url));
@@ -13,6 +14,11 @@ class AuthService {
     if (response.statusCode == 200) {
       String cookie = response.headers['set-cookie']!;
       String csrfToken = cookie.split(';')[0].substring('csrftoken='.length);
+
+      final csrfCookie = Cookie('csrftoken', csrfToken);
+      cookieJar.saveFromResponse(
+          Uri.parse('http://10.0.2.2:8000/api/csrftoken/'), [csrfCookie]);
+
       return csrfToken;
     } else {
       throw Exception('Falha ao obter o token CSRF: ${response.statusCode}');
@@ -60,16 +66,15 @@ class AuthService {
   }
 
   Future<bool> login(String username, String password) async {
-    var csrfToken = await fetchCsrfToken();
+    //var csrfToken = await fetchCsrfToken();
+    //print(csrfToken);
 
     var url = Uri.parse('http://10.0.2.2:8000/api/login/');
 
     try {
       var response = await http.post(url,
           headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-            'Cookie': 'csrftoken=$csrfToken',
+            'Content-Type': 'application/json'
           },
           body: jsonEncode({
             'username': username,
@@ -91,8 +96,6 @@ class AuthService {
       cookieJar.saveFromResponse(
           Uri.parse('http://10.0.2.2:8000/api/login/'), [cookie]);
 
-      // print('Session ID: $sessionid');
-
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         print("Login bem-sucedido: $data");
@@ -104,6 +107,31 @@ class AuthService {
     } catch (e) {
       print("Erro ao tentar fazer login: $e");
       return false;
+    }
+  }
+
+  Future<void> logout() async {
+    //final cookies = await cookieJar.loadForRequest(Uri.parse('http://10.0.2.2:8000/api/csrftoken/'));
+
+    var url = Uri.parse('http://10.0.2.2:8000/api/logout/');
+
+    try {
+      var client =
+          InterceptedClient.build(interceptors: [AuthInterceptor(cookieJar)]);
+      var response = await client.post(url, headers: {
+        'Content-Type': 'application/json'
+      });
+      cookieJar.deleteAll();
+      if (response.statusCode == 200) {
+        print("Logout bem-sucedido");
+      } else {
+        print("Falha no logout: ${response.body}");
+
+        bool isAuth = await checkAuthenticated();
+        print(isAuth);
+      }
+    } catch (e) {
+      print("Erro ao tentar fazer logout: $e");
     }
   }
 }

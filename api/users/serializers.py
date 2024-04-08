@@ -32,3 +32,14 @@ class UserSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(min_length=6, max_length=23, required=True)
     password = serializers.CharField(min_length=6, max_length=200, required=True)
+
+
+class UserUpdateSerializer(serializers.Serializer):
+    first_name = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance

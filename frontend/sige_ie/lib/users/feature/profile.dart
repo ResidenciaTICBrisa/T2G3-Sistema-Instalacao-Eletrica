@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/core/data/auth_service.dart';
 import 'package:sige_ie/users/data/user_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 
@@ -9,7 +10,9 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   UserService userService = UserService();
-  UserModel userModel = UserModel(email: '', firstname: '', username: '');
+  AuthService authService = AuthService();
+  UserModel userModel =
+      UserModel(id: '', email: '', firstname: '', username: '');
 
   @override
   void initState() {
@@ -82,14 +85,20 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await userService.update(
+                        userModel.id, userModel.firstname, userModel.email);
+                  },
                   child: Text('Salvar', style: TextStyle(color: Colors.black)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[300],
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await authService.logout();
+                    Navigator.pushReplacementNamed(context, '/loginScreen');
+                  },
                   child: Text('Sair da Conta',
                       style: TextStyle(color: Colors.black)),
                   style: ElevatedButton.styleFrom(
