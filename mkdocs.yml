@@ -55,6 +55,11 @@ nav:
    
   - Cronograma:
     - Cronograma: info/cronograma.md
+    - Releases : 
+        - Release 1: info/Release1.md
+        - Release 2: info/release2.md
+        - Release 3: info/release3.md
+        - Release 4: info/release4.md
   
   - Requisitos de  Software:
     - Épicos: info/requisitosEpicos.md
