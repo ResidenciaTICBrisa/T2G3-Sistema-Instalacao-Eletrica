@@ -36,7 +36,7 @@ class CheckAuthenticatedView(APIView):
         else:
             return Response({'isAuthenticated': False})
 
-class UserCreateView(generics.RetrieveAPIView):
+class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = []

@@ -8,7 +8,7 @@ urlpatterns = [
     path('csrfcookie/', GetCSRFToken.as_view(), name='csrf-cookie'),
     path('sessioncookie/', GetSessionCookie.as_view(), name='session-cookie'),
     path('checkauth/', CheckAuthenticatedView.as_view(), name='check-auth'),
-    path('users/', UserCreateView.as_view()),
+    path('users/', UserCreateView.as_view(), name='create-user'),
     path('userauth/', AuthenticatedUserView.as_view(), name='authenticated-user'),
     path('users/<pk>/', UserDetailView.as_view(), name='user_detail'),
     path('login/', LoginView.as_view(), name='login'),
