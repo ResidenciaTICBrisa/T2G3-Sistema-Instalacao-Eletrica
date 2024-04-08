@@ -57,3 +57,14 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
     <td align="center"><a href="https://github.com/ramires31"><img style="border-radius: 50%;" src="https://avatars.githubusercontent.com/u/139188097?v=4" width="100px;" alt=""/><br /><sub><b>Ramires Rocha</b></sub></a><br /><a href="Link git" title="Rocketseat"></a></td>
   </tr>
 </table>
+
+
+### Organização
+
+| Papel | Atribuições | Responsável | Participantes |
+| --- | --- | --- | --- |
+| Cliente | Validar as entregas | Loana | Loana, Alex |
+| Desenvolvedor back-end | Codificar o backend, configurar a infraestrutura | Pedro | Pedro, Kauan, Oscar |
+| Desenvolvedor frontend | Codificar o frontend, realizar integração com backend | Danilo | Danilo, Ramires, Pedro |
+| UX design | Projetar a interface do usuário, criar protótipos e realizar entrevistas com os clientes | Danilo | Danilo |
+| Analista de requisitos | Levantar requisitos, gerenciar a documentação, validar com cliente | Oscar | Oscar, Ramires, Pedro |
