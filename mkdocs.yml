@@ -52,6 +52,13 @@ nav:
 
   - RoadMap:
     - RoadMap: info/Roadmap.md
+   
+  - Cronograma:
+    - Cronograma: info/cronograma.md
+  
+  - Requisitos de  Software:
+    - Épicos: info/requisitosEpicos.md
+    - Features: info/requisitosFeatures.md
 
 plugins:
   - search
