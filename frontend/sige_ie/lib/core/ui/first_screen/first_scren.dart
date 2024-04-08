@@ -7,13 +7,12 @@ class FirstScreen extends StatelessWidget {
       backgroundColor: Color(0xff123c75),
       body: Center(
         child: Column(
-          mainAxisSize: MainAxisSize.min, // Centraliza no meio
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Image.asset('assets/1000x1000.png'), // Sua imagem
+            Image.asset('assets/1000x1000.png'),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(
-                      context, '/loginScreen'); // Navega para Login
+                  Navigator.pushNamed(context, '/loginScreen');
                 },
                 child: Text(
                   "Login",
@@ -33,8 +32,7 @@ class FirstScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(
-                    context, '/registerScreen'); // Navega para Registro
+                Navigator.pushNamed(context, '/registerScreen');
               },
               child: Text(
                 "Registro",

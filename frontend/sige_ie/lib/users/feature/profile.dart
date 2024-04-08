@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/core/data/auth_service.dart';
 import 'package:sige_ie/users/data/user_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
+import 'package:sige_ie/config/app_styles.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -75,7 +76,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {},
                   child: Text(
                     'Mudar username',
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(
+                        color: const Color.fromARGB(255, 33, 150, 243)),
                   ),
                 ),
               ],
@@ -87,7 +89,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   await userService.update(
                       userModel.id, userModel.firstname, userModel.email);
                 },
-                child: Text('Salvar', style: TextStyle(color: Colors.black)),
+                child:
+                    Text('Salvar', style: TextStyle(color: AppColors.dartText)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[300],
                 ),
@@ -98,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.pushReplacementNamed(context, '/loginScreen');
                 },
                 child: Text('Sair da Conta',
-                    style: TextStyle(color: Colors.black)),
+                    style: TextStyle(color: AppColors.dartText)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueGrey[200],
                 ),
@@ -145,9 +148,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     }
                   },
                   child: Text('Excluir Conta',
-                      style: TextStyle(color: Colors.white)),
+                      style: TextStyle(color: AppColors.lightText)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[800],
+                    backgroundColor: AppColors.warn,
                   ),
                 ),
               ],
