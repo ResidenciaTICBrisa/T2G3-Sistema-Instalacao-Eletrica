@@ -134,4 +134,5 @@ class AuthService {
       print("Erro ao tentar fazer logout: $e");
     }
   }
+
 }
