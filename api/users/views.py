@@ -20,7 +20,7 @@ class GetCSRFToken(APIView):
         return Response({'success':'CSRF Cookie Set'})
 
 class GetSessionCookie(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         sessionid = request.COOKIES.get('sessionid')
@@ -39,12 +39,12 @@ class CheckAuthenticatedView(APIView):
 class UserCreateView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = []
+    permission_classes = [AllowAny]
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
-    permission_classes = [IsOwner, AllowAny]
+    permission_classes = [IsOwner, IsAuthenticated]
 
 class AuthenticatedUserView(generics.RetrieveAPIView):
     queryset = User.objects.all()
@@ -70,7 +70,7 @@ class LoginView(APIView):
             return JsonResponse(serializer.errors)
 
 class LogoutView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         logout(request)
