@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
     permission_classes = [AllowAny]
     def get(self, request):

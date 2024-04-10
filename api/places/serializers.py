@@ -4,7 +4,11 @@ from .models import Place, Room
 class PlaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Place
-        fields = ['name', 'user']
+        fields = ['name', 'place_owner']
+        extra_kwargs = {
+            'name': {'required': True},
+            'place_owner': {'read_only': True}
+        }
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
