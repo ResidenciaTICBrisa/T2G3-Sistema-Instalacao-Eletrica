@@ -1,6 +1,7 @@
 # serializers.py
 from rest_framework import serializers, response
 from django.contrib.auth.models import User
+from .models import PlaceOwner
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(min_length=6, max_length=23, required=True)
@@ -43,3 +44,8 @@ class UserUpdateSerializer(serializers.Serializer):
         instance.email = validated_data.get('email', instance.email)
         instance.save()
         return instance
+
+class PlaceOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlaceOwner
+        fields = ['id']

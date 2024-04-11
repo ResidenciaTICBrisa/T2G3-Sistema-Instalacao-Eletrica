@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 class Place(models.Model):
 
     name = models.CharField(max_length=50)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
