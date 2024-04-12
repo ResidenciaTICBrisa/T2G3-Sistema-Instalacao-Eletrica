@@ -8,6 +8,8 @@ from places.permissions import IsPlaceOwner
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+
 
 from .models import Place, Room
 from .serializers import PlaceSerializer, RoomSerializer
@@ -113,3 +115,18 @@ class RoomViewSet(viewsets.ModelViewSet):
             return Response(room_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+        
+    def list(self,request,*args, **kwargs):
+        user = request.user
+        place_owner = user.placeowner
+        place_id = request.query_params.get('place')
+
+        if not place_id:
+            raise NotFound("Place ID must be provided.")
+
+        place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
+
+        rooms = Room.objects.filter(place=place)
+
+        room_serializer = RoomSerializer(rooms, many=True)
+        return Response(room_serializer.data)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
