@@ -34,6 +34,17 @@ class PlaceViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(place_serializer.data)
         return Response(place_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        place_owner = user.placeowner
+
+        place_id = request.data.get('place')
+        places = Place.objects.filter(place_owner=place_owner)
+
+        place_serializer = PlaceSerializer(places, many=True)
+        return Response(place_serializer.data)
+
+
     @action(detail=True, methods=['get'])
     def rooms(self, request, pk=None):
         place = self.get_object()
@@ -51,3 +62,4 @@ class RoomViewSet(viewsets.ModelViewSet):
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]
+
