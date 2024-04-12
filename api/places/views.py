@@ -4,13 +4,13 @@ from users.models import PlaceOwner
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from places.permissions import IsPlaceOwner
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Place, Room
 from .serializers import PlaceSerializer, RoomSerializer
-from .permissions import IsOwnerOrReadOnly
 
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
