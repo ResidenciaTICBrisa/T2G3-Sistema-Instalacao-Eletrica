@@ -17,6 +17,12 @@ class PlaceViewSet(viewsets.ModelViewSet):
     serializer_class = PlaceSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_place_owner(self, user):
+        try:
+            return user.placeowner
+        except PlaceOwner.DoesNotExist:
+            return PlaceOwner.objects.create(user=user)
+
     def create(self, request, *args, **kwargs):
         user = request.user
 
@@ -36,7 +42,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         user = request.user
-        place_owner = user.placeowner
+        place_owner = self.get_place_owner(user)
 
         places = Place.objects.filter(place_owner=place_owner)
 
@@ -101,7 +107,7 @@ class RoomViewSet(viewsets.ModelViewSet):
         place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
 
         if place.place_owner == place_owner:
-            room_serializer = self.get_serializer(data=request.data)
+            room_serializer = RoomSerializer(data=request.data)
             room_serializer.is_valid(raise_exception=True)
             room_serializer.save()
             return Response(room_serializer.data, status=status.HTTP_201_CREATED)
