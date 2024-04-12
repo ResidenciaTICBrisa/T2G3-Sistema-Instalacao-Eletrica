@@ -33,18 +33,16 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(place_serializer.data)
         return Response(place_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
+        
     def list(self, request, *args, **kwargs):
         user = request.user
         place_owner = user.placeowner
 
-        place_id = request.data.get('place')
         places = Place.objects.filter(place_owner=place_owner)
 
         place_serializer = PlaceSerializer(places, many=True)
         return Response(place_serializer.data)
-
-
+ 
     @action(detail=True, methods=['get'])
     def rooms(self, request, pk=None):
         place = self.get_object()
@@ -63,3 +61,17 @@ class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        user = request.user
+        place_owner = user.placeowner
+        place_id = request.data.get('place')
+
+        place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
+
+        if place.place_owner == place_owner:
+            room_serializer = self.get_serializer(data=request.data)
+            room_serializer.is_valid(raise_exception=True)
+            room_serializer.save()
+            return Response(room_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
