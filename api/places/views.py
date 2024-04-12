@@ -33,7 +33,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
         headers = self.get_success_headers(place_serializer.data)
         return Response(place_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        
+
     def list(self, request, *args, **kwargs):
         user = request.user
         place_owner = user.placeowner
@@ -42,7 +42,39 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
         place_serializer = PlaceSerializer(places, many=True)
         return Response(place_serializer.data)
- 
+
+    def retrieve(self, request, pk=None):
+        place_owner_id = request.user.placeowner.id
+
+        place = get_object_or_404(Place, pk=pk)
+        if place.place_owner.id == place_owner_id:
+            serializer = PlaceSerializer(place)
+            return Response(serializer.data)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+    def update(self, request, pk=None):
+        place_owner_id = request.user.placeowner.id
+
+        place = get_object_or_404(Place, pk=pk)
+        if place.place_owner.id == place_owner_id:
+            serializer = PlaceSerializer(place, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+    def destroy(self, request, pk=None):
+        place_owner_id = request.user.placeowner.id
+
+        place = get_object_or_404(Place, pk=pk)
+        if place.place_owner.id == place_owner_id:
+            place.delete()
+            return Response({"message": "Place deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
     @action(detail=True, methods=['get'])
     def rooms(self, request, pk=None):
         place = self.get_object()
