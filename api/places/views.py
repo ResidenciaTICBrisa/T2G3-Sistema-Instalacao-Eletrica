@@ -10,7 +10,6 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
-
 from .models import Place, Room
 from .serializers import PlaceSerializer, RoomSerializer
 
@@ -129,4 +128,4 @@ class RoomViewSet(viewsets.ModelViewSet):
         rooms = Room.objects.filter(place=place)
 
         room_serializer = RoomSerializer(rooms, many=True)
-        return Response(room_serializer.data)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+        return Response(room_serializer.data)
