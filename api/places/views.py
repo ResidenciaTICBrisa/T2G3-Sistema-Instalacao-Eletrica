@@ -129,3 +129,14 @@ class RoomViewSet(viewsets.ModelViewSet):
 
         room_serializer = RoomSerializer(rooms, many=True)
         return Response(room_serializer.data)
+
+    # Só o dono do lugar pode excluir uma sala espécífca
+    def destroy(self, request, pk=None):
+        place_owner_id = request.user.placeowner.id
+        room = get_object_or_404(Room, pk=pk)
+
+        if room.place.place_owner.id == place_owner_id:
+            room.delete()
+            return Response({"message": "Room deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({"message": "You are not the owner of this room"}, status=status.HTTP_403_FORBIDDEN)
