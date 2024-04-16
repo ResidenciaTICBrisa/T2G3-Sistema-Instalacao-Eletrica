@@ -83,75 +83,94 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
             SizedBox(height: 80),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-              ElevatedButton(
-                onPressed: () async {
-                  await userService.update(
-                      userModel.id, userModel.firstname, userModel.email);
-                },
-                child:
-                    Text('Salvar', style: TextStyle(color: AppColors.dartText)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[300],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  width: 150, // Define a largura uniforme
+                  height: 50, // Define a altura uniforme
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await userService.update(
+                          userModel.id, userModel.firstname, userModel.email);
+                    },
+                    child: Text('Salvar',
+                        style: TextStyle(color: AppColors.dartText)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 224, 221, 221),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await authService.logout();
-                  Navigator.pushReplacementNamed(context, '/loginScreen');
-                },
-                child: Text('Sair da Conta',
-                    style: TextStyle(color: AppColors.dartText)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey[200],
+                SizedBox(
+                  width: 150, // Mesma largura para manter uniformidade
+                  height: 50, // Mesma altura
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await authService.logout();
+                      Navigator.pushReplacementNamed(context, '/loginScreen');
+                    },
+                    child: Text('Sair da Conta',
+                        style: TextStyle(color: AppColors.dartText)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 153, 163, 168),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ]),
+              ],
+            ),
             SizedBox(height: 80),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    // Mostrar o diálogo de confirmação
-                    bool deleteConfirmed = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Excluir Conta'),
-                          content:
-                              Text('Tem certeza que deseja excluir sua conta?'),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(
-                                    false); // Retorna falso para indicar que a exclusão não foi confirmada
-                              },
-                              child: Text('Cancelar'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(
-                                    true); // Retorna verdadeiro para indicar que a exclusão foi confirmada
-                              },
-                              child: Text('Confirmar'),
-                            ),
-                          ],
+                SizedBox(
+                  width: 150, // Mantendo a consistência no tamanho
+                  height: 50, // Altura uniforme para todos os botões
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        // Mostrar o diálogo de confirmação
+                        bool deleteConfirmed = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Excluir Conta'),
+                              content: Text(
+                                  'Tem certeza que deseja excluir sua conta?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(
+                                        false); // Retorna falso para indicar que a exclusão não foi confirmada
+                                  },
+                                  child: Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(
+                                        true); // Retorna verdadeiro para indicar que a exclusão foi confirmada
+                                  },
+                                  child: Text('Confirmar'),
+                                ),
+                              ],
+                            );
+                          },
                         );
-                      },
-                    );
 
-                    // Se a exclusão for confirmada, exclua a conta
-                    if (deleteConfirmed) {
-                      await userService.delete(userModel.id);
-                      Navigator.pushReplacementNamed(context, '/loginScreen');
-                    }
-                  },
-                  child: Text('Excluir Conta',
-                      style: TextStyle(color: AppColors.lightText)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.warn,
-                  ),
+                        // Se a exclusão for confirmada, exclua a conta
+                        if (deleteConfirmed) {
+                          await userService.delete(userModel.id);
+                          Navigator.pushReplacementNamed(
+                              context, '/loginScreen');
+                        }
+                      },
+                      child: Text('Excluir Conta',
+                          style: TextStyle(color: AppColors.lightText)),
+                      style: AppButtonStyles.warnButton),
                 ),
               ],
             )

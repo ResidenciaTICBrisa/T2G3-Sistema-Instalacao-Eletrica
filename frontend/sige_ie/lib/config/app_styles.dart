@@ -12,10 +12,14 @@ class AppColors {
 class AppButtonStyles {
   static ButtonStyle warnButton = ElevatedButton.styleFrom(
     backgroundColor: Color.fromARGB(255, 231, 27, 27),
-    minimumSize: Size(150, 50),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
   );
   static ButtonStyle accentButton = ElevatedButton.styleFrom(
-    backgroundColor: Color.fromARGB(255, 231, 85, 27),
-    minimumSize: Size(150, 50),
+    backgroundColor: Color.fromARGB(255, 231, 160, 27),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
   );
 }
