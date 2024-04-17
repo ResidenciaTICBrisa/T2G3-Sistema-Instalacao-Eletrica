@@ -19,4 +19,3 @@ class Room(models.Model):
     place = models.ForeignKey(Place, related_name='rooms', on_delete=models.CASCADE)
     systems = models.ManyToManyField('systems.System')
 
-    
