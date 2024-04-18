@@ -112,6 +112,8 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
 Estas etapas são válidas para Linux OS e WSL.
 #### Como subir o back-end:
 
+##### <mark>Pela primeira vez</mark>
+
 Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379. Então atualize o seu sistema:
   ```
   sudo apt-get update
@@ -165,27 +167,21 @@ Vá para dentro da pasta raiz `api`:
     Ativar ambiente:
      ```
      source venv/bin/activate
-     ``` 
+     ```
 
-3. Com o ambiente virtual ativado, instale as dependências:
+2. Com o ambiente virtual ativado, instale as dependências:
 
    ```
    pip install -r requirements.txt
    ```
 
-4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
+3. Vá para a pasta `api/sigeie` e, com o docker iniciado, crie a imagem do banco de dados pela primeira vez e suba a imagem:
 
    ```
-   docker-compose build
+   docker-compose up -d
    ```
 
-6. Suba a imagem:
-
-   ```
-   docker-compose up
-   ```
-
-8. Ainda no diretório raiz `api`, aplique as migrações:
+4. Retorne para o diretório raiz `api` e aplique as migrações:
 
    ```
    python manage.py makemigrations
@@ -195,13 +191,33 @@ Vá para dentro da pasta raiz `api`:
    python3 manage.py migrate
    ```
 
-10. Inicie o servidor:
+5. Inicie o servidor:
 
     ```
     python3 manage.py runserver
     ```
 
 Pronto, o servidor já está rodando com o banco de dados configurado.
+
+##### Pela segunda vez
+Agora que todas as dependências e o banco estão configurados, sempre que for subir o backend:
+
+1. Inicie o Docker e o container `sigeie`;
+   
+2. Baixa as atualizações (caso haja):
+
+   ```
+   git pull
+   ``` 
+  
+3. Atualize as dependências e migrações e inicie o servidor:
+
+```
+ source venv/bin/activate && pip install -r requirements.txt && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver
+```
+
+Isso é tudo, pessoal.
+
 #### Como subir o front-end:
 
 Antes de começar, verifique se o Flutter SDK está atualizado e compatível com o projeto. Siga as instruções específicas para sua plataforma (Windows, macOS, Linux) disponíveis na [documentação oficial do Flutter](https://flutter.dev/docs/get-started/install).
