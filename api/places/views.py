@@ -43,13 +43,20 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         user = request.user
+<<<<<<< HEAD
         place_owner = self.get_place_owner(user)
 
+=======
+        place_owner = user.placeowner
+
+        place_id = request.data.get('place')
+>>>>>>> 460be61 (Backend: list places por placesowner)
         places = Place.objects.filter(place_owner=place_owner)
 
         place_serializer = PlaceSerializer(places, many=True)
         return Response(place_serializer.data)
 
+<<<<<<< HEAD
     def retrieve(self, request, pk=None):
         place_owner_id = request.user.placeowner.id
 
@@ -81,6 +88,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
             return Response({"message": "Place deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+=======
+>>>>>>> 460be61 (Backend: list places por placesowner)
 
     @action(detail=True, methods=['get'])
     def rooms(self, request, pk=None):
@@ -100,6 +109,7 @@ class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
     permission_classes = [IsAuthenticated]
 
+<<<<<<< HEAD
     def create(self, request, *args, **kwargs):
         user = request.user
         place_owner = user.placeowner
@@ -151,3 +161,5 @@ class RoomViewSet(viewsets.ModelViewSet):
             return Response({"message": "Room deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "You are not the owner of this room"}, status=status.HTTP_403_FORBIDDEN)
+=======
+>>>>>>> 460be61 (Backend: list places por placesowner)
