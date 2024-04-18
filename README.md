@@ -31,7 +31,7 @@ Simplificar o cadastro e gerenciamento de informações de instalações elétri
 | Docker | 25.0.4 | Conteiner e imagem | [Site oficial do Docker](https://docs.docker.com/desktop/install/ubuntu/) |
 | Redis | 7.2 | Banco de dados cache para sessão | Automática via Docker |
 | MySQL | 8.1 | Banco de dados | Automática via Docker |
-| mysqlclient | 2.2.4 | Cliente para se conectar com MySQL | [Site do Pypi com as configurações](https://pypi.org/project/mysqlclient/) Ou veja na seção "Como subir o back-end"
+| Cabeçalhos do Python3 e do MySQL | - | Cabeçalhos de desenvolvimento e bibliotecas | [Site do Pypi com as configurações](https://pypi.org/project/mysqlclient/) Ou veja na seção "Como subir o back-end"
 
 </div>
 
@@ -142,12 +142,6 @@ Em seguida, caso já não tenha instalado:
   sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config
   ```
 
-   mysqlclient:
-
-   ```
-   pip install mysqlclient
-   ```
-
 - Instale o virtualenv para criar um ambiente virtual do projeto:
 
     Virtualenv:
@@ -175,45 +169,45 @@ Vá para dentro da pasta raiz `api`:
    pip install -r requirements.txt
    ```
 
-3. Vá para a pasta `api/sigeie` e, com o docker iniciado, crie a imagem do banco de dados pela primeira vez e suba a imagem:
+3. Inicie o Docker, depois vá para o diretório `api/sigeie` e crie a imagem do banco de dados pela primeira vez:
 
    ```
    docker-compose up -d
    ```
 
-4. Retorne para o diretório raiz `api` e aplique as migrações:
+4. Ainda no mesmo terminal, retorne para o diretório raiz `api` e aplique as migrações:
 
    ```
    python manage.py makemigrations
    ```
 
    ```
-   python3 manage.py migrate
+   python manage.py migrate
    ```
 
 5. Inicie o servidor:
 
     ```
-    python3 manage.py runserver
+    python manage.py runserver
     ```
 
 Pronto, o servidor já está rodando com o banco de dados configurado.
 
 ##### Pela segunda vez
-Agora que todas as dependências e o banco estão configurados, sempre que for subir o backend:
 
-1. Inicie o Docker e o container `sigeie`;
-   
-2. Baixa as atualizações (caso haja):
+Garanta que não haja nenhum processo que use o porto 8080, 3306 e 6379. Por fim, com todas as dependências configuradas, basta:
+
+- Inicar o Docker e o container `sigeie`;
+- Baixar as atualizações (caso haja):
 
    ```
    git pull
    ``` 
-  
-3. Atualize as dependências e migrações e inicie o servidor:
+
+- Atualizar as dependências, fazer as migrações e iniciar o servidor:
 
 ```
- source venv/bin/activate && pip install -r requirements.txt && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver
+ source venv/bin/activate && pip install -r requirements.txt && python manage.py makemigrations && python manage.py migrate && python manage.py runserver
 ```
 
 Isso é tudo, pessoal.
