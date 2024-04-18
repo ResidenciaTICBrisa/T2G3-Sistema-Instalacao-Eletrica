@@ -19,7 +19,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'places',
-    'systems'
+    'systems',
+    'equipments'
 ]
 
 MIDDLEWARE = [

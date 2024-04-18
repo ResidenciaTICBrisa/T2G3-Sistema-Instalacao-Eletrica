@@ -1,14 +1,7 @@
 from rest_framework import serializers
-from .models import System, EquipmentType
+from .models import System
 
 class SystemSerializer(serializers.ModelSerializer):
     class Meta:
         model = System
         fields = ['id', 'name']
-
-class EquipmentTypeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = EquipmentType
-        fields = '__all__'
-
