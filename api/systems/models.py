@@ -19,7 +19,7 @@ class EquipmentPhoto(models.Model):
 
 class Equipment(models.Model):
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
-    equipmentPhoto = models.ForeignKey(EquipmentPhoto, on_delete=models.CASCADE)
+    equipmentPhoto = models.ForeignKey(EquipmentPhoto, on_delete=models.CASCADE, null=True)
 
     
 
