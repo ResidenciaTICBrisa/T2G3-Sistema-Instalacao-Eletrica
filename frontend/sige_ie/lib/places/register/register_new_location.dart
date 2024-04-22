@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import '../register/position.dart';
 
 class newLocation extends StatefulWidget {
   @override
@@ -8,11 +9,33 @@ class newLocation extends StatefulWidget {
 
 class _newLocationState extends State<newLocation> {
   String coordinates = '';
+  bool Coord = false;
   final TextEditingController _nameController = TextEditingController();
+  late PositionController positionController;
+
+  @override
+  void initState() {
+    super.initState();
+    positionController = PositionController();
+  }
 
   void _getCoordinates() {
-    setState(() {
-      coordinates = "Latitude: 40.7128, Longitude: -74.0060";
+    positionController.getPosition().then((_) {
+      setState(() {
+        if (positionController.error.isEmpty) {
+          coordinates =
+              "Latitude: ${positionController.lat}, Longitude: ${positionController.long}";
+          Coord = true;
+        } else {
+          coordinates = "Erro: ${positionController.error}";
+          Coord = false;
+        }
+      });
+    }).catchError((e) {
+      setState(() {
+        coordinates = "Erro ao obter localização: $e";
+        Coord = false;
+      });
     });
   }
 
@@ -135,8 +158,31 @@ class _newLocationState extends State<newLocation> {
                       ),
                     ),
                     onPressed: () {
-                      // Lógica de ação
-                      print('Local Registrado: ${_nameController.text}');
+                      if (Coord && _nameController.text.trim().isNotEmpty) {
+                        // Código para registrar o local
+                        print('Local Registrado: ${_nameController.text}');
+                        Navigator.of(context).pushNamed('?');
+                      } else if (_nameController.text.trim().isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Erro"),
+                              content: Text(
+                                  "Por favor, insira um nome para o local"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(); // Fecha o dialogo
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                     },
                     child: Text('Registrar'),
                   )),
