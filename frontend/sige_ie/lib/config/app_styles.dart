@@ -22,4 +22,11 @@ class AppButtonStyles {
       borderRadius: BorderRadius.circular(8),
     ),
   );
+  static ButtonStyle standardButton = ElevatedButton.styleFrom(
+    backgroundColor: AppColors.sigeIeYellow,
+    foregroundColor: AppColors.sigeIeBlue,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  );
 }

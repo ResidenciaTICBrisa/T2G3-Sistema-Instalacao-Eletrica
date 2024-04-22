@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/config/app_styles.dart';
 import '../../users/feature/profile.dart';
 import '../../screens/facilities.dart';
 import '../../maps/feature/maps.dart';
@@ -39,7 +40,7 @@ class _HomePageState extends State<HomePage> {
           buildHomePage(context),
           FacilitiesPage(),
           MapsPage(),
-          ProfilePage(),
+          ProfilePage()
         ],
       ),
       bottomNavigationBar: buildBottomNavigationBar(),
@@ -54,19 +55,68 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Color(0xff123c75),
           elevation: 0,
         ),
-        Container(
-          color: Color(0xff123c75),
-          height: MediaQuery.of(context).size.height * 0.30,
+        Expanded(
+          flex: 3, // Proporção ajustada para a imagem e o texto
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.sigeIeBlue,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20), // Bordas arredondadas embaixo
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/1000x1000.png'),
+                        fit: BoxFit.cover, // Imagem cobrindo todo o espaço
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(
+                      left: 20), // Padding para alinhamento à esquerda
+                  child: Text(
+                    'Olá, ',
+                    style: TextStyle(
+                      color: AppColors.sigeIeYellow,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
         ),
-        Spacer(),
-        buildSmallRectangle(context),
-        buildSmallRectangle(context),
-        Spacer(),
+        Expanded(
+          flex: 6, // Restante do conteúdo
+          child: Column(
+            children: [
+              Spacer(),
+              buildSmallRectangle(context, 'Registrar novo local', 'Registrar',
+                  () {
+                print("Registrar novo local clicado");
+              }),
+              buildSmallRectangle(context, 'Gerenciar locais', 'Gerenciar', () {
+                print("Gerenciar locais clicado");
+              }),
+              Spacer(),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget buildSmallRectangle(BuildContext context) {
+  Widget buildSmallRectangle(BuildContext context, String text,
+      String buttonText, VoidCallback onPress) {
     return Container(
       decoration: BoxDecoration(
         color: Color(0xff123c75),
@@ -75,9 +125,38 @@ class _HomePageState extends State<HomePage> {
           BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
         ],
       ),
-      height: 100,
+      height: 135, // Increased height to better accommodate vertical layout
       width: MediaQuery.of(context).size.width * 0.8,
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: EdgeInsets.symmetric(vertical: 15),
+      padding: EdgeInsets.all(20), // Adjusted padding for better spacing
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment:
+            CrossAxisAlignment.center, // Align children to center horizontally
+        children: [
+          Text(
+            text,
+            textAlign: TextAlign.center, // Center-align the text
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18, // Increased font size
+              fontWeight: FontWeight.bold, // Bold font weight
+            ),
+          ),
+          SizedBox(height: 10), // Space between text and button
+          ElevatedButton(
+            style: AppButtonStyles.standardButton,
+            onPressed: onPress,
+            child: Text(
+              buttonText,
+              style: TextStyle(
+                fontSize: 16, // Font size for button text
+                fontWeight: FontWeight.bold, // Bold font weight
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
