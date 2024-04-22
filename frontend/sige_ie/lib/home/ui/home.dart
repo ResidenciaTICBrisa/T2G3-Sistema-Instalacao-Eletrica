@@ -56,12 +56,12 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
         ),
         Expanded(
-          flex: 3, // Proporção ajustada para a imagem e o texto
+          flex: 3,
           child: Container(
             decoration: BoxDecoration(
               color: AppColors.sigeIeBlue,
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20), // Bordas arredondadas embaixo
+                bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
               ),
             ),
@@ -73,15 +73,14 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/1000x1000.png'),
-                        fit: BoxFit.cover, // Imagem cobrindo todo o espaço
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(
-                      left: 20), // Padding para alinhamento à esquerda
+                  padding: EdgeInsets.only(left: 20),
                   child: Text(
                     'Olá, ',
                     style: TextStyle(
@@ -96,12 +95,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Expanded(
-          flex: 6, // Restante do conteúdo
+          flex: 6,
           child: Column(
             children: [
               Spacer(),
               buildSmallRectangle(context, 'Registrar novo local', 'Registrar',
                   () {
+                Navigator.of(context).pushNamed(
+                    '/newLocation'); // Usando pushNamed ao invés de pushReplacementNamed
                 print("Registrar novo local clicado");
               }),
               buildSmallRectangle(context, 'Gerenciar locais', 'Gerenciar', () {
@@ -125,33 +126,32 @@ class _HomePageState extends State<HomePage> {
           BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
         ],
       ),
-      height: 135, // Increased height to better accommodate vertical layout
+      height: 135,
       width: MediaQuery.of(context).size.width * 0.8,
       margin: EdgeInsets.symmetric(vertical: 15),
-      padding: EdgeInsets.all(20), // Adjusted padding for better spacing
+      padding: EdgeInsets.all(20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment:
-            CrossAxisAlignment.center, // Align children to center horizontally
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             text,
-            textAlign: TextAlign.center, // Center-align the text
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18, // Increased font size
-              fontWeight: FontWeight.bold, // Bold font weight
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10), // Space between text and button
+          SizedBox(height: 10),
           ElevatedButton(
             style: AppButtonStyles.standardButton,
             onPressed: onPress,
             child: Text(
               buttonText,
               style: TextStyle(
-                fontSize: 16, // Font size for button text
-                fontWeight: FontWeight.bold, // Bold font weight
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
             ),
           )
