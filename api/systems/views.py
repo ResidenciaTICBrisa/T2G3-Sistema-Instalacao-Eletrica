@@ -11,6 +11,3 @@ class SystemViewDetail(generics.RetrieveAPIView):
     queryset = System.objects.all()
     serializer_class = SystemSerializer
     permission_classes = []
-
-
-
