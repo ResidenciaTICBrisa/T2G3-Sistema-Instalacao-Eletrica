@@ -45,8 +45,9 @@ android {
         applicationId "com.example.sige_ie"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
+        minSdkVersion flutter.minSdkVersion  // Multidex requer no mínimo Android 4.1 (API level 16)
+        targetSdkVersion 31
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -64,4 +65,6 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
