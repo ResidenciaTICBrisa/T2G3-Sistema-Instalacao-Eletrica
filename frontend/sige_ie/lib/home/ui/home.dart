@@ -102,6 +102,7 @@ class _HomePageState extends State<HomePage> {
               Spacer(),
               buildSmallRectangle(context, 'Registrar novo local', 'Registrar',
                   () {
+                Navigator.of(context).pushNamed('/newLocation');
                 print("Registrar novo local clicado");
               }),
               buildSmallRectangle(context, 'Gerenciar locais', 'Gerenciar', () {
