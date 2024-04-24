@@ -22,8 +22,8 @@ class EquipmentDetail(models.Model):
         db_table = 'equipments_equipment_details'
 
 class AtmosphericDischargeEquipment(models.Model):
-    equipment = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
-    
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
     class Meta:
         db_table = 'equipments_atmospheric_discharge_equipments'
