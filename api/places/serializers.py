@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Place, Room
+from .models import Place, Area
 from users.serializers import PlaceOwnerSerializer
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -11,9 +11,9 @@ class PlaceSerializer(serializers.ModelSerializer):
             'name': {'required': True}
         }
 
-class RoomSerializer(serializers.ModelSerializer):
+class AreaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Room
+        model = Area
         fields = ['id', 'name', 'floor', 'systems', 'place']
         extra_kwargs = {
             'name': {'required': True},
