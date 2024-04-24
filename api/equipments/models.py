@@ -9,13 +9,12 @@ class EquipmentType(models.Model):
     def __str__(self):
         return self.type
 
-class Equipment(models.Model):
+class EquipmentDetail(models.Model):
     placeOwner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
     description = models.CharField(max_length=50)
 
-#Corrige este model
 class AtmosphericDischargeEquipment(models.Model):
-    equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
+    equipment = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)

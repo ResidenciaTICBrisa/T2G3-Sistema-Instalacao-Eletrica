@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EquipmentType, Equipment
+from .models import EquipmentType, EquipmentDetail
 
 class EquipmentTypeSerializer(serializers.ModelSerializer):
 
@@ -7,9 +7,9 @@ class EquipmentTypeSerializer(serializers.ModelSerializer):
         model = EquipmentType
         fields = '__all__'
 
-class EquipmentSerializer(serializers.ModelSerializer):
+class EquipmentDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Equipment
+        model = EquipmentDetail
         fields = '__all__'
 

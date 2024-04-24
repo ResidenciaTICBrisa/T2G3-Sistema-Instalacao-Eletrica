@@ -1,10 +1,9 @@
-from django.shortcuts import render
-from rest_framework import viewsets, generics
+from rest_framework import generics
 from rest_framework.response import Response
-from .models import  EquipmentType, Equipment
-from .serializers import EquipmentTypeSerializer, EquipmentSerializer
+from .models import  EquipmentType, EquipmentDetail
+from .serializers import EquipmentTypeSerializer, EquipmentDetailSerializer
 from .permissions import OwnerEquip
-from rest_framework import viewsets, status
+from rest_framework import status
 
 class EquipmentTypeList(generics.ListAPIView):
     queryset = EquipmentType.objects.all()
@@ -16,22 +15,21 @@ class EquipmentTypeDetail(generics.RetrieveAPIView):
     serializer_class = EquipmentTypeSerializer
     permission_classes = []
 
-class EquipmentList(generics.ListCreateAPIView):
-    queryset = Equipment.objects.all()
-    serializer_class = EquipmentSerializer
+class EquipmentDetailList(generics.ListCreateAPIView):
+    queryset = EquipmentDetail.objects.all()
+    serializer_class = EquipmentDetailSerializer
     permission_classes = [OwnerEquip]
 
     def create(self, request, *args, **kwargs):
-        
+
         if(OwnerEquip):
           serializer = self.get_serializer(data=request.data)
           serializer.is_valid(raise_exception=True)
           serializer.save(placeOwner=request.user.placeowner)
           headers = self.get_success_headers(serializer.data)
           return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        
 
 class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Equipment.objects.all()
-    serializer_class = EquipmentSerializer
+    queryset = EquipmentDetail.objects.all()
+    serializer_class = EquipmentDetailSerializer
     permission_classes = [OwnerEquip]
