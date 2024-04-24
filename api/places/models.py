@@ -1,8 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from users.models import PlaceOwner
-from django.contrib.auth.models import Permission, Group
-from django.contrib.contenttypes.models import ContentType
 
 class Place(models.Model):
 

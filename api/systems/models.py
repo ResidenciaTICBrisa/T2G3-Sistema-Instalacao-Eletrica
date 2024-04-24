@@ -1,5 +1,5 @@
 from django.db import models
-from places.models import Place, Room, models
+from places.models import models
 
 
 class System(models.Model):

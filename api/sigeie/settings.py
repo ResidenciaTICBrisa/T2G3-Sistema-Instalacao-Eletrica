@@ -20,8 +20,7 @@ INSTALLED_APPS = [
     'users',
     'places',
     'systems',
-    'equipments',
-    'atmosphericdischarges'
+    'equipments'
 ]
 
 MIDDLEWARE = [
