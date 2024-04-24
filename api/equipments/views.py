@@ -1,8 +1,9 @@
 from rest_framework import generics
 from rest_framework.response import Response
-from .models import  EquipmentType, EquipmentDetail
-from .serializers import EquipmentTypeSerializer, EquipmentDetailSerializer
-from .permissions import OwnerEquip
+from rest_framework.permissions import IsAuthenticated
+from .models import  EquipmentType, EquipmentDetail, AtmosphericDischargeEquipment
+from .serializers import EquipmentTypeSerializer, EquipmentDetailSerializer, AtmosphericDischargeEquipmentSerializer
+from .permissions import OwnerEquip, AtmosphericDischargeEquipmentOwner
 from rest_framework import status
 
 class EquipmentTypeList(generics.ListAPIView):
@@ -33,3 +34,8 @@ class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
     permission_classes = [OwnerEquip]
+
+class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
+    queryset = AtmosphericDischargeEquipment.objects.all()
+    serializer_class = AtmosphericDischargeEquipmentSerializer
+    permission_classes = [AtmosphericDischargeEquipmentOwner, IsAuthenticated]
