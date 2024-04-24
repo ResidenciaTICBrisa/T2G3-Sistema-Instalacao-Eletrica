@@ -10,8 +10,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
-from .models import Place, Room
-from .serializers import PlaceSerializer, RoomSerializer
+from .models import Place, Area
+from .serializers import PlaceSerializer, AreaSerializer
 
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
@@ -83,21 +83,21 @@ class PlaceViewSet(viewsets.ModelViewSet):
             return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     @action(detail=True, methods=['get'])
-    def rooms(self, request, pk=None):
+    def areas(self, request, pk=None):
         place = self.get_object()
-        serializer = RoomSerializer(place.rooms.all(), many=True)
+        serializer = AreaSerializer(place.areas.all(), many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_path='rooms/(?P<room_pk>\d+)')
-    def room(self, request, pk=None, room_pk=None):
+    @action(detail=True, methods=['get'], url_path='areas/(?P<area_pk>\d+)')
+    def area(self, request, pk=None, area_pk=None):
         place = self.get_object()
-        room = get_object_or_404(place.rooms.all(), pk=room_pk)
-        serializer = RoomSerializer(room)
+        area = get_object_or_404(place.areas.all(), pk=area_pk)
+        serializer = AreaSerializer(area)
         return Response(serializer.data)
 
-class RoomViewSet(viewsets.ModelViewSet):
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+class AreaViewSet(viewsets.ModelViewSet):
+    queryset = Area.objects.all()
+    serializer_class = AreaSerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
@@ -108,10 +108,10 @@ class RoomViewSet(viewsets.ModelViewSet):
         place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
 
         if place.place_owner == place_owner:
-            room_serializer = RoomSerializer(data=request.data)
-            room_serializer.is_valid(raise_exception=True)
-            room_serializer.save()
-            return Response(room_serializer.data, status=status.HTTP_201_CREATED)
+            area_serializer = AreaSerializer(data=request.data)
+            area_serializer.is_valid(raise_exception=True)
+            area_serializer.save()
+            return Response(area_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
         
@@ -125,29 +125,28 @@ class RoomViewSet(viewsets.ModelViewSet):
 
         place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
 
-        rooms = Room.objects.filter(place=place)
+        areas = Area.objects.filter(place=place)
 
-        room_serializer = RoomSerializer(rooms, many=True)
-        return Response(room_serializer.data)
+        area_serializer = AreaSerializer(areas, many=True)
+        return Response(area_serializer.data)
 
     def retrieve(self, request, pk=None):
         place_owner = request.user.placeowner.id
 
-        room = get_object_or_404(Room,pk=pk)
+        area = get_object_or_404(Area,pk=pk)
 
-        if(room.place.place_owner.id == place_owner):
-            serializer = RoomSerializer(room)
+        if(area.place.place_owner.id == place_owner):
+            serializer = AreaSerializer(area)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
 
-    # Só o dono do lugar pode excluir uma sala espécífca
     def destroy(self, request, pk=None):
         place_owner_id = request.user.placeowner.id
-        room = get_object_or_404(Room, pk=pk)
+        area = get_object_or_404(Area, pk=pk)
 
-        if room.place.place_owner.id == place_owner_id:
-            room.delete()
-            return Response({"message": "Room deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        if area.place.place_owner.id == place_owner_id:
+            area.delete()
+            return Response({"message": "Area deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response({"message": "You are not the owner of this room"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
