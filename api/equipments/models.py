@@ -4,11 +4,11 @@ from systems.models import System
 from users.models import PlaceOwner
 
 class EquipmentType(models.Model):
-    type = models.CharField(max_length=50)
+    name = models.CharField(max_length=50)
     system = models.ForeignKey(System, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.type
+        return self.name
 
     class Meta:
         db_table = 'equipments_equipment_types'
