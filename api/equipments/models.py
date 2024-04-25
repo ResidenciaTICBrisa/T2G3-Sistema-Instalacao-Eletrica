@@ -6,6 +6,7 @@ from users.models import PlaceOwner
 class EquipmentType(models.Model):
     type = models.CharField(max_length=50)
     system = models.ForeignKey(System, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.type
 
@@ -17,6 +18,9 @@ class EquipmentDetail(models.Model):
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
     description = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.description
 
     class Meta:
         db_table = 'equipments_equipment_details'

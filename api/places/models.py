@@ -14,7 +14,7 @@ class Area(models.Model):
 
     name = models.CharField(max_length=50)
     floor = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-    place = models.ForeignKey(Place, related_name='areas', on_delete=models.CASCADE, null=True)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, null=True)
     systems = models.ManyToManyField('systems.System')
 
     

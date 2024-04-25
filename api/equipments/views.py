@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import  EquipmentType, EquipmentDetail, AtmosphericDischargeEquipment
 from .serializers import EquipmentTypeSerializer, EquipmentDetailSerializer, AtmosphericDischargeEquipmentSerializer
-from .permissions import OwnerEquip, AtmosphericDischargeEquipmentOwner
+from .permissions import OwnerEquip, IsPlaceOwner
 from rest_framework import status
 
 class EquipmentTypeList(generics.ListAPIView):
@@ -38,4 +38,9 @@ class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
 class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
     serializer_class = AtmosphericDischargeEquipmentSerializer
-    permission_classes = [AtmosphericDischargeEquipmentOwner, IsAuthenticated]
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = AtmosphericDischargeEquipment.objects.all()
+    serializer_class = AtmosphericDischargeEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
