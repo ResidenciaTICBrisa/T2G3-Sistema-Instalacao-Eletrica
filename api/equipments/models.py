@@ -52,7 +52,7 @@ class ElectricalLineEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
 
-class ElectricalLoadEquipment(models.MOdel):
+class ElectricalLoadEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
 
