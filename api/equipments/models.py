@@ -31,3 +31,31 @@ class AtmosphericDischargeEquipment(models.Model):
 
     class Meta:
         db_table = 'equipments_atmospheric_discharge_equipments'
+
+class FireAlarmEquipment(models.Model):
+   area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+   equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+class SructeredCablingEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+class DistributionBoardEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+class ElectricalCircuitEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+class ElectricalLineEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+class ElectricalLoadEquipment(models.MOdel):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+class IluminationEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
