@@ -6,6 +6,8 @@ class Place(models.Model):
 
     name = models.CharField(max_length=50)
     place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
+    lon = models.FloatField(null=True)
+    lat = models.FloatField(null=True)
 
     def __str__(self):
         return self.name

@@ -6,7 +6,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Place
-        fields = ['id', 'name', 'place_owner']
+        fields = ['id', 'name', 'place_owner', 'lon', 'lat']
         extra_kwargs = {
             'name': {'required': True}
         }
