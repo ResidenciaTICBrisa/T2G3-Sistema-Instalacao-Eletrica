@@ -14,7 +14,7 @@ class EquipmentType(models.Model):
         db_table = 'equipments_equipment_types'
 
 class EquipmentDetail(models.Model):
-    placeOwner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
     description = models.CharField(max_length=50)

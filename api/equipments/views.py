@@ -4,37 +4,42 @@ from rest_framework.permissions import IsAuthenticated
 from places.models import Area
 from .models import  EquipmentType, EquipmentDetail, AtmosphericDischargeEquipment
 from .serializers import EquipmentTypeSerializer, EquipmentDetailSerializer, AtmosphericDischargeEquipmentSerializer
-from .permissions import OwnerEquip, IsPlaceOwner
+from .permissions import IsEquipmentDetailOwner, IsPlaceOwner
 from rest_framework import status
 
 class EquipmentTypeList(generics.ListAPIView):
     queryset = EquipmentType.objects.all()
     serializer_class = EquipmentTypeSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
 class EquipmentTypeDetail(generics.RetrieveAPIView):
     queryset = EquipmentType.objects.all()
     serializer_class = EquipmentTypeSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
 class EquipmentDetailList(generics.ListCreateAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
-    permission_classes = [OwnerEquip]
+    permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        return queryset.filter(place_owner__user=user)
 
     def create(self, request, *args, **kwargs):
 
-        if(OwnerEquip):
-          serializer = self.get_serializer(data=request.data)
-          serializer.is_valid(raise_exception=True)
-          serializer.save(placeOwner=request.user.placeowner)
-          headers = self.get_success_headers(serializer.data)
-          return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        if(IsEquipmentDetailOwner):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(place_owner=request.user.placeowner)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
-    permission_classes = [OwnerEquip]
+    permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
 
 class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
