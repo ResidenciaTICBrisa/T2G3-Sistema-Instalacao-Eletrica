@@ -17,4 +17,5 @@ class Area(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE, null=True)
     systems = models.ManyToManyField('systems.System')
 
-    
+    def __str__(self):
+        return self.name
