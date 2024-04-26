@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/places/data/place_request_model.dart';
+import 'package:sige_ie/places/data/place_service.dart';
 import 'position.dart';
 
-class newLocation extends StatefulWidget {
+class NewPlace extends StatefulWidget {
   @override
-  _newLocationState createState() => _newLocationState();
+  _NewPlaceState createState() => _NewPlaceState();
 }
 
-class _newLocationState extends State<newLocation> {
+class _NewPlaceState extends State<NewPlace> {
+  PlaceService placeService = PlaceService();
+  PlaceRequestModel placeRequestModel =
+      PlaceRequestModel(name: '', lon: 0, lat: 0);
   String coordinates = '';
-  bool Coord = false;
+  bool coord = false;
   final TextEditingController _nameController = TextEditingController();
   late PositionController positionController;
 
@@ -24,17 +29,17 @@ class _newLocationState extends State<newLocation> {
       setState(() {
         if (positionController.error.isEmpty) {
           coordinates =
-              "Latitude: ${positionController.lat}, Longitude: ${positionController.long}";
-          Coord = true;
+              "Latitude: ${positionController.lat}, Longitude: ${positionController.lon}";
+          coord = true;
         } else {
           coordinates = "Erro: ${positionController.error}";
-          Coord = false;
+          coord = false;
         }
       });
     }).catchError((e) {
       setState(() {
         coordinates = "Erro ao obter localização: $e";
-        Coord = false;
+        coord = false;
       });
     });
   }
@@ -158,7 +163,7 @@ class _newLocationState extends State<newLocation> {
                       ),
                     ),
                     onPressed: () {
-                      if (Coord && _nameController.text.trim().isNotEmpty) {
+                      if (coord && _nameController.text.trim().isNotEmpty) {
                         // Código para registrar o local
                         print('Local Registrado: ${_nameController.text}');
                         Navigator.of(context).pushNamed('?');

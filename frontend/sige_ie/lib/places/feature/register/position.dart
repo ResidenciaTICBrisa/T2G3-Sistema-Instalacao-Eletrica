@@ -3,7 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 class PositionController extends ChangeNotifier {
   double lat = 0.0;
-  double long = 0.0;
+  double lon = 0.0;
   String error = '';
 
   PositionController() {
@@ -14,7 +14,7 @@ class PositionController extends ChangeNotifier {
     try {
       Position position = await _currentPostion();
       lat = position.latitude;
-      long = position.longitude;
+      lon = position.longitude;
     } catch (e) {
       error = e.toString();
     }
