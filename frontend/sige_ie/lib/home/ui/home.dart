@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import '../../users/feature/profile.dart';
-import '../../screens/facilities.dart';
+import '../../core/ui/facilities.dart';
 import '../../maps/feature/maps.dart';
 
 class HomePage extends StatefulWidget {

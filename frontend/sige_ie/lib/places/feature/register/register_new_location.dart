@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import '../register/position.dart';
+import 'position.dart';
 
 class newLocation extends StatefulWidget {
   @override

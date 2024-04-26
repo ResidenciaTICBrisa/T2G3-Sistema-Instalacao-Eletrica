@@ -41,8 +41,6 @@ class AuthService {
           }
         }
       }
-
-      print(sessionid);
       return sessionid!;
     } else {
       throw Exception('Failed to fetch session cookie: ${response.statusCode}');
@@ -54,8 +52,7 @@ class AuthService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    final response =
-        await client.get(Uri.parse('http://10.0.2.2:8000/api/checkauth/'));
+    final response = await client.get(Uri.parse('http://10.0.2.2:8000/api/checkauth/'));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
