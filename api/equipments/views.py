@@ -36,7 +36,7 @@ class EquipmentDetailList(generics.ListCreateAPIView):
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+class EquipmentDetailDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
     permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
@@ -66,7 +66,9 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
                 headers = self.get_success_headers(serializer.data)
                 return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
             else:
-                return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"message": "The equipment detail does not belong to the specified system"}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
 
 class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
