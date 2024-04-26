@@ -53,18 +53,20 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         area_id = request.data.get('area')
         area = Area.objects.filter(id=area_id).first()
-        
-        equipment_detail_id = request.data.get('equipment_detail')
-        equipment_detail = EquipmentDetail.objects.filter(id=equipment_detail_id).first()
 
-        if area and area.place.place_owner == request.user.placeowner and equipment_detail.equipment_type.system == 8:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
-        else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+        if area and area.place.place_owner == request.user.placeowner:
+            system_id = 8
+            equipment_detail_id = request.data.get('equipment_detail')
+            equipment_detail = EquipmentDetail.objects.filter(id=equipment_detail_id, equipmentType__system_id=system_id).first()
+
+            if equipment_detail:
+                serializer = self.get_serializer(data=request.data)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                headers = self.get_success_headers(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+            else:
+                return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
 
 class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
