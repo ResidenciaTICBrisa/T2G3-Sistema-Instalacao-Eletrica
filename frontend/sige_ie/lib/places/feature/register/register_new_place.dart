@@ -166,7 +166,7 @@ class _NewPlaceState extends State<NewPlace> {
                       if (coord && _nameController.text.trim().isNotEmpty) {
                         // Código para registrar o local
                         print('Local Registrado: ${_nameController.text}');
-                        Navigator.of(context).pushNamed('?');
+                        Navigator.of(context).pushNamed('/roomlocation');
                       } else if (_nameController.text.trim().isEmpty) {
                         showDialog(
                           context: context,
