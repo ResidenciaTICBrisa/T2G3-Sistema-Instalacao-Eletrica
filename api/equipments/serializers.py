@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EquipmentType, EquipmentDetail, AtmosphericDischargeEquipment
+from .models import EquipmentType, EquipmentDetail, AtmosphericDischargeEquipment, FireAlarmEquipment
 
 class EquipmentTypeSerializer(serializers.ModelSerializer):
 
@@ -17,5 +17,11 @@ class AtmosphericDischargeEquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AtmosphericDischargeEquipment
-        fields = '__all__'        
+        fields = '__all__'       
+
+class FireAlarmEquipmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FireAlarmEquipment
+        fields = '__all__'    
 
