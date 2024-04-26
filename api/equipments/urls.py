@@ -1,4 +1,4 @@
-from .views import EquipmentTypeList, EquipmentTypeDetail, EquipmentDetailList, EquipmentDetail, AtmosphericDischargeEquipmentList, AtmosphericDischargeEquipmentDetail, FireAlarmEquipmentList, FireAlarmEquipmentDetail
+from .views import EquipmentTypeList, EquipmentTypeDetail, EquipmentDetailList, EquipmentDetail, AtmosphericDischargeEquipmentList, AtmosphericDischargeEquipmentDetail, FireAlarmEquipmentList, FireAlarmEquipmentDetail, SructeredCablingEquipmentList, SructeredCablingEquipmentDetail
 from django.urls import path
 
 urlpatterns = [
@@ -10,4 +10,7 @@ urlpatterns = [
     path('atmospheric-discharges/<pk>/', AtmosphericDischargeEquipmentDetail.as_view()),
     path('fire-alarms/', FireAlarmEquipmentList.as_view()),
     path('fire-alarms/<pk>/', FireAlarmEquipmentDetail.as_view()),
+    path('sructered-cabling/', SructeredCablingEquipmentList.as_view()),
+    path('sructered-cabling/<pk>/', SructeredCablingEquipmentDetail.as_view()),
+
 ]
