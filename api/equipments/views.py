@@ -2,9 +2,9 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from places.models import Area
-from .models import  EquipmentType, EquipmentDetail, AtmosphericDischargeEquipment, FireAlarmEquipment, SructeredCablingEquipment
-from .serializers import EquipmentTypeSerializer, EquipmentDetailSerializer, AtmosphericDischargeEquipmentSerializer, FireAlarmEquipmentSerializer, SructeredCablingEquipmentSerializer
-from .permissions import IsEquipmentDetailOwner, IsPlaceOwner
+from .models import  *
+from .serializers import *
+from .permissions import *
 from rest_framework import status
 
 class EquipmentTypeList(generics.ListAPIView):
@@ -102,12 +102,6 @@ class FireAlarmEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FireAlarmEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
 
-
-
-
-
-
-
 class SructeredCablingEquipmentList(generics.ListCreateAPIView):
     queryset = SructeredCablingEquipment.objects.all()
     serializer_class = SructeredCablingEquipmentSerializer
@@ -121,7 +115,7 @@ class SructeredCablingEquipmentList(generics.ListCreateAPIView):
         area_id = request.data.get('area')
         area = Area.objects.filter(id=area_id).first()
      
-        if area and area.place.place_owner == request.user.placeowner:
+        if area is not None and area.place.place_owner == request.user.placeowner:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -134,3 +128,142 @@ class SructeredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SructeredCablingEquipment.objects.all()
     serializer_class = SructeredCablingEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class DistributionBoardEquipmentList(generics.ListCreateAPIView):
+    queryset = DistributionBoardEquipment.objects.all()
+    serializer_class = DistributionBoardEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return DistributionBoardEquipment.objects.filter(area__place__place_owner=user.placeowner)
+    
+    def create(self, request, *args, **kwargs):
+        area_id = request.data.get('area')
+        area = Area.objects.filter(id=area_id).first()
+
+        if area is not None and area.place.place_owner == request.user.placeowner:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+class DistributionBoardEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = DistributionBoardEquipment.objects.all()
+    serializer_class = DistributionBoardEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
+    queryset = ElectricalCircuitEquipment.objects.all()
+    serializer_class = ElectricalCircuitEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return ElectricalCircuitEquipment.objects.filter(area__place__place_owner=user.placeowner)
+    
+    def create(self, request, *args, **kwargs):
+        area_id = request.data.get('area')
+        area = Area.objects.filter(id=area_id).first()
+
+        if area is not None and area.place.place_owner == request.user.placeowner:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+class ElectricalCircuitEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ElectricalCircuitEquipment.objects.all()
+    serializer_class = ElectricalCircuitEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class ElectricalLineEquipmentList(generics.ListCreateAPIView):
+    queryset = ElectricalLineEquipment.objects.all()
+    serializer_class = ElectricalLineEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return ElectricalLineEquipment.objects.filter(area__place__place_owner=user.placeowner)
+    
+    def create(self, request, *args, **kwargs):
+        area_id = request.data.get('area')
+        area = Area.objects.filter(id=area_id).first()
+
+        if area is not None and area.place.place_owner == request.user.placeowner:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+    
+class ElectricalLineEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ElectricalLineEquipment.objects.all()
+    serializer_class = ElectricalLineEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
+    queryset = ElectricalLoadEquipment.objects.all()
+    serializer_class = ElectricalLoadEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return ElectricalLoadEquipment.objects.filter(area__place__place_owner=user.placeowner)
+    
+    def create(self, request, *args, **kwargs):
+        area_id = request.data.get('area')
+        area = Area.objects.filter(id=area_id).first()
+
+        if area is not None and area.place.place_owner == request.user.placeowner:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+class ElectricalLoadEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ElectricalLoadEquipment.objects.all()
+    serializer_class = ElectricalLoadEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class IluminationEquipmentList(generics.ListCreateAPIView):
+    queryset = IluminationEquipment.objects.all()
+    serializer_class = IluminationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return IluminationEquipment.objects.filter(area__place__place_owner=user.placeowner)
+    
+    def create(self, request, *args, **kwargs):
+        area_id = request.data.get('area')
+        area = Area.objects.filter(id=area_id).first()
+
+        if area is not None and area.place.place_owner == request.user.placeowner:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+        else:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+class IluminationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = IluminationEquipment.objects.all()
+    serializer_class = IluminationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+
+
+
