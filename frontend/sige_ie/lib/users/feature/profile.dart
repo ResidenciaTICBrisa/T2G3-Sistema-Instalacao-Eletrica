@@ -18,9 +18,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    userService.fetchProfileData().then((userModel) {
+    userService.fetchProfileData().then((userResponseModel) {
       setState(() {
-        userResponseModel = userResponseModel;
+        this.userResponseModel = userResponseModel;
       });
     }).catchError((error) {
       print(error);
