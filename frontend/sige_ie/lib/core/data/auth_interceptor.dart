@@ -8,7 +8,8 @@ class AuthInterceptor implements InterceptorContract {
 
   @override
   Future<RequestData> interceptRequest({required RequestData data}) async {
-    var cookies = await cookieJar.loadForRequest(Uri.parse('http://10.0.2.2:8000/api/login/'));
+    var cookies = await cookieJar
+        .loadForRequest(Uri.parse('http://10.0.2.2:8000/api/login/'));
     var sessionCookie;
     for (var cookie in cookies) {
       if (cookie.name == 'sessionid') {
@@ -17,7 +18,8 @@ class AuthInterceptor implements InterceptorContract {
       }
     }
     if (sessionCookie != null) {
-      data.headers.addAll({'Cookie': '${sessionCookie.name}=${sessionCookie.value}'});
+      data.headers
+          .addAll({'Cookie': '${sessionCookie.name}=${sessionCookie.value}'});
     }
     return data;
   }
@@ -27,4 +29,3 @@ class AuthInterceptor implements InterceptorContract {
     return data;
   }
 }
-

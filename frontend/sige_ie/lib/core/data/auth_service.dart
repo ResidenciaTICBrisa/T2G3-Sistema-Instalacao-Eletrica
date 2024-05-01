@@ -6,7 +6,6 @@ import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
 
 class AuthService {
-
   static Future<String> fetchCsrfToken() async {
     const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
     final response = await http.get(Uri.parse(url));
@@ -52,7 +51,8 @@ class AuthService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    final response = await client.get(Uri.parse('http://10.0.2.2:8000/api/checkauth/'));
+    final response =
+        await client.get(Uri.parse('http://10.0.2.2:8000/api/checkauth/'));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -70,9 +70,7 @@ class AuthService {
 
     try {
       var response = await http.post(url,
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             'username': username,
             'password': password,
@@ -94,15 +92,14 @@ class AuthService {
           Uri.parse('http://10.0.2.2:8000/api/login/'), [cookie]);
 
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        print("Login bem-sucedido: $data");
+        //print("Login bem-sucedido: $data");
         return true;
       } else {
-        print("Falha no login: ${response.body}");
+        //print("Falha no login: ${response.body}");
         return false;
       }
     } catch (e) {
-      print("Erro ao tentar fazer login: $e");
+      //print("Erro ao tentar fazer login: $e");
       return false;
     }
   }
@@ -115,21 +112,18 @@ class AuthService {
     try {
       var client =
           InterceptedClient.build(interceptors: [AuthInterceptor(cookieJar)]);
-      var response = await client.post(url, headers: {
-        'Content-Type': 'application/json'
-      });
+      var response =
+          await client.post(url, headers: {'Content-Type': 'application/json'});
       cookieJar.deleteAll();
       if (response.statusCode == 200) {
-        print("Logout bem-sucedido");
+        //print("Logout bem-sucedido");
       } else {
-        print("Falha no logout: ${response.body}");
-
-        bool isAuth = await checkAuthenticated();
-        print(isAuth);
+        //print("Falha no logout: ${response.body}");
+        //bool isAuth = await checkAuthenticated();
+        //print(isAuth);
       }
     } catch (e) {
-      print("Erro ao tentar fazer logout: $e");
+      //print("Erro ao tentar fazer logout: $e");
     }
   }
-
 }

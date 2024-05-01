@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/core/data/auth_service.dart';
-import 'package:sige_ie/users/data/user_model.dart';
+import 'package:sige_ie/users/data/user_response_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
@@ -12,18 +12,17 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   UserService userService = UserService();
   AuthService authService = AuthService();
-  UserModel userModel =
-      UserModel(id: '', email: '', firstname: '', username: '');
+  UserResponseModel userResponseModel =
+      UserResponseModel(id: '', email: '', firstname: '', username: '');
 
   @override
   void initState() {
     super.initState();
     userService.fetchProfileData().then((userModel) {
       setState(() {
-        this.userModel = userModel;
+        userResponseModel = userResponseModel;
       });
     }).catchError((error) {
-      // Handle error
       print(error);
     });
   }
@@ -32,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Editar Perfil',
           style: TextStyle(fontSize: 24),
         ),
@@ -40,49 +39,50 @@ class _ProfilePageState extends State<ProfilePage> {
         automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
-              decoration: InputDecoration(labelText: 'Email'),
-              controller: TextEditingController(text: userModel.email),
-              onChanged: (value) => userModel.email = value,
+              decoration: const InputDecoration(labelText: 'Email'),
+              controller: TextEditingController(text: userResponseModel.email),
+              onChanged: (value) => userResponseModel.email = value,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
-              decoration: InputDecoration(labelText: 'Nome'),
-              controller: TextEditingController(text: userModel.firstname),
-              onChanged: (value) => userModel.firstname = value,
+              decoration: const InputDecoration(labelText: 'Nome'),
+              controller:
+                  TextEditingController(text: userResponseModel.firstname),
+              onChanged: (value) => userResponseModel.firstname = value,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
-              decoration: InputDecoration(labelText: 'Username'),
-              controller: TextEditingController(text: userModel.username),
+              decoration: const InputDecoration(labelText: 'Username'),
+              controller:
+                  TextEditingController(text: userResponseModel.username),
               enabled: false,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 InkWell(
                   onTap: () {},
-                  child: Text(
+                  child: const Text(
                     'Mudar senha',
                     style: TextStyle(color: Colors.blue),
                   ),
                 ),
                 InkWell(
                   onTap: () {},
-                  child: Text(
+                  child: const Text(
                     'Mudar username',
-                    style: TextStyle(
-                        color: const Color.fromARGB(255, 33, 150, 243)),
+                    style: TextStyle(color: Color.fromARGB(255, 33, 150, 243)),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 80),
+            const SizedBox(height: 80),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -91,10 +91,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 50, // Define a altura uniforme
                   child: ElevatedButton(
                     onPressed: () async {
-                      await userService.update(
-                          userModel.id, userModel.firstname, userModel.email);
+                      await userService.update(userResponseModel.id,
+                          userResponseModel.firstname, userResponseModel.email);
                     },
-                    child: Text('Salvar',
+                    child: const Text('Salvar',
                         style: TextStyle(color: AppColors.dartText)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 224, 221, 221),
@@ -112,10 +112,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       await authService.logout();
                       Navigator.pushReplacementNamed(context, '/loginScreen');
                     },
-                    child: Text('Sair da Conta',
+                    child: const Text('Sair da Conta',
                         style: TextStyle(color: AppColors.dartText)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 153, 163, 168),
+                      backgroundColor: const Color.fromARGB(255, 153, 163, 168),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -124,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            SizedBox(height: 80),
+            const SizedBox(height: 80),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -138,8 +138,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Excluir Conta'),
-                              content: Text(
+                              title: const Text('Excluir Conta'),
+                              content: const Text(
                                   'Tem certeza que deseja excluir sua conta?'),
                               actions: <Widget>[
                                 TextButton(
@@ -147,14 +147,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     Navigator.of(context).pop(
                                         false); // Retorna falso para indicar que a exclusão não foi confirmada
                                   },
-                                  child: Text('Cancelar'),
+                                  child: const Text('Cancelar'),
                                 ),
                                 TextButton(
                                   onPressed: () {
                                     Navigator.of(context).pop(
                                         true); // Retorna verdadeiro para indicar que a exclusão foi confirmada
                                   },
-                                  child: Text('Confirmar'),
+                                  child: const Text('Confirmar'),
                                 ),
                               ],
                             );
@@ -163,12 +163,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
                         // Se a exclusão for confirmada, exclua a conta
                         if (deleteConfirmed) {
-                          await userService.delete(userModel.id);
+                          await userService.delete(userResponseModel.id);
                           Navigator.pushReplacementNamed(
                               context, '/loginScreen');
                         }
                       },
-                      child: Text('Excluir Conta',
+                      child: const Text('Excluir Conta',
                           style: TextStyle(color: AppColors.lightText)),
                       style: AppButtonStyles.warnButton),
                 ),

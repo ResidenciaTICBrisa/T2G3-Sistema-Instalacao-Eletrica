@@ -12,9 +12,4 @@ class PlaceRequestModel {
       'lat': lat,
     };
   }
-
-  PlaceRequestModel.fromJson(Map<String, dynamic> json)
-      : name = json['name'].toString(),
-        lon = json['lon'].toDouble(),
-        lat = json['lat'].toDouble();
 }

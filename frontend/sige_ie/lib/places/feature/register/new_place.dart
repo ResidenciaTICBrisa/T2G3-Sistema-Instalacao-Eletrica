@@ -6,16 +6,14 @@ import 'position.dart';
 
 class NewPlace extends StatefulWidget {
   @override
-  _NewPlaceState createState() => _NewPlaceState();
+  NewPlaceState createState() => NewPlaceState();
 }
 
-class _NewPlaceState extends State<NewPlace> {
+class NewPlaceState extends State<NewPlace> {
   PlaceService placeService = PlaceService();
-  PlaceRequestModel placeRequestModel =
-      PlaceRequestModel(name: '', lon: 0, lat: 0);
   String coordinates = '';
   bool coord = false;
-  final TextEditingController _nameController = TextEditingController();
+  final nameController = TextEditingController();
   late PositionController positionController;
 
   @override
@@ -50,7 +48,7 @@ class _NewPlaceState extends State<NewPlace> {
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -60,13 +58,13 @@ class _NewPlaceState extends State<NewPlace> {
           children: <Widget>[
             Container(
               width: double.infinity,
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
                 color: AppColors.sigeIeBlue,
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
-              child: Center(
+              child: const Center(
                 child: Text('Registrar Novo Local',
                     style: TextStyle(
                         fontSize: 26,
@@ -74,34 +72,33 @@ class _NewPlaceState extends State<NewPlace> {
                         color: Colors.white)),
               ),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Coordenadas',
+                  const Text('Coordenadas',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[200], // Cinza claro
-                      borderRadius:
-                          BorderRadius.circular(10), // Bordas arredondadas
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Row(
                       children: [
                         Expanded(
                           child: TextField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText:
                                   'Clique na lupa para obter as coordenadas',
-                              border: InputBorder.none, // Sem bordas internas
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 10), // Padding interno
+                              border: InputBorder.none,
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 10),
                             ),
                             controller:
                                 TextEditingController(text: coordinates),
@@ -109,36 +106,34 @@ class _NewPlaceState extends State<NewPlace> {
                           ),
                         ),
                         IconButton(
-                          icon: Icon(Icons.search),
+                          icon: const Icon(Icons.search),
                           onPressed: _getCoordinates,
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 40),
-                  Text('Nome do Local',
+                  const SizedBox(height: 40),
+                  const Text('Nome do Local',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey[200], // Cinza claro
-                      borderRadius:
-                          BorderRadius.circular(10), // Bordas arredondadas
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
+                      controller: nameController,
+                      decoration: const InputDecoration(
                         hintText: 'Digite o nome do local',
-                        border: InputBorder.none, // Sem bordas internas
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 10), // Padding interno
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       ),
                     ),
                   ),
-                  SizedBox(height: 60),
+                  const SizedBox(height: 60),
                   Center(
                       child: ElevatedButton(
                     style: ButtonStyle(
@@ -146,41 +141,43 @@ class _NewPlaceState extends State<NewPlace> {
                           MaterialStateProperty.all(AppColors.sigeIeYellow),
                       foregroundColor:
                           MaterialStateProperty.all(AppColors.sigeIeBlue),
-                      minimumSize: MaterialStateProperty.all(
-                          Size(200, 50)), // Tamanho maior para o botão
+                      minimumSize:
+                          MaterialStateProperty.all(const Size(200, 50)),
                       textStyle: MaterialStateProperty.all(
-                        TextStyle(
-                          fontSize: 18, // Aumentar o tamanho do texto
-                          fontWeight:
-                              FontWeight.bold, // Deixar o texto em negrito
+                        const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              8), // Bordas arredondadas com raio de 25
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
-                    onPressed: () {
-                      if (coord && _nameController.text.trim().isNotEmpty) {
-                        // Código para registrar o local
-                        print('Local Registrado: ${_nameController.text}');
+                    onPressed: () async {
+                      if (coord && nameController.text.trim().isNotEmpty) {
+                        final place = PlaceRequestModel(
+                            name: nameController.text,
+                            lon: positionController.lon,
+                            lat: positionController.lat);
+
+                        bool success = await placeService.register(place);
+                        print('Local Registrado: ${nameController.text}');
                         Navigator.of(context).pushNamed('/roomlocation');
-                      } else if (_nameController.text.trim().isEmpty) {
+                      } else if (nameController.text.trim().isEmpty) {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text("Erro"),
-                              content: Text(
+                              title: const Text("Erro"),
+                              content: const Text(
                                   "Por favor, insira um nome para o local"),
                               actions: <Widget>[
                                 TextButton(
-                                  child: Text("OK"),
+                                  child: const Text("OK"),
                                   onPressed: () {
-                                    Navigator.of(context)
-                                        .pop(); // Fecha o dialogo
+                                    Navigator.of(context).pop();
                                   },
                                 ),
                               ],
@@ -189,7 +186,7 @@ class _NewPlaceState extends State<NewPlace> {
                         );
                       }
                     },
-                    child: Text('Registrar'),
+                    child: const Text('Registrar'),
                   )),
                 ],
               ),

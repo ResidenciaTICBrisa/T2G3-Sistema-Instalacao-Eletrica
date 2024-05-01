@@ -2,43 +2,27 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+
 import 'package:sige_ie/main.dart';
-import 'package:sige_ie/users/data/user_model.dart';
+import 'package:sige_ie/users/data/user_request_model.dart';
+import 'package:sige_ie/users/data/user_response_model.dart';
 
 class UserService {
-  static Future<bool> register(
-      String username, String firstName, String password, String email) async {
-    //var csrfToken = await AuthService.fetchCsrfToken();
+  Future<bool> register(UserRequestModel userRequestModel) async {
     var url = Uri.parse('http://10.0.2.2:8000/api/users/');
-    try {
-      var response = await http.post(url,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({
-            'username': username,
-            'first_name': firstName,
-            'password': password,
-            'email': email,
-          }));
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var data = jsonDecode(response.body);
-        print("Registro bem-sucedido: $data");
-        return true;
-      } else {
-        print("Falha no registro: ${response.body}");
-        return false;
-      }
-    } catch (e) {
-      print("Erro ao tentar registrar: $e");
-      return false;
-    }
+
+    var response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(userRequestModel.toJson()),
+    );
+    return response.statusCode == 201;
   }
 
   Future<bool> update(String id, String firstName, String email) async {
     var client = InterceptedClient.build(
       interceptors: [AuthInterceptor(cookieJar)],
     );
-
-    //var csrfToken = await AuthService.fetchCsrfToken();
 
     var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
     try {
@@ -49,15 +33,14 @@ class UserService {
             'email': email,
           }));
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var data = jsonDecode(response.body);
-        print("Atualizado com sucesso: $data");
+        //print("Atualizado com sucesso: $data");
         return true;
       } else {
-        print("Falha: ${response.body}");
+        //print("Falha: ${response.body}");
         return false;
       }
     } catch (e) {
-      print("Erro ao tentar registrar: $e");
+      //print("Erro ao tentar registrar: $e");
       return false;
     }
   }
@@ -67,27 +50,24 @@ class UserService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    //var csrfToken = await AuthService.fetchCsrfToken();
-
     var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
     try {
-      var response =
-          await client.delete(url, headers: {'Content-Type': 'application/json'});
+      var response = await client
+          .delete(url, headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 204) {
-        var data = jsonDecode(response.body);
-        print("Excluido com sucesso: $data");
+        //print("Excluido com sucesso: $data");
         return true;
       } else {
-        print("Falha: ${response.body}");
+        //print("Falha: ${response.body}");
         return false;
       }
     } catch (e) {
-      print("Erro ao tentar excluir: $e");
+      //print("Erro ao tentar excluir: $e");
       return false;
     }
   }
 
-  Future<UserModel> fetchProfileData() async {
+  Future<UserResponseModel> fetchProfileData() async {
     var client = InterceptedClient.build(
       interceptors: [AuthInterceptor(cookieJar)],
     );
@@ -97,7 +77,7 @@ class UserService {
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      return UserModel.fromJson(data);
+      return UserResponseModel.fromJson(data);
     } else {
       throw Exception('Falha ao carregar dados do perfil');
     }

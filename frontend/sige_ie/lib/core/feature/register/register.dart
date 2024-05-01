@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:sige_ie/users/data/user_request_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -8,31 +8,30 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-// Definição da classe da tela de Registro
 class _RegisterScreenState extends State<RegisterScreen> {
+  UserService userService = UserService();
   bool terms = true;
   final _registerScreen = GlobalKey<FormState>();
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
+  final usernameController = TextEditingController();
+  final nameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xff123c75),
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: const Color(0xff123c75),
         ),
         body: Center(
-          // Logo da Página e Seu Formato
           child: Column(
             children: [
               Expanded(
                 flex: 2,
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/1000x1000.png'),
                       fit: BoxFit.cover,
@@ -41,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               Expanded(
-                  flex: 6, // Configuração da página
+                  flex: 6,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
                     decoration: const BoxDecoration(
@@ -54,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text('Registro', // Nome da Página de Registro
+                          const Text('Registro',
                               style: TextStyle(
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.w900,
@@ -81,7 +80,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              // Outras propriedades...
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -224,12 +222,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           terms = value!;
                                         });
                                       },
-                                      activeColor:
-                                          Color.fromARGB(255, 12, 78, 170)),
+                                      activeColor: const Color.fromARGB(
+                                          255, 12, 78, 170)),
                                   const Text(
                                     'Aceite os Termos',
                                     style: TextStyle(
-                                      color: const Color(0xff123c75),
+                                      color: Color(0xff123c75),
                                     ),
                                   ),
                                 ],
@@ -249,11 +247,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         content: Text('Processando Dados'),
                                       ),
                                     );
-                                    bool success = await UserService.register(
-                                        usernameController.text,
-                                        nameController.text,
-                                        passwordController.text,
-                                        emailController.text);
+
+                                    final user = UserRequestModel(
+                                      username: usernameController.text,
+                                      name: nameController.text,
+                                      password: passwordController.text,
+                                      email: emailController.text,
+                                    );
+
+                                    bool success =
+                                        await userService.register(user);
                                     ScaffoldMessenger.of(context)
                                         .hideCurrentSnackBar();
 
@@ -288,8 +291,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               style: ElevatedButton.styleFrom(
                                   elevation: 6,
                                   backgroundColor:
-                                      Color.fromARGB(255, 244, 248, 0),
-                                  foregroundColor: Color(0xff123c75),
+                                      const Color.fromARGB(255, 244, 248, 0),
+                                  foregroundColor: const Color(0xff123c75),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   )),
@@ -308,11 +311,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 onTap: () {
                                   Navigator.pushNamed(context, '/loginScreen');
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Fazer login',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: const Color(0xff123c75),
+                                    color: Color(0xff123c75),
                                   ),
                                 ),
                               ),

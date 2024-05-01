@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               )
-            : CircularProgressIndicator(), // Mostra o indicador de carregamento enquanto o vídeo está carregando
+            : const CircularProgressIndicator(), // Mostra o indicador de carregamento enquanto o vídeo está carregando
       ),
     );
   }

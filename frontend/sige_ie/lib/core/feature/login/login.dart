@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: const Color(0xff123c75),
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xff123c75),
       ),
       body: Center(
@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Expanded(
               flex: 2,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/1000x1000.png'),
                     fit: BoxFit.cover,
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Login',
                           style: TextStyle(
                               fontSize: 30.0,
@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       });
                                     },
                                     activeColor:
-                                        Color.fromARGB(255, 12, 78, 170)),
+                                        const Color.fromARGB(255, 12, 78, 170)),
                                 const Text(
                                   'Manter conectado',
                                   style: TextStyle(
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ],
                             ),
                             GestureDetector(
-                              child: Text(
+                              child: const Text(
                                 'Esqueceu a senha?',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -168,9 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     usernameController.text,
                                     passwordController.text);
 
-                                bool isAuth =
-                                    await authService.checkAuthenticated();
-                                print(isAuth);
+                                //bool isAuth = await authService.checkAuthenticated();
+                                //print(isAuth);
 
                                 ScaffoldMessenger.of(context)
                                     .hideCurrentSnackBar();
@@ -201,8 +200,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: ElevatedButton.styleFrom(
                                 elevation: 6,
                                 backgroundColor:
-                                    Color.fromARGB(255, 244, 248, 0),
-                                foregroundColor: Color(0xff123c75),
+                                    const Color.fromARGB(255, 244, 248, 0),
+                                foregroundColor: const Color(0xff123c75),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 )),
@@ -222,11 +221,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushNamed(
                                       context, '/registerScreen');
                                 },
-                                child: Text(
+                                child: const Text(
                                   'Registre-se',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: const Color(0xff123c75),
+                                    color: Color(0xff123c75),
                                   ),
                                 ),
                               ),

@@ -10,7 +10,7 @@ class _MapsPageState extends State<MapsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-      title: Text('App de Navegação'),
+      title: const Text('App de Navegação'),
       automaticallyImplyLeading: false,
     ));
   }

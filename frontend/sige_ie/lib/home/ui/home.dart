@@ -52,13 +52,13 @@ class _HomePageState extends State<HomePage> {
       children: [
         AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Color(0xff123c75),
+          backgroundColor: const Color(0xff123c75),
           elevation: 0,
         ),
         Expanded(
           flex: 3,
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.sigeIeBlue,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('assets/1000x1000.png'),
                         fit: BoxFit.cover,
@@ -80,8 +80,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: const Text(
                     'Olá, ',
                     style: TextStyle(
                       color: AppColors.sigeIeYellow,
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -98,16 +98,16 @@ class _HomePageState extends State<HomePage> {
           flex: 6,
           child: Column(
             children: [
-              Spacer(),
+              const Spacer(),
               buildSmallRectangle(context, 'Registrar novo local', 'Registrar',
                   () {
                 Navigator.of(context).pushNamed('/newLocation');
-                print("Registrar novo local clicado");
+                //print("Registrar novo local clicado");
               }),
               buildSmallRectangle(context, 'Gerenciar locais', 'Gerenciar', () {
-                print("Gerenciar locais clicado");
+                //print("Gerenciar locais clicado");
               }),
-              Spacer(),
+              const Spacer(),
             ],
           ),
         ),
@@ -119,16 +119,16 @@ class _HomePageState extends State<HomePage> {
       String buttonText, VoidCallback onPress) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xff123c75),
+        color: const Color(0xff123c75),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black38, spreadRadius: 0, blurRadius: 10),
+          const BoxShadow(color: Colors.black, spreadRadius: 0, blurRadius: 10),
         ],
       ),
       height: 135,
       width: MediaQuery.of(context).size.width * 0.8,
-      margin: EdgeInsets.symmetric(vertical: 15),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(vertical: 15),
+      padding: const EdgeInsets.all(20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -136,19 +136,19 @@ class _HomePageState extends State<HomePage> {
           Text(
             text,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ElevatedButton(
             style: AppButtonStyles.standardButton,
             onPressed: onPress,
             child: Text(
               buttonText,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildBottomNavigationBar() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
         ),
@@ -195,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                 backgroundColor: Color(0xFFF1F60E)),
           ],
           currentIndex: _selectedIndex,
-          selectedItemColor: Color(0xFF123C75),
+          selectedItemColor: const Color(0xFF123C75),
           unselectedItemColor: const Color.fromARGB(255, 145, 142, 142),
           onTap: _onItemTapped,
         ),

@@ -11,13 +11,13 @@ class AppColors {
 
 class AppButtonStyles {
   static ButtonStyle warnButton = ElevatedButton.styleFrom(
-    backgroundColor: Color.fromARGB(255, 231, 27, 27),
+    backgroundColor: const Color.fromARGB(255, 231, 27, 27),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     ),
   );
   static ButtonStyle accentButton = ElevatedButton.styleFrom(
-    backgroundColor: Color.fromARGB(255, 231, 160, 27),
+    backgroundColor: const Color.fromARGB(255, 231, 160, 27),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
     ),
