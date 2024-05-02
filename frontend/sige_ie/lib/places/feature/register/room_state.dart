@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
 class RoomLocation extends StatefulWidget {
@@ -10,7 +9,13 @@ class RoomLocation extends StatefulWidget {
 class _RoomLocationState extends State<RoomLocation> {
   String? selectedFloor;
   final TextEditingController roomController = TextEditingController();
-  final List<String> floors = ['Andar 1', 'Andar 2', 'Andar 3', 'Andar 4', 'Andar 5'];
+  final List<String> floors = [
+    'Andar 1',
+    'Andar 2',
+    'Andar 3',
+    'Andar 4',
+    'Andar 5'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +36,15 @@ class _RoomLocationState extends State<RoomLocation> {
               padding: EdgeInsets.fromLTRB(10, 10, 10, 35),
               decoration: BoxDecoration(
                 color: AppColors.sigeIeBlue,
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
                 child: Text('Local-Sala',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white)),
+                    style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white)),
               ),
             ),
             SizedBox(height: 60),
@@ -44,10 +53,16 @@ class _RoomLocationState extends State<RoomLocation> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Andar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                  Text('Andar',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
                   SizedBox(height: 10),
                   Container(
-                    decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10)),
                     child: DropdownButtonHideUnderline(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10),
@@ -55,7 +70,8 @@ class _RoomLocationState extends State<RoomLocation> {
                           value: selectedFloor,
                           hint: Text('Selecione o Andar'),
                           isExpanded: true,
-                          items: floors.map<DropdownMenuItem<String>>((String value) {
+                          items: floors
+                              .map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(value),
@@ -71,10 +87,16 @@ class _RoomLocationState extends State<RoomLocation> {
                     ),
                   ),
                   SizedBox(height: 40),
-                  Text('Sala', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)),
+                  Text('Sala',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
                   SizedBox(height: 10),
                   Container(
-                    decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(10)),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(10)),
                     child: TextField(
                       controller: roomController,
                       decoration: InputDecoration(
@@ -90,18 +112,25 @@ class _RoomLocationState extends State<RoomLocation> {
                     children: [
                       ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
-                          foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
+                          backgroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeYellow),
+                          foregroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeBlue),
                           minimumSize: MaterialStateProperty.all(Size(150, 50)),
                           textStyle: MaterialStateProperty.all(
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8))),
                         ),
                         onPressed: () {
-                          if (selectedFloor != null && roomController.text.isNotEmpty) {
+                          if (selectedFloor != null &&
+                              roomController.text.isNotEmpty) {
                             // Se desejar, insira a lógica de navegação para outra tela aqui
-                            print('Sala Registrada: ${roomController.text} no ${selectedFloor}');
+                            print(
+                                'Sala Registrada: ${roomController.text} no ${selectedFloor}');
                             // Por exemplo, mudar para uma nova rota:
                             Navigator.of(context).pushNamed('/systemLocation');
                           } else {
@@ -110,7 +139,8 @@ class _RoomLocationState extends State<RoomLocation> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text('Erro'),
-                                  content: Text("Por favor, selecione um andar e digite o nome da sala"),
+                                  content: Text(
+                                      "Por favor, selecione um andar e digite o nome da sala"),
                                   actions: <Widget>[
                                     TextButton(
                                       child: Text("OK"),
@@ -128,13 +158,18 @@ class _RoomLocationState extends State<RoomLocation> {
                       ),
                       ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.red),
-                          foregroundColor: MaterialStateProperty.all(Colors.white),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.red),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
                           minimumSize: MaterialStateProperty.all(Size(150, 50)),
                           textStyle: MaterialStateProperty.all(
-                            TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8))),
                         ),
                         onPressed: () => Navigator.of(context).pop(),
                         child: Text('ENCERRAR'),
@@ -150,94 +185,3 @@ class _RoomLocationState extends State<RoomLocation> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

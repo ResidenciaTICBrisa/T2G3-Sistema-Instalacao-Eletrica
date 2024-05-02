@@ -1,19 +1,19 @@
 class UserRequestModel {
   String username;
-  String name;
+  String firstname;
   String password;
   String email;
 
   UserRequestModel(
       {required this.username,
-      required this.name,
+      required this.firstname,
       required this.password,
       required this.email});
 
   Map<String, dynamic> toJson() {
     return {
-      'username': name,
-      'name': name,
+      'username': username,
+      'first_name': firstname,
       'password': password,
       'email': email,
     };

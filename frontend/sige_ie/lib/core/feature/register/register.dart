@@ -250,7 +250,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                     final user = UserRequestModel(
                                       username: usernameController.text,
-                                      name: nameController.text,
+                                      firstname: nameController.text,
                                       password: passwordController.text,
                                       email: emailController.text,
                                     );

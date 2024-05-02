@@ -11,28 +11,30 @@ import 'package:sige_ie/places/feature/register/room_state.dart';
 import 'core/feature/login/login.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 final cookieJar = CookieJar();
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
       routes: {
         '/': (context) => SplashScreen(),
-        '/loginScreen': (context) => LoginScreen(),
+        '/loginScreen': (context) => const LoginScreen(),
         '/first': (context) => FirstScreen(),
-        '/registerScreen': (context) => RegisterScreen(),
+        '/registerScreen': (context) => const RegisterScreen(),
         '/homeScreen': (context) => HomePage(),
         '/facilitiesScreen': (context) => HomePage(),
         '/MapsPage': (context) => MapsPage(),
         '/profileScreen': (context) => HomePage(),
         '/newLocation': (context) => NewPlace(),
         '/roomlocation': (context) => RoomLocation(),
-        '/systemLocation':(context)=> SystemConfiguration(),
+        '/systemLocation': (context) => SystemConfiguration(),
       },
     );
   }

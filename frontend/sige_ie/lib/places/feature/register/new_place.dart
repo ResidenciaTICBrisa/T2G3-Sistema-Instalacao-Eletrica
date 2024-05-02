@@ -15,11 +15,13 @@ class NewPlaceState extends State<NewPlace> {
   bool coord = false;
   final nameController = TextEditingController();
   late PositionController positionController;
+  late TextEditingController coordinatesController;
 
   @override
   void initState() {
     super.initState();
     positionController = PositionController();
+    coordinatesController = TextEditingController();
   }
 
   void _getCoordinates() {
@@ -28,15 +30,18 @@ class NewPlaceState extends State<NewPlace> {
         if (positionController.error.isEmpty) {
           coordinates =
               "Latitude: ${positionController.lat}, Longitude: ${positionController.lon}";
+          coordinatesController.text = coordinates;
           coord = true;
         } else {
           coordinates = "Erro: ${positionController.error}";
+          coordinatesController.text = coordinates;
           coord = false;
         }
       });
     }).catchError((e) {
       setState(() {
         coordinates = "Erro ao obter localização: $e";
+        coordinatesController.text = coordinates;
         coord = false;
       });
     });
@@ -100,8 +105,7 @@ class NewPlaceState extends State<NewPlace> {
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
                             ),
-                            controller:
-                                TextEditingController(text: coordinates),
+                            controller: coordinatesController,
                             enabled: false,
                           ),
                         ),
@@ -163,8 +167,10 @@ class NewPlaceState extends State<NewPlace> {
                             lat: positionController.lat);
 
                         bool success = await placeService.register(place);
-                        print('Local Registrado: ${nameController.text}');
-                        Navigator.of(context).pushNamed('/roomlocation');
+                        if (success) {
+                          print('Local Registrado: ${nameController.text}');
+                          Navigator.of(context).pushNamed('/roomlocation');
+                        }
                       } else if (nameController.text.trim().isEmpty) {
                         showDialog(
                           context: context,
