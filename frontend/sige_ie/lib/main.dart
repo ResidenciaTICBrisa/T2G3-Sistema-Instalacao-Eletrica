@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
         '/MapsPage': (context) => MapsPage(),
         '/profileScreen': (context) => HomePage(),
         '/newLocation': (context) => NewPlace(),
-        '/roomlocation': (context) => Roomlocation()
+        '/roomlocation': (context) => RoomLocation(),
+        '/SystemConfiguration':(context)=> SystemConfiguration(),
       },
     );
   }
