@@ -5,6 +5,7 @@ import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
 import 'package:sige_ie/home/ui/home.dart';
 import 'package:sige_ie/maps/feature/maps.dart';
+import 'package:sige_ie/places/feature/manage/systemConfiguration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/places/feature/register/room_state.dart';
 import 'core/feature/login/login.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         '/profileScreen': (context) => HomePage(),
         '/newLocation': (context) => NewPlace(),
         '/roomlocation': (context) => RoomLocation(),
-        '/SystemConfiguration':(context)=> SystemConfiguration(),
+        '/systemLocation':(context)=> SystemConfiguration(),
       },
     );
   }

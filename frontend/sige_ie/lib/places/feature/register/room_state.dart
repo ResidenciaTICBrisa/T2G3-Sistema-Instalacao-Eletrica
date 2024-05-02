@@ -103,7 +103,7 @@ class _RoomLocationState extends State<RoomLocation> {
                             // Se desejar, insira a lógica de navegação para outra tela aqui
                             print('Sala Registrada: ${roomController.text} no ${selectedFloor}');
                             // Por exemplo, mudar para uma nova rota:
-                            Navigator.of(context).pushNamed('/systemlocation');
+                            Navigator.of(context).pushNamed('/systemLocation');
                           } else {
                             showDialog(
                               context: context,
