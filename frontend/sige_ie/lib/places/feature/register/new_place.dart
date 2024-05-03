@@ -149,7 +149,7 @@ class NewPlaceState extends State<NewPlace> {
                           MaterialStateProperty.all(const Size(200, 50)),
                       textStyle: MaterialStateProperty.all(
                         const TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -168,8 +168,10 @@ class NewPlaceState extends State<NewPlace> {
 
                         bool success = await placeService.register(place);
                         if (success) {
-                          print('Local Registrado: ${nameController.text}');
-                          Navigator.of(context).pushNamed('/roomlocation');
+                          print(
+                              'Local Registrado: ${nameController.text} em latitude: ${positionController.lat} e longitude: ${positionController.lon}');
+                          Navigator.of(context).pushNamed('/roomlocation',
+                              arguments: nameController.text.trim());
                         }
                       } else if (nameController.text.trim().isEmpty) {
                         showDialog(
@@ -178,7 +180,7 @@ class NewPlaceState extends State<NewPlace> {
                             return AlertDialog(
                               title: const Text("Erro"),
                               content: const Text(
-                                  "Por favor, insira um nome para o local"),
+                                  "Por favor, clique na lupa e insira um nome para o local"),
                               actions: <Widget>[
                                 TextButton(
                                   child: const Text("OK"),
@@ -192,7 +194,7 @@ class NewPlaceState extends State<NewPlace> {
                         );
                       }
                     },
-                    child: const Text('Registrar'),
+                    child: const Text('REGISTRAR'),
                   )),
                 ],
               ),
