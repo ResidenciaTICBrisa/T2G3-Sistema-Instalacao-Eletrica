@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/feature/manage/fireAlarm.dart';
+import 'package:sige_ie/places/feature/manage/EquipmentScreen.dart';
 import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
-import 'package:sige_ie/places/feature/manage/structuredCabling.dart';
-import 'atmosphericDischarges.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String roomName;
@@ -24,11 +22,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             case '/lowVoltage':
               return LowVoltageScreen(roomName: roomName);
             case '/structuredCabling':
-              return StructuredCablingScreen(roomName: roomName);
+              return EquipmentScreen(roomName: roomName);
             case '/atmosphericDischarges':
-              return AtmosphericDischargesScreen(roomName: roomName);
+              return EquipmentScreen(roomName: roomName);
             case '/fireAlarm':
-              return FireAlarmScreen(roomName: roomName);
+              return EquipmentScreen(roomName: roomName);
             default:
               return Scaffold(
                 body: Center(child: Text('No route defined for $routeName')),

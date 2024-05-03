@@ -5,10 +5,8 @@ import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
 import 'package:sige_ie/home/ui/home.dart';
 import 'package:sige_ie/maps/feature/maps.dart';
-import 'package:sige_ie/places/feature/manage/atmosphericDischarges.dart';
-import 'package:sige_ie/places/feature/manage/fireAlarm.dart';
+import 'package:sige_ie/places/feature/manage/EquipmentScreen.dart';
 import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
-import 'package:sige_ie/places/feature/manage/structuredCabling.dart';
 import 'package:sige_ie/places/feature/manage/systemConfiguration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/places/feature/register/room_state.dart';
@@ -68,19 +66,9 @@ class MyApp extends StatelessWidget {
                 builder: (context) => const LowVoltageScreen(
                       roomName: '',
                     ));
-          case '/structuredCabling':
+          case '/equipamentScreen':
             return MaterialPageRoute(
-                builder: (context) => const StructuredCablingScreen(
-                      roomName: '',
-                    ));
-          case '/atmosphericDischarges':
-            return MaterialPageRoute(
-                builder: (context) => const AtmosphericDischargesScreen(
-                      roomName: '',
-                    ));
-          case '/fireAlarm':
-            return MaterialPageRoute(
-                builder: (context) => const FireAlarmScreen(
+                builder: (context) => EquipmentScreen(
                       roomName: '',
                     ));
           default:
