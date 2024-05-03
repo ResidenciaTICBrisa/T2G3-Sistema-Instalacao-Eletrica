@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/places/feature/manage/fireAlarm.dart';
+import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
+import 'package:sige_ie/places/feature/manage/structuredCabling.dart';
+import 'atmosphericDischarges.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String roomName;
@@ -11,6 +15,30 @@ class SystemConfiguration extends StatefulWidget {
 }
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
+  void navigateTo(String routeName, String roomName) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          switch (routeName) {
+            case '/lowVoltage':
+              return LowVoltageScreen(roomName: roomName);
+            case '/structuredCabling':
+              return StructuredCablingScreen(roomName: roomName);
+            case '/atmosphericDischarges':
+              return AtmosphericDischargesScreen(roomName: roomName);
+            case '/fireAlarm':
+              return FireAlarmScreen(roomName: roomName);
+            default:
+              return Scaffold(
+                body: Center(child: Text('No route defined for $routeName')),
+              );
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,10 +75,20 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            SystemButton(title: 'BAIXA TENSÃO'),
-            SystemButton(title: 'CABEAMENTO ESTRUTURADO'),
-            SystemButton(title: 'DESCARGAS ATMOSFÉRICAS'),
-            SystemButton(title: 'ALARME DE INCÊNDIO'),
+            SystemButton(
+                title: 'BAIXA TENSÃO',
+                onPressed: () => navigateTo('/lowVoltage', widget.roomName)),
+            SystemButton(
+                title: 'CABEAMENTO ESTRUTURADO',
+                onPressed: () =>
+                    navigateTo('/structuredCabling', widget.roomName)),
+            SystemButton(
+                title: 'DESCARGAS ATMOSFÉRICAS',
+                onPressed: () =>
+                    navigateTo('/atmosphericDischarges', widget.roomName)),
+            SystemButton(
+                title: 'ALARME DE INCÊNDIO',
+                onPressed: () => navigateTo('/fireAlarm', widget.roomName)),
           ],
         ),
       ),
@@ -60,20 +98,25 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
 
 class SystemButton extends StatelessWidget {
   final String title;
+  final VoidCallback onPressed;
 
-  const SystemButton({Key? key, required this.title}) : super(key: key);
+  const SystemButton({
+    Key? key,
+    required this.title,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       width: double.infinity,
       child: ElevatedButton(
         child: Text(title,
             style: const TextStyle(
                 color: AppColors.sigeIeBlue,
                 fontSize: 18,
-                fontWeight: FontWeight.bold)),
+                fontWeight: FontWeight.w900)),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
           foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
@@ -83,10 +126,7 @@ class SystemButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
           )),
         ),
-        onPressed: () {
-          // Adicione a lógica para o que acontece ao pressionar o botão
-          print('Configuring $title');
-        },
+        onPressed: onPressed,
       ),
     );
   }
