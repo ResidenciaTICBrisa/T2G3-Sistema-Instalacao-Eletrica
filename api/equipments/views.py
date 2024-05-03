@@ -102,14 +102,14 @@ class FireAlarmEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = FireAlarmEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
 
-class SructeredCablingEquipmentList(generics.ListCreateAPIView):
-    queryset = SructeredCablingEquipment.objects.all()
-    serializer_class = SructeredCablingEquipmentSerializer
+class StructuredCablingEquipmentList(generics.ListCreateAPIView):
+    queryset = StructuredCablingEquipment.objects.all()
+    serializer_class = StructuredCablingEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return SructeredCablingEquipment.objects.filter(area__place__place_owner=user.placeowner)
+        return StructuredCablingEquipment.objects.filter(area__place__place_owner=user.placeowner)
 
     def create(self, request, *args, **kwargs):
         area_id = request.data.get('area')
@@ -124,9 +124,9 @@ class SructeredCablingEquipmentList(generics.ListCreateAPIView):
         else:
             return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
 
-class SructeredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SructeredCablingEquipment.objects.all()
-    serializer_class = SructeredCablingEquipmentSerializer
+class StructuredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StructuredCablingEquipment.objects.all()
+    serializer_class = StructuredCablingEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
 
 class DistributionBoardEquipmentList(generics.ListCreateAPIView):
