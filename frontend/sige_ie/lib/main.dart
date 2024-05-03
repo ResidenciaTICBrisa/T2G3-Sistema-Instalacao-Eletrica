@@ -23,19 +23,51 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
-      routes: {
-        '/': (context) => SplashScreen(),
-        '/loginScreen': (context) => const LoginScreen(),
-        '/first': (context) => FirstScreen(),
-        '/registerScreen': (context) => const RegisterScreen(),
-        '/homeScreen': (context) => HomePage(),
-        '/facilitiesScreen': (context) => HomePage(),
-        '/MapsPage': (context) => MapsPage(),
-        '/profileScreen': (context) => HomePage(),
-        '/newLocation': (context) => NewPlace(),
-        '/roomlocation': (context) => RoomLocation(),
-        '/systemLocation': (context) => SystemConfiguration(),
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/':
+            return MaterialPageRoute(builder: (context) => SplashScreen());
+          case '/loginScreen':
+            return MaterialPageRoute(builder: (context) => const LoginScreen());
+          case '/first':
+            return MaterialPageRoute(builder: (context) => FirstScreen());
+          case '/registerScreen':
+            return MaterialPageRoute(
+                builder: (context) => const RegisterScreen());
+          case '/homeScreen':
+            return MaterialPageRoute(builder: (context) => HomePage());
+          case '/MapsPage':
+            return MaterialPageRoute(builder: (context) => MapsPage());
+          case '/newLocation':
+            return MaterialPageRoute(builder: (context) => NewPlace());
+          case '/roomlocation':
+            return MaterialPageRoute(builder: (context) => RoomLocation());
+          case '/systemLocation':
+            if (settings.arguments is String) {
+              final roomName = settings.arguments as String;
+              return MaterialPageRoute(
+                  builder: (context) =>
+                      SystemConfiguration(roomName: roomName));
+            }
+            throw Exception(
+                'Invalid route: Expected string argument for /systemLocation.');
+          default:
+            return MaterialPageRoute(
+                builder: (context) => UndefinedView(name: settings.name));
+        }
       },
+    );
+  }
+}
+
+class UndefinedView extends StatelessWidget {
+  final String? name;
+  const UndefinedView({Key? key, this.name}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('No route defined for ${name ?? "unknown"}')),
     );
   }
 }

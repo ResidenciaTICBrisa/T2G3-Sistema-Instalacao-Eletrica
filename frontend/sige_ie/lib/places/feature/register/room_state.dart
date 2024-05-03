@@ -40,7 +40,7 @@ class _RoomLocationState extends State<RoomLocation> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('Local-Sala',
+                child: Text('Local - Sala',
                     style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -116,23 +116,26 @@ class _RoomLocationState extends State<RoomLocation> {
                               MaterialStateProperty.all(AppColors.sigeIeYellow),
                           foregroundColor:
                               MaterialStateProperty.all(AppColors.sigeIeBlue),
-                          minimumSize: MaterialStateProperty.all(Size(150, 50)),
+                          minimumSize: MaterialStateProperty.all(Size(165, 50)),
                           textStyle: MaterialStateProperty.all(
                             TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8))),
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
                         ),
                         onPressed: () {
                           if (selectedFloor != null &&
                               roomController.text.isNotEmpty) {
-                            // Se desejar, insira a lógica de navegação para outra tela aqui
                             print(
                                 'Sala Registrada: ${roomController.text} no ${selectedFloor}');
-                            // Por exemplo, mudar para uma nova rota:
-                            Navigator.of(context).pushNamed('/systemLocation');
+                            Navigator.pushNamed(
+                              context,
+                              '/systemLocation',
+                              arguments: roomController.text,
+                            );
                           } else {
                             showDialog(
                               context: context,
@@ -159,13 +162,13 @@ class _RoomLocationState extends State<RoomLocation> {
                       ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.red),
+                              MaterialStateProperty.all(AppColors.warn),
                           foregroundColor:
-                              MaterialStateProperty.all(Colors.white),
-                          minimumSize: MaterialStateProperty.all(Size(150, 50)),
+                              MaterialStateProperty.all(AppColors.lightText),
+                          minimumSize: MaterialStateProperty.all(Size(165, 50)),
                           textStyle: MaterialStateProperty.all(
                             TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(

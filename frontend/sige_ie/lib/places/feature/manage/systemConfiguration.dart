@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
 class SystemConfiguration extends StatefulWidget {
+  final String roomName;
+
+  SystemConfiguration({Key? key, required this.roomName}) : super(key: key);
+
   @override
   _SystemConfigurationState createState() => _SystemConfigurationState();
 }
@@ -11,9 +15,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:
-            AppColors.sigeIeBlue, // Substitua por sua cor personalizada.
-        title: const Text('Local'),
+        backgroundColor: AppColors.sigeIeBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
@@ -22,18 +24,33 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: BoxDecoration(
+                color: AppColors.sigeIeBlue,
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+              child: Center(
+                child: Text(widget.roomName,
+                    style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white)),
+              ),
+            ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(30.0),
               child: const Text(
                 'Quais sistemas deseja configurar?',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            SystemButton(title: 'Baixa Tensão', icon: Icons.flash_on),
-            SystemButton(
-                title: 'Cabeamento Estruturado', icon: Icons.settings_ethernet),
-            SystemButton(title: 'Descargas Atmosféricas', icon: Icons.cloud),
-            SystemButton(title: 'Alarme de Incêndio', icon: Icons.warning),
+            SystemButton(title: 'BAIXA TENSÃO'),
+            SystemButton(title: 'CABEAMENTO ESTRUTURADO'),
+            SystemButton(title: 'DESCARGAS ATMOSFÉRICAS'),
+            SystemButton(title: 'ALARME DE INCÊNDIO'),
           ],
         ),
       ),
@@ -43,33 +60,31 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
 
 class SystemButton extends StatelessWidget {
   final String title;
-  final IconData icon;
 
-  const SystemButton({Key? key, required this.title, required this.icon})
-      : super(key: key);
+  const SystemButton({Key? key, required this.title}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       width: double.infinity,
-      child: ElevatedButton.icon(
-        icon: Icon(icon, color: Colors.black),
-        label: Text(title,
-            style: const TextStyle(color: Colors.black, fontSize: 18)),
+      child: ElevatedButton(
+        child: Text(title,
+            style: const TextStyle(
+                color: AppColors.sigeIeBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.bold)),
         style: ButtonStyle(
-          backgroundColor:
-              MaterialStateProperty.all(Colors.yellow), // Cor de fundo do botão
-          foregroundColor:
-              MaterialStateProperty.all(Colors.black), // Cor do texto e ícone
+          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
+          foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
           padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 15)),
+              const EdgeInsets.symmetric(vertical: 25)),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           )),
         ),
         onPressed: () {
-          // Aqui pode-se adicionar a lógica para o que acontece ao pressionar o botão
+          // Adicione a lógica para o que acontece ao pressionar o botão
           print('Configuring $title');
         },
       ),
