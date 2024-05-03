@@ -3,6 +3,8 @@ import 'package:sige_ie/config/app_styles.dart';
 import '../../users/feature/profile.dart';
 import '../../core/ui/facilities.dart';
 import '../../maps/feature/maps.dart';
+import 'package:sige_ie/users/data/user_response_model.dart';
+import 'package:sige_ie/users/data/user_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +14,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   PageController _pageController = PageController();
+  UserService userService = UserService();
+  late UserResponseModel user;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+    userService.fetchProfileData().then((fetchedUser) {
+      setState(() {
+        user = fetchedUser;
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -48,70 +63,84 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildHomePage(BuildContext context) {
-    return Column(
-      children: [
-        AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: const Color(0xff123c75),
-          elevation: 0,
-        ),
-        Expanded(
-          flex: 3,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.sigeIeBlue,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/1000x1000.png'),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20),
-                  child: const Text(
-                    'Olá, ',
-                    style: TextStyle(
-                      color: AppColors.sigeIeYellow,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 6,
-          child: Column(
+    return FutureBuilder<UserResponseModel>(
+      future: userService.fetchProfileData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Erro ao carregar os dados'));
+        } else if (snapshot.hasData) {
+          var user = snapshot.data!;
+          return Column(
             children: [
-              const Spacer(),
-              buildSmallRectangle(context, 'Registrar novo local', 'Registrar',
-                  () {
-                Navigator.of(context).pushNamed('/newLocation');
-                //print("Registrar novo local clicado");
-              }),
-              buildSmallRectangle(context, 'Gerenciar locais', 'Gerenciar', () {
-                //print("Gerenciar locais clicado");
-              }),
-              const Spacer(),
+              AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: const Color(0xff123c75),
+                elevation: 0,
+              ),
+              Expanded(
+                flex: 3,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: AppColors.sigeIeBlue,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/1000x1000.png'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          'Olá, ${user.firstname}',
+                          style: TextStyle(
+                            color: AppColors.sigeIeYellow,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: Column(
+                  children: [
+                    const Spacer(),
+                    buildSmallRectangle(
+                        context, 'Registrar novo local', 'Registrar', () {
+                      Navigator.of(context).pushNamed('/newLocation');
+                    }),
+                    buildSmallRectangle(
+                        context, 'Gerenciar locais', 'Gerenciar', () {
+                      // Código aqui.
+                    }),
+                    const Spacer(),
+                  ],
+                ),
+              ),
             ],
-          ),
-        ),
-      ],
+          );
+        } else {
+          return Center(child: Text('Estado desconhecido'));
+        }
+      },
     );
   }
 

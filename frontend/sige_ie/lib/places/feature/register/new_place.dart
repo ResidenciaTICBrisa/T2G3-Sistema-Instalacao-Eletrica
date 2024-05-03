@@ -170,7 +170,8 @@ class NewPlaceState extends State<NewPlace> {
                         if (success) {
                           print(
                               'Local Registrado: ${nameController.text} em latitude: ${positionController.lat} e longitude: ${positionController.lon}');
-                          Navigator.of(context).pushNamed('/roomlocation');
+                          Navigator.of(context).pushNamed('/roomlocation',
+                              arguments: nameController.text.trim());
                         }
                       } else if (nameController.text.trim().isEmpty) {
                         showDialog(

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
 class RoomLocation extends StatefulWidget {
+  final String localName;
+  const RoomLocation({Key? key, required this.localName}) : super(key: key);
+
   @override
   _RoomLocationState createState() => _RoomLocationState();
 }
@@ -40,7 +43,7 @@ class _RoomLocationState extends State<RoomLocation> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('Local - Sala',
+                child: Text('${widget.localName} - Sala',
                     style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

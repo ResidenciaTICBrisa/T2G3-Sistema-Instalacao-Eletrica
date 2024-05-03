@@ -41,7 +41,15 @@ class MyApp extends StatelessWidget {
           case '/newLocation':
             return MaterialPageRoute(builder: (context) => NewPlace());
           case '/roomlocation':
-            return MaterialPageRoute(builder: (context) => RoomLocation());
+            if (settings.arguments is String) {
+              final localName = settings.arguments as String;
+              return MaterialPageRoute(
+                builder: (context) => RoomLocation(localName: localName),
+              );
+            }
+            throw Exception(
+                'Invalid route: Expected string argument for /roomlocation.');
+
           case '/systemLocation':
             if (settings.arguments is String) {
               final roomName = settings.arguments as String;
