@@ -14,7 +14,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Area
-        fields = ['id', 'name', 'floor', 'systems', 'place']
+        fields = ['id', 'name', 'floor', 'place']
         extra_kwargs = {
             'name': {'required': True},
             'floor': {'required': True},
