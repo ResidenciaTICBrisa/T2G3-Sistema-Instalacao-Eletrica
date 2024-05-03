@@ -28,15 +28,15 @@ class EquipmentDetail(models.Model):
 class FireAlarmEquipment(models.Model):
    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-   system = models.OneToOneField(System, on_delete=models.CASCADE, default=8)
-   
+   system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
+
    class Meta:
        db_table = 'equipments_fire_alarm_equipments'
 
 class AtmosphericDischargeEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=7)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=7)
 
     class Meta:
         db_table = 'equipments_atmospheric_discharge_equipments'
@@ -44,7 +44,7 @@ class AtmosphericDischargeEquipment(models.Model):
 class StructuredCablingEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=6)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=6)
     
     class Meta:
         db_table = 'equipments_structured_cabling_equipments'
@@ -52,7 +52,7 @@ class StructuredCablingEquipment(models.Model):
 class DistributionBoardEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=5)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=5)
     
     class Meta:
         db_table = 'equipments_distribution_board_equipments'
@@ -60,7 +60,7 @@ class DistributionBoardEquipment(models.Model):
 class ElectricalCircuitEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=4)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
     
     class Meta:
         db_table = 'equipments_electrical_circuit_equipments'
@@ -68,7 +68,7 @@ class ElectricalCircuitEquipment(models.Model):
 class ElectricalLineEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=3)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=3)
     
     class Meta:
         db_table = 'equipments_electrical_line_equipments'
@@ -76,7 +76,7 @@ class ElectricalLineEquipment(models.Model):
 class ElectricalLoadEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=2)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
     
     class Meta:
         db_table = 'equipments_electrical_load_equipments'
@@ -84,7 +84,7 @@ class ElectricalLoadEquipment(models.Model):
 class IluminationEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
     equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
-    system = models.OneToOneField(System, on_delete=models.CASCADE, default=1)
-        
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=1)
+ 
     class Meta:
         db_table = 'equipments_ilumination_equipments'

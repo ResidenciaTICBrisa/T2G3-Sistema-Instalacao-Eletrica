@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import *
+from .mixins import ValidateEquipmentDetailAndAreaMixin
 
 class EquipmentTypeSerializer(serializers.ModelSerializer):
 
@@ -22,16 +23,16 @@ class FireAlarmEquipmentSerializer(serializers.ModelSerializer):
             'system': {'read_only': True}
         }   
 
-class AtmosphericDischargeEquipmentSerializer(serializers.ModelSerializer):
+class AtmosphericDischargeEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
     class Meta:
         model = AtmosphericDischargeEquipment
         fields = '__all__'
         extra_kwargs = {
             'system': {'read_only': True}
-        }  
+        }
 
-class StructuredCablingEquipmentSerializer(serializers.ModelSerializer):
+class StructuredCablingEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
     class Meta:
         model = StructuredCablingEquipment
@@ -40,7 +41,7 @@ class StructuredCablingEquipmentSerializer(serializers.ModelSerializer):
             'system': {'read_only': True}
         }  
 
-class DistributionBoardEquipmentSerializer(serializers.ModelSerializer):
+class DistributionBoardEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = DistributionBoardEquipment
@@ -49,7 +50,7 @@ class DistributionBoardEquipmentSerializer(serializers.ModelSerializer):
             'system': {'read_only': True}
         } 
 
-class ElectricalCircuitEquipmentSerializer(serializers.ModelSerializer):
+class ElectricalCircuitEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = ElectricalCircuitEquipment
@@ -58,7 +59,7 @@ class ElectricalCircuitEquipmentSerializer(serializers.ModelSerializer):
             'system': {'read_only': True}
         }  
 
-class ElectricalLineEquipmentSerializer(serializers.ModelSerializer):
+class ElectricalLineEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = ElectricalLineEquipment
@@ -67,7 +68,7 @@ class ElectricalLineEquipmentSerializer(serializers.ModelSerializer):
             'system': {'read_only': True}
         } 
    
-class ElectricalLoadEquipmentSerializer(serializers.ModelSerializer):
+class ElectricalLoadEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = ElectricalLoadEquipment
@@ -76,7 +77,7 @@ class ElectricalLoadEquipmentSerializer(serializers.ModelSerializer):
             'system': {'read_only': True}
         }  
     
-class IluminationEquipmentSerializer(serializers.ModelSerializer):
+class IluminationEquipmentSerializer(ValidateEquipmentDetailAndAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = IluminationEquipment
