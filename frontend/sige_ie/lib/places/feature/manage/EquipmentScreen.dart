@@ -54,6 +54,7 @@ class EquipmentScreen extends StatelessWidget {
                       color: AppColors.lightText)),
             ),
           ),
+          SizedBox(height: 150), // Define the height for spacing as needed
           EquipmentButton(
             title: 'ADICIONAR EQUIPAMENTOS',
             onPressed: () => navigateToAddEquipment(context),

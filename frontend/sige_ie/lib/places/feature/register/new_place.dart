@@ -173,7 +173,7 @@ class NewPlaceState extends State<NewPlace> {
                           Navigator.of(context).pushNamed('/roomlocation',
                               arguments: nameController.text.trim());
                         }
-                      } else if (nameController.text.trim().isEmpty) {
+                      } else if (nameController.text.trim().isEmpty || !coord) {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {

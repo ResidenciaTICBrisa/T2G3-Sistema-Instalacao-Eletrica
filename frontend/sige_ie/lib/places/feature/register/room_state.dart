@@ -32,7 +32,6 @@ class _RoomLocationState extends State<RoomLocation> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
               width: double.infinity,
@@ -62,33 +61,14 @@ class _RoomLocationState extends State<RoomLocation> {
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
                   SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10)),
-                    child: DropdownButtonHideUnderline(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: DropdownButton<String>(
-                          value: selectedFloor,
-                          hint: Text('Selecione o Andar'),
-                          isExpanded: true,
-                          items: floors
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedFloor = newValue;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildDropdown(
+                      items: floors,
+                      value: selectedFloor,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedFloor = newValue;
+                        });
+                      }),
                   SizedBox(height: 40),
                   Text('Sala',
                       style: TextStyle(
@@ -98,7 +78,7 @@ class _RoomLocationState extends State<RoomLocation> {
                   SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10)),
                     child: TextField(
                       controller: roomController,
@@ -112,21 +92,17 @@ class _RoomLocationState extends State<RoomLocation> {
                   SizedBox(height: 60),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
+                    children: <Widget>[
                       ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(AppColors.sigeIeYellow),
-                          foregroundColor:
-                              MaterialStateProperty.all(AppColors.sigeIeBlue),
-                          minimumSize: MaterialStateProperty.all(Size(165, 50)),
-                          textStyle: MaterialStateProperty.all(
-                            TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: AppColors.sigeIeBlue,
+                          backgroundColor: AppColors.sigeIeYellow,
+                          minimumSize: Size(165, 50),
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
-                          shape: MaterialStateProperty.all(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         onPressed: () {
@@ -134,11 +110,8 @@ class _RoomLocationState extends State<RoomLocation> {
                               roomController.text.isNotEmpty) {
                             print(
                                 'Sala Registrada: ${roomController.text} no ${selectedFloor}');
-                            Navigator.pushNamed(
-                              context,
-                              '/systemLocation',
-                              arguments: roomController.text,
-                            );
+                            Navigator.pushNamed(context, '/systemLocation',
+                                arguments: roomController.text);
                           } else {
                             showDialog(
                               context: context,
@@ -150,9 +123,8 @@ class _RoomLocationState extends State<RoomLocation> {
                                   actions: <Widget>[
                                     TextButton(
                                       child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
                                     ),
                                   ],
                                 );
@@ -163,19 +135,16 @@ class _RoomLocationState extends State<RoomLocation> {
                         child: Text('CONTINUAR'),
                       ),
                       ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(AppColors.warn),
-                          foregroundColor:
-                              MaterialStateProperty.all(AppColors.lightText),
-                          minimumSize: MaterialStateProperty.all(Size(165, 50)),
-                          textStyle: MaterialStateProperty.all(
-                            TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: AppColors.lightText,
+                          backgroundColor: AppColors.warn,
+                          minimumSize: Size(165, 50),
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
-                          shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8))),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                         onPressed: () => Navigator.of(context).pop(),
                         child: Text('ENCERRAR'),
@@ -184,8 +153,42 @@ class _RoomLocationState extends State<RoomLocation> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown({
+    required List<String> items,
+    required String? value,
+    required void Function(String?) onChanged,
+    VoidCallback? addNew,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButtonFormField<String>(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(vertical: 4),
+          ),
+          value: value,
+          isExpanded: true,
+          items: items.map((String item) {
+            return DropdownMenuItem(
+              value: item,
+              child: Text(item),
+            );
+          }).toList(),
+          onChanged: onChanged,
+          style: TextStyle(color: Colors.black),
+          dropdownColor: Colors.grey[200],
         ),
       ),
     );
