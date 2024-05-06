@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/feature/manage/equipment_manager.dart'; // Certifique-se de que este import esteja correto para seu projeto
+import 'package:sige_ie/places/feature/manage/equipment_manager.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'dart:math';
 
-File? _image;
+class ImageData {
+  File imageFile;
+  int id;
+
+  ImageData(this.imageFile) : id = Random().nextInt(1000000);
+}
+
+List<ImageData> _images = [];
 
 class AddEquipmentScreen extends StatefulWidget {
   final String roomName;
@@ -23,15 +31,15 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedLocation;
-  List<String> equipmentTypes = []; // A lista agora é inicializada vazia
-  Future<void> _pickImage() async {
-    try {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(source: ImageSource.camera);
+  List<String> equipmentTypes = [];
 
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
         setState(() {
-          _image = File(pickedFile.path);
+          _images.add(ImageData(File(pickedFile.path)));
         });
       }
     } catch (e) {
@@ -42,49 +50,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   @override
   void initState() {
     super.initState();
-    // Carrega os tipos de equipamento com base na categoria selecionada ao iniciar a tela
     equipmentTypes = EquipmentManager.getEquipmentList(widget.categoryNumber);
-  }
-
-  void _addNewEquipmentType() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController newTypeController = TextEditingController();
-
-        return AlertDialog(
-          title: const Text("Adicionar Novo Tipo de Equipamento"),
-          content: TextField(
-            controller: newTypeController,
-            autofocus: true,
-            decoration:
-                const InputDecoration(hintText: "Digite o tipo de equipamento"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancelar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Adicionar"),
-              onPressed: () {
-                String newType = newTypeController.text;
-                if (newType.isNotEmpty) {
-                  setState(() {
-                    equipmentTypes.add(newType);
-                    // Opcionalmente, pode-se definir o novo tipo como o selecionado
-                    _selectedType = newType;
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-            )
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -107,7 +73,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: const Center(
-                child: Text('Registrar Novo Equipamento',
+                child: Text('Equipamentos',
                     style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -138,8 +104,8 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
-                  const Text('Equipamento',
+                  const SizedBox(height: 20),
+                  const Text('Equipamentos',
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   _buildDropdown(
@@ -150,8 +116,6 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                         _selectedType = newValue;
                       });
                     },
-                    addNew: _addNewEquipmentType,
-                    showAddButton: true, // Ative o botão de adição
                   ),
                   const SizedBox(height: 30),
                   const Text('Nome do equipamento',
@@ -206,33 +170,55 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                   const SizedBox(height: 15),
                   IconButton(
                     icon: const Icon(Icons.camera_alt),
-                    onPressed:
-                        _pickImage, // Atualiza aqui para chamar _pickImage quando clicado
+                    onPressed: _pickImage,
+                  ),
+                  Wrap(
+                    children: _images.map((imageData) {
+                      return Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.remove_circle, color: Colors.red),
+                            onPressed: () {
+                              setState(() {
+                                _images.removeWhere(
+                                    (element) => element.id == imageData.id);
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    }).toList(),
                   ),
                   const SizedBox(height: 15),
                   Center(
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(AppColors.sigeIeYellow),
-                        foregroundColor:
-                            MaterialStateProperty.all(AppColors.sigeIeBlue),
-                        minimumSize:
-                            MaterialStateProperty.all(const Size(165, 50)),
-                        textStyle: MaterialStateProperty.all(
-                          const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                          backgroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeYellow),
+                          foregroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeBlue),
+                          minimumSize:
+                              MaterialStateProperty.all(const Size(165, 50)),
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ))),
+                      onPressed: () {},
+                      child: const Text(
+                        'Adicionar Equipamento',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      onPressed: () {
-                        // Lógica de evento aqui
-                      },
-                      child: const Text('CONTINUAR'),
                     ),
                   ),
                 ],
@@ -247,46 +233,35 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   Widget _buildDropdown({
     required List<String> items,
     required String? value,
-    required void Function(String?) onChanged,
-    VoidCallback? addNew,
-    bool showAddButton = false,
+    required Function(String?) onChanged,
   }) {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButtonFormField<String>(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 4),
-                ),
-                value: value,
-                isExpanded: true,
-                items: items.map((String item) {
-                  return DropdownMenuItem(
-                    value: item,
-                    child: Text(item),
-                  );
-                }).toList(),
-                onChanged: onChanged,
-                style: TextStyle(color: Colors.black),
-                dropdownColor: Colors.grey[200],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: value,
+          iconSize: 30,
+          iconEnabledColor: AppColors.sigeIeBlue,
+          isExpanded: true,
+          items: items.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(value),
               ),
-            ),
+            );
+          }).toList(),
+          onChanged: (String? newValue) => onChanged(newValue),
+          hint: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Text('Selecione uma opção'),
           ),
         ),
-        if (showAddButton)
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: addNew,
-          ),
-      ],
+      ),
     );
   }
 }

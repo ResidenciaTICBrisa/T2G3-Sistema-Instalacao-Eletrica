@@ -66,11 +66,11 @@ class EquipmentScreen extends StatelessWidget {
           ),
           SizedBox(height: 150),
           EquipmentButton(
-            title: 'ADICIONAR EQUIPAMENTOS',
+            title: 'EQUIPAMENTOS NA SALA',
             onPressed: () => navigateToAddEquipment(context),
           ),
           EquipmentButton(
-            title: 'VER EQUIPAMENTOS',
+            title: 'GERENCIAR EQUIPAMENTOS',
             onPressed: () => navigateToViewEquipment(context),
           ),
         ],

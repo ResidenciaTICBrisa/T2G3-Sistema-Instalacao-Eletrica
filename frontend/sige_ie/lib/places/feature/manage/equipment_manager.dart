@@ -14,14 +14,14 @@ class EquipmentManager {
       case 1:
         return ['Eletroduto', 'Eletrocalha', 'Dimensão'];
       case 2:
-        return ['Para Raios', 'Captação', 'Subsistemas'];
+        return ['Para-raios', 'Captação', 'Subsistemas'];
       case 3:
         return [
-          'Alarme de Incêndio',
-          'Sensor de Fumaça',
-          'Sensor de Temperatura',
+          'Alarme de incêndio',
+          'Sensor de fumaça',
+          'Sensor de temperatura',
           'Acionadores',
-          'Central de alarme de Incêndio'
+          'Central de alarme de incêndio'
         ];
       default:
         return [];

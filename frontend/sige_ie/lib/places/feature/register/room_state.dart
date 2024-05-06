@@ -13,11 +13,11 @@ class _RoomLocationState extends State<RoomLocation> {
   String? selectedFloor;
   final TextEditingController roomController = TextEditingController();
   final List<String> floors = [
-    'Andar 1',
-    'Andar 2',
-    'Andar 3',
-    'Andar 4',
-    'Andar 5'
+    '1° Andar',
+    '2° Andar',
+    '3° Andar',
+    '4° Andar',
+    '5° Andar'
   ];
 
   @override
