@@ -36,6 +36,7 @@ dependencies:
     http: ^0.13.3
     cookie_jar: ^4.0.8
     http_interceptor: ^1.0.1
+    image_picker: ^0.8.5+3 
     
     # The following adds the Cupertino Icons font to your application.
     # Use with the CupertinoIcons class for iOS style icons.

@@ -28,6 +28,25 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
+                color: AppColors.sigeIeBlue,
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+              child: const Center(
+                child: Text('Equipamentos',
+                    style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white)),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -44,7 +63,9 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                         child: Text(
                           EquipmentManager.categoryMap[widget.categoryNumber]!,
                           style: TextStyle(
-                              fontSize: 18, color: AppColors.sigeIeBlue),
+                              fontSize: 18,
+                              color: AppColors.sigeIeBlue,
+                              fontWeight: FontWeight.w500),
                         ),
                       ),
                     ],
@@ -71,6 +92,9 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                         child: Text(equipment),
                       );
                     }).toList(),
+                  ),
+                  SizedBox(
+                    height: 40,
                   ),
                   const SizedBox(height: 50),
                   ElevatedButton(
