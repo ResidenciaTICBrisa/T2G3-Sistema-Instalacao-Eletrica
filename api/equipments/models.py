@@ -4,6 +4,7 @@ from systems.models import System
 from users.models import PlaceOwner
 
 class EquipmentType(models.Model):
+
     name = models.CharField(max_length=50)
     system = models.ForeignKey(System, on_delete=models.CASCADE)
 
@@ -20,12 +21,14 @@ class EquipmentDetail(models.Model):
     description = models.CharField(max_length=50)
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
 
-    def __str__(self):return self.description
+    def __str__(self):
+        return self.description
 
     class Meta:
         db_table = 'equipments_equipment_details'
 
 class FireAlarmEquipment(models.Model):
+
    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
    system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)

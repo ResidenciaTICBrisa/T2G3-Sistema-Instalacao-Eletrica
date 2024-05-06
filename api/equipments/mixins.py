@@ -1,18 +1,17 @@
 from .models import EquipmentDetail
 from rest_framework import serializers
 
-class ValidateEquipmentDetailAndAreaMixin:
+class ValidateAreaMixin:
 
-    def validate_equipment_detail(self, value):
+    def validate(self, data):
         """
         Garante que o equipment detail pertence ao system.
         """
-        system_id = self.instance.system_id if self.instance else 7
-        equipment_detail_id = value.id
-        equipment_detail = EquipmentDetail.objects.filter(id=equipment_detail_id, equipmentType__system_id=system_id).first()
-
-        if not equipment_detail:
-            raise serializers.ValidationError("The equipment detail does not belong to the specified system")
+        equipment_detail = data.get('equipment_detail')
+        if equipment_detail:
+            equipment_type_system = equipment_detail.equipmentType.system
+            if equipment_type_system != data['system']:
+                raise serializers.ValidationError("The equipment type's system must match the equipment's system.")
 
         """
         Garante que o equipment detail pertence ao place owner.
@@ -20,8 +19,7 @@ class ValidateEquipmentDetailAndAreaMixin:
         user = self.context['request'].user
         if equipment_detail.place_owner != user.placeowner:
             raise serializers.ValidationError("You are not the owner of the equipment detail's place")
-
-        return value
+        return data
 
     def validate_area(self, value):
         """
