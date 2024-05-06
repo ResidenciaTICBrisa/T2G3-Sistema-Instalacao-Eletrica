@@ -56,8 +56,10 @@ class MyApp extends StatelessWidget {
             if (settings.arguments is String) {
               final roomName = settings.arguments as String;
               return MaterialPageRoute(
-                  builder: (context) =>
-                      SystemConfiguration(roomName: roomName));
+                  builder: (context) => SystemConfiguration(
+                        roomName: roomName,
+                        categoryNumber: 0,
+                      ));
             }
             throw Exception(
                 'Invalid route: Expected string argument for /systemLocation.');
@@ -65,11 +67,13 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
                 builder: (context) => const LowVoltageScreen(
                       roomName: '',
+                      categoryNumber: 0,
                     ));
           case '/equipamentScreen':
             return MaterialPageRoute(
                 builder: (context) => EquipmentScreen(
                       roomName: '',
+                      categoryNumber: 0,
                     ));
           default:
             return MaterialPageRoute(

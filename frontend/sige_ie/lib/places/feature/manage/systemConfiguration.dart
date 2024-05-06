@@ -5,28 +5,31 @@ import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String roomName;
+  final int categoryNumber;
 
-  SystemConfiguration({Key? key, required this.roomName}) : super(key: key);
+  SystemConfiguration(
+      {Key? key, required this.roomName, required this.categoryNumber})
+      : super(key: key);
 
   @override
   _SystemConfigurationState createState() => _SystemConfigurationState();
 }
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
-  void navigateTo(String routeName, String roomName) {
+  void navigateTo(String routeName, String roomName, [int categoryNumber = 0]) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) {
           switch (routeName) {
             case '/lowVoltage':
-              return LowVoltageScreen(roomName: roomName);
+              return LowVoltageScreen(
+                  roomName: roomName, categoryNumber: categoryNumber);
             case '/structuredCabling':
-              return EquipmentScreen(roomName: roomName);
             case '/atmosphericDischarges':
-              return EquipmentScreen(roomName: roomName);
             case '/fireAlarm':
-              return EquipmentScreen(roomName: roomName);
+              return EquipmentScreen(
+                  roomName: roomName, categoryNumber: categoryNumber);
             default:
               return Scaffold(
                 body: Center(child: Text('No route defined for $routeName')),
@@ -75,18 +78,18 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             ),
             SystemButton(
                 title: 'BAIXA TENSÃO',
-                onPressed: () => navigateTo('/lowVoltage', widget.roomName)),
+                onPressed: () => navigateTo('/lowVoltage', widget.roomName, 0)),
             SystemButton(
                 title: 'CABEAMENTO ESTRUTURADO',
                 onPressed: () =>
-                    navigateTo('/structuredCabling', widget.roomName)),
+                    navigateTo('/structuredCabling', widget.roomName, 1)),
             SystemButton(
                 title: 'DESCARGAS ATMOSFÉRICAS',
                 onPressed: () =>
-                    navigateTo('/atmosphericDischarges', widget.roomName)),
+                    navigateTo('/atmosphericDischarges', widget.roomName, 2)),
             SystemButton(
                 title: 'ALARME DE INCÊNDIO',
-                onPressed: () => navigateTo('/fireAlarm', widget.roomName)),
+                onPressed: () => navigateTo('/fireAlarm', widget.roomName, 3)),
           ],
         ),
       ),

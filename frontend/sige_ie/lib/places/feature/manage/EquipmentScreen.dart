@@ -5,14 +5,22 @@ import 'package:sige_ie/places/feature/manage/viewEquipmentScreen.dart';
 
 class EquipmentScreen extends StatelessWidget {
   final String roomName;
+  final int categoryNumber;
 
-  EquipmentScreen({Key? key, required this.roomName}) : super(key: key);
+  EquipmentScreen({
+    Key? key,
+    required this.roomName,
+    required this.categoryNumber,
+  }) : super(key: key);
 
   void navigateToAddEquipment(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddEquipmentScreen(roomName: roomName),
+        builder: (context) => AddEquipmentScreen(
+          roomName: roomName,
+          categoryNumber: categoryNumber,
+        ),
       ),
     );
   }
@@ -21,7 +29,10 @@ class EquipmentScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ViewEquipmentScreen(roomName: roomName),
+        builder: (context) => ViewEquipmentScreen(
+          roomName: roomName,
+          categoryNumber: categoryNumber,
+        ),
       ),
     );
   }
@@ -37,8 +48,7 @@ class EquipmentScreen extends StatelessWidget {
         ),
       ),
       body: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.stretch, // Stretches horizontally
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
@@ -47,14 +57,14 @@ class EquipmentScreen extends StatelessWidget {
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
             child: Center(
-              child: Text('${roomName}',
+              child: Text(roomName,
                   style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
                       color: AppColors.lightText)),
             ),
           ),
-          SizedBox(height: 150), // Define the height for spacing as needed
+          SizedBox(height: 150),
           EquipmentButton(
             title: 'ADICIONAR EQUIPAMENTOS',
             onPressed: () => navigateToAddEquipment(context),

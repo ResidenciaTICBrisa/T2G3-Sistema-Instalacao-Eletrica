@@ -3,9 +3,11 @@ import 'package:sige_ie/config/app_styles.dart';
 
 class AddEquipmentScreen extends StatefulWidget {
   final String roomName;
+  final int categoryNumber;
 
-  AddEquipmentScreen({Key? key, required this.roomName}) : super(key: key);
-
+  AddEquipmentScreen(
+      {Key? key, required this.roomName, required this.categoryNumber})
+      : super(key: key);
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
