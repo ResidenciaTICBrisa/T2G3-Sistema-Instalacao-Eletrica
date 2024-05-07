@@ -44,7 +44,13 @@ class EquipmentScreen extends StatelessWidget {
         backgroundColor: AppColors.sigeIeBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            Navigator.pushReplacementNamed(
+              context,
+              '/systemLocation',
+              arguments: roomName,
+            );
+          },
         ),
       ),
       body: Column(

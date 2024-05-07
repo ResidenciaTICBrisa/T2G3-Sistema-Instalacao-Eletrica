@@ -33,7 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text(
           'Editar Perfil',
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () {},
                   child: const Text(
                     'Mudar username',
-                    style: TextStyle(color: Color.fromARGB(255, 33, 150, 243)),
+                    style: TextStyle(color: Colors.blue),
                   ),
                 ),
               ],
@@ -87,38 +87,46 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  width: 150, // Define a largura uniforme
-                  height: 50, // Define a altura uniforme
+                  width: 150,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
                       await userService.update(userResponseModel.id,
                           userResponseModel.firstname, userResponseModel.email);
                     },
                     child: const Text('Salvar',
-                        style: TextStyle(color: AppColors.dartText)),
+                        style: TextStyle(
+                            color: AppColors.dartText,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 224, 221, 221),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      minimumSize: const Size(140, 50),
                     ),
                   ),
                 ),
                 SizedBox(
-                  width: 150, // Mesma largura para manter uniformidade
-                  height: 50, // Mesma altura
+                  width: 150,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () async {
                       await authService.logout();
                       Navigator.pushReplacementNamed(context, '/loginScreen');
                     },
                     child: const Text('Sair da Conta',
-                        style: TextStyle(color: AppColors.dartText)),
+                        style: TextStyle(
+                            color: AppColors.dartText,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w900)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 153, 163, 168),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                      minimumSize: const Size(140, 50),
                     ),
                   ),
                 ),
@@ -129,8 +137,8 @@ class _ProfilePageState extends State<ProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 150, // Mantendo a consistência no tamanho
-                  height: 50, // Altura uniforme para todos os botões
+                  width: 150,
+                  height: 50,
                   child: ElevatedButton(
                       onPressed: () async {
                         // Mostrar o diálogo de confirmação
@@ -138,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('Excluir Conta'),
+                              title: const Text('EXCLUIR'),
                               content: const Text(
                                   'Tem certeza que deseja excluir sua conta?'),
                               actions: <Widget>[
@@ -169,8 +177,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         }
                       },
                       child: const Text('Excluir Conta',
-                          style: TextStyle(color: AppColors.lightText)),
-                      style: AppButtonStyles.warnButton),
+                          style: TextStyle(
+                              color: AppColors.lightText,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900)),
+                      style: AppButtonStyles.warnButton.copyWith(
+                          minimumSize:
+                              MaterialStateProperty.all(const Size(140, 50)))),
                 ),
               ],
             )
