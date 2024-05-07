@@ -15,7 +15,7 @@ class Place(models.Model):
 class Area(models.Model):
 
     name = models.CharField(max_length=50)
-    floor = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    floor = models.IntegerField(default=0)
     place = models.ForeignKey(Place, on_delete=models.CASCADE, null=True, related_name='areas')
     
     def __str__(self):
