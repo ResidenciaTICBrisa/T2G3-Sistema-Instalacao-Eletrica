@@ -13,6 +13,7 @@ class ImageData {
 }
 
 List<ImageData> _images = [];
+Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddEquipmentScreen extends StatefulWidget {
   final String roomName;
@@ -39,7 +40,14 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
       final pickedFile = await picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
         setState(() {
-          _images.add(ImageData(File(pickedFile.path)));
+          final imageData = ImageData(File(pickedFile.path));
+          final categoryNumber = widget.categoryNumber;
+          if (!categoryImagesMap.containsKey(categoryNumber)) {
+            categoryImagesMap[categoryNumber] = [];
+          }
+          categoryImagesMap[categoryNumber]!.add(imageData);
+          _images = categoryImagesMap[
+              categoryNumber]!; // Atualiza _images para a categoria corrente
         });
       }
     } catch (e) {
@@ -51,6 +59,8 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   void initState() {
     super.initState();
     equipmentTypes = EquipmentManager.getEquipmentList(widget.categoryNumber);
+    _images = categoryImagesMap[widget.categoryNumber] ??
+        []; // Inicializa _images com as imagens da categoria correta
   }
 
   @override
@@ -73,7 +83,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: const Center(
-                child: Text('Equipamentos',
+                child: Text('Equipamentos na sala',
                     style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -187,7 +197,8 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.remove_circle, color: Colors.red),
+                            icon: Icon(Icons.remove_circle,
+                                color: AppColors.warn),
                             onPressed: () {
                               setState(() {
                                 _images.removeWhere(
@@ -230,6 +241,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     );
   }
 
+// Este método não precisa alterar `_images` pois isso deve depender apenas da categoria, não do tipo de equipamento.
   Widget _buildDropdown({
     required List<String> items,
     required String? value,
@@ -255,7 +267,12 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               ),
             );
           }).toList(),
-          onChanged: (String? newValue) => onChanged(newValue),
+          onChanged: (String? newValue) {
+            setState(() {
+              _selectedType = newValue;
+            });
+            onChanged(newValue);
+          },
           hint: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Text('Selecione uma opção'),

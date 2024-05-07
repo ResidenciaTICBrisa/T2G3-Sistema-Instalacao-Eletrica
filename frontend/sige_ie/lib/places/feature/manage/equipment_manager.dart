@@ -27,4 +27,6 @@ class EquipmentManager {
         return [];
     }
   }
+
+  static void deleteEquipment(int categoryNumber, String s) {}
 }

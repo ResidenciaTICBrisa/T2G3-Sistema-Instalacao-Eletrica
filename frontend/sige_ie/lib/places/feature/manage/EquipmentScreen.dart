@@ -93,11 +93,11 @@ class EquipmentButton extends StatelessWidget {
       child: ElevatedButton(
         child: Text(title,
             style: const TextStyle(
-                color: AppColors.sigeIeYellow,
+                color: AppColors.sigeIeBlue,
                 fontSize: 18,
                 fontWeight: FontWeight.w900)),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
+          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
           padding: MaterialStateProperty.all(
               const EdgeInsets.symmetric(vertical: 25)),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
