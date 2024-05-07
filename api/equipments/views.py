@@ -51,7 +51,9 @@ class FireAlarmEquipmentList(generics.ListCreateAPIView):
         return FireAlarmEquipment.objects.filter(area__place__place_owner=user.placeowner)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 8
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -72,7 +74,9 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
         return AtmosphericDischargeEquipment.objects.filter(area__place__place_owner=user.placeowner)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 7
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -93,7 +97,9 @@ class StructuredCablingEquipmentList(generics.ListCreateAPIView):
         return StructuredCablingEquipment.objects.filter(area__place__place_owner=user.placeowner)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 6
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -114,7 +120,9 @@ class DistributionBoardEquipmentList(generics.ListCreateAPIView):
         return DistributionBoardEquipment.objects.filter(area__place__place_owner=user.placeowner)
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 5
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -135,7 +143,9 @@ class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
         return ElectricalCircuitEquipment.objects.filter(area__place__place_owner=user.placeowner)
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 4
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -156,7 +166,9 @@ class ElectricalLineEquipmentList(generics.ListCreateAPIView):
         return ElectricalLineEquipment.objects.filter(area__place__place_owner=user.placeowner)
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 3
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -177,7 +189,9 @@ class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
         return ElectricalLoadEquipment.objects.filter(area__place__place_owner=user.placeowner)
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 2
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
@@ -198,7 +212,9 @@ class IluminationEquipmentList(generics.ListCreateAPIView):
         return IluminationEquipment.objects.filter(area__place__place_owner=user.placeowner)
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        data = request.data.copy() 
+        data["system"] = 1
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         headers = self.get_success_headers(serializer.data)
