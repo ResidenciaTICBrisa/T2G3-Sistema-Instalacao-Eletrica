@@ -18,6 +18,7 @@ class ViewEquipmentScreen extends StatefulWidget {
 class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   String? _selectedEquipment;
   List<String> equipmentList = [];
+
   void navigateToEquipmentScreen() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => EquipmentScreen(
@@ -31,6 +32,10 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   void initState() {
     super.initState();
     equipmentList = EquipmentManager.getEquipmentList(widget.categoryNumber);
+
+    if (equipmentList.isNotEmpty) {
+      _selectedEquipment = _selectedEquipment ?? equipmentList.first;
+    }
   }
 
   @override
@@ -89,7 +94,8 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                   ),
                   const SizedBox(height: 30),
                   const Text('Equipamentos',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -136,21 +142,25 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                   const SizedBox(height: 40),
                   Center(
                     child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(AppColors.sigeIeYellow),
-                        foregroundColor:
-                            MaterialStateProperty.all(AppColors.sigeIeBlue),
-                        minimumSize:
-                            MaterialStateProperty.all(const Size(165, 50)),
-                        textStyle: MaterialStateProperty.all(const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold)),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                      ),
-                      onPressed: navigateToEquipmentScreen,
-                      child: const Text('SALVAR'),
-                    ),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeYellow),
+                          foregroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeBlue),
+                          minimumSize:
+                              MaterialStateProperty.all(const Size(175, 55)),
+                          textStyle: MaterialStateProperty.all(const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold)),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                        ),
+                        onPressed: navigateToEquipmentScreen,
+                        child: const Text(
+                          'SALVAR',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        )),
                   ),
                   const SizedBox(height: 50),
                 ],
@@ -234,10 +244,10 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                         return DropdownMenuItem<String>(
                           value: equipment,
                           child: Text(equipment,
-                              style: const TextStyle(color: Colors.black)),
+                              style: TextStyle(color: Colors.black)),
                         );
                       }).toList(),
-                      dropdownColor: Colors.grey[300],
+                      dropdownColor: Colors.grey[200],
                     ),
                   ),
                 ),
@@ -256,6 +266,11 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                   if (localSelectedEquipment != null) {
                     setState(() {
                       equipmentList.remove(localSelectedEquipment);
+                      if (_selectedEquipment == localSelectedEquipment) {
+                        _selectedEquipment = equipmentList.isNotEmpty
+                            ? equipmentList.first
+                            : null;
+                      }
                     });
                     Navigator.of(context).pop();
                   }

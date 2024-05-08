@@ -167,19 +167,27 @@ class _HomePageState extends State<HomePage> {
             textAlign: TextAlign.center,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 10),
           ElevatedButton(
-            style: AppButtonStyles.standardButton,
+            style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(AppColors.sigeIeYellow),
+                foregroundColor:
+                    MaterialStateProperty.all(AppColors.sigeIeBlue),
+                minimumSize: MaterialStateProperty.all(const Size(140, 50)),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ))),
             onPressed: onPress,
             child: Text(
               buttonText,
               style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                fontWeight: FontWeight.w900,
               ),
             ),
           )
