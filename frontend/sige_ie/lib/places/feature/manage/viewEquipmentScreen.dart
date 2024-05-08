@@ -18,6 +18,7 @@ class ViewEquipmentScreen extends StatefulWidget {
 class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   String? _selectedEquipment;
   List<String> equipmentList = [];
+
   void navigateToEquipmentScreen() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => EquipmentScreen(
@@ -31,6 +32,10 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   void initState() {
     super.initState();
     equipmentList = EquipmentManager.getEquipmentList(widget.categoryNumber);
+
+    if (equipmentList.isNotEmpty) {
+      _selectedEquipment = _selectedEquipment ?? equipmentList.first;
+    }
   }
 
   @override
@@ -239,10 +244,10 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                         return DropdownMenuItem<String>(
                           value: equipment,
                           child: Text(equipment,
-                              style: const TextStyle(color: Colors.black)),
+                              style: TextStyle(color: Colors.black)),
                         );
                       }).toList(),
-                      dropdownColor: Colors.grey[300],
+                      dropdownColor: Colors.grey[200],
                     ),
                   ),
                 ),
@@ -261,6 +266,11 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                   if (localSelectedEquipment != null) {
                     setState(() {
                       equipmentList.remove(localSelectedEquipment);
+                      if (_selectedEquipment == localSelectedEquipment) {
+                        _selectedEquipment = equipmentList.isNotEmpty
+                            ? equipmentList.first
+                            : null;
+                      }
                     });
                     Navigator.of(context).pop();
                   }

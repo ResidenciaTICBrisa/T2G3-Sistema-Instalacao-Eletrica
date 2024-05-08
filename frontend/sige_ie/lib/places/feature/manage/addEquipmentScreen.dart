@@ -33,6 +33,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   String? _selectedType;
   String? _selectedLocation;
   List<String> equipmentTypes = [];
+
   @override
   void dispose() {
     _equipmentNameController.dispose();
@@ -84,7 +85,6 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                // Limpar antes de sair
                 _equipmentNameController.clear();
                 _equipmentQuantityController.clear();
                 categoryImagesMap[widget.categoryNumber]?.clear();
@@ -129,7 +129,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                             child: Text(
                               EquipmentManager
                                   .categoryMap[widget.categoryNumber]!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 18,
                                   color: AppColors.sigeIeBlue,
                                   fontWeight: FontWeight.w500),
@@ -163,7 +163,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                         ),
                         child: TextField(
                           controller: _equipmentNameController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 15),
@@ -183,7 +183,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                         child: TextField(
                           controller: _equipmentQuantityController,
                           keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 15),
@@ -224,7 +224,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                                 ),
                               ),
                               IconButton(
-                                icon: Icon(Icons.remove_circle,
+                                icon: const Icon(Icons.remove_circle,
                                     color: AppColors.warn),
                                 onPressed: () {
                                   setState(() {
@@ -261,7 +261,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                                 fontSize: 17, fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -273,9 +273,12 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
 
   Widget _buildDropdown({
     required List<String> items,
-    required String? value,
+    String? value,
     required Function(String?) onChanged,
   }) {
+    String dropdownValue = value ?? 'Escolha um...';
+    List<String> dropdownItems = ['Escolha um...'] + items;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey[300],
@@ -283,11 +286,11 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: value,
+          value: dropdownValue,
           iconSize: 30,
           iconEnabledColor: AppColors.sigeIeBlue,
           isExpanded: true,
-          items: items.map<DropdownMenuItem<String>>((String value) {
+          items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: Padding(
@@ -297,10 +300,9 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
             );
           }).toList(),
           onChanged: (String? newValue) {
-            setState(() {
-              _selectedType = newValue;
-            });
-            onChanged(newValue);
+            if (newValue != 'Escolha um...') {
+              onChanged(newValue);
+            }
           },
           hint: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
