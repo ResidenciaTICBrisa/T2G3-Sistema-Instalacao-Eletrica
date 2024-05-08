@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/data/place_request_model.dart';
-import 'package:sige_ie/places/data/place_service.dart';
+import 'package:sige_ie/places/models/place_request_model.dart';
+import 'package:sige_ie/places/services/place_service.dart';
 import 'position.dart';
 
 class NewPlace extends StatefulWidget {

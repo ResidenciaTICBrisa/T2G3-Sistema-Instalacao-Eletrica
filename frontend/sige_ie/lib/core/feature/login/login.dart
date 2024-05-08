@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sige_ie/core/data/auth_service.dart';
+import 'package:sige_ie/core/services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);

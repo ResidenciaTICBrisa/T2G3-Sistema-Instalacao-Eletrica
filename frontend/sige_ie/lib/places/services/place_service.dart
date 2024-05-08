@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http_interceptor/http_interceptor.dart';
-import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/core/services/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
-import 'package:sige_ie/places/data/place_request_model.dart';
+import 'package:sige_ie/places/models/place_request_model.dart';
 
 class PlaceService {
   Future<bool> register(PlaceRequestModel placeRequestModel) async {
