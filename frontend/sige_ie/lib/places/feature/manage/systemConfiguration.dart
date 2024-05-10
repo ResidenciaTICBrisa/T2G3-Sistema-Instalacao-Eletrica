@@ -44,11 +44,8 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: AppColors.sigeIeBlue,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -90,6 +87,30 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             SystemButton(
                 title: 'ALARME DE INCÊNDIO',
                 onPressed: () => navigateTo('/fireAlarm', widget.roomName, 3)),
+            SizedBox(
+              height: 30,
+            ),
+            Center(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(AppColors.warn),
+                  foregroundColor:
+                      MaterialStateProperty.all(AppColors.lightText),
+                  minimumSize: MaterialStateProperty.all(const Size(175, 55)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  )),
+                ),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed('/roomlocation', arguments: widget.roomName);
+                },
+                child: const Text(
+                  'ENCERRAR',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ],
         ),
       ),

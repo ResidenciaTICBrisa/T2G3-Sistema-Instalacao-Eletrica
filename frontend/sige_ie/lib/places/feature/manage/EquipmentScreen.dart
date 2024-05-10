@@ -44,7 +44,13 @@ class EquipmentScreen extends StatelessWidget {
         backgroundColor: AppColors.sigeIeBlue,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            Navigator.pushReplacementNamed(
+              context,
+              '/systemLocation',
+              arguments: roomName,
+            );
+          },
         ),
       ),
       body: Column(
@@ -66,11 +72,11 @@ class EquipmentScreen extends StatelessWidget {
           ),
           SizedBox(height: 150),
           EquipmentButton(
-            title: 'ADICIONAR EQUIPAMENTOS',
+            title: 'EQUIPAMENTOS NA SALA',
             onPressed: () => navigateToAddEquipment(context),
           ),
           EquipmentButton(
-            title: 'VER EQUIPAMENTOS',
+            title: 'GERENCIAR EQUIPAMENTOS',
             onPressed: () => navigateToViewEquipment(context),
           ),
         ],
@@ -93,11 +99,11 @@ class EquipmentButton extends StatelessWidget {
       child: ElevatedButton(
         child: Text(title,
             style: const TextStyle(
-                color: AppColors.sigeIeYellow,
+                color: AppColors.sigeIeBlue,
                 fontSize: 18,
                 fontWeight: FontWeight.w900)),
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
+          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
           padding: MaterialStateProperty.all(
               const EdgeInsets.symmetric(vertical: 25)),
           shape: MaterialStateProperty.all(RoundedRectangleBorder(

@@ -13,11 +13,11 @@ class _RoomLocationState extends State<RoomLocation> {
   String? selectedFloor;
   final TextEditingController roomController = TextEditingController();
   final List<String> floors = [
-    'Andar 1',
-    'Andar 2',
-    'Andar 3',
-    'Andar 4',
-    'Andar 5'
+    '1° Andar',
+    '2° Andar',
+    '3° Andar',
+    '4° Andar',
+    '5° Andar'
   ];
 
   @override
@@ -25,10 +25,7 @@ class _RoomLocationState extends State<RoomLocation> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -146,7 +143,12 @@ class _RoomLocationState extends State<RoomLocation> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            '/', //Rota temporária, modificar depois
+                          );
+                        },
                         child: Text('ENCERRAR'),
                       ),
                     ],
