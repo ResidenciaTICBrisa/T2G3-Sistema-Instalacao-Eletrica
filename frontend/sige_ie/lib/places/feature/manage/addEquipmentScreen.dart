@@ -17,11 +17,17 @@ Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddEquipmentScreen extends StatefulWidget {
   final String roomName;
+  final String localName;
+  final int localId;
   final int categoryNumber;
 
-  AddEquipmentScreen(
-      {Key? key, required this.roomName, required this.categoryNumber})
-      : super(key: key);
+  AddEquipmentScreen({
+    Key? key,
+    required this.roomName,
+    required this.categoryNumber,
+    required this.localName,
+    required this.localId,
+  }) : super(key: key);
 
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
@@ -253,7 +259,12 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                               ))),
                           onPressed: () {
                             Navigator.pushNamed(context, '/systemLocation',
-                                arguments: widget.roomName);
+                                arguments: {
+                                  'roomName': widget.roomName,
+                                  'localName': widget.localName,
+                                  'localId': widget.localId,
+                                  'categoryNumber': widget.categoryNumber,
+                                });
                           },
                           child: const Text(
                             'ADICIONAR EQUIPAMENTO',

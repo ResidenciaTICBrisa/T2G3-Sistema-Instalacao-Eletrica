@@ -5,10 +5,16 @@ import 'package:sige_ie/places/feature/manage/equipment_manager.dart';
 
 class ViewEquipmentScreen extends StatefulWidget {
   final String roomName;
+  final String localName;
+  final int localId;
   final int categoryNumber;
 
   ViewEquipmentScreen(
-      {Key? key, required this.roomName, required this.categoryNumber})
+      {Key? key,
+      required this.roomName,
+      required this.categoryNumber,
+      required this.localName,
+      required this.localId})
       : super(key: key);
 
   @override
@@ -24,6 +30,8 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
       builder: (context) => EquipmentScreen(
         roomName: widget.roomName,
         categoryNumber: widget.categoryNumber,
+        localName: widget.localName,
+        localId: widget.localId,
       ),
     ));
   }

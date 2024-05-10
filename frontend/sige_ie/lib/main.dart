@@ -9,7 +9,7 @@ import 'package:sige_ie/places/feature/manage/EquipmentScreen.dart';
 import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
 import 'package:sige_ie/places/feature/manage/systemConfiguration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
-import 'package:sige_ie/places/feature/register/room_state.dart';
+import 'package:sige_ie/places/feature/register/new_area.dart';
 import 'core/feature/login/login.dart';
 
 void main() {
@@ -43,38 +43,93 @@ class MyApp extends StatelessWidget {
           case '/newLocation':
             return MaterialPageRoute(builder: (context) => NewPlace());
           case '/roomlocation':
-            if (settings.arguments is String) {
-              final localName = settings.arguments as String;
-              return MaterialPageRoute(
-                builder: (context) => RoomLocation(localName: localName),
-              );
+            if (settings.arguments is Map) {
+              final args = settings.arguments as Map;
+              final String? localName = args['placeName']?.toString();
+              final int? localId = args['placeId'] as int?;
+
+              if (localName != null && localId != null) {
+                return MaterialPageRoute(
+                  builder: (context) =>
+                      RoomLocation(localName: localName, localId: localId),
+                );
+              } else {
+                throw Exception(
+                    'Invalid arguments: localName or localId is null in /roomlocation.');
+              }
             }
             throw Exception(
-                'Invalid route: Expected string argument for /roomlocation.');
+                'Invalid route: Expected Map arguments for /roomlocation.');
 
           case '/systemLocation':
-            if (settings.arguments is String) {
-              final roomName = settings.arguments as String;
-              return MaterialPageRoute(
-                  builder: (context) => SystemConfiguration(
-                        roomName: roomName,
-                        categoryNumber: 0,
-                      ));
+            if (settings.arguments is Map) {
+              final args = settings.arguments as Map;
+              final String? roomName = args['roomName']?.toString();
+              final String? localName = args['localName']?.toString();
+              final int? localId = args['localId'];
+              if (roomName != null && localName != null && localId != null) {
+                return MaterialPageRoute(
+                    builder: (context) => SystemConfiguration(
+                          roomName: roomName,
+                          localName: localName,
+                          localId: localId,
+                          categoryNumber: 0,
+                        ));
+              } else {
+                throw Exception(
+                    'Invalid arguments: One of roomName, localName, or localId is null in /systemLocation.');
+              }
             }
             throw Exception(
-                'Invalid route: Expected string argument for /systemLocation.');
+                'Invalid route: Expected Map arguments for /systemLocation.');
           case '/lowVoltage':
-            return MaterialPageRoute(
-                builder: (context) => const LowVoltageScreen(
-                      roomName: '',
-                      categoryNumber: 0,
-                    ));
+            if (settings.arguments is Map) {
+              final args = settings.arguments as Map;
+              final String? roomName = args['roomName']?.toString();
+              final String? localName = args['localName']?.toString();
+              final int? localId = args['localId'];
+              final int categoryNumber = args['categoryNumber'] ?? 0;
+
+              if (roomName != null && localName != null && localId != null) {
+                return MaterialPageRoute(
+                    builder: (context) => LowVoltageScreen(
+                          roomName: roomName,
+                          categoryNumber: categoryNumber,
+                          localName: localName,
+                          localId: localId,
+                        ));
+              } else {
+                throw Exception(
+                    'Invalid arguments: One of roomName, localName, or localId is null in /lowVoltage.');
+              }
+            }
+            throw Exception(
+                'Invalid route: Expected Map arguments for /lowVoltage.');
+
           case '/equipamentScreen':
-            return MaterialPageRoute(
-                builder: (context) => EquipmentScreen(
-                      roomName: '',
-                      categoryNumber: 0,
-                    ));
+            if (settings.arguments is Map) {
+              final args = settings.arguments as Map;
+              final String? roomName = args['roomName']?.toString();
+              final String? localName = args['localName']?.toString();
+              final int? localId = args['localId'];
+              final int categoryNumber = args['categoryNumber'] ?? 0;
+
+              if (roomName != null && localName != null && localId != null) {
+                return MaterialPageRoute(
+                    builder: (context) => EquipmentScreen(
+                          roomName: roomName,
+                          categoryNumber: categoryNumber,
+                          localName: localName,
+                          localId: localId,
+                        ));
+              } else {
+                throw Exception(
+                    'Invalid arguments: One of roomName, localName, or localId is null in /equipamentScreen.');
+              }
+            }
+            throw Exception(
+                'Invalid route: Expected Map arguments for /equipamentScreen.');
+
           default:
             return MaterialPageRoute(
                 builder: (context) => UndefinedView(name: settings.name));

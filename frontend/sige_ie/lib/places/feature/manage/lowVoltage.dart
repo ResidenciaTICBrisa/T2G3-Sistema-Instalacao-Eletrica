@@ -3,11 +3,17 @@ import 'package:sige_ie/config/app_styles.dart';
 
 class LowVoltageScreen extends StatefulWidget {
   final String roomName;
+  final int categoryNumber;
+  final String localName;
+  final int? localId;
 
-  const LowVoltageScreen(
-      {Key? key, required this.roomName, required int categoryNumber})
-      : super(key: key);
-
+  const LowVoltageScreen({
+    Key? key,
+    required this.roomName,
+    required this.categoryNumber,
+    required this.localName,
+    this.localId,
+  }) : super(key: key);
   @override
   _LowVoltageScreenState createState() => _LowVoltageScreenState();
 }

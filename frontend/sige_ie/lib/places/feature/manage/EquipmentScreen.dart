@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/places/feature/manage/addEquipmentScreen.dart';
-import 'package:sige_ie/places/feature/manage/viewEquipmentScreen.dart';
+import 'package:sige_ie/places/feature/manage/manageEquipmentScreen.dart';
 
 class EquipmentScreen extends StatelessWidget {
   final String roomName;
+  final String localName;
   final int categoryNumber;
+  final int localId;
 
   EquipmentScreen({
     Key? key,
     required this.roomName,
     required this.categoryNumber,
+    required this.localName,
+    required this.localId,
   }) : super(key: key);
 
   void navigateToAddEquipment(BuildContext context) {
@@ -20,6 +24,8 @@ class EquipmentScreen extends StatelessWidget {
         builder: (context) => AddEquipmentScreen(
           roomName: roomName,
           categoryNumber: categoryNumber,
+          localName: localName,
+          localId: localId,
         ),
       ),
     );
@@ -32,6 +38,8 @@ class EquipmentScreen extends StatelessWidget {
         builder: (context) => ViewEquipmentScreen(
           roomName: roomName,
           categoryNumber: categoryNumber,
+          localName: localName,
+          localId: localId,
         ),
       ),
     );
@@ -48,7 +56,12 @@ class EquipmentScreen extends StatelessWidget {
             Navigator.pushReplacementNamed(
               context,
               '/systemLocation',
-              arguments: roomName,
+              arguments: {
+                'roomName': roomName,
+                'localName': localName,
+                'localId': localId,
+                'categoryNumber': categoryNumber,
+              },
             );
           },
         ),

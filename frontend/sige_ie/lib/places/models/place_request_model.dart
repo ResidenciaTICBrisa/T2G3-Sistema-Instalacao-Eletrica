@@ -12,4 +12,12 @@ class PlaceRequestModel {
       'lat': lat,
     };
   }
+
+  factory PlaceRequestModel.fromJson(Map<String, dynamic> json) {
+    return PlaceRequestModel(
+      name: json['name'],
+      lon: json['lon'].toDouble(),
+      lat: json['lat'].toDouble(),
+    );
+  }
 }

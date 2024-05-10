@@ -5,18 +5,26 @@ import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String roomName;
+  final String localName;
+  final int localId;
   final int categoryNumber;
 
-  SystemConfiguration(
-      {Key? key, required this.roomName, required this.categoryNumber})
-      : super(key: key);
+  SystemConfiguration({
+    Key? key,
+    required this.roomName,
+    required this.localName,
+    required this.localId,
+    required this.categoryNumber,
+  }) : super(key: key);
 
   @override
   _SystemConfigurationState createState() => _SystemConfigurationState();
 }
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
-  void navigateTo(String routeName, String roomName, [int categoryNumber = 0]) {
+  void navigateTo(
+      String routeName, String roomName, String localName, int localId,
+      [int categoryNumber = 0]) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -24,12 +32,18 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
           switch (routeName) {
             case '/lowVoltage':
               return LowVoltageScreen(
-                  roomName: roomName, categoryNumber: categoryNumber);
+                  roomName: roomName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: categoryNumber);
             case '/structuredCabling':
             case '/atmosphericDischarges':
             case '/fireAlarm':
               return EquipmentScreen(
-                  roomName: roomName, categoryNumber: categoryNumber);
+                  roomName: roomName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: categoryNumber);
             default:
               return Scaffold(
                 body: Center(child: Text('No route defined for $routeName')),
@@ -75,18 +89,20 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             ),
             SystemButton(
                 title: 'BAIXA TENSÃO',
-                onPressed: () => navigateTo('/lowVoltage', widget.roomName, 0)),
+                onPressed: () => navigateTo('/lowVoltage', widget.roomName,
+                    widget.localName, widget.localId, 0)),
             SystemButton(
                 title: 'CABEAMENTO ESTRUTURADO',
-                onPressed: () =>
-                    navigateTo('/structuredCabling', widget.roomName, 1)),
+                onPressed: () => navigateTo('/structuredCabling',
+                    widget.roomName, widget.localName, widget.localId, 1)),
             SystemButton(
                 title: 'DESCARGAS ATMOSFÉRICAS',
-                onPressed: () =>
-                    navigateTo('/atmosphericDischarges', widget.roomName, 2)),
+                onPressed: () => navigateTo('/atmosphericDischarges',
+                    widget.roomName, widget.localName, widget.localId, 2)),
             SystemButton(
                 title: 'ALARME DE INCÊNDIO',
-                onPressed: () => navigateTo('/fireAlarm', widget.roomName, 3)),
+                onPressed: () => navigateTo('/fireAlarm', widget.roomName,
+                    widget.localName, widget.localId, 3)),
             SizedBox(
               height: 30,
             ),
@@ -102,8 +118,10 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   )),
                 ),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed('/roomlocation', arguments: widget.roomName);
+                  Navigator.of(context).pushNamed('/roomlocation', arguments: {
+                    'placeName': widget.localName,
+                    'placeId': widget.localId
+                  });
                 },
                 child: const Text(
                   'ENCERRAR',
