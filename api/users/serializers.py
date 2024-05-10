@@ -2,12 +2,18 @@
 from rest_framework import serializers, response
 from django.contrib.auth.models import User
 from .models import PlaceOwner
+import re
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(min_length=6, max_length=23, required=True)
     password = serializers.CharField(min_length=6, max_length=200, write_only=True)
     first_name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
+
+    def validate_username(self, value):
+        if not re.match("^[a-zA-Z0-9]+$", value):
+            raise serializers.ValidationError("The username must contain only letters and numbers.")
+        return value
 
     class Meta:
         model = User
@@ -33,7 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(min_length=6, max_length=23, required=True)
     password = serializers.CharField(min_length=6, max_length=200, required=True)
-
 
 class UserUpdateSerializer(serializers.Serializer):
     first_name = serializers.CharField(required=True)
