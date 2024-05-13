@@ -2,6 +2,12 @@ from rest_framework import serializers
 from .models import *
 from .mixins import ValidateAreaMixin
 
+class PersonalEquipmentTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PersonalEquipmentType
+        fields = '__all__'
+
 class EquipmentTypeSerializer(serializers.ModelSerializer):
 
     class Meta:

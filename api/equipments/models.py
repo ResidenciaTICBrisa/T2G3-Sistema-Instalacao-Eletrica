@@ -3,6 +3,18 @@ from places.models import Area
 from systems.models import System
 from users.models import PlaceOwner
 
+class PersonalEquipmentType(models.Model):
+
+    name = models.CharField(max_length=50)
+    system = models.ForeignKey(System, on_delete=models.CASCADE)
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'equipments_personal_equipment_types'
+
 class EquipmentType(models.Model):
 
     name = models.CharField(max_length=50)
