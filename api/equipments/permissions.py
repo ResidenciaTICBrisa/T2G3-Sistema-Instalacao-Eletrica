@@ -2,6 +2,13 @@ from rest_framework.permissions import BasePermission
 
 from places.models import Area
 
+class IsEquipmentTypeOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if obj.place_owner == request.user.placeowner:
+            return True
+        else:
+            return False
+
 class IsEquipmentDetailOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.place_owner == request.user.placeowner:

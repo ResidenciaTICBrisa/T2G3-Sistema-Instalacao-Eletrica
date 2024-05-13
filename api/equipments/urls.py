@@ -2,7 +2,10 @@ from .views import *
 from django.urls import path
 
 urlpatterns = [
-    path('equipment-types/by-system/<int:system_id>/', EquipmentTypeList.as_view(), name='equipment_types_by_system'),
+    path('personal-equipment-types/', PersonalEquipmentTypeCreate.as_view(), name='personal_equipment_types'),
+    path('personal-equipment-types/by-system/<int:system_id>/', PersonalEquipmentTypeList.as_view(), name='personal_equipment_types_by_system'),
+    path('personal-equipment-types/<pk>/', PersonalEquipmentTypeDetail.as_view()),
+    path('equipment-types/by-system/<int:system_id>/', EquipmentTypeList.as_view(), name='personal_equipment_types_by_system'),
     path('equipment-types/<pk>/', EquipmentTypeDetail.as_view()),
     path('equipments/', EquipmentDetailList.as_view()),
     path('equipments/<pk>/', EquipmentDetailDetail.as_view()),

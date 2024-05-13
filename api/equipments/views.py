@@ -7,6 +7,34 @@ from .serializers import *
 from .permissions import *
 from rest_framework import status
 
+class PersonalEquipmentTypeCreate(generics.CreateAPIView):
+    queryset = PersonalEquipmentType.objects.all()
+    serializer_class = PersonalEquipmentTypeSerializer
+    permission_classes = [IsEquipmentTypeOwner, IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+
+        if(IsEquipmentTypeOwner):
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(place_owner=request.user.placeowner)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+class PersonalEquipmentTypeList(generics.ListAPIView):
+    queryset = PersonalEquipmentType.objects.all()
+    serializer_class = PersonalEquipmentTypeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        system_id = self.kwargs['system_id']
+        return PersonalEquipmentType.objects.filter(system_id=system_id)
+
+class PersonalEquipmentTypeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PersonalEquipmentType.objects.all()
+    serializer_class = PersonalEquipmentTypeSerializer
+    permission_classes = [IsAuthenticated]
+
 class EquipmentTypeList(generics.ListAPIView):
     queryset = EquipmentType.objects.all()
     serializer_class = EquipmentTypeSerializer
