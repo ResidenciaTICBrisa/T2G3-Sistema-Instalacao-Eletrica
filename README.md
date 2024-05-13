@@ -257,7 +257,7 @@ Com o ambiente preparado, siga os passos abaixo:
 
 4. **Execute o Projeto**:
     - **No Android Studio:** Escolha um dispositivo ou emulador na barra de ferramentas e clique em 'Run'.
-    - **No Visual Studio Code:** Selecione um dispositivo ou emulador na barra de status e pressione `F5` ou utilize o comando `Flutter: Run` na paleta de comandos.
+    - **No Visual Studio Code:** Selecione um dispositivo ou emulador na barra de status e pressione `F5` ou utilize o comando `flutter run` na paleta de comandos.
 
 Pronto, o Front end já está rodando e você pode utilizá-lo.
 
