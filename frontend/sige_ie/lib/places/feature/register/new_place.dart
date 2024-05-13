@@ -161,17 +161,21 @@ class NewPlaceState extends State<NewPlace> {
                     ),
                     onPressed: () async {
                       if (coord && nameController.text.trim().isNotEmpty) {
-                        final place = PlaceRequestModel(
+                        final PlaceService placeService = PlaceService();
+                        final PlaceRequestModel place = PlaceRequestModel(
                             name: nameController.text,
                             lon: positionController.lon,
                             lat: positionController.lat);
 
-                        bool success = await placeService.register(place);
-                        if (success) {
+                        int? placeId = await placeService.register(place);
+                        if (placeId != null) {
                           print(
                               'Local Registrado: ${nameController.text} em latitude: ${positionController.lat} e longitude: ${positionController.lon}');
-                          Navigator.of(context).pushNamed('/roomlocation',
-                              arguments: nameController.text.trim());
+                          Navigator.of(context)
+                              .pushNamed('/arealocation', arguments: {
+                            'placeName': nameController.text.trim(),
+                            'placeId': placeId,
+                          });
                         }
                       } else if (nameController.text.trim().isEmpty || !coord) {
                         showDialog(

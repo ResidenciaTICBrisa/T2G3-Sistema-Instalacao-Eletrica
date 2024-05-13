@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/feature/manage/equipment_manager.dart';
+import 'package:sige_ie/core/feature/manage/equipment_manager.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'dart:math';
@@ -16,12 +16,18 @@ List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddEquipmentScreen extends StatefulWidget {
-  final String roomName;
+  final String areaName;
+  final String localName;
+  final int localId;
   final int categoryNumber;
 
-  AddEquipmentScreen(
-      {Key? key, required this.roomName, required this.categoryNumber})
-      : super(key: key);
+  AddEquipmentScreen({
+    Key? key,
+    required this.areaName,
+    required this.categoryNumber,
+    required this.localName,
+    required this.localId,
+  }) : super(key: key);
 
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
@@ -253,7 +259,12 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                               ))),
                           onPressed: () {
                             Navigator.pushNamed(context, '/systemLocation',
-                                arguments: widget.roomName);
+                                arguments: {
+                                  'areaName': widget.areaName,
+                                  'localName': widget.localName,
+                                  'localId': widget.localId,
+                                  'categoryNumber': widget.categoryNumber,
+                                });
                           },
                           child: const Text(
                             'ADICIONAR EQUIPAMENTO',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sige_ie/users/data/user_request_model.dart';
-import 'package:sige_ie/users/data/user_service.dart';
+import 'package:sige_ie/users/models/user_request_model.dart';
+import 'package:sige_ie/users/services/user_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

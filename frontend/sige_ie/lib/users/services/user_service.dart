@@ -4,8 +4,8 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 
 import 'package:sige_ie/main.dart';
-import 'package:sige_ie/users/data/user_request_model.dart';
-import 'package:sige_ie/users/data/user_response_model.dart';
+import 'package:sige_ie/users/models/user_request_model.dart';
+import 'package:sige_ie/users/models/user_response_model.dart';
 
 class UserService {
   Future<bool> register(UserRequestModel userRequestModel) async {

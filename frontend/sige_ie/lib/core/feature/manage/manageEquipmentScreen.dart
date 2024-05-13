@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/feature/manage/EquipmentScreen.dart';
-import 'package:sige_ie/places/feature/manage/equipment_manager.dart';
+import 'package:sige_ie/core/feature/manage/EquipmentScreen.dart';
+import 'package:sige_ie/core/feature/manage/equipment_manager.dart';
 
 class ViewEquipmentScreen extends StatefulWidget {
-  final String roomName;
+  final String areaName;
+  final String localName;
+  final int localId;
   final int categoryNumber;
 
   ViewEquipmentScreen(
-      {Key? key, required this.roomName, required this.categoryNumber})
+      {Key? key,
+      required this.areaName,
+      required this.categoryNumber,
+      required this.localName,
+      required this.localId})
       : super(key: key);
 
   @override
@@ -22,8 +28,10 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   void navigateToEquipmentScreen() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => EquipmentScreen(
-        roomName: widget.roomName,
+        areaName: widget.areaName,
         categoryNumber: widget.categoryNumber,
+        localName: widget.localName,
+        localId: widget.localId,
       ),
     ));
   }

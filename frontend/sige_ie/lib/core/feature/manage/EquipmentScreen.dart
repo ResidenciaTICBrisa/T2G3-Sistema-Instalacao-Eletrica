@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/feature/manage/addEquipmentScreen.dart';
-import 'package:sige_ie/places/feature/manage/viewEquipmentScreen.dart';
+import 'package:sige_ie/core/feature/manage/addEquipmentScreen.dart';
+import 'package:sige_ie/core/feature/manage/manageEquipmentScreen.dart';
 
 class EquipmentScreen extends StatelessWidget {
-  final String roomName;
+  final String areaName;
+  final String localName;
   final int categoryNumber;
+  final int localId;
 
   EquipmentScreen({
     Key? key,
-    required this.roomName,
+    required this.areaName,
     required this.categoryNumber,
+    required this.localName,
+    required this.localId,
   }) : super(key: key);
 
   void navigateToAddEquipment(BuildContext context) {
@@ -18,8 +22,10 @@ class EquipmentScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => AddEquipmentScreen(
-          roomName: roomName,
+          areaName: areaName,
           categoryNumber: categoryNumber,
+          localName: localName,
+          localId: localId,
         ),
       ),
     );
@@ -30,8 +36,10 @@ class EquipmentScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => ViewEquipmentScreen(
-          roomName: roomName,
+          areaName: areaName,
           categoryNumber: categoryNumber,
+          localName: localName,
+          localId: localId,
         ),
       ),
     );
@@ -48,7 +56,12 @@ class EquipmentScreen extends StatelessWidget {
             Navigator.pushReplacementNamed(
               context,
               '/systemLocation',
-              arguments: roomName,
+              arguments: {
+                'areaName': areaName,
+                'localName': localName,
+                'localId': localId,
+                'categoryNumber': categoryNumber,
+              },
             );
           },
         ),
@@ -63,7 +76,7 @@ class EquipmentScreen extends StatelessWidget {
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
             child: Center(
-              child: Text(roomName,
+              child: Text(areaName,
                   style: const TextStyle(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
