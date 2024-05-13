@@ -32,6 +32,18 @@ class PlaceService {
     }
   }
 
+  Future<List<PlaceRequestModel>> fetchAllPlaces() async {
+    var url = Uri.parse(baseUrl);
+    var response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      List<dynamic> dataList = jsonDecode(response.body);
+      return dataList.map((data) => PlaceRequestModel.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load places');
+    }
+  }
+
   // Ainda não testado
   // GET
   Future<PlaceRequestModel> fetchPlace(int placeId) async {

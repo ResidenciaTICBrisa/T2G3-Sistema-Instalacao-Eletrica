@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/core/data/auth_service.dart';
-import 'package:sige_ie/users/models/user_response_model.dart';
-import 'package:sige_ie/users/services/user_service.dart';
+import 'package:sige_ie/users/data/user_response_model.dart';
+import 'package:sige_ie/users/data/user_service.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
             decoration: const BoxDecoration(
               color: AppColors.sigeIeBlue,
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
@@ -54,7 +54,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 10), // Espaço adicional abaixo do texto
                 ],
               ),
             ),
