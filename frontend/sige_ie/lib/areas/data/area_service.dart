@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
-import 'package:sige_ie/core/services/auth_interceptor.dart';
+import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
-import 'package:sige_ie/places/models/area_request_model.dart';
+import 'package:sige_ie/areas/data/area_request_model.dart';
 
 class AreaService {
   Client client = InterceptedClient.build(
@@ -13,13 +13,13 @@ class AreaService {
   final String baseUrl = 'http://10.0.2.2:8000/api/areas/';
 
   // POST
-  Future<bool> createRoom(RoomRequestModel roomRequestModel) async {
+  Future<bool> createArea(AreaRequestModel areaRequestModel) async {
     var url = Uri.parse(baseUrl);
 
     var response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(roomRequestModel.toJson()),
+      body: jsonEncode(areaRequestModel.toJson()),
     );
 
     return response.statusCode == 201;
@@ -27,35 +27,35 @@ class AreaService {
 
   // Ainda não testado
   // GET
-  Future<RoomRequestModel> fetchRoom(int roomId) async {
-    var url = Uri.parse('$baseUrl$roomId/');
+  Future<AreaRequestModel> fetchArea(int areaId) async {
+    var url = Uri.parse('$baseUrl$areaId/');
 
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      return RoomRequestModel.fromJson(data);
+      return AreaRequestModel.fromJson(data);
     } else {
-      throw Exception('Failed to load room with ID $roomId');
+      throw Exception('Failed to load area with ID $areaId');
     }
   }
 
   // PUT
-  Future<bool> updateRoom(int roomId, RoomRequestModel roomRequestModel) async {
-    var url = Uri.parse('$baseUrl$roomId/');
+  Future<bool> updateArea(int areaId, AreaRequestModel areaRequestModel) async {
+    var url = Uri.parse('$baseUrl$areaId/');
 
     var response = await client.put(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(roomRequestModel.toJson()),
+      body: jsonEncode(areaRequestModel.toJson()),
     );
 
     return response.statusCode == 200;
   }
 
   // DELETE
-  Future<bool> deleteRoom(int roomId) async {
-    var url = Uri.parse('$baseUrl$roomId/');
+  Future<bool> deleteArea(int areaId) async {
+    var url = Uri.parse('$baseUrl$areaId/');
 
     var response = await client.delete(url);
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sige_ie/core/services/auth_service.dart';
+import 'package:sige_ie/core/data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: const Color(0xff123c75),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xff123c75),
       ),

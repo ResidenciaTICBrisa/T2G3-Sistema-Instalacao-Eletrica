@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
-import 'package:sige_ie/core/services/auth_interceptor.dart';
+import 'package:sige_ie/core/data/auth_interceptor.dart';
 
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/users/models/user_request_model.dart';

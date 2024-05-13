@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/models/area_request_model.dart';
-import 'package:sige_ie/places/services/area_service.dart';
+import 'package:sige_ie/areas/data/area_request_model.dart';
+import 'package:sige_ie/areas/data/area_service.dart';
 
-class RoomLocation extends StatefulWidget {
+class AreaLocation extends StatefulWidget {
   final String localName;
   final int localId;
 
-  const RoomLocation({Key? key, required this.localName, required this.localId})
+  const AreaLocation({Key? key, required this.localName, required this.localId})
       : super(key: key);
   @override
-  _RoomLocationState createState() => _RoomLocationState();
+  _AreaLocationState createState() => _AreaLocationState();
 }
 
-class _RoomLocationState extends State<RoomLocation> {
+class _AreaLocationState extends State<AreaLocation> {
   int? selectedFloor;
-  final TextEditingController roomController = TextEditingController();
+  final TextEditingController areaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +123,7 @@ class _RoomLocationState extends State<RoomLocation> {
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10)),
                     child: TextField(
-                      controller: roomController,
+                      controller: areaController,
                       decoration: InputDecoration(
                         hintText: 'Digite o nome da Sala',
                         border: InputBorder.none,
@@ -149,20 +149,20 @@ class _RoomLocationState extends State<RoomLocation> {
                         ),
                         onPressed: () async {
                           if (selectedFloor != null &&
-                              roomController.text.isNotEmpty) {
+                              areaController.text.isNotEmpty) {
                             AreaService areaService = AreaService();
                             bool result =
-                                await areaService.createRoom(RoomRequestModel(
-                              name: roomController.text,
+                                await areaService.createArea(AreaRequestModel(
+                              name: areaController.text,
                               floor: selectedFloor,
                               place: widget.localId,
                             ));
                             if (result) {
                               print(
-                                  'Sala Registrada: ${roomController.text} no $selectedFloor° andar');
+                                  'Sala Registrada: ${areaController.text} no $selectedFloor° andar');
                               Navigator.pushNamed(context, '/systemLocation',
                                   arguments: {
-                                    'roomName': roomController.text,
+                                    'areaName': areaController.text,
                                     'localName': widget.localName,
                                     'localId': widget.localId
                                   });

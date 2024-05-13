@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/places/feature/manage/EquipmentScreen.dart';
-import 'package:sige_ie/places/feature/manage/lowVoltage.dart';
+import 'package:sige_ie/core/feature/manage/EquipmentScreen.dart';
+import 'package:sige_ie/core/feature/manage/lowVoltage.dart';
 
 class SystemConfiguration extends StatefulWidget {
-  final String roomName;
+  final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
 
   SystemConfiguration({
     Key? key,
-    required this.roomName,
+    required this.areaName,
     required this.localName,
     required this.localId,
     required this.categoryNumber,
@@ -23,7 +23,7 @@ class SystemConfiguration extends StatefulWidget {
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
   void navigateTo(
-      String routeName, String roomName, String localName, int localId,
+      String routeName, String areaName, String localName, int localId,
       [int categoryNumber = 0]) {
     Navigator.push(
       context,
@@ -32,7 +32,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
           switch (routeName) {
             case '/lowVoltage':
               return LowVoltageScreen(
-                  roomName: roomName,
+                  areaName: areaName,
                   localName: localName,
                   localId: localId,
                   categoryNumber: categoryNumber);
@@ -40,7 +40,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             case '/atmosphericDischarges':
             case '/fireAlarm':
               return EquipmentScreen(
-                  roomName: roomName,
+                  areaName: areaName,
                   localName: localName,
                   localId: localId,
                   categoryNumber: categoryNumber);
@@ -73,7 +73,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text(widget.roomName,
+                child: Text(widget.areaName,
                     style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -89,19 +89,19 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             ),
             SystemButton(
                 title: 'BAIXA TENSÃO',
-                onPressed: () => navigateTo('/lowVoltage', widget.roomName,
+                onPressed: () => navigateTo('/lowVoltage', widget.areaName,
                     widget.localName, widget.localId, 0)),
             SystemButton(
                 title: 'CABEAMENTO ESTRUTURADO',
                 onPressed: () => navigateTo('/structuredCabling',
-                    widget.roomName, widget.localName, widget.localId, 1)),
+                    widget.areaName, widget.localName, widget.localId, 1)),
             SystemButton(
                 title: 'DESCARGAS ATMOSFÉRICAS',
                 onPressed: () => navigateTo('/atmosphericDischarges',
-                    widget.roomName, widget.localName, widget.localId, 2)),
+                    widget.areaName, widget.localName, widget.localId, 2)),
             SystemButton(
                 title: 'ALARME DE INCÊNDIO',
-                onPressed: () => navigateTo('/fireAlarm', widget.roomName,
+                onPressed: () => navigateTo('/fireAlarm', widget.areaName,
                     widget.localName, widget.localId, 3)),
             SizedBox(
               height: 30,
@@ -118,7 +118,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   )),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushNamed('/roomlocation', arguments: {
+                  Navigator.of(context).pushNamed('/arealocation', arguments: {
                     'placeName': widget.localName,
                     'placeId': widget.localId
                   });

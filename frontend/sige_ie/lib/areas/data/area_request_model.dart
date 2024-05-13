@@ -1,9 +1,9 @@
-class RoomRequestModel {
+class AreaRequestModel {
   String name;
   int? floor;
   int? place;
 
-  RoomRequestModel({required this.name, this.floor, this.place});
+  AreaRequestModel({required this.name, this.floor, this.place});
 
   Map<String, dynamic> toJson() {
     return {
@@ -13,8 +13,8 @@ class RoomRequestModel {
     };
   }
 
-  factory RoomRequestModel.fromJson(Map<String, dynamic> json) {
-    return RoomRequestModel(
+  factory AreaRequestModel.fromJson(Map<String, dynamic> json) {
+    return AreaRequestModel(
       name: json['name'],
       floor: json['floor'],
       place: json['place'],
