@@ -12,6 +12,10 @@ class EquipmentTypeList(generics.ListAPIView):
     serializer_class = EquipmentTypeSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        system_id = self.kwargs['system_id']
+        return EquipmentType.objects.filter(system_id=system_id)
+
 class EquipmentTypeDetail(generics.RetrieveAPIView):
     queryset = EquipmentType.objects.all()
     serializer_class = EquipmentTypeSerializer
