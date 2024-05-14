@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/places/data/place_request_model.dart';
 import 'package:sige_ie/places/data/place_response_model.dart';
 import 'package:sige_ie/places/data/place_service.dart';
 import '../../config/app_styles.dart';
@@ -53,6 +54,84 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                         content:
                             Text('Falha ao excluir o local "${place.name}"')),
                   );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editPlace(BuildContext context, PlaceResponseModel place) {
+    final TextEditingController _nameController =
+        TextEditingController(text: place.name);
+    final TextEditingController _lonController =
+        TextEditingController(text: place.lon.toString());
+    final TextEditingController _latController =
+        TextEditingController(text: place.lat.toString());
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Editar Local'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Nome do Local'),
+                ),
+                TextField(
+                  controller: _lonController,
+                  decoration: InputDecoration(labelText: 'Longitude'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: _latController,
+                  decoration: InputDecoration(labelText: 'Latitude'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Salvar'),
+              onPressed: () async {
+                String newName = _nameController.text;
+                double? newLon = double.tryParse(_lonController.text);
+                double? newLat = double.tryParse(_latController.text);
+                Navigator.of(context).pop();
+
+                if (newName.isNotEmpty && newLon != null && newLat != null) {
+                  PlaceRequestModel updatedPlace = PlaceRequestModel(
+                    name: newName,
+                    lon: newLon,
+                    lat: newLat,
+                  );
+                  bool success =
+                      await _placeService.updatePlace(place.id, updatedPlace);
+                  if (success) {
+                    setState(() {
+                      _placesList = _placeService.fetchAllPlaces();
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Local atualizado para "$newName"')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Falha ao atualizar o local')),
+                    );
+                  }
                 }
               },
             ),
@@ -127,7 +206,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               IconButton(
                                 icon: const Icon(Icons.edit,
                                     color: AppColors.lightText),
-                                onPressed: () {},
+                                onPressed: () => _editPlace(context, place),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete,
