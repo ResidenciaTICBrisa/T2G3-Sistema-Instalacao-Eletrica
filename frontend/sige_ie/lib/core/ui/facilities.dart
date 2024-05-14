@@ -31,6 +31,37 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
     }
   }
 
+  Map<int, List<AreaResponseModel>> _groupAreasByFloor(
+      List<AreaResponseModel> areas) {
+    Map<int, List<AreaResponseModel>> groupedAreas = {};
+    for (var area in areas) {
+      if (groupedAreas[area.floor ?? 0] == null) {
+        groupedAreas[area.floor ?? 0] = [];
+      }
+      groupedAreas[area.floor ?? 0]!.add(area);
+    }
+    return groupedAreas;
+  }
+
+  Future<void> _showAreasForPlace(BuildContext context, int placeId) async {
+    List<AreaResponseModel> areasForPlace = await _loadAreasForPlace(placeId);
+    Map<int, List<AreaResponseModel>> groupedAreas =
+        _groupAreasByFloor(areasForPlace);
+
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return FloorAreaWidget(
+          groupedAreas: groupedAreas,
+          onAddFloor: () {},
+          onEditArea: (int areaId) {},
+          onDeleteArea: (int areaId) {},
+          onTapArea: (int areaId) {},
+        );
+      },
+    );
+  }
+
   void _confirmDelete(BuildContext context, PlaceResponseModel place) {
     showDialog(
       context: context,
@@ -47,27 +78,28 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
               },
             ),
             TextButton(
-                child: Text('Excluir'),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  bool success = await _placeService.deletePlace(place.id);
-                  if (success && mounted) {
-                    setState(() {
-                      _placesList = _placeService.fetchAllPlaces();
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(
-                              'Local "${place.name}" excluído com sucesso')),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('Falha ao excluir o local "${place.name}"')),
-                    );
-                  }
-                }),
+              child: Text('Excluir'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                bool success = await _placeService.deletePlace(place.id);
+                if (success && mounted) {
+                  setState(() {
+                    _placesList = _placeService.fetchAllPlaces();
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Local "${place.name}" excluído com sucesso')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Falha ao excluir o local "${place.name}"')),
+                  );
+                }
+              },
+            ),
           ],
         );
       },
@@ -215,13 +247,13 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit,
-                                    color: AppColors.lightText),
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
                                 onPressed: () => _editPlace(context, place),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete,
-                                    color: AppColors.warn),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () => _confirmDelete(context, place),
                               ),
                               IconButton(
@@ -231,22 +263,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               ),
                             ],
                           ),
-                          onTap: () async {
-                            List<AreaResponseModel> areasForPlace =
-                                await _loadAreasForPlace(place.id);
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return ListView.builder(
-                                    itemCount: areasForPlace.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        title: Text(areasForPlace[index].name),
-                                      );
-                                    },
-                                  );
-                                });
-                          },
+                          onTap: () => _showAreasForPlace(context, place.id),
                         ),
                       );
                     },
@@ -263,6 +280,66 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class FloorAreaWidget extends StatelessWidget {
+  final Map<int, List<AreaResponseModel>> groupedAreas;
+  final VoidCallback onAddFloor;
+  final Function(int) onEditArea;
+  final Function(int) onDeleteArea;
+  final Function(int) onTapArea;
+
+  FloorAreaWidget({
+    required this.groupedAreas,
+    required this.onAddFloor,
+    required this.onEditArea,
+    required this.onDeleteArea,
+    required this.onTapArea,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            children: groupedAreas.entries.map((entry) {
+              int floor = entry.key;
+              List<AreaResponseModel> areas = entry.value;
+              String floorName = floor == 0 ? "Térreo" : "$floor° andar";
+              return ExpansionTile(
+                title: Text(floorName),
+                children: areas.map((area) {
+                  return ListTile(
+                    title: Text(area.name),
+                    onTap: () => onTapArea(area.id),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => onEditArea(area.id),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => onDeleteArea(area.id),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              );
+            }).toList(),
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Adicionar andar'),
+          onTap: onAddFloor,
+        ),
+      ],
     );
   }
 }
