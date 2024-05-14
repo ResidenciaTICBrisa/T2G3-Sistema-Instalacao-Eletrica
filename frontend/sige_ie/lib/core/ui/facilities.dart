@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/areas/data/area_response_model.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
 import 'package:sige_ie/places/data/place_response_model.dart';
 import 'package:sige_ie/places/data/place_service.dart';
 import '../../config/app_styles.dart';
+import '../../areas/data/area_service.dart';
 
 class FacilitiesPage extends StatefulWidget {
   @override
@@ -12,11 +14,21 @@ class FacilitiesPage extends StatefulWidget {
 class _FacilitiesPageState extends State<FacilitiesPage> {
   late Future<List<PlaceResponseModel>> _placesList;
   final PlaceService _placeService = PlaceService();
+  final AreaService _areaService = AreaService();
 
   @override
   void initState() {
     super.initState();
     _placesList = _placeService.fetchAllPlaces();
+  }
+
+  Future<List<AreaResponseModel>> _loadAreasForPlace(int placeId) async {
+    try {
+      return await _areaService.fetchAreasByPlaceId(placeId);
+    } catch (e) {
+      print('Erro ao carregar áreas: $e');
+      return []; // Retorna uma lista vazia em caso de erro
+    }
   }
 
   void _confirmDelete(BuildContext context, PlaceResponseModel place) {
@@ -35,28 +47,27 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
               },
             ),
             TextButton(
-              child: Text('Excluir'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                bool success = await _placeService.deletePlace(place.id);
-                if (success) {
-                  setState(() {
-                    _placesList = _placeService.fetchAllPlaces();
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text('Local "${place.name}" excluído com sucesso')),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text('Falha ao excluir o local "${place.name}"')),
-                  );
-                }
-              },
-            ),
+                child: Text('Excluir'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  bool success = await _placeService.deletePlace(place.id);
+                  if (success && mounted) {
+                    setState(() {
+                      _placesList = _placeService.fetchAllPlaces();
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              'Local "${place.name}" excluído com sucesso')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                              Text('Falha ao excluir o local "${place.name}"')),
+                    );
+                  }
+                }),
           ],
         );
       },
@@ -220,31 +231,21 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               ),
                             ],
                           ),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(place.name),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[
-                                        Text('Longitude: ${place.lon}'),
-                                        Text('Latitude: ${place.lat}'),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: const Text('Fechar'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                          onTap: () async {
+                            List<AreaResponseModel> areasForPlace =
+                                await _loadAreasForPlace(place.id);
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return ListView.builder(
+                                    itemCount: areasForPlace.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        title: Text(areasForPlace[index].name),
+                                      );
+                                    },
+                                  );
+                                });
                           },
                         ),
                       );
