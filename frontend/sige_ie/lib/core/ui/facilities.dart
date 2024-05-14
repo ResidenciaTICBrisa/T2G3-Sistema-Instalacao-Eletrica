@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sige_ie/places/data/place_request_model.dart';
+import 'package:sige_ie/places/data/place_response_model.dart';
 import 'package:sige_ie/places/data/place_service.dart';
 import '../../config/app_styles.dart';
 
@@ -9,12 +9,57 @@ class FacilitiesPage extends StatefulWidget {
 }
 
 class _FacilitiesPageState extends State<FacilitiesPage> {
-  late Future<List<PlaceRequestModel>> _placesList;
+  late Future<List<PlaceResponseModel>> _placesList;
+  final PlaceService _placeService = PlaceService();
 
   @override
   void initState() {
     super.initState();
-    _placesList = PlaceService().fetchAllPlaces();
+    _placesList = _placeService.fetchAllPlaces();
+  }
+
+  void _confirmDelete(BuildContext context, PlaceResponseModel place) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmação'),
+          content:
+              Text('Você realmente deseja excluir o local "${place.name}"?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Excluir'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                bool success = await _placeService.deletePlace(place.id);
+                if (success) {
+                  setState(() {
+                    _placesList = _placeService.fetchAllPlaces();
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Local "${place.name}" excluído com sucesso')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Falha ao excluir o local "${place.name}"')),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -45,10 +90,8 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                         color: Colors.white)),
               ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
-            FutureBuilder<List<PlaceRequestModel>>(
+            const SizedBox(height: 15),
+            FutureBuilder<List<PlaceResponseModel>>(
               future: _placesList,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -89,7 +132,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               IconButton(
                                 icon: const Icon(Icons.delete,
                                     color: AppColors.warn),
-                                onPressed: () {},
+                                onPressed: () => _confirmDelete(context, place),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.description,
@@ -114,7 +157,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                                   ),
                                   actions: <Widget>[
                                     TextButton(
-                                      child: Text('Fechar'),
+                                      child: const Text('Fechar'),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
@@ -136,9 +179,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                 }
               },
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
           ],
         ),
       ),
