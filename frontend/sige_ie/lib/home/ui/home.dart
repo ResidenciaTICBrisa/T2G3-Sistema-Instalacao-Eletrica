@@ -3,8 +3,8 @@ import 'package:sige_ie/config/app_styles.dart';
 import '../../users/feature/profile.dart';
 import '../../core/ui/facilities.dart';
 import '../../maps/feature/maps.dart';
-import 'package:sige_ie/users/models/user_response_model.dart';
-import 'package:sige_ie/users/services/user_service.dart';
+import 'package:sige_ie/users/data/user_response_model.dart';
+import 'package:sige_ie/users/data/user_service.dart';
 
 class HomePage extends StatefulWidget {
   @override
