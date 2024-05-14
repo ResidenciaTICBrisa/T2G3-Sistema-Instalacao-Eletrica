@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/areas/data/area_response_model.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
+import 'package:sige_ie/places/data/place_response_model.dart';
 import 'package:sige_ie/places/data/place_service.dart';
 import '../../config/app_styles.dart';
+import '../../areas/data/area_service.dart';
 
 class FacilitiesPage extends StatefulWidget {
   @override
@@ -9,12 +12,144 @@ class FacilitiesPage extends StatefulWidget {
 }
 
 class _FacilitiesPageState extends State<FacilitiesPage> {
-  late Future<List<PlaceRequestModel>> _placesList;
+  late Future<List<PlaceResponseModel>> _placesList;
+  final PlaceService _placeService = PlaceService();
+  final AreaService _areaService = AreaService();
 
   @override
   void initState() {
     super.initState();
-    _placesList = PlaceService().fetchAllPlaces();
+    _placesList = _placeService.fetchAllPlaces();
+  }
+
+  Future<List<AreaResponseModel>> _loadAreasForPlace(int placeId) async {
+    try {
+      return await _areaService.fetchAreasByPlaceId(placeId);
+    } catch (e) {
+      print('Erro ao carregar áreas: $e');
+      return []; // Retorna uma lista vazia em caso de erro
+    }
+  }
+
+  void _confirmDelete(BuildContext context, PlaceResponseModel place) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmação'),
+          content:
+              Text('Você realmente deseja excluir o local "${place.name}"?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+                child: Text('Excluir'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  bool success = await _placeService.deletePlace(place.id);
+                  if (success && mounted) {
+                    setState(() {
+                      _placesList = _placeService.fetchAllPlaces();
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              'Local "${place.name}" excluído com sucesso')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content:
+                              Text('Falha ao excluir o local "${place.name}"')),
+                    );
+                  }
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editPlace(BuildContext context, PlaceResponseModel place) {
+    final TextEditingController _nameController =
+        TextEditingController(text: place.name);
+    final TextEditingController _lonController =
+        TextEditingController(text: place.lon.toString());
+    final TextEditingController _latController =
+        TextEditingController(text: place.lat.toString());
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Editar Local'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Nome do Local'),
+                ),
+                TextField(
+                  controller: _lonController,
+                  decoration: InputDecoration(labelText: 'Longitude'),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: _latController,
+                  decoration: InputDecoration(labelText: 'Latitude'),
+                  keyboardType: TextInputType.number,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Salvar'),
+              onPressed: () async {
+                String newName = _nameController.text;
+                double? newLon = double.tryParse(_lonController.text);
+                double? newLat = double.tryParse(_latController.text);
+                Navigator.of(context).pop();
+
+                if (newName.isNotEmpty && newLon != null && newLat != null) {
+                  PlaceRequestModel updatedPlace = PlaceRequestModel(
+                    name: newName,
+                    lon: newLon,
+                    lat: newLat,
+                  );
+                  bool success =
+                      await _placeService.updatePlace(place.id, updatedPlace);
+                  if (success) {
+                    setState(() {
+                      _placesList = _placeService.fetchAllPlaces();
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('Local atualizado para "$newName"')),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Falha ao atualizar o local')),
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -45,10 +180,8 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                         color: Colors.white)),
               ),
             ),
-            const SizedBox(
-              height: 15,
-            ),
-            FutureBuilder<List<PlaceRequestModel>>(
+            const SizedBox(height: 15),
+            FutureBuilder<List<PlaceResponseModel>>(
               future: _placesList,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -84,12 +217,12 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               IconButton(
                                 icon: const Icon(Icons.edit,
                                     color: AppColors.lightText),
-                                onPressed: () {},
+                                onPressed: () => _editPlace(context, place),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete,
                                     color: AppColors.warn),
-                                onPressed: () {},
+                                onPressed: () => _confirmDelete(context, place),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.description,
@@ -98,31 +231,21 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               ),
                             ],
                           ),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text(place.name),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[
-                                        Text('Longitude: ${place.lon}'),
-                                        Text('Latitude: ${place.lat}'),
-                                      ],
-                                    ),
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('Fechar'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                          onTap: () async {
+                            List<AreaResponseModel> areasForPlace =
+                                await _loadAreasForPlace(place.id);
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return ListView.builder(
+                                    itemCount: areasForPlace.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        title: Text(areasForPlace[index].name),
+                                      );
+                                    },
+                                  );
+                                });
                           },
                         ),
                       );
@@ -136,9 +259,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                 }
               },
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
           ],
         ),
       ),

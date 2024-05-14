@@ -4,6 +4,7 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
+import 'package:sige_ie/places/data/place_response_model.dart';
 
 class PlaceService {
   final String baseUrl = 'http://10.0.2.2:8000/api/places/';
@@ -22,38 +23,35 @@ class PlaceService {
     );
 
     if (response.statusCode == 201) {
-      // Se a criação foi bem-sucedida, extrai o ID do lugar criado do corpo da resposta
       Map<String, dynamic> responseData = jsonDecode(response.body);
-      int? placeId =
-          responseData['id']; // Assume que a resposta tem um campo 'id'
-      return placeId;
+      return responseData['id'];
     } else {
       return null;
     }
   }
 
-  Future<List<PlaceRequestModel>> fetchAllPlaces() async {
+  // GET ALL
+  Future<List<PlaceResponseModel>> fetchAllPlaces() async {
     var url = Uri.parse(baseUrl);
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
       List<dynamic> dataList = jsonDecode(response.body);
-      return dataList.map((data) => PlaceRequestModel.fromJson(data)).toList();
+      return dataList.map((data) => PlaceResponseModel.fromJson(data)).toList();
     } else {
       throw Exception('Failed to load places');
     }
   }
 
-  // Ainda não testado
   // GET
-  Future<PlaceRequestModel> fetchPlace(int placeId) async {
+  Future<PlaceResponseModel> fetchPlace(int placeId) async {
     var url = Uri.parse('$baseUrl$placeId/');
 
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      return PlaceRequestModel.fromJson(data);
+      return PlaceResponseModel.fromJson(data);
     } else {
       throw Exception('Failed to load place with ID $placeId');
     }
