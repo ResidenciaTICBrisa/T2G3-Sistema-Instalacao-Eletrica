@@ -127,8 +127,7 @@ class _HomePageState extends State<HomePage> {
                         context, 'Registrar novo local', 'Registrar', () {
                       Navigator.of(context).pushNamed('/newLocation');
                     }),
-                    buildSmallRectangle(
-                        context, 'Gerenciar locais', 'Gerenciar', () {
+                    buildSmallRectangle(context, 'Comunidade', 'Gerenciar', () {
                       // Código aqui.
                     }),
                     const Spacer(),

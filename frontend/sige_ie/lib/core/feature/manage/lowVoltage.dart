@@ -1,26 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/core/feature/manage/EquipmentScreen.dart';
 
 class LowVoltageScreen extends StatefulWidget {
   final String areaName;
-  final int categoryNumber;
+  final List<int> categoryNumbers;
   final String localName;
   final int? localId;
 
   const LowVoltageScreen({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.categoryNumbers,
     required this.localName,
     this.localId,
   }) : super(key: key);
+
   @override
   _LowVoltageScreenState createState() => _LowVoltageScreenState();
 }
 
 class _LowVoltageScreenState extends State<LowVoltageScreen> {
-  void navigateTo(String routeName) {
-    Navigator.pushNamed(context, routeName);
+  void navigateToEquipmentScreen(int categoryNumber) {
+    if (widget.localId != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EquipmentScreen(
+            areaName: widget.areaName,
+            localName: widget.localName,
+            localId: widget.localId!,
+            categoryNumber: categoryNumber,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -52,22 +66,27 @@ class _LowVoltageScreenState extends State<LowVoltageScreen> {
                         color: Colors.white)),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-            ),
+            Padding(padding: const EdgeInsets.all(15.0)),
             OptionButton(
-                title: 'ILUMINAÇÃO', onPressed: () => navigateTo('/option1')),
+                title: 'ILUMINAÇÃO',
+                onPressed: () =>
+                    navigateToEquipmentScreen(widget.categoryNumbers[0])),
             OptionButton(
                 title: 'CARGAS ELÉTRICAS',
-                onPressed: () => navigateTo('/option2')),
+                onPressed: () =>
+                    navigateToEquipmentScreen(widget.categoryNumbers[1])),
             OptionButton(
                 title: 'LINHAS ELÉTRICAS',
-                onPressed: () => navigateTo('/option3')),
+                onPressed: () =>
+                    navigateToEquipmentScreen(widget.categoryNumbers[2])),
             OptionButton(
-                title: 'CIRCUITOS', onPressed: () => navigateTo('/option4')),
+                title: 'CIRCUITOS',
+                onPressed: () =>
+                    navigateToEquipmentScreen(widget.categoryNumbers[3])),
             OptionButton(
                 title: 'QUADRO DE DISTRIBUIÇÃO',
-                onPressed: () => navigateTo('/option5')),
+                onPressed: () =>
+                    navigateToEquipmentScreen(widget.categoryNumbers[4])),
           ],
         ),
       ),

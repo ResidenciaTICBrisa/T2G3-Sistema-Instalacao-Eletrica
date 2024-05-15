@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/core/feature/manage/EquipmentScreen.dart';
-import 'package:sige_ie/core/feature/manage/equipment_manager.dart';
 
 class ViewEquipmentScreen extends StatefulWidget {
   final String areaName;
@@ -23,7 +22,16 @@ class ViewEquipmentScreen extends StatefulWidget {
 
 class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   String? _selectedEquipment;
-  List<String> equipmentList = [];
+  List<String> equipmentList = [
+    'Eletroduto',
+    'Eletrocalha',
+    'Dimensão',
+    'Para-raios',
+    'Captação',
+    'Subsistemas',
+    'Alarme de incêndio',
+    'Sensor de fumaça'
+  ];
 
   void navigateToEquipmentScreen() {
     Navigator.of(context).push(MaterialPageRoute(
@@ -39,8 +47,8 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   @override
   void initState() {
     super.initState();
-    equipmentList = EquipmentManager.getEquipmentList(widget.categoryNumber);
 
+    // Seleciona o primeiro equipamento por padrão, se disponível
     if (equipmentList.isNotEmpty) {
       _selectedEquipment = _selectedEquipment ?? equipmentList.first;
     }
@@ -81,26 +89,6 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Categoria: ',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      Expanded(
-                        child: Text(
-                          EquipmentManager.categoryMap[widget.categoryNumber]!,
-                          style: const TextStyle(
-                              fontSize: 18,
-                              color: AppColors.sigeIeBlue,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
                   const Text('Equipamentos',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),

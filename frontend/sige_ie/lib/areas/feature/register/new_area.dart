@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/areas/data/area_response_model.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/areas/data/area_request_model.dart';
 import 'package:sige_ie/areas/data/area_service.dart';
@@ -153,7 +154,7 @@ class _AreaLocationState extends State<AreaLocation> {
                             '/homeScreen',
                           );
                         },
-                        child: Text('VOLTAR'),
+                        child: Text('ENCERRAR'),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -171,28 +172,29 @@ class _AreaLocationState extends State<AreaLocation> {
                           if (selectedFloor != null &&
                               areaController.text.isNotEmpty) {
                             AreaService areaService = AreaService();
-                            bool result =
-                                await areaService.createArea(AreaRequestModel(
-                              name: areaController.text,
-                              floor: selectedFloor,
-                              place: widget.localId,
-                            ));
-                            if (result) {
+                            try {
+                              AreaResponseModel newArea =
+                                  await areaService.createArea(AreaRequestModel(
+                                name: areaController.text,
+                                floor: selectedFloor,
+                                place: widget.localId,
+                              ));
                               print(
-                                  'Sala Registrada: ${areaController.text} no $selectedFloor° andar');
+                                  'Sala Registrada: ${newArea.name} no ${newArea.floor}° andar');
                               Navigator.pushNamed(context, '/systemLocation',
                                   arguments: {
-                                    'areaName': areaController.text,
+                                    'areaName': newArea.name,
                                     'localName': widget.localName,
-                                    'localId': widget.localId
+                                    'localId': widget.localId,
+                                    'areaId': newArea.id,
                                   });
-                            } else {
+                            } catch (e) {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
                                     title: Text('Erro'),
-                                    content: Text("Falha ao criar sala."),
+                                    content: Text("Falha ao criar sala: $e"),
                                     actions: <Widget>[
                                       TextButton(
                                         child: Text("OK"),

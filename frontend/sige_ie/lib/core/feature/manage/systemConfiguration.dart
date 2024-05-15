@@ -22,9 +22,8 @@ class SystemConfiguration extends StatefulWidget {
 }
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
-  void navigateTo(
-      String routeName, String areaName, String localName, int localId,
-      [int categoryNumber = 0]) {
+  void navigateTo(String routeName, String areaName, String localName,
+      int localId, dynamic category) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -32,10 +31,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
           switch (routeName) {
             case '/lowVoltage':
               return LowVoltageScreen(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: categoryNumber);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumbers: category,
+              );
             case '/structuredCabling':
             case '/atmosphericDischarges':
             case '/fireAlarm':
@@ -43,7 +43,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   areaName: areaName,
                   localName: localName,
                   localId: localId,
-                  categoryNumber: categoryNumber);
+                  categoryNumber: category);
             default:
               return Scaffold(
                 body: Center(child: Text('No route defined for $routeName')),
@@ -90,19 +90,19 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             SystemButton(
                 title: 'BAIXA TENSÃO',
                 onPressed: () => navigateTo('/lowVoltage', widget.areaName,
-                    widget.localName, widget.localId, 0)),
+                    widget.localName, widget.localId, [1, 2, 3, 4, 5])),
             SystemButton(
                 title: 'CABEAMENTO ESTRUTURADO',
                 onPressed: () => navigateTo('/structuredCabling',
-                    widget.areaName, widget.localName, widget.localId, 1)),
+                    widget.areaName, widget.localName, widget.localId, 6)),
             SystemButton(
                 title: 'DESCARGAS ATMOSFÉRICAS',
                 onPressed: () => navigateTo('/atmosphericDischarges',
-                    widget.areaName, widget.localName, widget.localId, 2)),
+                    widget.areaName, widget.localName, widget.localId, 7)),
             SystemButton(
                 title: 'ALARME DE INCÊNDIO',
                 onPressed: () => navigateTo('/fireAlarm', widget.areaName,
-                    widget.localName, widget.localId, 3)),
+                    widget.localName, widget.localId, 8)),
             SizedBox(
               height: 30,
             ),
