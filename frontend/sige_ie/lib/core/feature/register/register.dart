@@ -9,14 +9,18 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  //Instância de uma serviço para chamadas API relacionadas ao usuário.
   UserService userService = UserService();
+  //Flag para aceitação de termos e condições.
   bool terms = true;
+  //Chave global para gerenciar o estado do fórmulário.
   final _registerScreen = GlobalKey<FormState>();
+  //Controladores para gerenciar o texto dos campos de Entrada.
   final usernameController = TextEditingController();
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
-
+  //Estrutura básica do widget que define a aparência e funcionalidades da tela de registro.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,20 +30,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: const Color(0xff123c75),
         ),
         body: Center(
-          child: Column(
+          child: Column(//Chama a função que constroí a área da logo.
             children: [
-              Expanded(
+              Expanded(//Widget que exibe o logo na parte superior da tela.
                 flex: 2,
                 child: Container(
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/1000x1000.png'),
+                      image: AssetImage('assets/1000x1000.png'),// Logo do aplicativo.
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
-              Expanded(
+              Expanded(// Widget que Constroi o fórmulário de registro.
                   flex: 6,
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
@@ -81,6 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
+                            // Verificação de validação do username de registro.
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por favor, insira um username válido';
@@ -114,6 +119,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               // Outras propriedades...
                             ),
+                            //Verificação de validação de nome de usuário.
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Por Favor Insira seu Nome';
@@ -121,6 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
+                          // Fórmulário de campo de Email.
                           const SizedBox(height: 20),
                           TextFormField(
                               controller: emailController,
@@ -129,7 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   return 'Insira um email valido';
                                 }
                                 return null;
-                              },
+                              },// Verificação de validação de email do usuário.
                               decoration: InputDecoration(
                                 label: const Text('Email'),
                                 labelStyle:
@@ -138,6 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 hintStyle: const TextStyle(
                                   color: Colors.black,
                                 ),
+                                //Função que cria Bordas para os campos de Texto.
                                 border: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                     color: Color.fromARGB(255, 39, 38, 38),
@@ -152,6 +160,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               )),
                           const SizedBox(height: 20),
+                          //Campo para senha com validação e ofuscação
                           TextFormField(
                             controller: passwordController,
                             obscureText: true,
@@ -183,6 +192,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
+                          //Campo para confirmação de Senha.
                           TextFormField(
                             obscureText: true,
                             obscuringCharacter: '*',
@@ -210,6 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 20),
+                          //Checkbox para aceitação dos termos e condições.
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -240,6 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () async {
+                                //Função para realizar o registro.
                                 if (_registerScreen.currentState!.validate()) {
                                   if (terms) {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -247,7 +259,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         content: Text('Processando Dados'),
                                       ),
                                     );
-
+                                    //Lógica para realizar o registro.
                                     final user = UserRequestModel(
                                       username: usernameController.text,
                                       firstname: nameController.text,
@@ -288,6 +300,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold),
                               ),
+                              //Botão para realizar registro
                               style: ElevatedButton.styleFrom(
                                   elevation: 6,
                                   backgroundColor:
@@ -299,6 +312,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           const SizedBox(height: 30),
+                          //Link para a Tela de Login.
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
