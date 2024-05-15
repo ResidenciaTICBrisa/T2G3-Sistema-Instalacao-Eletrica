@@ -41,14 +41,13 @@ class AreaService {
 
   // Ainda não testado
   // GET
-  Future<AreaRequestModel> fetchArea(int areaId) async {
+  Future<AreaResponseModel> fetchArea(int areaId) async {
     var url = Uri.parse('$baseUrl$areaId/');
-
     var response = await client.get(url);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      return AreaRequestModel.fromJson(data);
+      return AreaResponseModel.fromJson(data);
     } else {
       throw Exception('Failed to load area with ID $areaId');
     }
@@ -58,11 +57,17 @@ class AreaService {
   Future<bool> updateArea(int areaId, AreaRequestModel areaRequestModel) async {
     var url = Uri.parse('$baseUrl$areaId/');
 
+    print('Sending PUT request to $url');
+    print('Request body: ${jsonEncode(areaRequestModel.toJson())}');
+
     var response = await client.put(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(areaRequestModel.toJson()),
     );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
 
     return response.statusCode == 200;
   }
