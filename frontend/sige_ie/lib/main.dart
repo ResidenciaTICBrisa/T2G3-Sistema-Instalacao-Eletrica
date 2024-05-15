@@ -88,15 +88,13 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
-
               if (areaName != null && localName != null && localId != null) {
                 return MaterialPageRoute(
                     builder: (context) => LowVoltageScreen(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          categoryNumbers: const [],
                         ));
               } else {
                 throw Exception(

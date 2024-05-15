@@ -44,9 +44,11 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
     return groupedAreas;
   }
 
-  Future<void> _showAreasForPlace(BuildContext context, int placeId) async {
+  Future<void> _showAreasForPlace(
+      BuildContext context, PlaceResponseModel place) async {
     try {
-      List<AreaResponseModel> areasForPlace = await _loadAreasForPlace(placeId);
+      List<AreaResponseModel> areasForPlace =
+          await _areaService.fetchAreasByPlaceId(place.id);
       Map<int, List<AreaResponseModel>> groupedAreas =
           _groupAreasByFloor(areasForPlace);
 
@@ -54,51 +56,58 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
         context: context,
         builder: (context) {
           return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
+            builder: (BuildContext context, StateSetter modalSetState) {
               return FloorAreaWidget(
-                groupedAreas: groupedAreas,
-                onAddFloor: () {},
-                onEditArea: (int areaId) async {
-                  try {
-                    AreaResponseModel area =
-                        await _areaService.fetchArea(areaId);
-                    TextEditingController nameController =
-                        TextEditingController(text: area.name);
+                  groupedAreas: groupedAreas,
+                  placeName: place.name,
+                  placeId: place.id,
+                  onAddFloor: () {
+                    Navigator.of(context)
+                        .pushNamed('/arealocation', arguments: {
+                      'placeName': place.name,
+                      'placeId': place.id,
+                    });
+                  },
+                  onEditArea: (int areaId) async {
+                    try {
+                      AreaResponseModel area =
+                          await _areaService.fetchArea(areaId);
+                      TextEditingController nameController =
+                          TextEditingController(text: area.name);
 
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text('Editar Área'),
-                          content: TextField(
-                            controller: nameController,
-                            decoration: const InputDecoration(
-                                labelText: 'Nome da Área'),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('Cancelar'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Editar Área'),
+                            content: TextField(
+                              controller: nameController,
+                              decoration: const InputDecoration(
+                                  labelText: 'Nome da Área'),
                             ),
-                            TextButton(
-                              child: const Text('Salvar'),
-                              onPressed: () async {
-                                Navigator.of(context).pop();
-                                if (area.floor != null && area.place != null) {
-                                  AreaRequestModel updatedArea =
-                                      AreaRequestModel(
-                                    name: nameController.text,
-                                    floor: area.floor!,
-                                    place: area.place!,
-                                  );
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Cancelar'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text('Salvar'),
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+                                  if (area.floor != null) {
+                                    AreaRequestModel updatedArea =
+                                        AreaRequestModel(
+                                      name: nameController.text,
+                                      floor: area.floor!,
+                                      place: area.place,
+                                    );
 
-                                  bool success = await _areaService.updateArea(
-                                      areaId, updatedArea);
-                                  if (success) {
-                                    if (context.mounted) {
-                                      setState(() {
+                                    bool success = await _areaService
+                                        .updateArea(areaId, updatedArea);
+                                    if (success) {
+                                      modalSetState(() {
                                         groupedAreas[area.floor ?? -1] =
                                             groupedAreas[area.floor ?? -1]!
                                                 .map((a) => a.id == areaId
@@ -123,6 +132,15 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                                                   'Área atualizada com sucesso')),
                                         );
                                       }
+                                    } else {
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Falha ao atualizar a área')),
+                                        );
+                                      }
                                     }
                                   } else {
                                     if (context.mounted) {
@@ -130,64 +148,54 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Falha ao atualizar a área')),
+                                                'Dados inválidos para a área')),
                                       );
                                     }
                                   }
-                                } else {
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Dados inválidos para a área')),
-                                    );
-                                  }
-                                }
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Erro ao editar a área: $e')),
+                        );
+                      }
+                    }
+                  },
+                  onDeleteArea: (int areaId) async {
+                    bool confirmDelete = await showDialog(
+                      context: context,
+                      builder: (BuildContext dialogContext) {
+                        return AlertDialog(
+                          title: const Text('Confirmar Exclusão'),
+                          content:
+                              const Text('Realmente deseja excluir esta área?'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Cancelar'),
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop(false);
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Excluir'),
+                              onPressed: () {
+                                Navigator.of(dialogContext).pop(true);
                               },
                             ),
                           ],
                         );
                       },
                     );
-                  } catch (e) {
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Erro ao editar a área: $e')),
-                      );
-                    }
-                  }
-                },
-                onDeleteArea: (int areaId) async {
-                  bool confirmDelete = await showDialog(
-                    context: context,
-                    builder: (BuildContext dialogContext) {
-                      return AlertDialog(
-                        title: const Text('Confirmar Exclusão'),
-                        content:
-                            const Text('Realmente deseja excluir esta área?'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Cancelar'),
-                            onPressed: () {
-                              Navigator.of(dialogContext).pop(false);
-                            },
-                          ),
-                          TextButton(
-                            child: const Text('Excluir'),
-                            onPressed: () {
-                              Navigator.of(dialogContext).pop(true);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
 
-                  if (confirmDelete) {
-                    bool success = await _areaService.deleteArea(areaId);
-                    if (success) {
-                      if (context.mounted) {
-                        setState(() {
+                    if (confirmDelete) {
+                      bool success = await _areaService.deleteArea(areaId);
+                      if (success) {
+                        modalSetState(() {
                           groupedAreas.forEach((key, value) {
                             value.removeWhere((a) => a.id == areaId);
                           });
@@ -196,19 +204,26 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                           const SnackBar(
                               content: Text('Área excluída com sucesso')),
                         );
-                      }
-                    } else {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Erro ao excluir a área')),
-                        );
+                      } else {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Erro ao excluir a área')),
+                          );
+                        }
                       }
                     }
-                  }
-                },
-                onTapArea: (int areaId) {},
-              );
+                  },
+                  onTapArea: (int areaId) async {
+                    AreaResponseModel area =
+                        await _areaService.fetchArea(areaId);
+                    Navigator.pushNamed(context, '/systemLocation', arguments: {
+                      'areaName': area.name,
+                      'localName': place.name,
+                      'localId': place.id,
+                      'areaId': area.id,
+                    });
+                  });
             },
           );
         },
@@ -322,18 +337,22 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                   );
                   bool success =
                       await _placeService.updatePlace(place.id, updatedPlace);
-                  if (success) {
+                  if (success && mounted) {
                     setState(() {
                       _placesList = _placeService.fetchAllPlaces();
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Local atualizado para "$newName"')),
-                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Local atualizado para "$newName"')),
+                      );
+                    }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Falha ao atualizar o local')),
-                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Falha ao atualizar o local')),
+                      );
+                    }
                   }
                 }
               },
@@ -423,7 +442,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               ),
                             ],
                           ),
-                          onTap: () => _showAreasForPlace(context, place.id),
+                          onTap: () => _showAreasForPlace(context, place),
                         ),
                       );
                     },
@@ -446,6 +465,8 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
 
 class FloorAreaWidget extends StatelessWidget {
   final Map<int, List<AreaResponseModel>> groupedAreas;
+  final String placeName;
+  final int placeId;
   final VoidCallback onAddFloor;
   final Function(int) onEditArea;
   final Function(int) onDeleteArea;
@@ -453,6 +474,8 @@ class FloorAreaWidget extends StatelessWidget {
 
   FloorAreaWidget({
     required this.groupedAreas,
+    required this.placeName,
+    required this.placeId,
     required this.onAddFloor,
     required this.onEditArea,
     required this.onDeleteArea,
@@ -461,13 +484,13 @@ class FloorAreaWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sortedKeys = groupedAreas.keys.toList()..sort();
     return Column(
       children: [
         Expanded(
           child: ListView(
-            children: groupedAreas.entries.map((entry) {
-              int floor = entry.key;
-              List<AreaResponseModel> areas = entry.value;
+            children: sortedKeys.map((floor) {
+              List<AreaResponseModel> areas = groupedAreas[floor]!;
               String floorName = floor == 0 ? "Térreo" : "$floor° andar";
               return ExpansionTile(
                 title: Text(floorName),

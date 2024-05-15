@@ -14,16 +14,23 @@ class AreaService {
   final String baseUrl = 'http://10.0.2.2:8000/api/areas/';
 
   // POST
-  Future<bool> createArea(AreaRequestModel areaRequestModel) async {
+// POST
+  Future<AreaResponseModel> createArea(
+      AreaRequestModel areaRequestModel) async {
     var url = Uri.parse(baseUrl);
-
     var response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(areaRequestModel.toJson()),
     );
 
-    return response.statusCode == 201;
+    if (response.statusCode == 201) {
+      // Assumindo que a resposta inclua o id da área criada.
+      var data = jsonDecode(response.body);
+      return AreaResponseModel.fromJson(data);
+    } else {
+      throw Exception('Failed to create area');
+    }
   }
 
   // Fetch all areas for a specific place

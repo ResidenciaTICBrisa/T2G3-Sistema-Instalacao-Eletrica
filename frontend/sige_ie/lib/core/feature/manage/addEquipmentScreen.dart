@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/core/feature/manage/equipment_manager.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'dart:math';
@@ -39,7 +38,8 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedLocation;
-  List<String> equipmentTypes = [];
+
+  List<String> equipmentTypes = ['Eletroduto', 'Eletrocalha', 'Dimensão'];
 
   @override
   void dispose() {
@@ -138,7 +138,6 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   @override
   void initState() {
     super.initState();
-    equipmentTypes = EquipmentManager.getEquipmentList(widget.categoryNumber);
     _images = categoryImagesMap[widget.categoryNumber] ?? [];
   }
 
@@ -190,27 +189,6 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'Categoria: ',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        Expanded(
-                          child: Text(
-                            EquipmentManager
-                                .categoryMap[widget.categoryNumber]!,
-                            style: const TextStyle(
-                                fontSize: 18,
-                                color: AppColors.sigeIeBlue,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
                     const Text('Tipo do Equipamento',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 14)),
