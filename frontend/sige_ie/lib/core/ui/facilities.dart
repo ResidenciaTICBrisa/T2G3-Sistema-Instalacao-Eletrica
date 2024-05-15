@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/areas/data/area_request_model.dart';
 import 'package:sige_ie/areas/data/area_response_model.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
 import 'package:sige_ie/places/data/place_response_model.dart';
@@ -31,43 +32,234 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
     }
   }
 
+  Map<int, List<AreaResponseModel>> _groupAreasByFloor(
+      List<AreaResponseModel> areas) {
+    Map<int, List<AreaResponseModel>> groupedAreas = {};
+    for (var area in areas) {
+      if (groupedAreas[area.floor ?? 0] == null) {
+        groupedAreas[area.floor ?? 0] = [];
+      }
+      groupedAreas[area.floor ?? 0]!.add(area);
+    }
+    return groupedAreas;
+  }
+
+  Future<void> _showAreasForPlace(BuildContext context, int placeId) async {
+    try {
+      List<AreaResponseModel> areasForPlace = await _loadAreasForPlace(placeId);
+      Map<int, List<AreaResponseModel>> groupedAreas =
+          _groupAreasByFloor(areasForPlace);
+
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return FloorAreaWidget(
+                groupedAreas: groupedAreas,
+                onAddFloor: () {},
+                onEditArea: (int areaId) async {
+                  try {
+                    AreaResponseModel area =
+                        await _areaService.fetchArea(areaId);
+                    TextEditingController nameController =
+                        TextEditingController(text: area.name);
+
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Editar Área'),
+                          content: TextField(
+                            controller: nameController,
+                            decoration: const InputDecoration(
+                                labelText: 'Nome da Área'),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Cancelar'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Salvar'),
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                if (area.floor != null && area.place != null) {
+                                  AreaRequestModel updatedArea =
+                                      AreaRequestModel(
+                                    name: nameController.text,
+                                    floor: area.floor!,
+                                    place: area.place!,
+                                  );
+
+                                  bool success = await _areaService.updateArea(
+                                      areaId, updatedArea);
+                                  if (success) {
+                                    if (context.mounted) {
+                                      setState(() {
+                                        groupedAreas[area.floor ?? -1] =
+                                            groupedAreas[area.floor ?? -1]!
+                                                .map((a) => a.id == areaId
+                                                    ? AreaResponseModel(
+                                                        id: area.id,
+                                                        name: updatedArea.name,
+                                                        floor:
+                                                            updatedArea.floor ??
+                                                                -1,
+                                                        place:
+                                                            updatedArea.place ??
+                                                                -1,
+                                                      )
+                                                    : a)
+                                                .toList();
+                                      });
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Área atualizada com sucesso')),
+                                        );
+                                      }
+                                    }
+                                  } else {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Falha ao atualizar a área')),
+                                      );
+                                    }
+                                  }
+                                } else {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Dados inválidos para a área')),
+                                    );
+                                  }
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Erro ao editar a área: $e')),
+                      );
+                    }
+                  }
+                },
+                onDeleteArea: (int areaId) async {
+                  bool confirmDelete = await showDialog(
+                    context: context,
+                    builder: (BuildContext dialogContext) {
+                      return AlertDialog(
+                        title: const Text('Confirmar Exclusão'),
+                        content:
+                            const Text('Realmente deseja excluir esta área?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Cancelar'),
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop(false);
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Excluir'),
+                            onPressed: () {
+                              Navigator.of(dialogContext).pop(true);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  if (confirmDelete) {
+                    bool success = await _areaService.deleteArea(areaId);
+                    if (success) {
+                      if (context.mounted) {
+                        setState(() {
+                          groupedAreas.forEach((key, value) {
+                            value.removeWhere((a) => a.id == areaId);
+                          });
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Área excluída com sucesso')),
+                        );
+                      }
+                    } else {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Erro ao excluir a área')),
+                        );
+                      }
+                    }
+                  }
+                },
+                onTapArea: (int areaId) {},
+              );
+            },
+          );
+        },
+      );
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao carregar as áreas: $e')),
+        );
+      }
+    }
+  }
+
   void _confirmDelete(BuildContext context, PlaceResponseModel place) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmação'),
+          title: const Text('Confirmação'),
           content:
               Text('Você realmente deseja excluir o local "${place.name}"?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-                child: Text('Excluir'),
-                onPressed: () async {
-                  Navigator.of(context).pop();
-                  bool success = await _placeService.deletePlace(place.id);
-                  if (success && mounted) {
-                    setState(() {
-                      _placesList = _placeService.fetchAllPlaces();
-                    });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(
-                              'Local "${place.name}" excluído com sucesso')),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('Falha ao excluir o local "${place.name}"')),
-                    );
-                  }
-                }),
+              child: const Text('Excluir'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                bool success = await _placeService.deletePlace(place.id);
+                if (success && mounted) {
+                  setState(() {
+                    _placesList = _placeService.fetchAllPlaces();
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Local "${place.name}" excluído com sucesso')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content:
+                            Text('Falha ao excluir o local "${place.name}"')),
+                  );
+                }
+              },
+            ),
           ],
         );
       },
@@ -86,22 +278,22 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Editar Local'),
+          title: const Text('Editar Local'),
           content: SingleChildScrollView(
             child: Column(
               children: [
                 TextField(
                   controller: _nameController,
-                  decoration: InputDecoration(labelText: 'Nome do Local'),
+                  decoration: const InputDecoration(labelText: 'Nome do Local'),
                 ),
                 TextField(
                   controller: _lonController,
-                  decoration: InputDecoration(labelText: 'Longitude'),
+                  decoration: const InputDecoration(labelText: 'Longitude'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: _latController,
-                  decoration: InputDecoration(labelText: 'Latitude'),
+                  decoration: const InputDecoration(labelText: 'Latitude'),
                   keyboardType: TextInputType.number,
                 ),
               ],
@@ -109,13 +301,13 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Salvar'),
+              child: const Text('Salvar'),
               onPressed: () async {
                 String newName = _nameController.text;
                 double? newLon = double.tryParse(_lonController.text);
@@ -215,13 +407,13 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.edit,
-                                    color: AppColors.lightText),
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
                                 onPressed: () => _editPlace(context, place),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete,
-                                    color: AppColors.warn),
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () => _confirmDelete(context, place),
                               ),
                               IconButton(
@@ -231,22 +423,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               ),
                             ],
                           ),
-                          onTap: () async {
-                            List<AreaResponseModel> areasForPlace =
-                                await _loadAreasForPlace(place.id);
-                            showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return ListView.builder(
-                                    itemCount: areasForPlace.length,
-                                    itemBuilder: (context, index) {
-                                      return ListTile(
-                                        title: Text(areasForPlace[index].name),
-                                      );
-                                    },
-                                  );
-                                });
-                          },
+                          onTap: () => _showAreasForPlace(context, place.id),
                         ),
                       );
                     },
@@ -263,6 +440,66 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class FloorAreaWidget extends StatelessWidget {
+  final Map<int, List<AreaResponseModel>> groupedAreas;
+  final VoidCallback onAddFloor;
+  final Function(int) onEditArea;
+  final Function(int) onDeleteArea;
+  final Function(int) onTapArea;
+
+  FloorAreaWidget({
+    required this.groupedAreas,
+    required this.onAddFloor,
+    required this.onEditArea,
+    required this.onDeleteArea,
+    required this.onTapArea,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            children: groupedAreas.entries.map((entry) {
+              int floor = entry.key;
+              List<AreaResponseModel> areas = entry.value;
+              String floorName = floor == 0 ? "Térreo" : "$floor° andar";
+              return ExpansionTile(
+                title: Text(floorName),
+                children: areas.map((area) {
+                  return ListTile(
+                    title: Text(area.name),
+                    onTap: () => onTapArea(area.id),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => onEditArea(area.id),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => onDeleteArea(area.id),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              );
+            }).toList(),
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.add),
+          title: Text('Adicionar andar ou sala'),
+          onTap: onAddFloor,
+        ),
+      ],
     );
   }
 }
