@@ -6,14 +6,15 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-
+// Instância do Serviço de Autenticação  e flag para lembrar o usuário e uma chave global para controlar o estado do formulário.
 class _LoginScreenState extends State<LoginScreen> {
   AuthService authService = AuthService();
   bool rememberMe = false;
   final _loginScreen = GlobalKey<FormState>();
-  final TextEditingController usernameController = TextEditingController();
+  //Controladores de Texto para campos de nome de usuário e senha.
+  final TextEditingController usernameController = TextEditingController(); 
   final TextEditingController passwordController = TextEditingController();
-
+  // Constroi a interface do Usuário para esta tela com a logo e toda configuração personalizada do aplicativo.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,16 +29,16 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Expanded(
               flex: 2,
-              child: Container(
+              child: Container(// Container para mostrar uma imagem de logo ou capa
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/1000x1000.png'),
+                    image: AssetImage('assets/1000x1000.png'),// Logo Personalizada do aplicativo
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
-            Expanded(
+            Expanded(// Container que contém o formulário de login.
                 flex: 6,
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
@@ -47,10 +48,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           BorderRadius.only(topLeft: Radius.circular(50.0))),
                   child: SingleChildScrollView(
                       child: Form(
-                    key: _loginScreen,
+                    key: _loginScreen, // Chave do Fórnulario.
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
+                      children: [    //Constroi o Fórmulario.
                         const Text(
                           'Login',
                           style: TextStyle(
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               fontWeight: FontWeight.w900,
                               color: Colors.black),
                         ),
-                        const SizedBox(height: 35),
+                        const SizedBox(height: 35), // Campo de Entrada do nome de Usuário.
                         TextFormField(
                             controller: usernameController,
                             validator: (value) {
@@ -66,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return 'Por favor, insira um username válido';
                               }
                               return null;
-                            },
+                            },// Validação do nome do usuário  e configuração formulário.
                             decoration: InputDecoration(
                               label: const Text('Username'),
                               labelStyle: const TextStyle(color: Colors.black),
@@ -88,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             )),
                         const SizedBox(height: 20),
-                        TextFormField(
+                        TextFormField(// Campo de entrada de senha do usuário.
                           controller: passwordController,
                           obscureText: true,
                           obscuringCharacter: '*',
@@ -97,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               return 'Por favor, insira uma senha válida';
                             }
                             return null;
-                          },
+                          },// Validação de  Senha do usuário e configuraçao de fórmulário.
                           decoration: InputDecoration(
                             label: const Text('Senha'),
                             labelStyle: const TextStyle(color: Colors.black),
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        Row(
+                        Row(// Widget para checkbox de lembrar usuário e link para esquecer senha.
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
@@ -153,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
+                        // Rotina de Implementação e validação de autenticação do Login.
                         const SizedBox(height: 20),
                         SizedBox(
                           width: 200,
@@ -174,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 ScaffoldMessenger.of(context)
                                     .hideCurrentSnackBar();
-
+                                //Validado Login, direcionamento de rota para paǵina Home.
                                 if (success) {
                                   Navigator.of(context)
                                       .pushReplacementNamed('/homeScreen');
@@ -193,6 +195,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               }
                             },
+                            //Widget para o Botão de Login
                             child: const Text(
                               'Login',
                               style: TextStyle(
@@ -208,6 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 )),
                           ),
                         ),
+                        // Widget para Link de Registro,caso não tenha uma conta.
                         const SizedBox(height: 30),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
