@@ -54,7 +54,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
         context: context,
         builder: (context) {
           return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
+            builder: (BuildContext context, StateSetter modalSetState) {
               return FloorAreaWidget(
                 groupedAreas: groupedAreas,
                 onAddFloor: () {},
@@ -86,43 +86,41 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                               child: const Text('Salvar'),
                               onPressed: () async {
                                 Navigator.of(context).pop();
-                                if (area.floor != null && area.place != null) {
+                                if (area.floor != null) {
                                   AreaRequestModel updatedArea =
                                       AreaRequestModel(
                                     name: nameController.text,
                                     floor: area.floor!,
-                                    place: area.place!,
+                                    place: area.place,
                                   );
 
                                   bool success = await _areaService.updateArea(
                                       areaId, updatedArea);
                                   if (success) {
+                                    modalSetState(() {
+                                      groupedAreas[area.floor ?? -1] =
+                                          groupedAreas[area.floor ?? -1]!
+                                              .map((a) => a.id == areaId
+                                                  ? AreaResponseModel(
+                                                      id: area.id,
+                                                      name: updatedArea.name,
+                                                      floor:
+                                                          updatedArea.floor ??
+                                                              -1,
+                                                      place:
+                                                          updatedArea.place ??
+                                                              -1,
+                                                    )
+                                                  : a)
+                                              .toList();
+                                    });
                                     if (context.mounted) {
-                                      setState(() {
-                                        groupedAreas[area.floor ?? -1] =
-                                            groupedAreas[area.floor ?? -1]!
-                                                .map((a) => a.id == areaId
-                                                    ? AreaResponseModel(
-                                                        id: area.id,
-                                                        name: updatedArea.name,
-                                                        floor:
-                                                            updatedArea.floor ??
-                                                                -1,
-                                                        place:
-                                                            updatedArea.place ??
-                                                                -1,
-                                                      )
-                                                    : a)
-                                                .toList();
-                                      });
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Área atualizada com sucesso')),
-                                        );
-                                      }
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Área atualizada com sucesso')),
+                                      );
                                     }
                                   } else {
                                     if (context.mounted) {
@@ -186,17 +184,15 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                   if (confirmDelete) {
                     bool success = await _areaService.deleteArea(areaId);
                     if (success) {
-                      if (context.mounted) {
-                        setState(() {
-                          groupedAreas.forEach((key, value) {
-                            value.removeWhere((a) => a.id == areaId);
-                          });
+                      modalSetState(() {
+                        groupedAreas.forEach((key, value) {
+                          value.removeWhere((a) => a.id == areaId);
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Área excluída com sucesso')),
-                        );
-                      }
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Área excluída com sucesso')),
+                      );
                     } else {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -322,18 +318,23 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                   );
                   bool success =
                       await _placeService.updatePlace(place.id, updatedPlace);
-                  if (success) {
+                  if (success && mounted) {
                     setState(() {
                       _placesList = _placeService.fetchAllPlaces();
                     });
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text('Local atualizado para "$newName"')),
-                    );
+                    if (mounted) {
+                      // Verifique novamente antes de usar o contexto
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Local atualizado para "$newName"')),
+                      );
+                    }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Falha ao atualizar o local')),
-                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Falha ao atualizar o local')),
+                      );
+                    }
                   }
                 }
               },
@@ -461,13 +462,15 @@ class FloorAreaWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var sortedKeys = groupedAreas.keys.toList()
+      ..sort(); // Ordena os andares em ordem crescente
+
     return Column(
       children: [
         Expanded(
           child: ListView(
-            children: groupedAreas.entries.map((entry) {
-              int floor = entry.key;
-              List<AreaResponseModel> areas = entry.value;
+            children: sortedKeys.map((floor) {
+              List<AreaResponseModel> areas = groupedAreas[floor]!;
               String floorName = floor == 0 ? "Térreo" : "$floor° andar";
               return ExpansionTile(
                 title: Text(floorName),
