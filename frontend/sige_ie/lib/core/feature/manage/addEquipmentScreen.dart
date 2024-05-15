@@ -16,9 +16,9 @@ List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddEquipmentScreen extends StatefulWidget {
-  final String areaName;
-  final String localName;
-  final int localId;
+  final String areaName;   // Nome da area onde oequipamento será adicionado 
+  final String localName; //  Nome do Local dentro da área.
+  final int localId;     //   ID Numérico do Local.                                                                                                                                                                                         
   final int categoryNumber;
 
   AddEquipmentScreen({
