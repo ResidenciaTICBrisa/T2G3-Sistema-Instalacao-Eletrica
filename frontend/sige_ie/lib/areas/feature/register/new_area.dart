@@ -5,9 +5,9 @@ import 'package:sige_ie/areas/data/area_request_model.dart';
 import 'package:sige_ie/areas/data/area_service.dart';
 
 class AreaLocation extends StatefulWidget {
-  final String localName;
-  final int localId;
-
+  final String localName; // Nome do local, como uma sala ou área específica.
+  final int localId;     // Identificador Númerico do local.
+//Construtor que requer ambos,nome, ID do local, e uma chave opcional.
   const AreaLocation({Key? key, required this.localName, required this.localId})
       : super(key: key);
   @override
@@ -15,11 +15,11 @@ class AreaLocation extends StatefulWidget {
 }
 
 class _AreaLocationState extends State<AreaLocation> {
-  int? selectedFloor;
+  int? selectedFloor; // Andar selecionado pelo usuário.
   final TextEditingController areaController = TextEditingController();
-
+//Controlador para entrada de Texto do nome da área.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { // Constroi a Interface do Usuário com a Tela.
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -28,7 +28,7 @@ class _AreaLocationState extends State<AreaLocation> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Container(
+            Container(  // Container para exibir o nome do local no topo.
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(10, 10, 10, 35),
               decoration: BoxDecoration(
@@ -37,6 +37,7 @@ class _AreaLocationState extends State<AreaLocation> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
+                // Nome da sala centralizado na página.
                 child: Text('${widget.localName} - Sala',
                     style: TextStyle(
                         fontSize: 26,
@@ -44,11 +45,13 @@ class _AreaLocationState extends State<AreaLocation> {
                         color: Colors.white)),
               ),
             ),
+            //Contéudo principal da tela para entrada de andar e nome da área.
             SizedBox(height: 60),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                //Widget para entrada do numéro do andar.
                 children: <Widget>[
                   Row(
                     children: [
@@ -60,7 +63,8 @@ class _AreaLocationState extends State<AreaLocation> {
                       IconButton(
                         icon: Icon(Icons.info_outline),
                         onPressed: () {
-                          showDialog(
+                          showDialog(  
+                            //Alerta de Dialogo para Informar a opções de Andares que podem ser assinalados.
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
@@ -91,6 +95,7 @@ class _AreaLocationState extends State<AreaLocation> {
                       ),
                     ],
                   ),
+                  //widget para a entrada do nome da área
                   SizedBox(height: 10),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10),
@@ -112,6 +117,7 @@ class _AreaLocationState extends State<AreaLocation> {
                       },
                     ),
                   ),
+                  // Configuração de Campo de Preenchimento de Dados Solicitados.
                   SizedBox(height: 40),
                   Text('Sala',
                       style: TextStyle(
@@ -132,10 +138,12 @@ class _AreaLocationState extends State<AreaLocation> {
                       ),
                     ),
                   ),
+                  // Botões de Controle para voltar ou continuar com o cadastro da área.
                   SizedBox(height: 60),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
+                      // Configuração de Formato e Cor de Botão Personalizados.
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.lightText,
@@ -148,6 +156,7 @@ class _AreaLocationState extends State<AreaLocation> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
+                        //Botão para voltar a tela anterior, não processeguindo o cadastro de área.
                         onPressed: () {
                           Navigator.pushReplacementNamed(
                             context,
@@ -156,6 +165,7 @@ class _AreaLocationState extends State<AreaLocation> {
                         },
                         child: Text('ENCERRAR'),
                       ),
+                      // Configuração de Formato e Cor do Botão personalizada.
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.sigeIeBlue,
@@ -168,6 +178,7 @@ class _AreaLocationState extends State<AreaLocation> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
+                        //Botão para continuar com cadastro de área e cadastra area com a verificação necessária dos dados solicitados.
                         onPressed: () async {
                           if (selectedFloor != null &&
                               areaController.text.isNotEmpty) {
@@ -190,6 +201,7 @@ class _AreaLocationState extends State<AreaLocation> {
                                   });
                             } catch (e) {
                               showDialog(
+                                // Caixa de Dialogo, apresentando Falha ao criar Sala, pois a verificação não foi validada.
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
@@ -208,6 +220,7 @@ class _AreaLocationState extends State<AreaLocation> {
                             }
                           } else {
                             showDialog(
+                              //Mostra uma caixa de dialogo solicitando o preenchimento do campos acima, se tal ação não foi realizada.
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
@@ -239,7 +252,7 @@ class _AreaLocationState extends State<AreaLocation> {
     );
   }
 }
-
+//Mostra um Menu com uma lista das opções disponivéis.
 Widget _buildDropdown({
   required List<String> items,
   required String? value,
