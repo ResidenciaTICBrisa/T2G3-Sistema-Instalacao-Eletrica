@@ -12,10 +12,11 @@ import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
 import 'core/feature/login/login.dart';
 
+//Função principal que inicializa o aplicativo.
 void main() {
   runApp(const MyApp());
 }
-
+// Instância global de gerenciador de cookies.
 final cookieJar = CookieJar();
 
 class MyApp extends StatelessWidget {
@@ -25,24 +26,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/',
-      onGenerateRoute: (settings) {
+      onGenerateRoute: (settings) { //Switch case para determinar qual tela carregar com base nas rotas.
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(builder: (context) => SplashScreen());
-          case '/loginScreen':
+          case '/loginScreen':     // Tela de login.
             return MaterialPageRoute(builder: (context) => const LoginScreen());
-          case '/first':
+          case '/first':           //Primeira Tela após o login.
             return MaterialPageRoute(builder: (context) => FirstScreen());
-          case '/registerScreen':
+          case '/registerScreen':  //Tela de Registro.
             return MaterialPageRoute(
                 builder: (context) => const RegisterScreen());
-          case '/homeScreen':
+          case '/homeScreen':     //Tela Home principal após o login.
             return MaterialPageRoute(builder: (context) => HomePage());
-          case '/MapsPage':
+          case '/MapsPage':       //Tela de Visualização do Mapa.
             return MaterialPageRoute(builder: (context) => MapsPage());
-          case '/newLocation':
+          case '/newLocation':    // Tela de Registro de um local ou area.
             return MaterialPageRoute(builder: (context) => NewPlace());
-          case '/arealocation':
+          case '/arealocation':  // Tela para gerenciar uma area ou local especifico.
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? localName = args['placeName']?.toString();
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
             throw Exception(
                 'Invalid route: Expected Map arguments for /arealocation.');
 
-          case '/systemLocation':
+          case '/systemLocation': //Tela para Configurar Sistema com base em local e area específico e verificação das informações fornecidas.
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? areaName = args['areaName']?.toString();
@@ -82,7 +83,7 @@ class MyApp extends StatelessWidget {
             }
             throw Exception(
                 'Invalid route: Expected Map arguments for /systemLocation.');
-          case '/lowVoltage':
+          case '/lowVoltage': // Tela para configurar sistemas de baixa tensão com base no parâmetros assinalados e verificação das informações fornecidas.
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? areaName = args['areaName']?.toString();
@@ -104,7 +105,7 @@ class MyApp extends StatelessWidget {
             throw Exception(
                 'Invalid route: Expected Map arguments for /lowVoltage.');
 
-          case '/equipamentScreen':
+          case '/equipamentScreen': //Tela para gerenciamento de equipamento em uma localidade específica e verificação  das informações fornecidas.
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? areaName = args['areaName']?.toString();
@@ -136,7 +137,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
+// Tela padrão para visualização de uma rota que não esta definida.
 class UndefinedView extends StatelessWidget {
   final String? name;
   const UndefinedView({Key? key, this.name}) : super(key: key);
