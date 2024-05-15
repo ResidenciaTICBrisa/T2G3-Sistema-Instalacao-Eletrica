@@ -137,6 +137,26 @@ class _AreaLocationState extends State<AreaLocation> {
                     children: <Widget>[
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
+                          foregroundColor: AppColors.lightText,
+                          backgroundColor: AppColors.warn,
+                          minimumSize: Size(150, 50),
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            '/homeScreen',
+                          );
+                        },
+                        child: Text('VOLTAR'),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.sigeIeBlue,
                           backgroundColor: AppColors.sigeIeYellow,
                           minimumSize: Size(150, 50),
@@ -205,26 +225,6 @@ class _AreaLocationState extends State<AreaLocation> {
                           }
                         },
                         child: Text('CONTINUAR'),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: AppColors.lightText,
-                          backgroundColor: AppColors.warn,
-                          minimumSize: Size(150, 50),
-                          textStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                            context,
-                            '/homeScreen',
-                          );
-                        },
-                        child: Text('ENCERRAR'),
                       ),
                     ],
                   ),

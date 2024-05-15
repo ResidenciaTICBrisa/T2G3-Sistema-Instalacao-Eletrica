@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/core/feature/manage/equipment_manager.dart';
 import 'dart:io';
@@ -68,6 +69,72 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     }
   }
 
+  void _showSavedOptionsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Opções Salvas'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Detalhes do Equipamento:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                if (_selectedType != null) Text('Tipo: $_selectedType'),
+                if (_equipmentNameController.text.isNotEmpty)
+                  Text('Nome: ${_equipmentNameController.text}'),
+                if (_equipmentQuantityController.text.isNotEmpty)
+                  Text('Quantidade: ${_equipmentQuantityController.text}'),
+                if (_selectedLocation != null)
+                  Text('Localização: $_selectedLocation'),
+                const SizedBox(height: 10),
+                const Text(
+                  'Imagens:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Wrap(
+                  children: _images.map((imageData) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Image.file(
+                        imageData.imageFile,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Editar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.pushNamed(context, '/systemLocation', arguments: {
+                  'areaName': widget.areaName,
+                  'localName': widget.localName,
+                  'localId': widget.localId,
+                  'categoryNumber': widget.categoryNumber,
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -78,208 +145,204 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          _equipmentNameController.clear();
-          _equipmentQuantityController.clear();
-          categoryImagesMap[widget.categoryNumber]?.clear();
-          return true;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: AppColors.sigeIeBlue,
-            foregroundColor: Colors.white,
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                _equipmentNameController.clear();
-                _equipmentQuantityController.clear();
-                categoryImagesMap[widget.categoryNumber]?.clear();
-                Navigator.of(context).pop();
-              },
-            ),
+      onWillPop: () async {
+        _equipmentNameController.clear();
+        _equipmentQuantityController.clear();
+        categoryImagesMap[widget.categoryNumber]?.clear();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.sigeIeBlue,
+          foregroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              _equipmentNameController.clear();
+              _equipmentQuantityController.clear();
+              categoryImagesMap[widget.categoryNumber]?.clear();
+              Navigator.of(context).pop();
+            },
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-                  decoration: const BoxDecoration(
-                    color: AppColors.sigeIeBlue,
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(20)),
-                  ),
-                  child: const Center(
-                    child: Text('Equipamentos na sala',
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+                decoration: const BoxDecoration(
+                  color: AppColors.sigeIeBlue,
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                ),
+                child: const Center(
+                  child: Text('Equipamentos na sala',
+                      style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'Categoria: ',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        Expanded(
+                          child: Text(
+                            EquipmentManager
+                                .categoryMap[widget.categoryNumber]!,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                color: AppColors.sigeIeBlue,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    const Text('Tipo do Equipamento',
                         style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white)),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Categoria: ',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          Expanded(
-                            child: Text(
-                              EquipmentManager
-                                  .categoryMap[widget.categoryNumber]!,
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  color: AppColors.sigeIeBlue,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    const SizedBox(height: 8),
+                    _buildDropdown(
+                      items: equipmentTypes,
+                      value: _selectedType,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedType = newValue;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 30),
+                    const Text('Nome do equipamento',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        controller: _equipmentNameController,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Text('Quantidade',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    const SizedBox(height: 8),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextField(
+                        controller: _equipmentQuantityController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
                         ],
-                      ),
-                      const SizedBox(height: 20),
-                      const Text('Equipamentos',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14)),
-                      const SizedBox(height: 8),
-                      _buildDropdown(
-                        items: equipmentTypes,
-                        value: _selectedType,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedType = newValue;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      const Text('Nome do equipamento',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14)),
-                      const SizedBox(height: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: _equipmentNameController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 15),
-                          ),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
                         ),
                       ),
-                      const SizedBox(height: 30),
-                      const Text('Quantidade',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14)),
-                      const SizedBox(height: 8),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: TextField(
-                          controller: _equipmentQuantityController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 15),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      const Text('Localização (Interno ou Externo)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 14)),
-                      const SizedBox(height: 8),
-                      _buildDropdown(
-                        items: const ['Interno', 'Externo'],
-                        value: _selectedLocation,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedLocation = newValue;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 15),
-                      IconButton(
-                        icon: const Icon(Icons.camera_alt),
-                        onPressed: _pickImage,
-                      ),
-                      Wrap(
-                        children: _images.map((imageData) {
-                          return Stack(
-                            alignment: Alignment.topRight,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.file(
-                                  imageData.imageFile,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
+                    ),
+                    const SizedBox(height: 30),
+                    const Text('Localização (Interno ou Externo)',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 14)),
+                    const SizedBox(height: 8),
+                    _buildDropdown(
+                      items: const ['Interno', 'Externo'],
+                      value: _selectedLocation,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedLocation = newValue;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    IconButton(
+                      icon: const Icon(Icons.camera_alt),
+                      onPressed: _pickImage,
+                    ),
+                    Wrap(
+                      children: _images.map((imageData) {
+                        return Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                imageData.imageFile,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.remove_circle,
-                                    color: AppColors.warn),
-                                onPressed: () {
-                                  setState(() {
-                                    _images.removeWhere((element) =>
-                                        element.id == imageData.id);
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 15),
-                      Center(
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  AppColors.sigeIeYellow),
-                              foregroundColor: MaterialStateProperty.all(
-                                  AppColors.sigeIeBlue),
-                              minimumSize: MaterialStateProperty.all(
-                                  const Size(185, 55)),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ))),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/systemLocation',
-                                arguments: {
-                                  'areaName': widget.areaName,
-                                  'localName': widget.localName,
-                                  'localId': widget.localId,
-                                  'categoryNumber': widget.categoryNumber,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.remove_circle,
+                                  color: AppColors.warn),
+                              onPressed: () {
+                                setState(() {
+                                  _images.removeWhere(
+                                      (element) => element.id == imageData.id);
                                 });
-                          },
-                          child: const Text(
-                            'ADICIONAR EQUIPAMENTO',
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
+                              },
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 15),
+                    Center(
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                AppColors.sigeIeYellow),
+                            foregroundColor:
+                                MaterialStateProperty.all(AppColors.sigeIeBlue),
+                            minimumSize:
+                                MaterialStateProperty.all(const Size(185, 55)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ))),
+                        onPressed: _showSavedOptionsDialog,
+                        child: const Text(
+                          'ADICIONAR EQUIPAMENTO',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.bold),
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildDropdown({
