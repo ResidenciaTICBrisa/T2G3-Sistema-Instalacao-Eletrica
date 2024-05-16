@@ -47,8 +47,6 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Seleciona o primeiro equipamento por padrão, se disponível
     if (equipmentList.isNotEmpty) {
       _selectedEquipment = _selectedEquipment ?? equipmentList.first;
     }
@@ -93,47 +91,31 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedEquipment,
-                              isExpanded: true,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  _selectedEquipment = newValue;
-                                });
-                              },
-                              items: equipmentList.map((String equipment) {
-                                return DropdownMenuItem<String>(
-                                  value: equipment,
-                                  child: Text(equipment,
-                                      style:
-                                          const TextStyle(color: Colors.black)),
-                                );
-                              }).toList(),
-                              dropdownColor: Colors.grey[300],
-                            ),
-                          ),
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: _selectedEquipment,
+                        isExpanded: true,
+                        onChanged: (newValue) {
+                          setState(() {
+                            _selectedEquipment = newValue;
+                          });
+                        },
+                        items: equipmentList.map((String equipment) {
+                          return DropdownMenuItem<String>(
+                            value: equipment,
+                            child: Text(equipment,
+                                style: const TextStyle(color: Colors.black)),
+                          );
+                        }).toList(),
+                        dropdownColor: Colors.grey[300],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: _addNewEquipmentType,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: _deleteEquipmentType,
-                      ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 40),
                   Center(
@@ -165,117 +147,6 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void _addNewEquipmentType() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController newTypeController = TextEditingController();
-        return AlertDialog(
-          title: const Text("Adicionar novo tipo de equipamento"),
-          content: TextField(
-            controller: newTypeController,
-            autofocus: true,
-            decoration:
-                const InputDecoration(hintText: "Digite o tipo de equipamento"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("Cancelar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text("Adicionar"),
-              onPressed: () {
-                String newType = newTypeController.text;
-                if (newType.isNotEmpty) {
-                  setState(() {
-                    equipmentList.add(newType);
-                    _selectedEquipment = newType;
-                  });
-                  Navigator.of(context).pop();
-                }
-              },
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  void _deleteEquipmentType() {
-    String? localSelectedEquipment;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context, setDialogState) {
-          return AlertDialog(
-            title: const Text("Excluir equipamento"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text("Selecione o equipamento que deseja excluir:"),
-                const SizedBox(height: 20),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: localSelectedEquipment,
-                      isExpanded: true,
-                      onChanged: (newValue) {
-                        setDialogState(() {
-                          localSelectedEquipment = newValue;
-                        });
-                      },
-                      items: equipmentList.map((String equipment) {
-                        return DropdownMenuItem<String>(
-                          value: equipment,
-                          child: Text(equipment,
-                              style: TextStyle(color: Colors.black)),
-                        );
-                      }).toList(),
-                      dropdownColor: Colors.grey[200],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text("Cancelar"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text("Excluir"),
-                onPressed: () {
-                  if (localSelectedEquipment != null) {
-                    setState(() {
-                      equipmentList.remove(localSelectedEquipment);
-                      if (_selectedEquipment == localSelectedEquipment) {
-                        _selectedEquipment = equipmentList.isNotEmpty
-                            ? equipmentList.first
-                            : null;
-                      }
-                    });
-                    Navigator.of(context).pop();
-                  }
-                },
-              )
-            ],
-          );
-        });
-      },
     );
   }
 }

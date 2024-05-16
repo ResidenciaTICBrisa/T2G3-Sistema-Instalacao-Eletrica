@@ -1,9 +1,9 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'dart:math';
 
 class ImageData {
   File imageFile;
@@ -69,64 +69,70 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     }
   }
 
-  void _showSavedOptionsDialog() {
+  void _addNewEquipmentType() {
+    TextEditingController typeController = TextEditingController();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Opções Salvas'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Detalhes do Equipamento:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                if (_selectedType != null) Text('Tipo: $_selectedType'),
-                if (_equipmentNameController.text.isNotEmpty)
-                  Text('Nome: ${_equipmentNameController.text}'),
-                if (_equipmentQuantityController.text.isNotEmpty)
-                  Text('Quantidade: ${_equipmentQuantityController.text}'),
-                if (_selectedLocation != null)
-                  Text('Localização: $_selectedLocation'),
-                const SizedBox(height: 10),
-                const Text(
-                  'Imagens:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Wrap(
-                  children: _images.map((imageData) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Image.file(
-                        imageData.imageFile,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
+          title: Text('Adicionar novo tipo de equipamento'),
+          content: TextField(
+            controller: typeController,
+            decoration:
+                InputDecoration(hintText: 'Digite o novo tipo de equipamento'),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Editar'),
+              child: Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: Text('Adicionar'),
               onPressed: () {
-                Navigator.pushNamed(context, '/systemLocation', arguments: {
-                  'areaName': widget.areaName,
-                  'localName': widget.localName,
-                  'localId': widget.localId,
-                  'categoryNumber': widget.categoryNumber,
-                });
+                if (typeController.text.isNotEmpty) {
+                  setState(() {
+                    equipmentTypes.add(typeController.text);
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteEquipmentType() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Excluir tipo de equipamento'),
+          content: DropdownButton<String>(
+            value: _selectedType,
+            onChanged: (String? newValue) {
+              setState(() {
+                equipmentTypes.remove(newValue);
+                _selectedType =
+                    equipmentTypes.isNotEmpty ? equipmentTypes.first : null;
+              });
+              Navigator.of(context).pop();
+            },
+            items: equipmentTypes.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -136,188 +142,183 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _images = categoryImagesMap[widget.categoryNumber] ?? [];
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _equipmentNameController.clear();
-        _equipmentQuantityController.clear();
-        categoryImagesMap[widget.categoryNumber]?.clear();
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.sigeIeBlue,
-          foregroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () {
-              _equipmentNameController.clear();
-              _equipmentQuantityController.clear();
-              categoryImagesMap[widget.categoryNumber]?.clear();
-              Navigator.of(context).pop();
-            },
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.sigeIeBlue,
+        foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-                decoration: const BoxDecoration(
-                  color: AppColors.sigeIeBlue,
-                  borderRadius:
-                      BorderRadius.vertical(bottom: Radius.circular(20)),
-                ),
-                child: const Center(
-                  child: Text('Equipamentos na sala',
-                      style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white)),
-                ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
+                color: AppColors.sigeIeBlue,
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const Text('Tipo do Equipamento',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
-                    const SizedBox(height: 8),
-                    _buildDropdown(
-                      items: equipmentTypes,
-                      value: _selectedType,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedType = newValue;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 30),
-                    const Text('Nome do equipamento',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TextField(
-                        controller: _equipmentNameController,
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 15),
+              child: const Center(
+                child: Text('Equipamentos na sala',
+                    style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildDropdown(
+                          items: equipmentTypes,
+                          value: _selectedType,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedType = newValue;
+                            });
+                          },
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text('Quantidade',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
-                    const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
+                      IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: _addNewEquipmentType,
                       ),
-                      child: TextField(
-                        controller: _equipmentQuantityController,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: _deleteEquipmentType,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Nome do equipamento',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _equipmentNameController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Quantidade',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _equipmentQuantityController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Localização (Interno ou Externo)',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  _buildDropdown(
+                    items: const ['Interno', 'Externo'],
+                    value: _selectedLocation,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedLocation = newValue;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  IconButton(
+                    icon: const Icon(Icons.camera_alt),
+                    onPressed: _pickImage,
+                  ),
+                  Wrap(
+                    children: _images.map((imageData) {
+                      return Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.remove_circle,
+                                color: AppColors.warn),
+                            onPressed: () {
+                              setState(() {
+                                _images.removeWhere(
+                                    (element) => element.id == imageData.id);
+                              });
+                            },
+                          ),
                         ],
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 15),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text('Localização (Interno ou Externo)',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14)),
-                    const SizedBox(height: 8),
-                    _buildDropdown(
-                      items: const ['Interno', 'Externo'],
-                      value: _selectedLocation,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedLocation = newValue;
-                        });
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 15),
+                  Center(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeYellow),
+                          foregroundColor:
+                              MaterialStateProperty.all(AppColors.sigeIeBlue),
+                          minimumSize:
+                              MaterialStateProperty.all(const Size(185, 55)),
+                          shape:
+                              MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ))),
+                      onPressed: () {
+                        // Implementar a lógica de adicionar equipamento
                       },
-                    ),
-                    const SizedBox(height: 15),
-                    IconButton(
-                      icon: const Icon(Icons.camera_alt),
-                      onPressed: _pickImage,
-                    ),
-                    Wrap(
-                      children: _images.map((imageData) {
-                        return Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.file(
-                                imageData.imageFile,
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.remove_circle,
-                                  color: AppColors.warn),
-                              onPressed: () {
-                                setState(() {
-                                  _images.removeWhere(
-                                      (element) => element.id == imageData.id);
-                                });
-                              },
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 15),
-                    Center(
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                AppColors.sigeIeYellow),
-                            foregroundColor:
-                                MaterialStateProperty.all(AppColors.sigeIeBlue),
-                            minimumSize:
-                                MaterialStateProperty.all(const Size(185, 55)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ))),
-                        onPressed: _showSavedOptionsDialog,
-                        child: const Text(
-                          'ADICIONAR EQUIPAMENTO',
-                          style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
+                      child: const Text(
+                        'ADICIONAR EQUIPAMENTO',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -328,40 +329,16 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     String? value,
     required Function(String?) onChanged,
   }) {
-    String dropdownValue = value ?? 'Escolha um...';
-    List<String> dropdownItems = ['Escolha um...'] + items;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[300],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: dropdownValue,
-          iconSize: 30,
-          iconEnabledColor: AppColors.sigeIeBlue,
-          isExpanded: true,
-          items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Text(value),
-              ),
-            );
-          }).toList(),
-          onChanged: (String? newValue) {
-            if (newValue != 'Escolha um...') {
-              onChanged(newValue);
-            }
-          },
-          hint: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            child: Text('Selecione uma opção'),
-          ),
-        ),
-      ),
+    String dropdownValue = value ?? items.first;
+    return DropdownButton<String>(
+      value: dropdownValue,
+      onChanged: onChanged,
+      items: items.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }
