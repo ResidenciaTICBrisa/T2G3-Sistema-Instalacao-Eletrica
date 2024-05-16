@@ -40,17 +40,16 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.sige_ie"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion  // Multidex requer no mínimo Android 4.1 (API level 16)
-        targetSdkVersion 31
-        multiDexEnabled true
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
-    }
+   defaultConfig {
+    applicationId "com.example.sige_ie"
+    // Defina os valores a seguir de acordo com as necessidades do seu aplicativo.
+    minSdkVersion 21  // Definido como 21 conforme sua especificação
+    targetSdkVersion 31  // Atualizado para apontar para a versão 31, que é a mais recente no momento
+    versionCode flutterVersionCode.toInteger()
+    versionName flutterVersionName
+    multiDexEnabled true  // Ativado para suportar múltiplos DEX
+}
+
 
     buildTypes {
         release {
