@@ -9,12 +9,12 @@ class LowVoltageScreen extends StatefulWidget {
   final int? localId;
 
   const LowVoltageScreen({
-    Key? key,
+    super.key,
     required this.areaName,
     required this.categoryNumbers,
     required this.localName,
     this.localId,
-  }) : super(key: key);
+  });
 
   @override
   _LowVoltageScreenState createState() => _LowVoltageScreenState();
@@ -53,7 +53,7 @@ class _LowVoltageScreenState extends State<LowVoltageScreen> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.sigeIeBlue,
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
@@ -66,7 +66,7 @@ class _LowVoltageScreenState extends State<LowVoltageScreen> {
                         color: Colors.white)),
               ),
             ),
-            Padding(padding: const EdgeInsets.all(15.0)),
+            const Padding(padding: EdgeInsets.all(15.0)),
             OptionButton(
                 title: 'ILUMINAÇÃO',
                 onPressed: () =>
@@ -99,10 +99,10 @@ class OptionButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const OptionButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -21,13 +21,13 @@ class AddEquipmentScreen extends StatefulWidget {
   final int localId;
   final int categoryNumber;
 
-  AddEquipmentScreen({
-    Key? key,
+  const AddEquipmentScreen({
+    super.key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
-  }) : super(key: key);
+  });
 
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
@@ -75,21 +75,21 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Adicionar novo tipo de equipamento'),
+          title: const Text('Adicionar novo tipo de equipamento'),
           content: TextField(
             controller: typeController,
-            decoration:
-                InputDecoration(hintText: 'Digite o novo tipo de equipamento'),
+            decoration: const InputDecoration(
+                hintText: 'Digite o novo tipo de equipamento'),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Adicionar'),
+              child: const Text('Adicionar'),
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
@@ -110,7 +110,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Excluir tipo de equipamento'),
+          title: const Text('Excluir tipo de equipamento'),
           content: DropdownButton<String>(
             value: _selectedType,
             onChanged: (String? newValue) {
@@ -130,7 +130,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

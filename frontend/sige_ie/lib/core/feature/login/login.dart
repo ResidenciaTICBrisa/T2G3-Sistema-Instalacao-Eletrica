@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/core/data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -193,11 +193,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               }
                             },
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
                             style: ElevatedButton.styleFrom(
                                 elevation: 6,
                                 backgroundColor:
@@ -206,6 +201,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 )),
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 30),

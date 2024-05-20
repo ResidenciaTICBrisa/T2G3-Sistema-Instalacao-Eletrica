@@ -283,11 +283,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   }
                                 }
                               },
-                              child: const Text(
-                                'Registro',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
                               style: ElevatedButton.styleFrom(
                                   elevation: 6,
                                   backgroundColor:
@@ -296,6 +291,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   )),
+                              child: const Text(
+                                'Registro',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 30),

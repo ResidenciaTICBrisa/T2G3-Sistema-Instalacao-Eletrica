@@ -9,13 +9,13 @@ class EquipmentScreen extends StatelessWidget {
   final int categoryNumber;
   final int localId;
 
-  EquipmentScreen({
-    Key? key,
+  const EquipmentScreen({
+    super.key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
-  }) : super(key: key);
+  });
 
   void navigateToAddEquipment(BuildContext context) {
     Navigator.push(
@@ -71,7 +71,7 @@ class EquipmentScreen extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.sigeIeBlue,
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
             ),
@@ -83,7 +83,7 @@ class EquipmentScreen extends StatelessWidget {
                       color: AppColors.lightText)),
             ),
           ),
-          SizedBox(height: 150),
+          const SizedBox(height: 150),
           EquipmentButton(
             title: 'EQUIPAMENTOS NA SALA',
             onPressed: () => navigateToAddEquipment(context),
@@ -102,19 +102,14 @@ class EquipmentButton extends StatelessWidget {
   final String title;
   final VoidCallback onPressed;
 
-  EquipmentButton({Key? key, required this.title, required this.onPressed})
-      : super(key: key);
+  const EquipmentButton(
+      {super.key, required this.title, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       child: ElevatedButton(
-        child: Text(title,
-            style: const TextStyle(
-                color: AppColors.sigeIeBlue,
-                fontSize: 18,
-                fontWeight: FontWeight.w900)),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
           padding: MaterialStateProperty.all(
@@ -124,6 +119,11 @@ class EquipmentButton extends StatelessWidget {
           )),
         ),
         onPressed: onPressed,
+        child: Text(title,
+            style: const TextStyle(
+                color: AppColors.sigeIeBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.w900)),
       ),
     );
   }

@@ -8,6 +8,8 @@ import '../../config/app_styles.dart';
 import '../../areas/data/area_service.dart';
 
 class FacilitiesPage extends StatefulWidget {
+  const FacilitiesPage({super.key});
+
   @override
   _FacilitiesPageState createState() => _FacilitiesPageState();
 }
@@ -350,7 +352,8 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                   } else {
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Falha ao atualizar o local')),
+                        const SnackBar(
+                            content: Text('Falha ao atualizar o local')),
                       );
                     }
                   }
@@ -472,7 +475,8 @@ class FloorAreaWidget extends StatelessWidget {
   final Function(int) onDeleteArea;
   final Function(int) onTapArea;
 
-  FloorAreaWidget({
+  const FloorAreaWidget({
+    super.key,
     required this.groupedAreas,
     required this.placeName,
     required this.placeId,
@@ -502,11 +506,11 @@ class FloorAreaWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit, color: Colors.blue),
+                          icon: const Icon(Icons.edit, color: Colors.blue),
                           onPressed: () => onEditArea(area.id),
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => onDeleteArea(area.id),
                         ),
                       ],
@@ -518,8 +522,8 @@ class FloorAreaWidget extends StatelessWidget {
           ),
         ),
         ListTile(
-          leading: Icon(Icons.add),
-          title: Text('Adicionar andar ou sala'),
+          leading: const Icon(Icons.add),
+          title: const Text('Adicionar andar ou sala'),
           onTap: onAddFloor,
         ),
       ],

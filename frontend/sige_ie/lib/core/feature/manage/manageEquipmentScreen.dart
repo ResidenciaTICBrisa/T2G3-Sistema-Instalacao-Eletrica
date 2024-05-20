@@ -8,13 +8,12 @@ class ViewEquipmentScreen extends StatefulWidget {
   final int localId;
   final int categoryNumber;
 
-  ViewEquipmentScreen(
-      {Key? key,
+  const ViewEquipmentScreen(
+      {super.key,
       required this.areaName,
       required this.categoryNumber,
       required this.localName,
-      required this.localId})
-      : super(key: key);
+      required this.localId});
 
   @override
   _ViewEquipmentScreenState createState() => _ViewEquipmentScreenState();
@@ -96,7 +95,8 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: _selectedEquipment,

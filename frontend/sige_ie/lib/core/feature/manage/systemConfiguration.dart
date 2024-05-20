@@ -9,13 +9,13 @@ class SystemConfiguration extends StatefulWidget {
   final int localId;
   final int categoryNumber;
 
-  SystemConfiguration({
-    Key? key,
+  const SystemConfiguration({
+    super.key,
     required this.areaName,
     required this.localName,
     required this.localId,
     required this.categoryNumber,
-  }) : super(key: key);
+  });
 
   @override
   _SystemConfigurationState createState() => _SystemConfigurationState();
@@ -66,23 +66,23 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
           children: <Widget>[
             Container(
               width: double.infinity,
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
                 color: AppColors.sigeIeBlue,
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
                 child: Text(widget.areaName,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white)),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: const Text(
+            const Padding(
+              padding: EdgeInsets.all(30.0),
+              child: Text(
                 'Quais sistemas deseja configurar?',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
@@ -103,7 +103,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 title: 'ALARME DE INCÊNDIO',
                 onPressed: () => navigateTo('/fireAlarm', widget.areaName,
                     widget.localName, widget.localId, 8)),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Center(
@@ -141,10 +141,10 @@ class SystemButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const SystemButton({
-    Key? key,
+    super.key,
     required this.title,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -152,11 +152,6 @@ class SystemButton extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
       width: double.infinity,
       child: ElevatedButton(
-        child: Text(title,
-            style: const TextStyle(
-                color: AppColors.sigeIeBlue,
-                fontSize: 18,
-                fontWeight: FontWeight.w900)),
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
           foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
@@ -167,6 +162,11 @@ class SystemButton extends StatelessWidget {
           )),
         ),
         onPressed: onPressed,
+        child: Text(title,
+            style: const TextStyle(
+                color: AppColors.sigeIeBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.w900)),
       ),
     );
   }

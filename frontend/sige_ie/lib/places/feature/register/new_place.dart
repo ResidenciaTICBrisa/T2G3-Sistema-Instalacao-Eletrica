@@ -5,6 +5,8 @@ import 'package:sige_ie/places/data/place_service.dart';
 import 'position.dart';
 
 class NewPlace extends StatefulWidget {
+  const NewPlace({super.key});
+
   @override
   NewPlaceState createState() => NewPlaceState();
 }

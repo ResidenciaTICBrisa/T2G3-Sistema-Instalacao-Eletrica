@@ -30,17 +30,19 @@ environment:
 dependencies:
     flutter:
         sdk: flutter
-    geolocator: ^9.0.2
     shared_preferences: ^2.0.15
     video_player: ^2.2.14
     http: ^0.13.3
     cookie_jar: ^4.0.8
     http_interceptor: ^1.0.1
-    image_picker: ^0.8.5    
-    # The following adds the Cupertino Icons font to your application.
-    # Use with the CupertinoIcons class for iOS style icons.
+    image_picker: ^0.8.5
     cupertino_icons: ^1.0.6
-    flutter_osm_plugin: ^0.60.4
+    get: ^4.6.5
+    google_maps_flutter: ^2.0.6
+    geolocator: ^9.0.2
+    logger: ^1.0.0
+
+
 
 dev_dependencies:
     flutter_test:
@@ -61,6 +63,7 @@ flutter:
     assets:
         - assets/Loading.mp4
         - assets/1000x1000.png
+        - assets/lighting.png
 
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in
