@@ -20,17 +20,8 @@ class ViewEquipmentScreen extends StatefulWidget {
 }
 
 class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
-  String? _selectedEquipment;
   List<String> equipmentList = [
-    'Selecione um equipamento',
-    'Eletroduto',
-    'Eletrocalha',
-    'Dimensão',
-    'Para-raios',
-    'Captação',
-    'Subsistemas',
-    'Alarme de incêndio',
-    'Sensor de fumaça'
+    //Vazio para simular nenhum equipamento
   ];
 
   void navigateToEquipmentScreen() {
@@ -42,14 +33,6 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
         localId: widget.localId,
       ),
     ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    if (equipmentList.isNotEmpty) {
-      _selectedEquipment = _selectedEquipment ?? equipmentList.first;
-    }
   }
 
   @override
@@ -87,41 +70,23 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Tipos de equipamentos',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        hint: const Text('Selecione um equipamento'),
-                        value: _selectedEquipment,
-                        isExpanded: true,
-                        onChanged: (newValue) {
-                          if (newValue != 'Selecione um equipamento') {
-                            setState(() {
-                              _selectedEquipment = newValue;
-                            });
-                          }
-                        },
-                        items: equipmentList.map((String equipment) {
-                          return DropdownMenuItem<String>(
-                            value: equipment,
-                            child: Text(equipment,
-                                style: const TextStyle(color: Colors.black54)),
-                            enabled: equipment != 'Selecione um equipamento',
-                          );
-                        }).toList(),
-                        dropdownColor: Colors.grey[300],
-                      ),
-                    ),
-                  ),
+                  equipmentList.isNotEmpty
+                      ? Column(
+                          children: equipmentList.map((equipment) {
+                            return ListTile(
+                              title: Text(equipment),
+                            );
+                          }).toList(),
+                        )
+                      : const Center(
+                          child: Text(
+                            'Você ainda não tem equipamentos',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54),
+                          ),
+                        ),
                   const SizedBox(height: 40),
                   Center(
                     child: ElevatedButton(
