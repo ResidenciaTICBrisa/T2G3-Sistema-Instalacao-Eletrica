@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../places/data/place_response_model.dart';
 import '../../places/data/place_service.dart';
 
@@ -13,18 +11,59 @@ class MapsController extends GetxController {
   final latitude = 0.0.obs;
   final longitude = 0.0.obs;
   final markers = <Marker>{}.obs;
+  final isLoading = true.obs;
 
-  late GoogleMapController _mapsController;
   final PlaceService _placeService = PlaceService();
+  late CameraPosition initialCameraPosition;
 
   @override
   void onInit() {
     super.onInit();
+    _getCurrentLocation();
     fetchPlaces();
   }
 
-  void onMapCreated(GoogleMapController controller) {
-    _mapsController = controller;
+  void onMapCreated(GoogleMapController controller) {}
+
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Verifique se o serviço de localização está habilitado
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Get.snackbar('Erro', 'Serviço de localização está desabilitado.');
+      return;
+    }
+
+    // Verifique se a permissão de localização é concedida
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar('Erro', 'Permissão de localização negada.');
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar('Erro', 'Permissão de localização negada permanentemente.');
+      return;
+    }
+
+    // Obtenha a localização atual
+    final Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    latitude.value = position.latitude;
+    longitude.value = position.longitude;
+
+    initialCameraPosition = CameraPosition(
+      target: LatLng(position.latitude, position.longitude),
+      zoom: 12,
+    );
+
+    isLoading.value = false;
   }
 
   Future<Uint8List?> getBytesFromAsset(String path, int width) async {
@@ -55,7 +94,7 @@ class MapsController extends GetxController {
   }
 
   Future<void> addMarker(PlaceResponseModel place) async {
-    final Uint8List? icon = await getBytesFromAsset('assets/lighting.png', 64);
+    final Uint8List? icon = await getBytesFromAsset('assets/lighting.png', 80);
     if (icon != null) {
       markers.add(
         Marker(

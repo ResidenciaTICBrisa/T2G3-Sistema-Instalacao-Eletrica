@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
-
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/users/data/user_request_model.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
@@ -33,14 +32,11 @@ class UserService {
             'email': email,
           }));
       if (response.statusCode == 200 || response.statusCode == 201) {
-        //print("Atualizado com sucesso: $data");
         return true;
       } else {
-        //print("Falha: ${response.body}");
         return false;
       }
     } catch (e) {
-      //print("Erro ao tentar registrar: $e");
       return false;
     }
   }
@@ -55,14 +51,11 @@ class UserService {
       var response = await client
           .delete(url, headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 204) {
-        //print("Excluido com sucesso: $data");
         return true;
       } else {
-        //print("Falha: ${response.body}");
         return false;
       }
     } catch (e) {
-      //print("Erro ao tentar excluir: $e");
       return false;
     }
   }
@@ -72,14 +65,19 @@ class UserService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    final response =
-        await client.get(Uri.parse('http://10.0.2.2:8000/api/userauth'));
+    try {
+      final response =
+          await client.get(Uri.parse('http://10.0.2.2:8000/api/userauth'));
 
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      return UserResponseModel.fromJson(data);
-    } else {
-      throw Exception('Falha ao carregar dados do perfil');
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        return UserResponseModel.fromJson(data);
+      } else {
+        throw Exception('Falha ao carregar dados do perfil');
+      }
+    } catch (e) {
+      print('Erro ao carregar dados do perfil: $e');
+      rethrow;
     }
   }
 }
