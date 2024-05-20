@@ -16,16 +16,22 @@ class PlaceService {
   Future<int?> register(PlaceRequestModel placeRequestModel) async {
     var url = Uri.parse(baseUrl);
 
-    var response = await client.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(placeRequestModel.toJson()),
-    );
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(placeRequestModel.toJson()),
+      );
 
-    if (response.statusCode == 201) {
-      Map<String, dynamic> responseData = jsonDecode(response.body);
-      return responseData['id'];
-    } else {
+      if (response.statusCode == 201) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        return responseData['id'];
+      } else {
+        print('Failed to register place: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error during register: $e');
       return null;
     }
   }
@@ -33,12 +39,19 @@ class PlaceService {
   // GET ALL
   Future<List<PlaceResponseModel>> fetchAllPlaces() async {
     var url = Uri.parse(baseUrl);
-    var response = await client.get(url);
+    try {
+      var response = await client.get(url);
 
-    if (response.statusCode == 200) {
-      List<dynamic> dataList = jsonDecode(response.body);
-      return dataList.map((data) => PlaceResponseModel.fromJson(data)).toList();
-    } else {
+      if (response.statusCode == 200) {
+        List<dynamic> dataList = jsonDecode(response.body);
+        return dataList
+            .map((data) => PlaceResponseModel.fromJson(data))
+            .toList();
+      } else {
+        throw Exception('Failed to load places');
+      }
+    } catch (e) {
+      print('Error during fetchAllPlaces: $e');
       throw Exception('Failed to load places');
     }
   }
@@ -47,12 +60,17 @@ class PlaceService {
   Future<PlaceResponseModel> fetchPlace(int placeId) async {
     var url = Uri.parse('$baseUrl$placeId/');
 
-    var response = await client.get(url);
+    try {
+      var response = await client.get(url);
 
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      return PlaceResponseModel.fromJson(data);
-    } else {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        return PlaceResponseModel.fromJson(data);
+      } else {
+        throw Exception('Failed to load place with ID $placeId');
+      }
+    } catch (e) {
+      print('Error during fetchPlace: $e');
       throw Exception('Failed to load place with ID $placeId');
     }
   }
@@ -62,21 +80,31 @@ class PlaceService {
       int placeId, PlaceRequestModel placeRequestModel) async {
     var url = Uri.parse('$baseUrl$placeId/');
 
-    var response = await client.put(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(placeRequestModel.toJson()),
-    );
+    try {
+      var response = await client.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(placeRequestModel.toJson()),
+      );
 
-    return response.statusCode == 200;
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Error during updatePlace: $e');
+      return false;
+    }
   }
 
   // DELETE
   Future<bool> deletePlace(int placeId) async {
     var url = Uri.parse('$baseUrl$placeId/');
 
-    var response = await client.delete(url);
+    try {
+      var response = await client.delete(url);
 
-    return response.statusCode == 204;
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Error during deletePlace: $e');
+      return false;
+    }
   }
 }

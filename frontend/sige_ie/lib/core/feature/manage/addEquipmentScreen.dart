@@ -39,7 +39,12 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   String? _selectedType;
   String? _selectedLocation;
 
-  List<String> equipmentTypes = ['Eletroduto', 'Eletrocalha', 'Dimensão'];
+  List<String> equipmentTypes = [
+    'Selecione um equipamento',
+    'Eletroduto',
+    'Eletrocalha',
+    'Dimensão'
+  ];
 
   @override
   void dispose() {
@@ -179,26 +184,40 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  const Text('Tipos de equipamentos',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildDropdown(
+                        flex: 4,
+                        child: _buildStyledDropdown(
                           items: equipmentTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                            });
+                            if (newValue != 'Selecione um equipamento') {
+                              setState(() {
+                                _selectedType = newValue;
+                              });
+                            }
                           },
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: _addNewEquipmentType,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: _deleteEquipmentType,
+                      Expanded(
+                        flex: 0,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: _addNewEquipmentType,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: _deleteEquipmentType,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -249,13 +268,19 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildDropdown(
-                    items: const ['Interno', 'Externo'],
+                  _buildStyledDropdown(
+                    items: const [
+                      'Selecione a localização',
+                      'Interno',
+                      'Externo'
+                    ],
                     value: _selectedLocation,
                     onChanged: (newValue) {
-                      setState(() {
-                        _selectedLocation = newValue;
-                      });
+                      if (newValue != 'Selecione a localização') {
+                        setState(() {
+                          _selectedLocation = newValue;
+                        });
+                      }
                     },
                   ),
                   const SizedBox(height: 15),
@@ -324,21 +349,31 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     );
   }
 
-  Widget _buildDropdown({
+  Widget _buildStyledDropdown({
     required List<String> items,
     String? value,
     required Function(String?) onChanged,
   }) {
-    String dropdownValue = value ?? items.first;
-    return DropdownButton<String>(
-      value: dropdownValue,
-      onChanged: onChanged,
-      items: items.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: DropdownButton<String>(
+        hint: Text(items.first),
+        value: value,
+        isExpanded: true,
+        underline: Container(),
+        onChanged: onChanged,
+        items: items.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+            enabled: value != items.first,
+          );
+        }).toList(),
+      ),
     );
   }
 }

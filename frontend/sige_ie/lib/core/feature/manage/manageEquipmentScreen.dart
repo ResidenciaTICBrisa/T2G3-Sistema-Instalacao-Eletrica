@@ -22,6 +22,7 @@ class ViewEquipmentScreen extends StatefulWidget {
 class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
   String? _selectedEquipment;
   List<String> equipmentList = [
+    'Selecione um equipamento',
     'Eletroduto',
     'Eletrocalha',
     'Dimensão',
@@ -86,7 +87,7 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Equipamentos',
+                  const Text('Tipos de equipamentos',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -99,18 +100,22 @@ class _ViewEquipmentScreenState extends State<ViewEquipmentScreen> {
                         const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
+                        hint: const Text('Selecione um equipamento'),
                         value: _selectedEquipment,
                         isExpanded: true,
                         onChanged: (newValue) {
-                          setState(() {
-                            _selectedEquipment = newValue;
-                          });
+                          if (newValue != 'Selecione um equipamento') {
+                            setState(() {
+                              _selectedEquipment = newValue;
+                            });
+                          }
                         },
                         items: equipmentList.map((String equipment) {
                           return DropdownMenuItem<String>(
                             value: equipment,
                             child: Text(equipment,
-                                style: const TextStyle(color: Colors.black)),
+                                style: const TextStyle(color: Colors.black54)),
+                            enabled: equipment != 'Selecione um equipamento',
                           );
                         }).toList(),
                         dropdownColor: Colors.grey[300],
