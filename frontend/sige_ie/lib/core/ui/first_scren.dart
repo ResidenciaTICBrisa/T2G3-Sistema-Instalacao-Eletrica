@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class FirstScreen extends StatelessWidget {
+  const FirstScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,10 +16,6 @@ class FirstScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushNamed(context, '/loginScreen');
                 },
-                child: const Text(
-                  "Login",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
                 style: ElevatedButton.styleFrom(
                     elevation: 6,
                     minimumSize: const Size(200, 50),
@@ -26,7 +24,11 @@ class FirstScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(
                           12), // Arredondamento dos cantos do botão
-                    ))),
+                    )),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                )),
             const SizedBox(
               height: 15, // Espaço entre os botões
             ),
@@ -34,10 +36,6 @@ class FirstScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/registerScreen');
               },
-              child: const Text(
-                "Registro",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
               style: ElevatedButton.styleFrom(
                   elevation: 6,
                   minimumSize: const Size(200, 50),
@@ -46,6 +44,10 @@ class FirstScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   )),
+              child: const Text(
+                "Registro",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),

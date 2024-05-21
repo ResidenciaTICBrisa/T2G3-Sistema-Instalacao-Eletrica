@@ -5,6 +5,8 @@ import 'package:sige_ie/users/data/user_service.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -69,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     style: TextStyle(
                         color: Colors.grey[600], fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       filled: true,
@@ -78,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           vertical: 15.0, horizontal: 10.0),
                       isDense: true,
                     ),
@@ -86,13 +88,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         TextEditingController(text: userResponseModel.email),
                     onChanged: (value) => userResponseModel.email = value,
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Text(
                     'Nome',
                     style: TextStyle(
                         color: Colors.grey[600], fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       filled: true,
@@ -101,7 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           vertical: 15.0, horizontal: 10.0),
                       isDense: true,
                     ),
@@ -109,13 +111,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         text: userResponseModel.firstname),
                     onChanged: (value) => userResponseModel.firstname = value,
                   ),
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
                   Text(
                     'Username',
                     style: TextStyle(
                         color: Colors.grey[600], fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   TextField(
                     decoration: InputDecoration(
                       filled: true,
@@ -124,7 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(8.0),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           vertical: 15.0, horizontal: 10.0),
                       isDense: true,
                     ),

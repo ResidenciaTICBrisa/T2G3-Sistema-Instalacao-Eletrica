@@ -21,13 +21,13 @@ class AddEquipmentScreen extends StatefulWidget {
   final int localId;
   final int categoryNumber;
 
-  AddEquipmentScreen({
-    Key? key,
+  const AddEquipmentScreen({
+    super.key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
-  }) : super(key: key);
+  });
 
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
@@ -38,8 +38,14 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedLocation;
+  String? _selectedTypeToDelete;
 
-  List<String> equipmentTypes = ['Eletroduto', 'Eletrocalha', 'Dimensão'];
+  List<String> equipmentTypes = [
+    'Selecione um equipamento',
+    'Eletroduto',
+    'Eletrocalha',
+    'Dimensão'
+  ];
 
   @override
   void dispose() {
@@ -75,21 +81,21 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Adicionar novo tipo de equipamento'),
+          title: const Text('Adicionar novo tipo de equipamento'),
           content: TextField(
             controller: typeController,
-            decoration:
-                InputDecoration(hintText: 'Digite o novo tipo de equipamento'),
+            decoration: const InputDecoration(
+                hintText: 'Digite o novo tipo de equipamento'),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Adicionar'),
+              child: const Text('Adicionar'),
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
@@ -106,37 +112,132 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   }
 
   void _deleteEquipmentType() {
+    if (_selectedTypeToDelete == null ||
+        _selectedTypeToDelete == 'Selecione um equipamento') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Selecione um tipo de equipamento válido para excluir.'),
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Excluir tipo de equipamento'),
-          content: DropdownButton<String>(
-            value: _selectedType,
-            onChanged: (String? newValue) {
-              setState(() {
-                equipmentTypes.remove(newValue);
-                _selectedType =
-                    equipmentTypes.isNotEmpty ? equipmentTypes.first : null;
-              });
-              Navigator.of(context).pop();
-            },
-            items: equipmentTypes.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
+          title: const Text('Confirmar exclusão'),
+          content: Text(
+              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Excluir'),
+              onPressed: () {
+                setState(() {
+                  equipmentTypes.remove(_selectedTypeToDelete);
+                  _selectedTypeToDelete = null;
+                });
                 Navigator.of(context).pop();
               },
             ),
           ],
         );
+      },
+    );
+  }
+
+  void _showConfirmationDialog() {
+    if (_equipmentNameController.text.isEmpty ||
+        _equipmentQuantityController.text.isEmpty ||
+        _selectedType == null ||
+        _selectedLocation == null ||
+        _selectedType == 'Selecione um equipamento' ||
+        _selectedLocation == 'Selecione a localização') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor, preencha todos os campos.'),
+        ),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Dados do Equipamento'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text('Nome:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_equipmentNameController.text),
+                const SizedBox(height: 10),
+                const Text('Quantidade:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_equipmentQuantityController.text),
+                const SizedBox(height: 10),
+                const Text('Tipo:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_selectedType ?? ''),
+                const SizedBox(height: 10),
+                const Text('Localização:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_selectedLocation ?? ''),
+                const SizedBox(height: 10),
+                const Text('Imagens:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Wrap(
+                  children: _images.map((imageData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Image.file(
+                        imageData.imageFile,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Editar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                navigateToEquipmentScreen();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void navigateToEquipmentScreen() {
+    Navigator.of(context).pushNamed(
+      '/equipmentScreen',
+      arguments: {
+        'areaName': widget.areaName,
+        'localName': widget.localName,
+        'localId': widget.localId,
+        'categoryNumber': widget.categoryNumber,
       },
     );
   }
@@ -179,26 +280,45 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  const Text('Tipos de equipamentos',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
-                        child: _buildDropdown(
+                        flex: 4,
+                        child: _buildStyledDropdown(
                           items: equipmentTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                            });
+                            if (newValue != 'Selecione um equipamento') {
+                              setState(() {
+                                _selectedType = newValue;
+                              });
+                            }
                           },
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: _addNewEquipmentType,
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: _deleteEquipmentType,
+                      Expanded(
+                        flex: 0,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.add),
+                              onPressed: _addNewEquipmentType,
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  _selectedTypeToDelete = null;
+                                });
+                                _showDeleteDialog();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -249,13 +369,19 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildDropdown(
-                    items: const ['Interno', 'Externo'],
+                  _buildStyledDropdown(
+                    items: const [
+                      'Selecione a localização',
+                      'Interno',
+                      'Externo'
+                    ],
                     value: _selectedLocation,
                     onChanged: (newValue) {
-                      setState(() {
-                        _selectedLocation = newValue;
-                      });
+                      if (newValue != 'Selecione a localização') {
+                        setState(() {
+                          _selectedLocation = newValue;
+                        });
+                      }
                     },
                   ),
                   const SizedBox(height: 15),
@@ -305,9 +431,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                               MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ))),
-                      onPressed: () {
-                        // Implementar a lógica de adicionar equipamento
-                      },
+                      onPressed: _showConfirmationDialog,
                       child: const Text(
                         'ADICIONAR EQUIPAMENTO',
                         style: TextStyle(
@@ -324,21 +448,91 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     );
   }
 
-  Widget _buildDropdown({
+  void _showDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Excluir tipo de equipamento'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Selecione um equipamento para excluir:',
+                textAlign: TextAlign.center,
+              ),
+              DropdownButton<String>(
+                isExpanded: true,
+                value: _selectedTypeToDelete,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedTypeToDelete = newValue;
+                  });
+                },
+                items: equipmentTypes
+                    .where((value) => value != 'Selecione um equipamento')
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Excluir'),
+              onPressed: () {
+                if (_selectedTypeToDelete != null) {
+                  Navigator.of(context).pop();
+                  _deleteEquipmentType();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildStyledDropdown({
     required List<String> items,
     String? value,
     required Function(String?) onChanged,
   }) {
-    String dropdownValue = value ?? items.first;
-    return DropdownButton<String>(
-      value: dropdownValue,
-      onChanged: onChanged,
-      items: items.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: DropdownButton<String>(
+        hint: Text(items.first),
+        value: value,
+        isExpanded: true,
+        underline: Container(),
+        onChanged: onChanged,
+        items: items.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.black),
+            ),
+            enabled: value != items.first,
+          );
+        }).toList(),
+      ),
     );
   }
 }

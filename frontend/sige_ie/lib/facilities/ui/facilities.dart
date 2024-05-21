@@ -8,6 +8,8 @@ import '../../config/app_styles.dart';
 import '../../areas/data/area_service.dart';
 
 class FacilitiesPage extends StatefulWidget {
+  const FacilitiesPage({super.key});
+
   @override
   _FacilitiesPageState createState() => _FacilitiesPageState();
 }
@@ -16,11 +18,18 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
   late Future<List<PlaceResponseModel>> _placesList;
   final PlaceService _placeService = PlaceService();
   final AreaService _areaService = AreaService();
+  late BuildContext _scaffoldContext;
 
   @override
   void initState() {
     super.initState();
     _placesList = _placeService.fetchAllPlaces();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _scaffoldContext = context;
   }
 
   Future<List<AreaResponseModel>> _loadAreasForPlace(int placeId) async {
@@ -124,33 +133,27 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                                                     : a)
                                                 .toList();
                                       });
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Área atualizada com sucesso')),
-                                        );
-                                      }
-                                    } else {
-                                      if (context.mounted) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                              content: Text(
-                                                  'Falha ao atualizar a área')),
-                                        );
-                                      }
-                                    }
-                                  } else {
-                                    if (context.mounted) {
-                                      ScaffoldMessenger.of(context)
+                                      ScaffoldMessenger.of(_scaffoldContext)
                                           .showSnackBar(
                                         const SnackBar(
                                             content: Text(
-                                                'Dados inválidos para a área')),
+                                                'Área atualizada com sucesso')),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(_scaffoldContext)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Falha ao atualizar a área')),
                                       );
                                     }
+                                  } else {
+                                    ScaffoldMessenger.of(_scaffoldContext)
+                                        .showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Dados inválidos para a área')),
+                                    );
                                   }
                                 },
                               ),
@@ -159,11 +162,9 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                         },
                       );
                     } catch (e) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Erro ao editar a área: $e')),
-                        );
-                      }
+                      ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
+                        SnackBar(content: Text('Erro ao editar a área: $e')),
+                      );
                     }
                   },
                   onDeleteArea: (int areaId) async {
@@ -200,17 +201,15 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                             value.removeWhere((a) => a.id == areaId);
                           });
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
+                        ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
                           const SnackBar(
                               content: Text('Área excluída com sucesso')),
                         );
                       } else {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Erro ao excluir a área')),
-                          );
-                        }
+                        ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
+                          const SnackBar(
+                              content: Text('Erro ao excluir a área')),
+                        );
                       }
                     }
                   },
@@ -229,11 +228,9 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
         },
       );
     } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao carregar as áreas: $e')),
-        );
-      }
+      ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
+        SnackBar(content: Text('Erro ao carregar as áreas: $e')),
+      );
     }
   }
 
@@ -257,21 +254,25 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 bool success = await _placeService.deletePlace(place.id);
-                if (success && mounted) {
-                  setState(() {
-                    _placesList = _placeService.fetchAllPlaces();
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text('Local "${place.name}" excluído com sucesso')),
-                  );
+                if (success) {
+                  if (mounted) {
+                    setState(() {
+                      _placesList = _placeService.fetchAllPlaces();
+                    });
+                    ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              'Local "${place.name}" excluído com sucesso')),
+                    );
+                  }
                 } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text('Falha ao excluir o local "${place.name}"')),
-                  );
+                  if (mounted) {
+                    ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
+                      SnackBar(
+                          content:
+                              Text('Falha ao excluir o local "${place.name}"')),
+                    );
+                  }
                 }
               },
             ),
@@ -337,20 +338,21 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                   );
                   bool success =
                       await _placeService.updatePlace(place.id, updatedPlace);
-                  if (success && mounted) {
-                    setState(() {
-                      _placesList = _placeService.fetchAllPlaces();
-                    });
+                  if (success) {
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      setState(() {
+                        _placesList = _placeService.fetchAllPlaces();
+                      });
+                      ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
                         SnackBar(
                             content: Text('Local atualizado para "$newName"')),
                       );
                     }
                   } else {
                     if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Falha ao atualizar o local')),
+                      ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
+                        const SnackBar(
+                            content: Text('Falha ao atualizar o local')),
                       );
                     }
                   }
@@ -371,93 +373,107 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
         backgroundColor: const Color(0xff123c75),
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
-              decoration: const BoxDecoration(
-                color: AppColors.sigeIeBlue,
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(20)),
-              ),
-              child: const Center(
-                child: Text('Locais',
-                    style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white)),
-              ),
-            ),
-            const SizedBox(height: 15),
-            FutureBuilder<List<PlaceResponseModel>>(
-              future: _placesList,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Erro: ${snapshot.error}'));
-                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      var place = snapshot.data![index];
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: AppColors.sigeIeBlue,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          title: Text(
-                            place.name,
-                            style: const TextStyle(
-                                color: AppColors.lightText,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => _editPlace(context, place),
+      body: Builder(
+        builder: (BuildContext context) {
+          _scaffoldContext = context;
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  decoration: const BoxDecoration(
+                    color: AppColors.sigeIeBlue,
+                    borderRadius:
+                        BorderRadius.vertical(bottom: Radius.circular(20)),
+                  ),
+                  child: const Center(
+                    child: Text('Locais',
+                        style: TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                FutureBuilder<List<PlaceResponseModel>>(
+                  future: _placesList,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Erro: ${snapshot.error}'));
+                    } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          var place = snapshot.data![index];
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              color: AppColors.sigeIeBlue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 10),
+                              title: Text(
+                                place.name,
+                                style: const TextStyle(
+                                    color: AppColors.lightText,
+                                    fontWeight: FontWeight.bold),
                               ),
-                              IconButton(
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _confirmDelete(context, place),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit,
+                                        color: Colors.blue),
+                                    onPressed: () =>
+                                        _editPlace(_scaffoldContext, place),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    onPressed: () =>
+                                        _confirmDelete(_scaffoldContext, place),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.description,
+                                        color: AppColors.lightText),
+                                    onPressed: () {},
+                                  ),
+                                ],
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.description,
-                                    color: AppColors.lightText),
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          onTap: () => _showAreasForPlace(context, place),
+                              onTap: () =>
+                                  _showAreasForPlace(_scaffoldContext, place),
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(
+                          'Nenhum local encontrado.',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
                         ),
                       );
-                    },
-                  );
-                } else {
-                  return const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text("Nenhum local encontrado."),
-                  );
-                }
-              },
+                    }
+                  },
+                ),
+                const SizedBox(height: 15),
+              ],
             ),
-            const SizedBox(height: 15),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -472,7 +488,8 @@ class FloorAreaWidget extends StatelessWidget {
   final Function(int) onDeleteArea;
   final Function(int) onTapArea;
 
-  FloorAreaWidget({
+  const FloorAreaWidget({
+    super.key,
     required this.groupedAreas,
     required this.placeName,
     required this.placeId,
@@ -502,11 +519,11 @@ class FloorAreaWidget extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit, color: Colors.blue),
+                          icon: const Icon(Icons.edit, color: Colors.blue),
                           onPressed: () => onEditArea(area.id),
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => onDeleteArea(area.id),
                         ),
                       ],
@@ -518,8 +535,8 @@ class FloorAreaWidget extends StatelessWidget {
           ),
         ),
         ListTile(
-          leading: Icon(Icons.add),
-          title: Text('Adicionar andar ou sala'),
+          leading: const Icon(Icons.add),
+          title: const Text('Adicionar andar ou sala'),
           onTap: onAddFloor,
         ),
       ],

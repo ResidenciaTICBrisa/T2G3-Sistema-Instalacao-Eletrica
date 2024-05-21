@@ -28,18 +28,19 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
-            return MaterialPageRoute(builder: (context) => SplashScreen());
+            return MaterialPageRoute(
+                builder: (context) => const SplashScreen());
           case '/loginScreen':
             return MaterialPageRoute(builder: (context) => const LoginScreen());
           case '/first':
-            return MaterialPageRoute(builder: (context) => FirstScreen());
+            return MaterialPageRoute(builder: (context) => const FirstScreen());
           case '/registerScreen':
             return MaterialPageRoute(
                 builder: (context) => const RegisterScreen());
           case '/homeScreen':
-            return MaterialPageRoute(builder: (context) => HomePage());
+            return MaterialPageRoute(builder: (context) => const HomePage());
           case '/MapsPage':
-            return MaterialPageRoute(builder: (context) => MapsPage());
+            return MaterialPageRoute(builder: (context) => const MapsPage());
           case '/newLocation':
             return MaterialPageRoute(builder: (context) => NewPlace());
           case '/arealocation':
@@ -104,7 +105,7 @@ class MyApp extends StatelessWidget {
             throw Exception(
                 'Invalid route: Expected Map arguments for /lowVoltage.');
 
-          case '/equipamentScreen':
+          case '/equipmentScreen':
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? areaName = args['areaName']?.toString();
@@ -122,11 +123,11 @@ class MyApp extends StatelessWidget {
                         ));
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /equipamentScreen.');
+                    'Invalid arguments: One of areaName, localName, or localId is null in /equipmentScreen.');
               }
             }
             throw Exception(
-                'Invalid route: Expected Map arguments for /equipamentScreen.');
+                'Invalid route: Expected Map arguments for /equipmentScreen.');
 
           default:
             return MaterialPageRoute(
@@ -139,7 +140,7 @@ class MyApp extends StatelessWidget {
 
 class UndefinedView extends StatelessWidget {
   final String? name;
-  const UndefinedView({Key? key, this.name}) : super(key: key);
+  const UndefinedView({super.key, this.name});
 
   @override
   Widget build(BuildContext context) {

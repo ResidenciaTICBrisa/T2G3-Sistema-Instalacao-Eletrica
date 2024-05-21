@@ -1,64 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_osm_plugin/flutter_osm_plugin.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../controller/maps_controller.dart';
 
-class MapsPage extends StatefulWidget {
-  const MapsPage({super.key});
+class MapsPage extends StatelessWidget {
+  const MapsPage({Key? key}) : super(key: key);
 
-  @override
-  State<MapsPage> createState() => _MapsPageState();
-}
-
-class _MapsPageState extends State<MapsPage> {
-  MapController controller = MapController(
-    initPosition: GeoPoint(latitude: 47.4358055, longitude: 8.4737324),
-    areaLimit: BoundingBox(
-      east: 10.4922941,
-      north: 47.8084648,
-      south: 45.817995,
-      west: 5.9559113,
-    ),
-  );
   @override
   Widget build(BuildContext context) {
-    return OSMFlutter(
-        controller: controller,
-        osmOption: OSMOption(
-          userTrackingOption: const UserTrackingOption(
-            enableTracking: true,
-            unFollowUser: false,
-          ),
-          zoomOption: const ZoomOption(
-            initZoom: 8,
-            minZoomLevel: 3,
-            maxZoomLevel: 19,
-            stepZoom: 1.0,
-          ),
-          userLocationMarker: UserLocationMaker(
-            personMarker: const MarkerIcon(
-              icon: Icon(
-                Icons.location_history_rounded,
-                color: Colors.red,
-                size: 48,
+    final MapsController _controller = Get.put(MapsController());
+
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: const Color(0xff123c75),
+        elevation: 0,
+      ),
+      body: Obx(() {
+        if (_controller.isLoading.value) {
+          return Center(child: CircularProgressIndicator());
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+              decoration: const BoxDecoration(
+                color: Color(0xff123c75),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+              child: const Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'Mapa',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            directionArrowMarker: const MarkerIcon(
-              icon: Icon(
-                Icons.double_arrow,
-                size: 48,
+            Expanded(
+              child: GoogleMap(
+                onMapCreated: _controller.onMapCreated,
+                initialCameraPosition: _controller.initialCameraPosition,
+                markers: Set<Marker>.of(_controller.markers),
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
               ),
             ),
-          ),
-          roadConfiguration: const RoadOption(
-            roadColor: Colors.yellowAccent,
-          ),
-          markerOption: MarkerOption(
-              defaultMarker: const MarkerIcon(
-            icon: Icon(
-              Icons.person_pin_circle,
-              color: Colors.blue,
-              size: 56,
-            ),
-          )),
-        ));
+          ],
+        );
+      }),
+    );
   }
 }

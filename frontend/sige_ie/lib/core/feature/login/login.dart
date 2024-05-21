@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/core/data/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -13,6 +13,52 @@ class _LoginScreenState extends State<LoginScreen> {
   final _loginScreen = GlobalKey<FormState>();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (!_loginScreen.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor, preencha todos os campos')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Processando dados')),
+    );
+
+    bool success = await authService.login(
+      usernameController.text,
+      passwordController.text,
+    );
+
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (success) {
+      if (!mounted) return;
+      Navigator.of(context).pushReplacementNamed('/homeScreen');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Login falhou, verifique suas credenciais')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +84,16 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Expanded(
-                flex: 6,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.only(topLeft: Radius.circular(50.0))),
-                  child: SingleChildScrollView(
-                      child: Form(
+              flex: 6,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(25.0, 50.0, 25.0, 20.0),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                      BorderRadius.only(topLeft: Radius.circular(50.0)),
+                ),
+                child: SingleChildScrollView(
+                  child: Form(
                     key: _loginScreen,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -54,39 +101,41 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text(
                           'Login',
                           style: TextStyle(
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black),
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.black,
+                          ),
                         ),
                         const SizedBox(height: 35),
                         TextFormField(
-                            controller: usernameController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Por favor, insira um username válido';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              label: const Text('Username'),
-                              labelStyle: const TextStyle(color: Colors.black),
-                              hintText: 'Insira o seu username',
-                              hintStyle: const TextStyle(
-                                color: Colors.black,
+                          controller: usernameController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, insira um username válido';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            label: const Text('Username'),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            hintText: 'Insira o seu username',
+                            hintStyle: const TextStyle(
+                              color: Colors.black,
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 39, 38, 38),
                               ),
-                              border: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 39, 38, 38),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(255, 0, 0, 0),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            )),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: passwordController,
@@ -126,14 +175,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             Row(
                               children: [
                                 Checkbox(
-                                    value: rememberMe,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        rememberMe = value!;
-                                      });
-                                    },
-                                    activeColor:
-                                        const Color.fromARGB(255, 12, 78, 170)),
+                                  value: rememberMe,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      rememberMe = value!;
+                                    });
+                                  },
+                                  activeColor:
+                                      const Color.fromARGB(255, 12, 78, 170),
+                                ),
                                 const Text(
                                   'Manter conectado',
                                   style: TextStyle(
@@ -158,83 +208,58 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 200,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () async {
-                              if (_loginScreen.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processando dados')),
-                                );
-
-                                bool success = await authService.login(
-                                    usernameController.text,
-                                    passwordController.text);
-
-                                //bool isAuth = await authService.checkAuthenticated();
-                                //print(isAuth);
-
-                                ScaffoldMessenger.of(context)
-                                    .hideCurrentSnackBar();
-
-                                if (success) {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed('/homeScreen');
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Login falhou, verifique suas credenciais')),
-                                  );
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Por favor, preencha todos os campos')),
-                                );
-                              }
-                            },
-                            child: const Text(
-                              'Login',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
+                            onPressed: isLoading ? null : _login,
                             style: ElevatedButton.styleFrom(
-                                elevation: 6,
-                                backgroundColor:
-                                    const Color.fromARGB(255, 244, 248, 0),
-                                foregroundColor: const Color(0xff123c75),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                )),
+                              elevation: 6,
+                              backgroundColor:
+                                  const Color.fromARGB(255, 244, 248, 0),
+                              foregroundColor: const Color(0xff123c75),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: isLoading
+                                ? const CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Color(0xff123c75)),
+                                  )
+                                : const Text(
+                                    'Login',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                           ),
                         ),
                         const SizedBox(height: 30),
                         Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Não tem uma conta? ',
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Não tem uma conta? ',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0)),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(context, '/registerScreen');
+                              },
+                              child: const Text(
+                                'Registre-se',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 0, 0)),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                      context, '/registerScreen');
-                                },
-                                child: const Text(
-                                  'Registre-se',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xff123c75),
-                                  ),
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff123c75),
                                 ),
                               ),
-                            ])
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  )),
-                ))
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

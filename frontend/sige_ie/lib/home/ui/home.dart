@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import '../../users/feature/profile.dart';
-import '../../core/ui/facilities.dart';
+import '../../facilities/ui/facilities.dart';
 import '../../maps/feature/maps.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -53,8 +55,8 @@ class _HomePageState extends State<HomePage> {
         },
         children: <Widget>[
           buildHomePage(context),
-          FacilitiesPage(),
-          MapsPage(),
+          const FacilitiesPage(),
+          const MapsPage(),
           ProfilePage()
         ],
       ),
@@ -67,9 +69,9 @@ class _HomePageState extends State<HomePage> {
       future: userService.fetchProfileData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Erro ao carregar os dados'));
+          return const Center(child: Text('Erro ao carregar os dados'));
         } else if (snapshot.hasData) {
           var user = snapshot.data!;
           return Column(
@@ -107,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.only(left: 20),
                         child: Text(
                           'Olá, ${user.firstname}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.sigeIeYellow,
                             fontSize: 20,
                           ),
@@ -137,7 +139,7 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         } else {
-          return Center(child: Text('Estado desconhecido'));
+          return const Center(child: Text('Estado desconhecido'));
         }
       },
     );
@@ -149,8 +151,8 @@ class _HomePageState extends State<HomePage> {
       decoration: BoxDecoration(
         color: const Color(0xff123c75),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          const BoxShadow(color: Colors.black, spreadRadius: 0, blurRadius: 10),
+        boxShadow: const [
+          BoxShadow(color: Colors.black, spreadRadius: 0, blurRadius: 10),
         ],
       ),
       height: 135,

@@ -8,8 +8,8 @@ class AreaLocation extends StatefulWidget {
   final String localName;
   final int localId;
 
-  const AreaLocation({Key? key, required this.localName, required this.localId})
-      : super(key: key);
+  const AreaLocation(
+      {super.key, required this.localName, required this.localId});
   @override
   _AreaLocationState createState() => _AreaLocationState();
 }
@@ -30,21 +30,21 @@ class _AreaLocationState extends State<AreaLocation> {
           children: <Widget>[
             Container(
               width: double.infinity,
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
                 color: AppColors.sigeIeBlue,
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
                 child: Text('${widget.localName} - Sala',
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white)),
               ),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -52,20 +52,21 @@ class _AreaLocationState extends State<AreaLocation> {
                 children: <Widget>[
                   Row(
                     children: [
-                      Text('Andar',
+                      const Text('Andar',
                           style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                               color: Colors.black)),
                       IconButton(
-                        icon: Icon(Icons.info_outline),
+                        icon: const Icon(Icons.info_outline),
                         onPressed: () {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Informação sobre os Andares'),
-                                content: Column(
+                                title:
+                                    const Text('Informação sobre os Andares'),
+                                content: const Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -79,7 +80,7 @@ class _AreaLocationState extends State<AreaLocation> {
                                 ),
                                 actions: <Widget>[
                                   TextButton(
-                                    child: Text('OK'),
+                                    child: const Text('OK'),
                                     onPressed: () =>
                                         Navigator.of(context).pop(),
                                   ),
@@ -91,9 +92,9 @@ class _AreaLocationState extends State<AreaLocation> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(10),
@@ -102,7 +103,7 @@ class _AreaLocationState extends State<AreaLocation> {
                       controller: TextEditingController(
                           text: selectedFloor?.toString()),
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: InputBorder.none,
                       ),
                       onChanged: (value) {
@@ -112,27 +113,27 @@ class _AreaLocationState extends State<AreaLocation> {
                       },
                     ),
                   ),
-                  SizedBox(height: 40),
-                  Text('Sala',
+                  const SizedBox(height: 40),
+                  const Text('Sala',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black)),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Container(
                     decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(10)),
                     child: TextField(
                       controller: areaController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Digite o nome da Sala',
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       ),
                     ),
                   ),
-                  SizedBox(height: 60),
+                  const SizedBox(height: 60),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -140,8 +141,8 @@ class _AreaLocationState extends State<AreaLocation> {
                         style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.lightText,
                           backgroundColor: AppColors.warn,
-                          minimumSize: Size(150, 50),
-                          textStyle: TextStyle(
+                          minimumSize: const Size(150, 50),
+                          textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                           shape: RoundedRectangleBorder(
@@ -154,14 +155,14 @@ class _AreaLocationState extends State<AreaLocation> {
                             '/homeScreen',
                           );
                         },
-                        child: Text('ENCERRAR'),
+                        child: const Text('ENCERRAR'),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           foregroundColor: AppColors.sigeIeBlue,
                           backgroundColor: AppColors.sigeIeYellow,
-                          minimumSize: Size(150, 50),
-                          textStyle: TextStyle(
+                          minimumSize: const Size(150, 50),
+                          textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                           shape: RoundedRectangleBorder(
@@ -193,11 +194,11 @@ class _AreaLocationState extends State<AreaLocation> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text('Erro'),
+                                    title: const Text('Erro'),
                                     content: Text("Falha ao criar sala: $e"),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: Text("OK"),
+                                        child: const Text("OK"),
                                         onPressed: () =>
                                             Navigator.of(context).pop(),
                                       ),
@@ -211,12 +212,12 @@ class _AreaLocationState extends State<AreaLocation> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Erro'),
-                                  content: Text(
+                                  title: const Text('Erro'),
+                                  content: const Text(
                                       "Por favor, selecione um andar e digite o nome da sala"),
                                   actions: <Widget>[
                                     TextButton(
-                                      child: Text("OK"),
+                                      child: const Text("OK"),
                                       onPressed: () =>
                                           Navigator.of(context).pop(),
                                     ),
@@ -226,7 +227,7 @@ class _AreaLocationState extends State<AreaLocation> {
                             );
                           }
                         },
-                        child: Text('CONTINUAR'),
+                        child: const Text('CONTINUAR'),
                       ),
                     ],
                   ),
@@ -254,7 +255,7 @@ Widget _buildDropdown({
     ),
     child: DropdownButtonHideUnderline(
       child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(vertical: 4),
         ),
@@ -267,7 +268,7 @@ Widget _buildDropdown({
           );
         }).toList(),
         onChanged: onChanged,
-        style: TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black),
         dropdownColor: Colors.grey[200],
       ),
     ),
