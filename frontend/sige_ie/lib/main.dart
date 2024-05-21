@@ -105,7 +105,7 @@ class MyApp extends StatelessWidget {
             throw Exception(
                 'Invalid route: Expected Map arguments for /lowVoltage.');
 
-          case '/equipamentScreen':
+          case '/equipmentScreen':
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? areaName = args['areaName']?.toString();
@@ -123,11 +123,11 @@ class MyApp extends StatelessWidget {
                         ));
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /equipamentScreen.');
+                    'Invalid arguments: One of areaName, localName, or localId is null in /equipmentScreen.');
               }
             }
             throw Exception(
-                'Invalid route: Expected Map arguments for /equipamentScreen.');
+                'Invalid route: Expected Map arguments for /equipmentScreen.');
 
           default:
             return MaterialPageRoute(

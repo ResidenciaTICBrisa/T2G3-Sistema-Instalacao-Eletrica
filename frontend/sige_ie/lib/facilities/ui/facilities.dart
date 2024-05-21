@@ -458,7 +458,13 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                     } else {
                       return const Padding(
                         padding: EdgeInsets.all(10.0),
-                        child: Text("Nenhum local encontrado."),
+                        child: Text(
+                          'Nenhum local encontrado.',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
                       );
                     }
                   },

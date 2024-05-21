@@ -11,11 +11,70 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   UserService userService = UserService();
   bool terms = true;
+  bool isLoading = false;
   final _registerScreen = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
   final emailController = TextEditingController();
+
+  Future<void> _register() async {
+    if (!_registerScreen.currentState!.validate()) {
+      return;
+    }
+
+    if (!terms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Por Favor, concorde com o processamento de dados pessoais'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Processando Dados')),
+    );
+
+    final user = UserRequestModel(
+      username: usernameController.text,
+      firstname: nameController.text,
+      password: passwordController.text,
+      email: emailController.text,
+    );
+
+    bool success = await userService.register(user);
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (success) {
+      FocusScope.of(context).unfocus();
+      Navigator.of(context).pushReplacementNamed('/loginScreen');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Registro falhou, por favor tente novamente.'),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    nameController.dispose();
+    passwordController.dispose();
+    emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +148,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                           ),
                           const SizedBox(height: 20),
-
-                          // Campo de nome e decoração da borda de inserção dos dados
                           TextFormField(
                             controller: nameController,
                             decoration: InputDecoration(
@@ -112,7 +169,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              // Outras propriedades...
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
@@ -123,34 +179,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 20),
                           TextFormField(
-                              controller: emailController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Insira um email valido';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                label: const Text('Email'),
-                                labelStyle:
-                                    const TextStyle(color: Colors.black),
-                                hintText: 'Insira o Email',
-                                hintStyle: const TextStyle(
-                                  color: Colors.black,
+                            controller: emailController,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Insira um email valido';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              label: const Text('Email'),
+                              labelStyle: const TextStyle(color: Colors.black),
+                              hintText: 'Insira o Email',
+                              hintStyle: const TextStyle(
+                                color: Colors.black,
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 39, 38, 38),
                                 ),
-                                border: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color.fromARGB(255, 39, 38, 38),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 0, 0, 0),
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              )),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 20),
                           TextFormField(
                             controller: passwordController,
@@ -176,10 +232,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                  ),
-                                  borderRadius: BorderRadius.circular(10)),
+                                borderSide: const BorderSide(
+                                  color: Color.fromARGB(255, 0, 0, 0),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 20),
@@ -216,14 +273,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Row(
                                 children: [
                                   Checkbox(
-                                      value: terms,
-                                      onChanged: (bool? value) {
-                                        setState(() {
-                                          terms = value!;
-                                        });
-                                      },
-                                      activeColor: const Color.fromARGB(
-                                          255, 12, 78, 170)),
+                                    value: terms,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        terms = value!;
+                                      });
+                                    },
+                                    activeColor:
+                                        const Color.fromARGB(255, 12, 78, 170),
+                                  ),
                                   const Text(
                                     'Aceite os Termos',
                                     style: TextStyle(
@@ -239,63 +297,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             width: 200,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () async {
-                                if (_registerScreen.currentState!.validate()) {
-                                  if (terms) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Processando Dados'),
-                                      ),
-                                    );
-
-                                    final user = UserRequestModel(
-                                      username: usernameController.text,
-                                      firstname: nameController.text,
-                                      password: passwordController.text,
-                                      email: emailController.text,
-                                    );
-
-                                    bool success =
-                                        await userService.register(user);
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-
-                                    if (success) {
-                                      FocusScope.of(context).unfocus();
-                                      Navigator.of(context)
-                                          .pushReplacementNamed('/loginScreen');
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Registro falhou, por favor tente novamente.'),
-                                        ),
-                                      );
-                                    }
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Por Favor, concorde com o processamento de dados pessoais'),
-                                      ),
-                                    );
-                                  }
-                                }
-                              },
+                              onPressed: isLoading ? null : _register,
                               style: ElevatedButton.styleFrom(
-                                  elevation: 6,
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 244, 248, 0),
-                                  foregroundColor: const Color(0xff123c75),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  )),
-                              child: const Text(
-                                'Registro',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                elevation: 6,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 244, 248, 0),
+                                foregroundColor: const Color(0xff123c75),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
+                              child: isLoading
+                                  ? const CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xff123c75)),
+                                    )
+                                  : const Text(
+                                      'Registro',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
                             ),
                           ),
                           const SizedBox(height: 30),
