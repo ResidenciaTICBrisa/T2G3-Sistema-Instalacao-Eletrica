@@ -1,6 +1,5 @@
 # urls.py
 from django.urls import path
-from rest_framework.routers import DefaultRouter
 from .views import GetCSRFToken, GetSessionCookie, CheckAuthenticatedView, UserCreateView, AuthenticatedUserView, UserDetailView, LoginView, LogoutView, Email, PasswordResetConfirmView
 from django.urls import include
 
