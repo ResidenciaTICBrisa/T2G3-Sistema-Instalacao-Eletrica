@@ -389,7 +389,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
                         BorderRadius.vertical(bottom: Radius.circular(20)),
                   ),
                   child: const Center(
-                    child: Text('Locais',
+                    child: Text('Edificações',
                         style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -536,7 +536,7 @@ class FloorAreaWidget extends StatelessWidget {
         ),
         ListTile(
           leading: const Icon(Icons.add),
-          title: const Text('Adicionar andar ou sala'),
+          title: const Text('Adicionar sala'),
           onTap: onAddFloor,
         ),
       ],

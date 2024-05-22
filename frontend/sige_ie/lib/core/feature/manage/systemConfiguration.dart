@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/core/feature/manage/EquipmentScreen.dart';
-import 'package:sige_ie/core/feature/manage/lowVoltage.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -29,16 +28,15 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
       MaterialPageRoute(
         builder: (context) {
           switch (routeName) {
-            case '/lowVoltage':
-              return LowVoltageScreen(
-                areaName: areaName,
-                localName: localName,
-                localId: localId,
-                categoryNumbers: category,
-              );
             case '/structuredCabling':
             case '/atmosphericDischarges':
             case '/fireAlarm':
+            case '/lighting':
+            case '/electricLoads':
+            case '/electricLines':
+            case '/circuits':
+            case '/distributionBoard':
+            case '/cooling':
               return EquipmentScreen(
                   areaName: areaName,
                   localName: localName,
@@ -88,46 +86,101 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
               ),
             ),
             SystemButton(
-                title: 'BAIXA TENSÃO',
-                onPressed: () => navigateTo('/lowVoltage', widget.areaName,
-                    widget.localName, widget.localId, [1, 2, 3, 4, 5])),
+                title: 'ALARME DE INCÊNDIO',
+                onPressed: () => navigateTo('/fireAlarm', widget.areaName,
+                    widget.localName, widget.localId, 8)),
             SystemButton(
                 title: 'CABEAMENTO ESTRUTURADO',
                 onPressed: () => navigateTo('/structuredCabling',
                     widget.areaName, widget.localName, widget.localId, 6)),
             SystemButton(
+                title: 'CARGAS ELÉTRICAS',
+                onPressed: () => navigateTo('/electricLoads', widget.areaName,
+                    widget.localName, widget.localId, 2)),
+            SystemButton(
+                title: 'CIRCUITOS',
+                onPressed: () => navigateTo('/circuits', widget.areaName,
+                    widget.localName, widget.localId, 4)),
+            SystemButton(
                 title: 'DESCARGAS ATMOSFÉRICAS',
                 onPressed: () => navigateTo('/atmosphericDischarges',
                     widget.areaName, widget.localName, widget.localId, 7)),
             SystemButton(
-                title: 'ALARME DE INCÊNDIO',
-                onPressed: () => navigateTo('/fireAlarm', widget.areaName,
-                    widget.localName, widget.localId, 8)),
+                title: 'ILUMINAÇÃO',
+                onPressed: () => navigateTo('/lighting', widget.areaName,
+                    widget.localName, widget.localId, 1)),
+            SystemButton(
+                title: 'LINHAS ELÉTRICAS',
+                onPressed: () => navigateTo('/electricLines', widget.areaName,
+                    widget.localName, widget.localId, 3)),
+            SystemButton(
+                title: 'QUADRO DE DISTRIBUIÇÃO',
+                onPressed: () => navigateTo('/distributionBoard',
+                    widget.areaName, widget.localName, widget.localId, 5)),
+            SystemButton(
+                title: 'REFRIGERAÇÃO',
+                onPressed: () => navigateTo('/cooling', widget.areaName,
+                    widget.localName, widget.localId, 9)),
             const SizedBox(
               height: 30,
             ),
             Center(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(AppColors.warn),
-                  foregroundColor:
-                      MaterialStateProperty.all(AppColors.lightText),
-                  minimumSize: MaterialStateProperty.all(const Size(175, 55)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  )),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/arealocation', arguments: {
-                    'placeName': widget.localName,
-                    'placeId': widget.localId
-                  });
-                },
-                child: const Text(
-                  'ENCERRAR',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: AppColors.lightText,
+                      backgroundColor: AppColors.warn,
+                      minimumSize: const Size(150, 50),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                      Navigator.pushReplacementNamed(
+                        context,
+                        '/homeScreen',
+                        arguments: {'initialPage': 1},
+                      );
+                    },
+                    child: const Text('ENCERRAR'),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(AppColors.sigeIeBlue),
+                      foregroundColor:
+                          MaterialStateProperty.all(AppColors.lightText),
+                      minimumSize:
+                          MaterialStateProperty.all(const Size(150, 50)),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      )),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/arealocation',
+                          arguments: {
+                            'placeName': widget.localName,
+                            'placeId': widget.localId
+                          });
+                    },
+                    child: const Text(
+                      'SALAS',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(
+              height: 30,
             ),
           ],
         ),

@@ -7,22 +7,25 @@ import 'package:sige_ie/users/data/user_response_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int initialPage;
+
+  const HomePage({super.key, this.initialPage = 0});
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-  PageController _pageController = PageController();
+  late int _selectedIndex;
+  late PageController _pageController;
   UserService userService = UserService();
   late UserResponseModel user;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _selectedIndex = widget.initialPage;
+    _pageController = PageController(initialPage: widget.initialPage);
     userService.fetchProfileData().then((fetchedUser) {
       setState(() {
         user = fetchedUser;
@@ -129,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                         context, 'Registrar novo local', 'Registrar', () {
                       Navigator.of(context).pushNamed('/newLocation');
                     }),
-                    buildSmallRectangle(context, 'Comunidade', 'Gerenciar', () {
+                    buildSmallRectangle(context, 'Equipes', 'Gerenciar', () {
                       // Código aqui.
                     }),
                     const Spacer(),
