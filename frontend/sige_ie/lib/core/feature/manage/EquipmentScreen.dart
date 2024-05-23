@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/core/feature/manage/addEquipmentScreen.dart';
-import 'package:sige_ie/core/feature/manage/manageEquipmentScreen.dart';
 
 class EquipmentScreen extends StatelessWidget {
   final String areaName;
@@ -31,22 +30,45 @@ class EquipmentScreen extends StatelessWidget {
     );
   }
 
-  void navigateToViewEquipment(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ViewEquipmentScreen(
-          areaName: areaName,
-          categoryNumber: categoryNumber,
-          localName: localName,
-          localId: localId,
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    List<String> equipmentList = [
+      // Vazio para simular nenhum equipamento
+    ];
+
+    String systemTitle;
+    switch (categoryNumber) {
+      case 1:
+        systemTitle = 'ILUMINAÇÃO';
+        break;
+      case 2:
+        systemTitle = 'CARGAS ELÉTRICAS';
+        break;
+      case 3:
+        systemTitle = 'LINHAS ELÉTRICAS';
+        break;
+      case 4:
+        systemTitle = 'CIRCUITOS';
+        break;
+      case 5:
+        systemTitle = 'QUADRO DE DISTRIBUIÇÃO';
+        break;
+      case 6:
+        systemTitle = 'CABEAMENTO ESTRUTURADO';
+        break;
+      case 7:
+        systemTitle = 'DESCARGAS ATMOSFÉRICAS';
+        break;
+      case 8:
+        systemTitle = 'ALARME DE INCÊNDIO';
+        break;
+      case 9:
+        systemTitle = 'REFRIGERAÇÃO';
+        break;
+      default:
+        systemTitle = 'SISTEMA DESCONHECIDO';
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -66,64 +88,59 @@ class EquipmentScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-            decoration: const BoxDecoration(
-              color: AppColors.sigeIeBlue,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-            ),
-            child: Center(
-              child: Text(areaName,
-                  style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.lightText)),
-            ),
-          ),
-          const SizedBox(height: 150),
-          EquipmentButton(
-            title: 'EQUIPAMENTOS NA SALA',
-            onPressed: () => navigateToAddEquipment(context),
-          ),
-          EquipmentButton(
-            title: 'GERENCIAR EQUIPAMENTOS',
-            onPressed: () => navigateToViewEquipment(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class EquipmentButton extends StatelessWidget {
-  final String title;
-  final VoidCallback onPressed;
-
-  const EquipmentButton(
-      {super.key, required this.title, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
-          padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 25)),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          )),
-        ),
-        onPressed: onPressed,
-        child: Text(title,
-            style: const TextStyle(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
                 color: AppColors.sigeIeBlue,
-                fontSize: 18,
-                fontWeight: FontWeight.w900)),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
+              ),
+              child: Center(
+                child: Text('$areaName - $systemTitle',
+                    style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.lightText)),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  equipmentList.isNotEmpty
+                      ? Column(
+                          children: equipmentList.map((equipment) {
+                            return ListTile(
+                              title: Text(equipment),
+                            );
+                          }).toList(),
+                        )
+                      : const Center(
+                          child: Text(
+                            'Você ainda não tem equipamentos',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54),
+                          ),
+                        ),
+                  const SizedBox(height: 40),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => navigateToAddEquipment(context),
+        backgroundColor: AppColors.sigeIeYellow,
+        child: const Icon(Icons.add, color: AppColors.sigeIeBlue),
       ),
     );
   }
