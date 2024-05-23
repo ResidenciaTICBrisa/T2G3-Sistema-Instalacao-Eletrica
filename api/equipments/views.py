@@ -106,6 +106,14 @@ class FireAlarmEquipmentList(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
+class FireAlarmEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = FireAlarmEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return FireAlarmEquipment.objects.filter(area_id=area_id)
+
 class FireAlarmEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = FireAlarmEquipment.objects.all()
     serializer_class = FireAlarmEquipmentSerializer
@@ -129,6 +137,14 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
+class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = AtmosphericDischargeEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return AtmosphericDischargeEquipment.objects.filter(area_id=area_id)
+
 class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
     serializer_class = AtmosphericDischargeEquipmentSerializer
@@ -151,6 +167,14 @@ class StructuredCablingEquipmentList(generics.ListCreateAPIView):
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+class StructuredCablingEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = StructuredCablingEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return StructuredCablingEquipment.objects.filter(area_id=area_id)
 
 class StructuredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = StructuredCablingEquipment.objects.all()
