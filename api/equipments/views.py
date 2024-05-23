@@ -88,6 +88,37 @@ class EquipmentPhotoDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EquipmentPhotoSerializer
     permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
 
+class RefrigerationEquipmentList(generics.ListCreateAPIView):
+    queryset = RefrigerationEquipment.objects.all()
+    serializer_class = RefrigerationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return RefrigerationEquipment.objects.filter(area__place__place_owner=user.placeowner)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy() 
+        data["system"] = 9
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+    
+class RefrigerationEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = RefrigerationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return RefrigerationEquipment.objects.filter(area_id=area_id)
+
+class RefrigerationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = RefrigerationEquipment.objects.all()
+    serializer_class = RefrigerationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
 class FireAlarmEquipmentList(generics.ListCreateAPIView):
     queryset = FireAlarmEquipment.objects.all()
     serializer_class = FireAlarmEquipmentSerializer
@@ -261,6 +292,14 @@ class ElectricalLineEquipmentList(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
     
+class ElectricalLineEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = ElectricalLineEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return ElectricalLineEquipment.objects.filter(area_id=area_id)
+    
 class ElectricalLineEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalLineEquipment.objects.all()
     serializer_class = ElectricalLineEquipmentSerializer
@@ -283,6 +322,14 @@ class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+class ElectricalLoadEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = ElectricalLoadEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return ElectricalLoadEquipment.objects.filter(area_id=area_id)
 
 class ElectricalLoadEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalLoadEquipment.objects.all()
@@ -307,30 +354,15 @@ class IluminationEquipmentList(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
-class IluminationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = IluminationEquipment.objects.all()
+class IluminationEquipmentByAreaList(generics.ListAPIView):
     serializer_class = IluminationEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
 
-class RefrigerationEquipmentList(generics.ListCreateAPIView):
-    queryset = RefrigerationEquipment.objects.all()
-    serializer_class = RefrigerationEquipmentSerializer
-    permission_classes = [IsPlaceOwner, IsAuthenticated]
-
     def get_queryset(self):
-        user = self.request.user
-        return RefrigerationEquipment.objects.filter(area__place__place_owner=user.placeowner)
+        area_id = self.kwargs['area_id']
+        return IluminationEquipment.objects.filter(area_id=area_id)
 
-    def create(self, request, *args, **kwargs):
-        data = request.data.copy() 
-        data["system"] = 1
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
-
-class RefrigerationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = RefrigerationEquipment.objects.all()
-    serializer_class = RefrigerationEquipmentSerializer
+class IluminationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = IluminationEquipment.objects.all()
+    serializer_class = IluminationEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
