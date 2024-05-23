@@ -103,3 +103,11 @@ class IluminationEquipment(models.Model):
  
     class Meta:
         db_table = 'equipments_ilumination_equipments'
+
+class RefrigerationEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
+    
+    class Meta:
+        db_table = 'refrigeration_equipments'

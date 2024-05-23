@@ -67,3 +67,9 @@ class IluminationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSeriali
      class Meta:
         model = IluminationEquipment
         fields = '__all__'    
+
+class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+
+     class Meta:
+        model = RefrigerationEquipment
+        fields = '__all__'    

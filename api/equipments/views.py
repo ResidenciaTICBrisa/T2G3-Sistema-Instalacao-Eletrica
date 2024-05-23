@@ -256,3 +256,26 @@ class IluminationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = IluminationEquipment.objects.all()
     serializer_class = IluminationEquipmentSerializer
     permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+class RefrigerationEquipmentList(generics.ListCreateAPIView):
+    queryset = RefrigerationEquipment.objects.all()
+    serializer_class = RefrigerationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return RefrigerationEquipment.objects.filter(area__place__place_owner=user.placeowner)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data.copy() 
+        data["system"] = 1
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+class RefrigerationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = RefrigerationEquipment.objects.all()
+    serializer_class = RefrigerationEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
