@@ -9,6 +9,8 @@ urlpatterns = [
     path('equipment-types/<pk>/', EquipmentTypeDetail.as_view()),
     path('equipments/', EquipmentDetailList.as_view()),
     path('equipments/<pk>/', EquipmentDetailDetail.as_view()),
+    path('equipment-photos/', EquipmentPhotoList.as_view()),
+    path('equipment-photos/<pk>/', EquipmentPhotoDetail.as_view()),
     path('atmospheric-discharges/', AtmosphericDischargeEquipmentList.as_view()),
     path('atmospheric-discharges/<pk>/', AtmosphericDischargeEquipmentDetail.as_view()),
     path('fire-alarms/', FireAlarmEquipmentList.as_view()),

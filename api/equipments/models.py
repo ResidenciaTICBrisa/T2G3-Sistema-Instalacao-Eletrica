@@ -29,15 +29,19 @@ class EquipmentType(models.Model):
 class EquipmentDetail(models.Model):
 
     place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
-    photo = models.ImageField(null=True, upload_to='equipment_photos/')
-    description = models.CharField(max_length=50)
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.description
 
     class Meta:
         db_table = 'equipments_equipment_details'
+
+class EquipmentPhoto(models.Model):
+
+    photo = models.ImageField(null=True, upload_to='equipment_photos/')
+    description = models.CharField(max_length=50)
+    equipment_detail = models.ForeignKey(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.description
 
 class FireAlarmEquipment(models.Model):
 

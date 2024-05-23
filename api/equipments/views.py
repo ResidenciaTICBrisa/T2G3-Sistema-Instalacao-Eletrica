@@ -10,11 +10,11 @@ from rest_framework import status
 class PersonalEquipmentTypeCreate(generics.CreateAPIView):
     queryset = PersonalEquipmentType.objects.all()
     serializer_class = PersonalEquipmentTypeSerializer
-    permission_classes = [IsEquipmentTypeOwner, IsAuthenticated]
+    permission_classes = [IsOwner, IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
 
-        if(IsEquipmentTypeOwner):
+        if(IsOwner):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save(place_owner=request.user.placeowner)
@@ -52,7 +52,7 @@ class EquipmentTypeDetail(generics.RetrieveAPIView):
 class EquipmentDetailList(generics.ListCreateAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
-    permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
+    permission_classes = [IsOwner, IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -61,7 +61,7 @@ class EquipmentDetailList(generics.ListCreateAPIView):
 
     def create(self, request, *args, **kwargs):
 
-        if(IsEquipmentDetailOwner):
+        if(IsOwner):
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save(place_owner=request.user.placeowner)
@@ -71,6 +71,21 @@ class EquipmentDetailList(generics.ListCreateAPIView):
 class EquipmentDetailDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
+    permission_classes = [IsOwner, IsAuthenticated]
+
+class EquipmentPhotoList(generics.ListCreateAPIView):
+    queryset = EquipmentPhoto.objects.all()
+    serializer_class = EquipmentPhotoSerializer
+    permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        return queryset.filter(equipment_detail__place_owner__user=user)
+
+class EquipmentPhotoDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EquipmentPhoto.objects.all()
+    serializer_class = EquipmentPhotoSerializer
     permission_classes = [IsEquipmentDetailOwner, IsAuthenticated]
 
 class FireAlarmEquipmentList(generics.ListCreateAPIView):
