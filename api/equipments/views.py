@@ -199,6 +199,14 @@ class DistributionBoardEquipmentList(generics.ListCreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
+class DistributionBoardEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = DistributionBoardEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return DistributionBoardEquipment.objects.filter(area_id=area_id)
+
 class DistributionBoardEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DistributionBoardEquipment.objects.all()
     serializer_class = DistributionBoardEquipmentSerializer
@@ -221,6 +229,14 @@ class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
         serializer.save()
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
+
+class ElectricalCircuitEquipmentByAreaList(generics.ListAPIView):
+    serializer_class = ElectricalCircuitEquipmentSerializer
+    permission_classes = [IsPlaceOwner, IsAuthenticated]
+
+    def get_queryset(self):
+        area_id = self.kwargs['area_id']
+        return ElectricalCircuitEquipment.objects.filter(area_id=area_id)
 
 class ElectricalCircuitEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalCircuitEquipment.objects.all()
