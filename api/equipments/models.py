@@ -29,15 +29,19 @@ class EquipmentType(models.Model):
 class EquipmentDetail(models.Model):
 
     place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
-    photo = models.ImageField(null=True, upload_to='equipment_photos/')
-    description = models.CharField(max_length=50)
     equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.description
 
     class Meta:
         db_table = 'equipments_equipment_details'
+
+class EquipmentPhoto(models.Model):
+
+    photo = models.ImageField(null=True, upload_to='equipment_photos/')
+    description = models.CharField(max_length=50)
+    equipment_detail = models.ForeignKey(EquipmentDetail, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.description
 
 class FireAlarmEquipment(models.Model):
 
@@ -103,3 +107,11 @@ class IluminationEquipment(models.Model):
  
     class Meta:
         db_table = 'equipments_ilumination_equipments'
+
+class RefrigerationEquipment(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True)
+    equipment_detail = models.OneToOneField(EquipmentDetail, on_delete=models.CASCADE, null=True)
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
+    
+    class Meta:
+        db_table = 'refrigeration_equipments'

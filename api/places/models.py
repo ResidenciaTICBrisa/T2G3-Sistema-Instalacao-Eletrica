@@ -8,6 +8,7 @@ class Place(models.Model):
     place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
+    photo = models.ImageField(null=True, upload_to='place_photos/')
 
     def __str__(self):
         return self.name

@@ -20,6 +20,12 @@ class EquipmentDetailSerializer(serializers.ModelSerializer):
         model = EquipmentDetail
         fields = '__all__'
 
+class EquipmentPhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EquipmentPhoto
+        fields = '__all__'
+
 class FireAlarmEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
     class Meta:
@@ -66,4 +72,10 @@ class IluminationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSeriali
 
      class Meta:
         model = IluminationEquipment
+        fields = '__all__'    
+
+class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+
+     class Meta:
+        model = RefrigerationEquipment
         fields = '__all__'    
