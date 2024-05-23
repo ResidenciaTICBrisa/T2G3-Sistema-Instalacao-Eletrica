@@ -268,7 +268,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: const Center(
-                child: Text('Equipamentos na sala',
+                child: Text('Adicionar equipamentos ',
                     style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

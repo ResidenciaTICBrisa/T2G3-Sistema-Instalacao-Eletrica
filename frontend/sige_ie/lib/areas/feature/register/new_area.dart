@@ -37,7 +37,7 @@ class _AreaLocationState extends State<AreaLocation> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('${widget.localName} - Sala',
+                child: Text('${widget.localName} - Área',
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -150,17 +150,20 @@ class _AreaLocationState extends State<AreaLocation> {
                           ),
                         ),
                         onPressed: () {
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
                           Navigator.pushReplacementNamed(
                             context,
                             '/homeScreen',
+                            arguments: {'initialPage': 1},
                           );
                         },
                         child: const Text('ENCERRAR'),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          foregroundColor: AppColors.sigeIeBlue,
-                          backgroundColor: AppColors.sigeIeYellow,
+                          foregroundColor: AppColors.lightText,
+                          backgroundColor: AppColors.sigeIeBlue,
                           minimumSize: const Size(150, 50),
                           textStyle: const TextStyle(
                             fontWeight: FontWeight.bold,

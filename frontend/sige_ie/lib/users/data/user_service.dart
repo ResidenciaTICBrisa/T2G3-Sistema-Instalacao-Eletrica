@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
@@ -75,9 +76,17 @@ class UserService {
       } else {
         throw Exception('Falha ao carregar dados do perfil');
       }
+    } on http.ClientException catch (e) {
+      print('Erro ao carregar dados do perfil (ClientException): $e');
+      throw Exception(
+          'Erro na conexão com o servidor. Por favor, tente novamente mais tarde.');
+    } on SocketException catch (e) {
+      print('Erro ao carregar dados do perfil (SocketException): $e');
+      throw Exception('Erro de rede. Verifique sua conexão com a internet.');
     } catch (e) {
       print('Erro ao carregar dados do perfil: $e');
-      rethrow;
+      throw Exception(
+          'Ocorreu um erro inesperado. Por favor, tente novamente.');
     }
   }
 }
