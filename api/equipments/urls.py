@@ -24,6 +24,8 @@ urlpatterns = [
     path('electrical-loads/', ElectricalLoadEquipmentList.as_view()),
     path('electrical-loads/<pk>/', ElectricalLoadEquipmentDetail.as_view()),
     path('iluminations/', IluminationEquipmentList.as_view()),
-    path('iluminations/<pk>/', IluminationEquipmentDetail.as_view())
+    path('iluminations/<pk>/', IluminationEquipmentDetail.as_view()),
+    path('refrigeration/', EquipmentDetailList.as_view()),
+    path('refrigeration/<pk>/', EquipmentDetailDetail.as_view())
 
 ]
