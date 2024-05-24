@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/core/feature/manage/EquipmentScreen.dart';
+import 'package:sige_ie/core/feature/equipment/EquipmentScreen.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -148,7 +148,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                         arguments: {'initialPage': 1},
                       );
                     },
-                    child: const Text('ENCERRAR'),
+                    child: const Text('SAIR DA SALA'),
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
@@ -171,7 +171,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                           });
                     },
                     child: const Text(
-                      'SALAS',
+                      'CRIAR NOVA SALA',
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
