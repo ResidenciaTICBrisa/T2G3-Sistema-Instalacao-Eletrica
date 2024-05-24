@@ -49,7 +49,7 @@ class EquipmentTypeDetail(generics.RetrieveAPIView):
     serializer_class = EquipmentTypeSerializer
     permission_classes = [IsAuthenticated]
 
-class EquipmentDetailList(generics.ListCreateAPIView):
+class EquipmentDetailList(generics.ListAPIView):
     queryset = EquipmentDetail.objects.all()
     serializer_class = EquipmentDetailSerializer
     permission_classes = [IsOwner, IsAuthenticated]
@@ -59,14 +59,17 @@ class EquipmentDetailList(generics.ListCreateAPIView):
         queryset = super().get_queryset()
         return queryset.filter(place_owner__user=user)
 
-    def create(self, request, *args, **kwargs):
+class EquipmentDetailCreate(generics.CreateAPIView):
+    queryset = EquipmentDetail.objects.all()
+    serializer_class = EquipmentDetailSerializer
+    permission_classes = [IsOwner, IsAuthenticated]
 
-        if(IsOwner):
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(place_owner=request.user.placeowner)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({
+            'request': self.request
+        })
+        return context
 
 class EquipmentDetailDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = EquipmentDetail.objects.all()
