@@ -104,7 +104,7 @@ class MyApp extends StatelessWidget {
 
               if (areaName != null && localName != null && localId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => EquipmentScreen(
+                    builder: (context) => listIluminationEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
