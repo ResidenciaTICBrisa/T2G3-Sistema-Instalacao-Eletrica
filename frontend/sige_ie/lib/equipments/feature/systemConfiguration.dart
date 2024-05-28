@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
+import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
+
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -38,6 +40,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   categoryNumber: category);
             case '/fireAlarm':
             case '/electricLoads':
+            return listelectricalLoadEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/electricLines':
             case '/circuits':
             case '/distributionBoard':
