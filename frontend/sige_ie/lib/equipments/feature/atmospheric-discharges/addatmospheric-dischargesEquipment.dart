@@ -49,20 +49,23 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   ];
 
   List<String> pararaiosequipment = [
+    'Selecione um tipo de Para-raios',
     'Tipo Frankiln',
     'Tipo Melsen',
     'Tipo Radioativos'
   ];
 
   List<String> captacaoequipment = [
+    'Selecione o tipo de Captação',
     'Tipo Franklin',
-    'Gaiola de Faraday',
+    'Gaiola de Faraday'
   ];
 
   List<String> subsistemasequipment = [
+    'Selecione um Subsistema',
     'Capacitação',
     'Descidas'
-        'Aterramento',
+    'Aterramento'
   ];
 
   @override
