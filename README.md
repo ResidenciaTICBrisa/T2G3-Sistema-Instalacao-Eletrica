@@ -250,7 +250,7 @@ Com o ambiente preparado, siga os passos abaixo:
     Abra a pasta clonada no Android Studio ou no Visual Studio Code.
 
 3. **Baixe as Dependências**:
-    Abra um terminal no editor e execute o comando:
+    Abra um terminal na pasta frontend/sige_ie e execute o comando:
     ```
     flutter pub get
     ```
