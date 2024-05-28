@@ -42,10 +42,12 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   String? _selectedTypeToDelete;
 
   List<String> equipmentTypes = [
-    'Selecione um equipamento',
-    'Eletroduto',
-    'Eletrocalha',
-    'Dimensão'
+    'Selecione um tipo de Lâmpada',
+    'Halogenia',
+    'Fluorescente',
+    'LEDs',
+    'Incadescentes',
+    'Lâmpadas Queimadas'
   ];
 
   @override
@@ -329,7 +331,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamentos',
+                  const Text('Tipos de Lâmpadas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -372,7 +374,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                     ],
                   ),
                   const SizedBox(height: 30),
-                  const Text('Nome do equipamento',
+                  const Text('Potência da Lâmpada',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -383,6 +385,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                     ),
                     child: TextField(
                       controller: _equipmentNameController,
+                      keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding:
