@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/core/feature/equipment/addEquipmentScreen.dart';
+import 'package:sige_ie/equipments/feature/iluminations/addIluminationEquipment.dart';
 
 class EquipmentScreen extends StatelessWidget {
   final String areaName;

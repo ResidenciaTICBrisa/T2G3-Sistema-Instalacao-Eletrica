@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/core/feature/equipment/EquipmentScreen.dart';
+import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;

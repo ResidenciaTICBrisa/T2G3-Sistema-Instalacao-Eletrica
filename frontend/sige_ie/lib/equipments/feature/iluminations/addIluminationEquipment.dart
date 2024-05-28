@@ -8,8 +8,9 @@ import 'package:image_picker/image_picker.dart';
 class ImageData {
   File imageFile;
   int id;
+  String description;
 
-  ImageData(this.imageFile) : id = Random().nextInt(1000000);
+  ImageData(this.imageFile, this.description) : id = Random().nextInt(1000000);
 }
 
 List<ImageData> _images = [];
@@ -60,19 +61,62 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     try {
       final pickedFile = await picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
-        setState(() {
-          final imageData = ImageData(File(pickedFile.path));
-          final categoryNumber = widget.categoryNumber;
-          if (!categoryImagesMap.containsKey(categoryNumber)) {
-            categoryImagesMap[categoryNumber] = [];
-          }
-          categoryImagesMap[categoryNumber]!.add(imageData);
-          _images = categoryImagesMap[categoryNumber]!;
-        });
+        _showImageDialog(File(pickedFile.path));
       }
     } catch (e) {
       print('Erro ao capturar a imagem: $e');
     }
+  }
+
+  void _showImageDialog(File imageFile) {
+    TextEditingController descriptionController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Adicionar descrição da imagem'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.file(imageFile, width: 100, height: 100, fit: BoxFit.cover),
+              TextField(
+                controller: descriptionController,
+                decoration: const InputDecoration(
+                    hintText: 'Digite a descrição da imagem'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Salvar'),
+              onPressed: () {
+                if (descriptionController.text.isNotEmpty) {
+                  setState(() {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
+                    }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _addNewEquipmentType() {
@@ -198,11 +242,16 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                   children: _images.map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Image.file(
-                        imageData.imageFile,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
+                      child: Column(
+                        children: [
+                          Image.file(
+                            imageData.imageFile,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                          Text(imageData.description),
+                        ],
                       ),
                     );
                   }).toList(),
