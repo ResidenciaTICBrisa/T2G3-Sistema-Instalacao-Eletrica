@@ -40,9 +40,14 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
   String? _selectedType;
   String? _selectedLocation;
   String? _selectedTypeToDelete;
+  String? _selectedLampType; // State variable for the new dropdown
 
   List<String> equipmentTypes = [
     'Selecione um tipo de Lâmpada',
+  ];
+
+  List<String> lampTypes = [
+    'Selecione o tipo de lâmpada',
     'Halogenia',
     'Fluorescente',
     'LEDs',
@@ -70,8 +75,10 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
     }
   }
 
-  void _showImageDialog(File imageFile) {
-    TextEditingController descriptionController = TextEditingController();
+  void _showImageDialog(File imageFile, {ImageData? existingImage}) {
+    TextEditingController descriptionController = TextEditingController(
+      text: existingImage?.description ?? '',
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -100,16 +107,20 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
               onPressed: () {
                 if (descriptionController.text.isNotEmpty) {
                   setState(() {
-                    final imageData = ImageData(
-                      imageFile,
-                      descriptionController.text,
-                    );
-                    final categoryNumber = widget.categoryNumber;
-                    if (!categoryImagesMap.containsKey(categoryNumber)) {
-                      categoryImagesMap[categoryNumber] = [];
+                    if (existingImage != null) {
+                      existingImage.description = descriptionController.text;
+                    } else {
+                      final imageData = ImageData(
+                        imageFile,
+                        descriptionController.text,
+                      );
+                      final categoryNumber = widget.categoryNumber;
+                      if (!categoryImagesMap.containsKey(categoryNumber)) {
+                        categoryImagesMap[categoryNumber] = [];
+                      }
+                      categoryImagesMap[categoryNumber]!.add(imageData);
+                      _images = categoryImagesMap[categoryNumber]!;
                     }
-                    categoryImagesMap[categoryNumber]!.add(imageData);
-                    _images = categoryImagesMap[categoryNumber]!;
                   });
                   Navigator.of(context).pop();
                 }
@@ -244,16 +255,20 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
                   children: _images.map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Column(
-                        children: [
-                          Image.file(
-                            imageData.imageFile,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                          Text(imageData.description),
-                        ],
+                      child: GestureDetector(
+                        onTap: () => _showImageDialog(imageData.imageFile,
+                            existingImage: imageData),
+                        child: Column(
+                          children: [
+                            Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            Text(imageData.description),
+                          ],
+                        ),
                       ),
                     );
                   }).toList(),
@@ -331,7 +346,21 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de Lâmpadas',
+                  const Text('Tipos de Lâmpada', // New dropdown title
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  _buildStyledDropdown(
+                    items: lampTypes,
+                    value: _selectedLampType,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedLampType = newValue;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Seus tipos de lâmpadas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -446,13 +475,17 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              imageData.imageFile,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: () => _showImageDialog(imageData.imageFile,
+                                existingImage: imageData),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                imageData.imageFile,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           IconButton(
