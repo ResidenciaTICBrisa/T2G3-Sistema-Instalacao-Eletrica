@@ -41,7 +41,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
   final _equipmentLoadController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
-  String? _selectedLampType;
+  String? _selectedLoadType;
 
   List<String> equipmentTypes = [
     'Selecione um tipo de Carga',
@@ -216,7 +216,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
         _equipmentModelController.text.isEmpty ||
         _equipmentQuantityController.text.isEmpty ||
         _equipmentLoadController.text.isEmpty ||
-        (_selectedType == null && _selectedLampType == null)) {
+        (_selectedType == null && _selectedLoadType == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -235,7 +235,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? _selectedLampType ?? ''),
+                Text(_selectedType ?? _selectedLoadType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Marca:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -356,14 +356,14 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                   const SizedBox(height: 8),
                   _buildStyledDropdown(
                     items: loadTypes,
-                    value: _selectedLampType,
+                    value: _selectedLoadType,
                     onChanged: (newValue) {
                       setState(() {
-                        _selectedLampType = newValue;
+                        _selectedLoadType = newValue;
                         if (newValue == loadTypes[0]) {
-                          _selectedLampType = null;
+                          _selectedLoadType = null;
                         }
-                        if (_selectedLampType != null) {
+                        if (_selectedLoadType != null) {
                           _selectedType = null;
                         }
                       });
@@ -374,7 +374,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        _selectedLampType = null;
+                        _selectedLoadType = null;
                       });
                     },
                     child: const Text('Limpar seleção'),
@@ -398,11 +398,11 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                                 _selectedType = null;
                               }
                               if (_selectedType != null) {
-                                _selectedLampType = null;
+                                _selectedLoadType = null;
                               }
                             });
                           },
-                          enabled: _selectedLampType == null,
+                          enabled: _selectedLoadType == null,
                         ),
                       ),
                       Expanded(
