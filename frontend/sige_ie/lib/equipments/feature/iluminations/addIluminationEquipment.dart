@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sige_ie/config/app_styles.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:sige_ie/config/app_styles.dart';
 
 class ImageData {
   File imageFile;
@@ -35,12 +35,12 @@ class AddiluminationEquipmentScreen extends StatefulWidget {
 }
 
 class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
-  final _equipmentNameController = TextEditingController();
+  final _equipmentchargeController = TextEditingController();
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedLocation;
   String? _selectedTypeToDelete;
-  String? _selectedLampType; // State variable for the new dropdown
+  String? _selectedLampType;
 
   List<String> equipmentTypes = [
     'Selecione um tipo de Lâmpada',
@@ -51,13 +51,13 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
     'Halogenia',
     'Fluorescente',
     'LEDs',
-    'Incadescentes',
-    'Lâmpadas Queimadas'
+    'Incandescentes',
+    'Lâmpadas Queimadas',
   ];
 
   @override
   void dispose() {
-    _equipmentNameController.dispose();
+    _equipmentchargeController.dispose();
     _equipmentQuantityController.dispose();
     categoryImagesMap[widget.categoryNumber]?.clear();
     super.dispose();
@@ -211,11 +211,10 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentNameController.text.isEmpty ||
+    if (_equipmentchargeController.text.isEmpty ||
         _equipmentQuantityController.text.isEmpty ||
-        _selectedType == null ||
+        (_selectedType == null && _selectedLampType == null) ||
         _selectedLocation == null ||
-        _selectedType == 'Selecione um equipamento' ||
         _selectedLocation == 'Selecione a localização') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -233,17 +232,17 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text('Nome:',
+                const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentNameController.text),
+                Text(_selectedType ?? _selectedLampType ?? ''),
+                const SizedBox(height: 10),
+                const Text('Potência da Lâmpada(KW):',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_equipmentchargeController.text),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_equipmentQuantityController.text),
-                const SizedBox(height: 10),
-                const Text('Tipo:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Localização:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -346,7 +345,7 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de Lâmpada', // New dropdown title
+                  const Text('Tipos de Lâmpada',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -356,8 +355,24 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
                     onChanged: (newValue) {
                       setState(() {
                         _selectedLampType = newValue;
+                        if (newValue == lampTypes[0]) {
+                          _selectedLampType = null;
+                        }
+                        if (_selectedLampType != null) {
+                          _selectedType = null;
+                        }
                       });
                     },
+                    enabled: _selectedType == null,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedLampType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
                   ),
                   const SizedBox(height: 30),
                   const Text('Seus tipos de lâmpadas',
@@ -372,12 +387,17 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
                           items: equipmentTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            if (newValue != 'Selecione um equipamento') {
-                              setState(() {
-                                _selectedType = newValue;
-                              });
-                            }
+                            setState(() {
+                              _selectedType = newValue;
+                              if (newValue == equipmentTypes[0]) {
+                                _selectedType = null;
+                              }
+                              if (_selectedType != null) {
+                                _selectedLampType = null;
+                              }
+                            });
                           },
+                          enabled: _selectedLampType == null,
                         ),
                       ),
                       Expanded(
@@ -402,8 +422,17 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
+                  ),
                   const SizedBox(height: 30),
-                  const Text('Potência da Lâmpada',
+                  const Text('Potência da Lâmpada(KW)',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -413,7 +442,7 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _equipmentNameController,
+                      controller: _equipmentchargeController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -594,10 +623,11 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
     required List<String> items,
     String? value,
     required Function(String?) onChanged,
+    bool enabled = true,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: enabled ? Colors.grey[300] : Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -606,15 +636,16 @@ class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
         value: value,
         isExpanded: true,
         underline: Container(),
-        onChanged: onChanged,
+        onChanged: enabled ? onChanged : null,
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
-            value: value,
+            value: value.isEmpty ? null : value,
             child: Text(
               value,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: enabled ? Colors.black : Colors.grey,
+              ),
             ),
-            enabled: value != items.first,
           );
         }).toList(),
       ),
