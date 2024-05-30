@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sige_ie/config/app_styles.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:sige_ie/config/app_styles.dart';
 
 class ImageData {
   File imageFile;
@@ -35,27 +35,31 @@ class AddelectricalLoadEquipmentScreen extends StatefulWidget {
 }
 
 class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
-  final _equipmentNameController = TextEditingController();
+  final _equipmentBrandController = TextEditingController();
+  final _equipmentModelController = TextEditingController();
   final _equipmentQuantityController = TextEditingController();
+  final _equipmentLoadController = TextEditingController();
   String? _selectedType;
-  String? _selectedLocation;
   String? _selectedTypeToDelete;
+  String? _selectedLampType;
 
   List<String> equipmentTypes = [
-    'Selecione um equipamento',
-    'Geladeira',
-    'Ar-Condicionado',
-    'Tomada(Corrente)'
+    'Selecione um tipo de Carga',
   ];
 
-  bool _shouldShowBrandAndModel() {
-    return _selectedType == 'Geladeira' || _selectedType == 'Ar-Condicionado';
-  }
-  
+  List<String> loadTypes = [
+    'Selecione o tipo de Carga',
+    'Geladeira',
+    'Ar-Condicionado',
+    'Tomada (Corrente)'
+  ];
+
   @override
   void dispose() {
-    _equipmentNameController.dispose();
+    _equipmentBrandController.dispose();
+    _equipmentModelController.dispose();
     _equipmentQuantityController.dispose();
+    _equipmentLoadController.dispose();
     categoryImagesMap[widget.categoryNumber]?.clear();
     super.dispose();
   }
@@ -72,8 +76,10 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
     }
   }
 
-  void _showImageDialog(File imageFile) {
-    TextEditingController descriptionController = TextEditingController();
+  void _showImageDialog(File imageFile, {ImageData? existingImage}) {
+    TextEditingController descriptionController = TextEditingController(
+      text: existingImage?.description ?? '',
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -102,16 +108,20 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
               onPressed: () {
                 if (descriptionController.text.isNotEmpty) {
                   setState(() {
-                    final imageData = ImageData(
-                      imageFile,
-                      descriptionController.text,
-                    );
-                    final categoryNumber = widget.categoryNumber;
-                    if (!categoryImagesMap.containsKey(categoryNumber)) {
-                      categoryImagesMap[categoryNumber] = [];
+                    if (existingImage != null) {
+                      existingImage.description = descriptionController.text;
+                    } else {
+                      final imageData = ImageData(
+                        imageFile,
+                        descriptionController.text,
+                      );
+                      final categoryNumber = widget.categoryNumber;
+                      if (!categoryImagesMap.containsKey(categoryNumber)) {
+                        categoryImagesMap[categoryNumber] = [];
+                      }
+                      categoryImagesMap[categoryNumber]!.add(imageData);
+                      _images = categoryImagesMap[categoryNumber]!;
                     }
-                    categoryImagesMap[categoryNumber]!.add(imageData);
-                    _images = categoryImagesMap[categoryNumber]!;
                   });
                   Navigator.of(context).pop();
                 }
@@ -202,12 +212,11 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentNameController.text.isEmpty ||
+    if (_equipmentBrandController.text.isEmpty ||
+        _equipmentModelController.text.isEmpty ||
         _equipmentQuantityController.text.isEmpty ||
-        _selectedType == null ||
-        _selectedLocation == null ||
-        _selectedType == 'Selecione um equipamento' ||
-        _selectedLocation == 'Selecione a localização') {
+        _equipmentLoadController.text.isEmpty ||
+        (_selectedType == null && _selectedLampType == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -224,21 +233,25 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text('Nome:',
+                const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentNameController.text),
+                Text(_selectedType ?? _selectedLampType ?? ''),
+                const SizedBox(height: 10),
+                const Text('Marca:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_equipmentBrandController.text),
+                const SizedBox(height: 10),
+                const Text('Modelo:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_equipmentModelController.text),
+                const SizedBox(height: 10),
+                const Text('Carga:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_equipmentLoadController.text),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_equipmentQuantityController.text),
-                const SizedBox(height: 10),
-                const Text('Tipo:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? ''),
-                const SizedBox(height: 10),
-                const Text('Localização:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedLocation ?? ''),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -246,16 +259,20 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                   children: _images.map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Column(
-                        children: [
-                          Image.file(
-                            imageData.imageFile,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                          Text(imageData.description),
-                        ],
+                      child: GestureDetector(
+                        onTap: () => _showImageDialog(imageData.imageFile,
+                            existingImage: imageData),
+                        child: Column(
+                          children: [
+                            Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            Text(imageData.description),
+                          ],
+                        ),
                       ),
                     );
                   }).toList(),
@@ -333,7 +350,37 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamentos',
+                  const Text('Tipos de Carga',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  _buildStyledDropdown(
+                    items: loadTypes,
+                    value: _selectedLampType,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedLampType = newValue;
+                        if (newValue == loadTypes[0]) {
+                          _selectedLampType = null;
+                        }
+                        if (_selectedLampType != null) {
+                          _selectedType = null;
+                        }
+                      });
+                    },
+                    enabled: _selectedType == null,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedLampType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Seus tipos de Cargas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -345,12 +392,17 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                           items: equipmentTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            if (newValue != 'Selecione um equipamento') {
-                              setState(() {
-                                _selectedType = newValue;
-                              });
-                            }
+                            setState(() {
+                              _selectedType = newValue;
+                              if (newValue == equipmentTypes[0]) {
+                                _selectedType = null;
+                              }
+                              if (_selectedType != null) {
+                                _selectedLampType = null;
+                              }
+                            });
                           },
+                          enabled: _selectedLampType == null,
                         ),
                       ),
                       Expanded(
@@ -375,8 +427,17 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
+                  ),
                   const SizedBox(height: 30),
-                  const Text('Marca e Modelo',
+                  const Text('Marca',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -386,7 +447,49 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _equipmentNameController,
+                      controller: _equipmentBrandController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Modelo',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _equipmentModelController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Carga',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _equipmentLoadController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding:
@@ -417,26 +520,6 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Localização (Interno ou Externo)',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: const [
-                      'Selecione a localização',
-                      'Interno',
-                      'Externo'
-                    ],
-                    value: _selectedLocation,
-                    onChanged: (newValue) {
-                      if (newValue != 'Selecione a localização') {
-                        setState(() {
-                          _selectedLocation = newValue;
-                        });
-                      }
-                    },
-                  ),
                   const SizedBox(height: 15),
                   IconButton(
                     icon: const Icon(Icons.camera_alt),
@@ -447,14 +530,17 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
-                          if (_shouldShowBrandAndModel()) 
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              imageData.imageFile,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: () => _showImageDialog(imageData.imageFile,
+                                existingImage: imageData),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                imageData.imageFile,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           IconButton(
@@ -563,10 +649,11 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
     required List<String> items,
     String? value,
     required Function(String?) onChanged,
+    bool enabled = true,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: enabled ? Colors.grey[300] : Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -575,15 +662,16 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
         value: value,
         isExpanded: true,
         underline: Container(),
-        onChanged: onChanged,
+        onChanged: enabled ? onChanged : null,
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
-            value: value,
+            value: value.isEmpty ? null : value,
             child: Text(
               value,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: enabled ? Colors.black : Colors.grey,
+              ),
             ),
-            enabled: value != items.first,
           );
         }).toList(),
       ),
