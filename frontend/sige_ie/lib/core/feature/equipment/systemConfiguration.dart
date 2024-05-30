@@ -88,7 +88,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
-              childAspectRatio: 1.0,
+              childAspectRatio: 0.8, // Adjusted aspect ratio
               padding: const EdgeInsets.all(10.0),
               mainAxisSpacing: 10.0,
               crossAxisSpacing: 10.0,
@@ -250,14 +250,13 @@ class SystemIcon extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          SizedBox(
-            width: 80,
+          Flexible(
             child: Text(
               label,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.sigeIeBlue,
-                fontSize: 9,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
               softWrap: true,
