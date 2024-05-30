@@ -36,38 +36,7 @@ class listIluminationEquipment extends StatelessWidget {
       // Vazio para simular nenhum equipamento
     ];
 
-    String systemTitle;
-    switch (categoryNumber) {
-      case 1:
-        systemTitle = 'ILUMINAÇÃO';
-        break;
-      case 2:
-        systemTitle = 'CARGAS ELÉTRICAS';
-        break;
-      case 3:
-        systemTitle = 'LINHAS ELÉTRICAS';
-        break;
-      case 4:
-        systemTitle = 'CIRCUITOS';
-        break;
-      case 5:
-        systemTitle = 'QUADRO DE DISTRIBUIÇÃO';
-        break;
-      case 6:
-        systemTitle = 'CABEAMENTO ESTRUTURADO';
-        break;
-      case 7:
-        systemTitle = 'DESCARGAS ATMOSFÉRICAS';
-        break;
-      case 8:
-        systemTitle = 'ALARME DE INCÊNDIO';
-        break;
-      case 9:
-        systemTitle = 'REFRIGERAÇÃO';
-        break;
-      default:
-        systemTitle = 'SISTEMA DESCONHECIDO';
-    }
+    String systemTitle = 'ILUMINAÇÃO';
 
     return Scaffold(
       appBar: AppBar(
