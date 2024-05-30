@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sige_ie/config/app_styles.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:sige_ie/config/app_styles.dart';
 
 class ImageData {
   File imageFile;
@@ -35,42 +35,24 @@ class AddatmosphericEquipmentScreen extends StatefulWidget {
 }
 
 class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
-  final _equipmentNameController = TextEditingController();
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
-  String? _selectedLocation;
   String? _selectedTypeToDelete;
+  String? _selectDischargeType;
 
   List<String> equipmentTypes = [
-    'Selecione um equipamento',
-    'Para-raios',
+    'Selecione um tipo de Descarga atmosféfica',
+  ];
+
+  List<String> dischargeType = [
+    'Selecione o tipo de Descarga Atmosféfica',
+    'Para Raios',
     'Captação',
-    'Subsistemas'
-  ];
-
-  List<String> pararaiosequipment = [
-    'Selecione um tipo de Para-raios',
-    'Tipo Frankiln',
-    'Tipo Melsen',
-    'Tipo Radioativos'
-  ];
-
-  List<String> captacaoequipment = [
-    'Selecione o tipo de Captação',
-    'Tipo Franklin',
-    'Gaiola de Faraday'
-  ];
-
-  List<String> subsistemasequipment = [
-    'Selecione um Subsistema',
-    'Capacitação',
-    'Descidas'
-    'Aterramento'
+    'Subsistemas',
   ];
 
   @override
   void dispose() {
-    _equipmentNameController.dispose();
     _equipmentQuantityController.dispose();
     categoryImagesMap[widget.categoryNumber]?.clear();
     super.dispose();
@@ -88,8 +70,10 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
     }
   }
 
-  void _showImageDialog(File imageFile) {
-    TextEditingController descriptionController = TextEditingController();
+  void _showImageDialog(File imageFile, {ImageData? existingImage}) {
+    TextEditingController descriptionController = TextEditingController(
+      text: existingImage?.description ?? '',
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -118,16 +102,20 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               onPressed: () {
                 if (descriptionController.text.isNotEmpty) {
                   setState(() {
-                    final imageData = ImageData(
-                      imageFile,
-                      descriptionController.text,
-                    );
-                    final categoryNumber = widget.categoryNumber;
-                    if (!categoryImagesMap.containsKey(categoryNumber)) {
-                      categoryImagesMap[categoryNumber] = [];
+                    if (existingImage != null) {
+                      existingImage.description = descriptionController.text;
+                    } else {
+                      final imageData = ImageData(
+                        imageFile,
+                        descriptionController.text,
+                      );
+                      final categoryNumber = widget.categoryNumber;
+                      if (!categoryImagesMap.containsKey(categoryNumber)) {
+                        categoryImagesMap[categoryNumber] = [];
+                      }
+                      categoryImagesMap[categoryNumber]!.add(imageData);
+                      _images = categoryImagesMap[categoryNumber]!;
                     }
-                    categoryImagesMap[categoryNumber]!.add(imageData);
-                    _images = categoryImagesMap[categoryNumber]!;
                   });
                   Navigator.of(context).pop();
                 }
@@ -218,12 +206,8 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentNameController.text.isEmpty ||
-        _equipmentQuantityController.text.isEmpty ||
-        _selectedType == null ||
-        _selectedLocation == null ||
-        _selectedType == 'Selecione um equipamento' ||
-        _selectedLocation == 'Selecione a localização') {
+    if (_equipmentQuantityController.text.isEmpty ||
+        (_selectedType == null && _selectDischargeType == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -240,21 +224,13 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text('Nome:',
+                const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentNameController.text),
+                Text(_selectedType ?? _selectDischargeType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_equipmentQuantityController.text),
-                const SizedBox(height: 10),
-                const Text('Tipo:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? ''),
-                const SizedBox(height: 10),
-                const Text('Localização:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedLocation ?? ''),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -262,16 +238,20 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                   children: _images.map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Column(
-                        children: [
-                          Image.file(
-                            imageData.imageFile,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                          Text(imageData.description),
-                        ],
+                      child: GestureDetector(
+                        onTap: () => _showImageDialog(imageData.imageFile,
+                            existingImage: imageData),
+                        child: Column(
+                          children: [
+                            Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            Text(imageData.description),
+                          ],
+                        ),
                       ),
                     );
                   }).toList(),
@@ -349,7 +329,37 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamentos',
+                  const Text('Tipos de descarga atmosférica',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  _buildStyledDropdown(
+                    items: dischargeType,
+                    value: _selectDischargeType,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectDischargeType = newValue;
+                        if (newValue == dischargeType[0]) {
+                          _selectDischargeType = null;
+                        }
+                        if (_selectDischargeType != null) {
+                          _selectedType = null;
+                        }
+                      });
+                    },
+                    enabled: _selectedType == null,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectDischargeType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Seus tipos de descargas atmosféricas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -361,12 +371,17 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                           items: equipmentTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            if (newValue != 'Selecione um equipamento') {
-                              setState(() {
-                                _selectedType = newValue;
-                              });
-                            }
+                            setState(() {
+                              _selectedType = newValue;
+                              if (newValue == equipmentTypes[0]) {
+                                _selectedType = null;
+                              }
+                              if (_selectedType != null) {
+                                _selectDischargeType = null;
+                              }
+                            });
                           },
+                          enabled: _selectDischargeType == null,
                         ),
                       ),
                       Expanded(
@@ -391,24 +406,14 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Nome do equipamento',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _equipmentNameController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
-                    ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
                   ),
                   const SizedBox(height: 30),
                   const Text('Quantidade',
@@ -433,26 +438,6 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Localização (Interno ou Externo)',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: const [
-                      'Selecione a localização',
-                      'Interno',
-                      'Externo'
-                    ],
-                    value: _selectedLocation,
-                    onChanged: (newValue) {
-                      if (newValue != 'Selecione a localização') {
-                        setState(() {
-                          _selectedLocation = newValue;
-                        });
-                      }
-                    },
-                  ),
                   const SizedBox(height: 15),
                   IconButton(
                     icon: const Icon(Icons.camera_alt),
@@ -463,13 +448,17 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              imageData.imageFile,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: () => _showImageDialog(imageData.imageFile,
+                                existingImage: imageData),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                imageData.imageFile,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           IconButton(
@@ -578,10 +567,11 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
     required List<String> items,
     String? value,
     required Function(String?) onChanged,
+    bool enabled = true,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: enabled ? Colors.grey[300] : Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -590,15 +580,16 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
         value: value,
         isExpanded: true,
         underline: Container(),
-        onChanged: onChanged,
+        onChanged: enabled ? onChanged : null,
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
-            value: value,
+            value: value.isEmpty ? null : value,
             child: Text(
               value,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: enabled ? Colors.black : Colors.grey,
+              ),
             ),
-            enabled: value != items.first,
           );
         }).toList(),
       ),
