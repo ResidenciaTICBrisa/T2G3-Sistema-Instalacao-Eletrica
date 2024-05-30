@@ -281,7 +281,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
 
   void navigateToEquipmentScreen() {
     Navigator.of(context).pushNamed(
-      '/equipmentScreen',
+      '/listatmosphericEquipment',
       arguments: {
         'areaName': widget.areaName,
         'localName': widget.localName,

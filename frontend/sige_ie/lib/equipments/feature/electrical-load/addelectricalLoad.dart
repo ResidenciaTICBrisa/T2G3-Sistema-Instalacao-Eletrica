@@ -302,7 +302,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
 
   void navigateToEquipmentScreen() {
     Navigator.of(context).pushNamed(
-      '/equipmentScreen',
+      '/listelectricalLoadEquipment',
       arguments: {
         'areaName': widget.areaName,
         'localName': widget.localName,

@@ -281,7 +281,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
 
   void navigateToEquipmentScreen() {
     Navigator.of(context).pushNamed(
-      '/equipmentScreen',
+      '/electricalLineList',
       arguments: {
         'areaName': widget.areaName,
         'localName': widget.localName,

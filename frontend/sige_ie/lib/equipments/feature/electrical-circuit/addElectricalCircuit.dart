@@ -295,7 +295,7 @@ class _AddEquipmentScreenState
               child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
-                navigateToEquipmentScreen();
+                navigateToElectricalCircuitList();
               },
             ),
           ],
@@ -304,9 +304,10 @@ class _AddEquipmentScreenState
     );
   }
 
-  void navigateToEquipmentScreen() {
-    Navigator.of(context).pushNamed(
-      '/equipmentScreen',
+  void navigateToElectricalCircuitList() {
+    Navigator.pushReplacementNamed(
+      context,
+      '/electricalCircuitList',
       arguments: {
         'areaName': widget.areaName,
         'localName': widget.localName,
