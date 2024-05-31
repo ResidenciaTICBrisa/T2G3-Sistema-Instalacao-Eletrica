@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
@@ -78,6 +79,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   localId: localId,
                   categoryNumber: category);
             case '/cooling':
+              return listCollingEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/lighting':
               return listIluminationEquipment(
                   areaName: areaName,

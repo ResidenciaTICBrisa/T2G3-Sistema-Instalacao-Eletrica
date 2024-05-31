@@ -4,6 +4,7 @@ import 'package:sige_ie/core/ui/first_scren.dart';
 import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
+import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
@@ -232,6 +233,30 @@ class MyApp extends StatelessWidget {
               if (areaName != null && localName != null && localId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listFireAlarms(
+                          areaName: areaName,
+                          categoryNumber: categoryNumber,
+                          localName: localName,
+                          localId: localId,
+                        ));
+              } else {
+                throw Exception(
+                    'Invalid arguments: One of areaName, localName, or localId is null in /listDistribuitionBoard.');
+              }
+            }
+            throw Exception(
+                'Invalid route: Expected Map arguments for /listDistribuitionBoard.');
+
+          case '/listCollingEquipment':
+            if (settings.arguments is Map) {
+              final args = settings.arguments as Map;
+              final String? areaName = args['areaName']?.toString();
+              final String? localName = args['localName']?.toString();
+              final int? localId = args['localId'];
+              final int categoryNumber = args['categoryNumber'] ?? 0;
+
+              if (areaName != null && localName != null && localId != null) {
+                return MaterialPageRoute(
+                    builder: (context) => listCollingEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
