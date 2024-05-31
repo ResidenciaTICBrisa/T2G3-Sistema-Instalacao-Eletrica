@@ -4,6 +4,7 @@ import 'package:sige_ie/core/ui/first_scren.dart';
 import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
+import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/facilities/ui/facilities.dart';
@@ -13,8 +14,7 @@ import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList
 import 'package:sige_ie/equipments/feature/systemConfiguration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
-import 'package:sige_ie/equipments/feature/electrical-circuit/addElectricalCircuit.dart';
-import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart'; // Importe a tela de lista de circuitos elétricos
+import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'core/feature/login/login.dart';
 
 void main() {
@@ -194,6 +194,30 @@ class MyApp extends StatelessWidget {
             }
             throw Exception(
                 'Invalid route: Expected Map arguments for /electricalLineList.');
+
+          case '/listDistribuitionBoard':
+            if (settings.arguments is Map) {
+              final args = settings.arguments as Map;
+              final String? areaName = args['areaName']?.toString();
+              final String? localName = args['localName']?.toString();
+              final int? localId = args['localId'];
+              final int categoryNumber = args['categoryNumber'] ?? 0;
+
+              if (areaName != null && localName != null && localId != null) {
+                return MaterialPageRoute(
+                    builder: (context) => listDistribuitionBoard(
+                          areaName: areaName,
+                          categoryNumber: categoryNumber,
+                          localName: localName,
+                          localId: localId,
+                        ));
+              } else {
+                throw Exception(
+                    'Invalid arguments: One of areaName, localName, or localId is null in /listDistribuitionBoard.');
+              }
+            }
+            throw Exception(
+                'Invalid route: Expected Map arguments for /listDistribuitionBoard.');
 
           case '/listelectricalLoadEquipment':
             if (settings.arguments is Map) {
