@@ -3,6 +3,7 @@ import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/fireAlarmList.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
@@ -47,6 +48,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   localId: localId,
                   categoryNumber: category);
             case '/fireAlarm':
+              return listFireAlarms(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/electricLoads':
               return listelectricalLoadEquipment(
                   areaName: areaName,
