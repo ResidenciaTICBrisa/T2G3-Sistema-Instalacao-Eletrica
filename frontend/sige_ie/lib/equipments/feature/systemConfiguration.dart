@@ -6,6 +6,7 @@ import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.da
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
+import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -34,6 +35,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
         builder: (context) {
           switch (routeName) {
             case '/structuredCabling':
+              return listStruturedCabling(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/atmosphericDischarges':
               return listatmosphericEquipment(
                   areaName: areaName,
