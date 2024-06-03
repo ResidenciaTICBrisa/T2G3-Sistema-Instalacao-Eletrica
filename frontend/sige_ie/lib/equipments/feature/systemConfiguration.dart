@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/core/feature/equipment/EquipmentScreen.dart';
+import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
+import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/fireAlarmList.dart';
+import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
+import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
+import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -29,15 +37,55 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
         builder: (context) {
           switch (routeName) {
             case '/structuredCabling':
+              return listStruturedCabling(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/atmosphericDischarges':
+              return listatmosphericEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/fireAlarm':
-            case '/lighting':
+              return listFireAlarms(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/electricLoads':
+              return listelectricalLoadEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/electricLines':
+              return listElectricalLineEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/circuits':
+              return listCicuitEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/distributionBoard':
+              return listDistribuitionBoard(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
             case '/cooling':
-              return EquipmentScreen(
+              return listCollingEquipment(
+                  areaName: areaName,
+                  localName: localName,
+                  localId: localId,
+                  categoryNumber: category);
+            case '/lighting':
+              return listIluminationEquipment(
                   areaName: areaName,
                   localName: localName,
                   localId: localId,
@@ -88,7 +136,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 3,
-              childAspectRatio: 0.8, // Adjusted aspect ratio
+              childAspectRatio: 1.0,
               padding: const EdgeInsets.all(10.0),
               mainAxisSpacing: 10.0,
               crossAxisSpacing: 10.0,
@@ -250,13 +298,14 @@ class SystemIcon extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          Flexible(
+          SizedBox(
+            width: 80,
             child: Text(
               label,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: AppColors.sigeIeBlue,
-                fontSize: 12,
+                fontSize: 9,
                 fontWeight: FontWeight.bold,
               ),
               softWrap: true,
@@ -265,6 +314,42 @@ class SystemIcon extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SystemButton extends StatelessWidget {
+  final String title;
+  final VoidCallback onPressed;
+
+  const SystemButton({
+    super.key,
+    required this.title,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
+          foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
+          padding: MaterialStateProperty.all(
+              const EdgeInsets.symmetric(vertical: 25)),
+          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          )),
+        ),
+        onPressed: onPressed,
+        child: Text(title,
+            style: const TextStyle(
+                color: AppColors.sigeIeBlue,
+                fontSize: 18,
+                fontWeight: FontWeight.w900)),
       ),
     );
   }

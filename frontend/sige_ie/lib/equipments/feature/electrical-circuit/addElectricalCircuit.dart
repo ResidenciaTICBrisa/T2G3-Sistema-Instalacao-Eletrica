@@ -1,27 +1,28 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sige_ie/config/app_styles.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:sige_ie/config/app_styles.dart';
 
 class ImageData {
   File imageFile;
   int id;
+  String description;
 
-  ImageData(this.imageFile) : id = Random().nextInt(1000000);
+  ImageData(this.imageFile, this.description) : id = Random().nextInt(1000000);
 }
 
 List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
-class AddEquipmentScreen extends StatefulWidget {
+class AddElectricalCircuitEquipmentScreen extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
 
-  const AddEquipmentScreen({
+  const AddElectricalCircuitEquipmentScreen({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -33,24 +34,35 @@ class AddEquipmentScreen extends StatefulWidget {
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
-  final _equipmentNameController = TextEditingController();
+class _AddEquipmentScreenState
+    extends State<AddElectricalCircuitEquipmentScreen> {
   final _equipmentQuantityController = TextEditingController();
+  final _breakerLocationController = TextEditingController();
+  final _breakerStateController = TextEditingController();
+  final _wireTypeController = TextEditingController();
+  final _dimensionController = TextEditingController();
   String? _selectedType;
-  String? _selectedLocation;
   String? _selectedTypeToDelete;
+  String? _selectCircuitType;
 
   List<String> equipmentTypes = [
-    'Selecione um equipamento',
-    'Eletroduto',
-    'Eletrocalha',
-    'Dimensão'
+    'Selecione um tipo de Circuito Elétrico',
+  ];
+
+  List<String> cicuitType = [
+    'Selecione o tipo de Circuito Elétrico',
+    'Disjuntor(Local e Estado)',
+    'Tipo de Fio',
+    'Dimensão',
   ];
 
   @override
   void dispose() {
-    _equipmentNameController.dispose();
     _equipmentQuantityController.dispose();
+    _breakerLocationController.dispose();
+    _breakerStateController.dispose();
+    _wireTypeController.dispose();
+    _dimensionController.dispose();
     categoryImagesMap[widget.categoryNumber]?.clear();
     super.dispose();
   }
@@ -60,19 +72,68 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     try {
       final pickedFile = await picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
-        setState(() {
-          final imageData = ImageData(File(pickedFile.path));
-          final categoryNumber = widget.categoryNumber;
-          if (!categoryImagesMap.containsKey(categoryNumber)) {
-            categoryImagesMap[categoryNumber] = [];
-          }
-          categoryImagesMap[categoryNumber]!.add(imageData);
-          _images = categoryImagesMap[categoryNumber]!;
-        });
+        _showImageDialog(File(pickedFile.path));
       }
     } catch (e) {
       print('Erro ao capturar a imagem: $e');
     }
+  }
+
+  void _showImageDialog(File imageFile, {ImageData? existingImage}) {
+    TextEditingController descriptionController = TextEditingController(
+      text: existingImage?.description ?? '',
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Adicionar descrição da imagem'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.file(imageFile, width: 100, height: 100, fit: BoxFit.cover),
+              TextField(
+                controller: descriptionController,
+                decoration: const InputDecoration(
+                    hintText: 'Digite a descrição da imagem'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Salvar'),
+              onPressed: () {
+                if (descriptionController.text.isNotEmpty) {
+                  setState(() {
+                    if (existingImage != null) {
+                      existingImage.description = descriptionController.text;
+                    } else {
+                      final imageData = ImageData(
+                        imageFile,
+                        descriptionController.text,
+                      );
+                      final categoryNumber = widget.categoryNumber;
+                      if (!categoryImagesMap.containsKey(categoryNumber)) {
+                        categoryImagesMap[categoryNumber] = [];
+                      }
+                      categoryImagesMap[categoryNumber]!.add(imageData);
+                      _images = categoryImagesMap[categoryNumber]!;
+                    }
+                  });
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _addNewEquipmentType() {
@@ -112,7 +173,8 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   }
 
   void _deleteEquipmentType() {
-    if (_selectedTypeToDelete == null) {
+    if (_selectedTypeToDelete == null ||
+        _selectedTypeToDelete == 'Selecione um equipamento') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -153,12 +215,8 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentNameController.text.isEmpty ||
-        _equipmentQuantityController.text.isEmpty ||
-        _selectedType == null ||
-        _selectedLocation == null ||
-        _selectedType == 'Selecione um equipamento' ||
-        _selectedLocation == 'Selecione a localização') {
+    if (_equipmentQuantityController.text.isEmpty ||
+        (_selectedType == null && _selectCircuitType == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -175,21 +233,29 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text('Nome:',
+                const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentNameController.text),
+                Text(_selectedType ?? _selectCircuitType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_equipmentQuantityController.text),
                 const SizedBox(height: 10),
-                const Text('Tipo:',
+                const Text('Disjuntor(Local):',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? ''),
+                Text(_breakerLocationController.text),
                 const SizedBox(height: 10),
-                const Text('Localização:',
+                const Text('Disjuntor(Estado):',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedLocation ?? ''),
+                Text(_breakerStateController.text),
+                const SizedBox(height: 10),
+                const Text('Tipo de Fio:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_wireTypeController.text),
+                const SizedBox(height: 10),
+                const Text('Dimensão:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_dimensionController.text),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -197,11 +263,20 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                   children: _images.map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
-                      child: Image.file(
-                        imageData.imageFile,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
+                      child: GestureDetector(
+                        onTap: () => _showImageDialog(imageData.imageFile,
+                            existingImage: imageData),
+                        child: Column(
+                          children: [
+                            Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            Text(imageData.description),
+                          ],
+                        ),
                       ),
                     );
                   }).toList(),
@@ -220,7 +295,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
-                navigateToEquipmentScreen();
+                navigateToElectricalCircuitList();
               },
             ),
           ],
@@ -229,9 +304,10 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     );
   }
 
-  void navigateToEquipmentScreen() {
-    Navigator.of(context).pushNamed(
-      '/equipmentScreen',
+  void navigateToElectricalCircuitList() {
+    Navigator.pushReplacementNamed(
+      context,
+      '/electricalCircuitList',
       arguments: {
         'areaName': widget.areaName,
         'localName': widget.localName,
@@ -279,7 +355,37 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamentos',
+                  const Text('Tipos de Lâmpada',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  _buildStyledDropdown(
+                    items: cicuitType,
+                    value: _selectCircuitType,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectCircuitType = newValue;
+                        if (newValue == cicuitType[0]) {
+                          _selectCircuitType = null;
+                        }
+                        if (_selectCircuitType != null) {
+                          _selectedType = null;
+                        }
+                      });
+                    },
+                    enabled: _selectedType == null,
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectCircuitType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Seus tipos de lâmpadas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -291,12 +397,17 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                           items: equipmentTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            if (newValue != 'Selecione um equipamento') {
-                              setState(() {
-                                _selectedType = newValue;
-                              });
-                            }
+                            setState(() {
+                              _selectedType = newValue;
+                              if (newValue == equipmentTypes[0]) {
+                                _selectedType = null;
+                              }
+                              if (_selectedType != null) {
+                                _selectCircuitType = null;
+                              }
+                            });
                           },
+                          enabled: _selectCircuitType == null,
                         ),
                       ),
                       Expanded(
@@ -321,24 +432,14 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Nome do equipamento',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _equipmentNameController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
-                    ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedType = null;
+                      });
+                    },
+                    child: const Text('Limpar seleção'),
                   ),
                   const SizedBox(height: 30),
                   const Text('Quantidade',
@@ -364,24 +465,84 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  const Text('Localização (Interno ou Externo)',
+                  const Text('Disjuntor(Local)',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: const [
-                      'Selecione a localização',
-                      'Interno',
-                      'Externo'
-                    ],
-                    value: _selectedLocation,
-                    onChanged: (newValue) {
-                      if (newValue != 'Selecione a localização') {
-                        setState(() {
-                          _selectedLocation = newValue;
-                        });
-                      }
-                    },
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _breakerLocationController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Disjuntor(Estado)',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _breakerStateController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Tipo de Fio',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _wireTypeController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Dimensão',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _dimensionController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 15),
                   IconButton(
@@ -393,13 +554,17 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.file(
-                              imageData.imageFile,
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                          GestureDetector(
+                            onTap: () => _showImageDialog(imageData.imageFile,
+                                existingImage: imageData),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                imageData.imageFile,
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           IconButton(
@@ -451,62 +616,54 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        _selectedTypeToDelete = null; // Inicialize com null
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Excluir tipo de equipamento'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Selecione um equipamento para excluir:',
-                    textAlign: TextAlign.center,
-                  ),
-                  DropdownButton<String>(
-                    isExpanded: true,
-                    value: _selectedTypeToDelete,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedTypeToDelete = newValue;
-                      });
-                    },
-                    items: [...equipmentTypes]
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: const TextStyle(color: Colors.black),
-                        ),
-                        enabled:
-                            value != 'Selecione um equipamento para deletar',
-                      );
-                    }).toList(),
-                  ),
-                ],
+        return AlertDialog(
+          title: const Text('Excluir tipo de equipamento'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Selecione um equipamento para excluir:',
+                textAlign: TextAlign.center,
               ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('Excluir'),
-                  onPressed: () {
-                    if (_selectedTypeToDelete != null &&
-                        _selectedTypeToDelete !=
-                            'Selecione um equipamento para deletar') {
-                      Navigator.of(context).pop();
-                      _deleteEquipmentType();
-                    }
-                  },
-                ),
-              ],
-            );
-          },
+              DropdownButton<String>(
+                isExpanded: true,
+                value: _selectedTypeToDelete,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedTypeToDelete = newValue;
+                  });
+                },
+                items: equipmentTypes
+                    .where((value) => value != 'Selecione um equipamento')
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Excluir'),
+              onPressed: () {
+                if (_selectedTypeToDelete != null) {
+                  Navigator.of(context).pop();
+                  _deleteEquipmentType();
+                }
+              },
+            ),
+          ],
         );
       },
     );
@@ -516,10 +673,11 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     required List<String> items,
     String? value,
     required Function(String?) onChanged,
+    bool enabled = true,
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: enabled ? Colors.grey[300] : Colors.grey[200],
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -528,13 +686,15 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
         value: value,
         isExpanded: true,
         underline: Container(),
-        onChanged: onChanged,
+        onChanged: enabled ? onChanged : null,
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
-            value: value,
+            value: value.isEmpty ? null : value,
             child: Text(
               value,
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(
+                color: enabled ? Colors.black : Colors.grey,
+              ),
             ),
           );
         }).toList(),

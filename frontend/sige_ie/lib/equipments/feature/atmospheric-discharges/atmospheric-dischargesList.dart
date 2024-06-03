@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/core/feature/equipment/addEquipmentScreen.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/addatmospheric-dischargesEquipment.dart';
 
-class EquipmentScreen extends StatelessWidget {
+class listatmosphericEquipment extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
 
-  const EquipmentScreen({
+  const listatmosphericEquipment({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -20,7 +20,7 @@ class EquipmentScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddEquipmentScreen(
+        builder: (context) => AddatmosphericEquipmentScreen(
           areaName: areaName,
           categoryNumber: categoryNumber,
           localName: localName,
@@ -36,38 +36,7 @@ class EquipmentScreen extends StatelessWidget {
       // Vazio para simular nenhum equipamento
     ];
 
-    String systemTitle;
-    switch (categoryNumber) {
-      case 1:
-        systemTitle = 'ILUMINAÇÃO';
-        break;
-      case 2:
-        systemTitle = 'CARGAS ELÉTRICAS';
-        break;
-      case 3:
-        systemTitle = 'LINHAS ELÉTRICAS';
-        break;
-      case 4:
-        systemTitle = 'CIRCUITOS';
-        break;
-      case 5:
-        systemTitle = 'QUADRO DE DISTRIBUIÇÃO';
-        break;
-      case 6:
-        systemTitle = 'CABEAMENTO ESTRUTURADO';
-        break;
-      case 7:
-        systemTitle = 'DESCARGAS ATMOSFÉRICAS';
-        break;
-      case 8:
-        systemTitle = 'ALARME DE INCÊNDIO';
-        break;
-      case 9:
-        systemTitle = 'REFRIGERAÇÃO';
-        break;
-      default:
-        systemTitle = 'SISTEMA DESCONHECIDO';
-    }
+    String systemTitle = 'DESCARGAS ATMOSFÉRICAS';
 
     return Scaffold(
       appBar: AppBar(
@@ -100,22 +69,11 @@ class EquipmentScreen extends StatelessWidget {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '$areaName - $systemTitle',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.lightText,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: Text('$areaName - $systemTitle',
+                    style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.lightText)),
               ),
             ),
             const SizedBox(height: 20),
