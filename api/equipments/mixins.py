@@ -13,13 +13,16 @@ class ValidateAreaMixin:
             if equipment_type_system != data['system']:
                 raise serializers.ValidationError("The equipment type's system must match the equipment's system.")
 
+        return data
+    
+    def validate_equipment_detail(self, value):
         """
         Garante que o equipment detail pertence ao place owner.
         """
         user = self.context['request'].user
-        if equipment_detail.place_owner != user.placeowner:
+        if value.equipment_detail.place_owner != user.placeowner:
             raise serializers.ValidationError("You are not the owner of the equipment detail's place")
-        return data
+        return value
 
     def validate_area(self, value):
         """

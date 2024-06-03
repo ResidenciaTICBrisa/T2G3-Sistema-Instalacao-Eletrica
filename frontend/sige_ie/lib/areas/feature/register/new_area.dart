@@ -17,6 +17,20 @@ class AreaLocation extends StatefulWidget {
 class _AreaLocationState extends State<AreaLocation> {
   int? selectedFloor;
   final TextEditingController areaController = TextEditingController();
+  final TextEditingController floorController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    floorController.text = selectedFloor?.toString() ?? '';
+  }
+
+  @override
+  void dispose() {
+    areaController.dispose();
+    floorController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +114,7 @@ class _AreaLocationState extends State<AreaLocation> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
-                      controller: TextEditingController(
-                          text: selectedFloor?.toString()),
+                      controller: floorController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
@@ -114,7 +127,7 @@ class _AreaLocationState extends State<AreaLocation> {
                     ),
                   ),
                   const SizedBox(height: 40),
-                  const Text('Sala',
+                  const Text('Área',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
