@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
                         return AlertDialog(
                           title:
                               const Text('Informações sobre o Projeto Sigeie'),
-                          content: SingleChildScrollView(
+                          content: const SingleChildScrollView(
                             child: Text.rich(
                               TextSpan(
                                 children: [
@@ -230,7 +230,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
-                              style: const TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                           actions: <Widget>[
