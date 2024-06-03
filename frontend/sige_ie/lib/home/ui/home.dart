@@ -49,18 +49,22 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        children: <Widget>[
-          buildHomePage(context),
-          const FacilitiesPage(),
-          const MapsPage(),
-          ProfilePage()
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            children: <Widget>[
+              buildHomePage(context),
+              const FacilitiesPage(),
+              const MapsPage(),
+              ProfilePage()
+            ],
+          ),
         ],
       ),
       bottomNavigationBar: buildBottomNavigationBar(),
@@ -77,66 +81,170 @@ class _HomePageState extends State<HomePage> {
           return const Center(child: Text('Erro ao carregar os dados'));
         } else if (snapshot.hasData) {
           var user = snapshot.data!;
-          return Column(
+          return Stack(
             children: [
-              AppBar(
-                automaticallyImplyLeading: false,
-                backgroundColor: const Color(0xff123c75),
-                elevation: 0,
-              ),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppColors.sigeIeBlue,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
+              Column(
+                children: [
+                  AppBar(
+                    automaticallyImplyLeading: false,
+                    backgroundColor: const Color(0xff123c75),
+                    elevation: 0,
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/1000x1000.png'),
-                              fit: BoxFit.cover,
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColors.sigeIeBlue,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/1000x1000.png'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Text(
-                          'Olá, ${user.firstname}',
-                          style: const TextStyle(
-                            color: AppColors.sigeIeYellow,
-                            fontSize: 20,
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text(
+                              'Olá, ${user.firstname}',
+                              style: const TextStyle(
+                                color: AppColors.sigeIeYellow,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 10),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      children: [
+                        const Spacer(),
+                        buildSmallRectangle(
+                            context, 'Registrar novo local', 'Registrar', () {
+                          Navigator.of(context).pushNamed('/newLocation');
+                        }),
+                        buildSmallRectangle(context, 'Equipes', 'Gerenciar',
+                            () {
+                          // Código aqui.
+                        }),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                flex: 6,
-                child: Column(
-                  children: [
-                    const Spacer(),
-                    buildSmallRectangle(
-                        context, 'Registrar novo local', 'Registrar', () {
-                      Navigator.of(context).pushNamed('/newLocation');
-                    }),
-                    buildSmallRectangle(context, 'Equipes', 'Gerenciar', () {
-                      // Código aqui.
-                    }),
-                    const Spacer(),
-                  ],
+              Positioned(
+                top: 20,
+                right: 20,
+                child: IconButton(
+                  icon: const Icon(Icons.info, color: Colors.white, size: 30),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title:
+                              const Text('Informações sobre o Projeto Sigeie'),
+                          content: SingleChildScrollView(
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        'A criação do aplicativo Sigeie foi um esforço colaborativo de uma equipe dedicada de profissionais, cada um trazendo sua expertise para garantir o sucesso do projeto. Aqui está uma descrição detalhada da participação de cada membro, conforme a organização da equipe:\n\n',
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '1. Loana Nunes Velasco - Cliente do Projeto\n',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '- Loana, docente do curso de Engenharia de Energia, atuou como cliente do projeto. Ela foi responsável por validar as entregas, garantindo que as necessidades e expectativas dos usuários finais fossem claramente comunicadas à equipe.\n\n',
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '2. Pedro Lucas - Desenvolvedor Backend (Engenharia de Software)\n',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '- Pedro Lucas foi responsável por codificar o backend e configurar a infraestrutura necessária para o funcionamento do aplicativo. Ele contou com a colaboração de Kauan Jose e Oscar de Brito para garantir que o backend fosse seguro e escalável.\n\n',
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '3. Danilo de Melo Ribeiro - Desenvolvedor Frontend e UX Design (Engenharia de Software)\n',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '- Danilo trabalhou no desenvolvimento do frontend do aplicativo, codificando a interface e realizando a integração com o backend. Ele projetou a interface do usuário, criou protótipos e realizou entrevistas com os clientes para garantir que o design fosse intuitivo e atendesse às necessidades dos usuários. Ele colaborou com Ramires Rocha e Pedro Lucas para construir uma interface responsiva e interativa.\n\n',
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '4. Oscar de Brito - Analista de Requisitos (Engenharia de Software)\n',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '- Oscar levantou os requisitos do projeto, gerenciou a documentação e validou as especificações com o cliente. Ele contou com a colaboração de Ramires Rocha e Pedro Lucas para garantir que todos os requisitos fossem compreendidos e implementados corretamente.\n\n',
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '5. Kauan Jose - Colaborador Backend (Engenharia de Software)\n',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '- Kauan colaborou no desenvolvimento do backend, fornecendo suporte essencial para Pedro Lucas. Ele ajudou a configurar a infraestrutura e garantir que o backend funcionasse de maneira eficiente e segura.\n\n',
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '6. Ramires Rocha - Colaborador Frontend (Engenharia Eletrônica)\n',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  TextSpan(
+                                    text:
+                                        '- Ramires colaborou no desenvolvimento do frontend, fornecendo suporte para Danilo de Melo Ribeiro. Ele ajudou a implementar funcionalidades e garantir que a interface fosse responsiva e interativa.\n\n',
+                                  ),
+                                ],
+                              ),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('Fechar'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ],
