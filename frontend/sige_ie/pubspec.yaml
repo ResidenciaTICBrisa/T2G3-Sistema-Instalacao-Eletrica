@@ -42,8 +42,6 @@ dependencies:
     geolocator: ^9.0.2
     logger: ^1.0.0
 
-
-
 dev_dependencies:
     flutter_test:
         sdk: flutter
