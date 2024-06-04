@@ -40,12 +40,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   String? _selectedTypeToDelete;
   String? _selectedfireAlarmType;
 
-  List<String> equipmentTypes = [
-    'Selecione o tipo de alarme incêndio',
-  ];
+  List<String> equipmentTypes = [];
 
   List<String> fireAlarmType = [
-    'Selecione o tipo de alarme de incêndio',
     'Sensor de Fumaça',
     'Sensor de Temperatura',
     'Acionadores',
@@ -164,12 +161,21 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _deleteEquipmentType() {
-    if (_selectedTypeToDelete == null ||
-        _selectedTypeToDelete == 'Selecione um equipamento') {
+    if (_selectedTypeToDelete == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
               Text('Selecione um tipo de equipamento válido para excluir.'),
+        ),
+      );
+      return;
+    }
+
+    if (fireAlarmType.contains(_selectedTypeToDelete)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Não é possível excluir tipos de equipamento predefinidos.'),
         ),
       );
       return;
@@ -293,6 +299,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> combinedTypes = fireAlarmType + equipmentTypes;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -333,55 +341,29 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: fireAlarmType,
-                    value: _selectedfireAlarmType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedfireAlarmType = newValue;
-                        if (newValue == fireAlarmType[0]) {
-                          _selectedfireAlarmType = null;
-                        }
-                        if (_selectedfireAlarmType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedfireAlarmType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de alarme de incêndio',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: ['Selecione o tipo de alarme de incêndio'] +
+                              combinedTypes,
+                          value: _selectedfireAlarmType ?? _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
-                                _selectedfireAlarmType = null;
-                              }
-                            });
+                            if (newValue !=
+                                'Selecione o tipo de alarme de incêndio') {
+                              setState(() {
+                                if (fireAlarmType.contains(newValue)) {
+                                  _selectedfireAlarmType = newValue;
+                                  _selectedType = null;
+                                } else {
+                                  _selectedType = newValue;
+                                  _selectedfireAlarmType = null;
+                                }
+                              });
+                            }
                           },
-                          enabled: _selectedfireAlarmType == null,
+                          enabled: true,
                         ),
                       ),
                       Expanded(
@@ -395,10 +377,19 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
+                                if (equipmentTypes.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Nenhum equipamento adicionado para excluir.'),
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _selectedTypeToDelete = null;
+                                  });
+                                  _showDeleteDialog();
+                                }
                               },
                             ),
                           ],
@@ -410,6 +401,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   TextButton(
                     onPressed: () {
                       setState(() {
+                        _selectedfireAlarmType = null;
                         _selectedType = null;
                       });
                     },
@@ -519,25 +511,28 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                 'Selecione um equipamento para excluir:',
                 textAlign: TextAlign.center,
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: equipmentTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -576,7 +571,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first),
+        hint: Text(items.first, style: TextStyle(color: Colors.grey)),
         value: value,
         isExpanded: true,
         underline: Container(),
@@ -584,10 +579,13 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value.isEmpty ? null : value,
+            enabled: value != 'Selecione o tipo de alarme de incêndio',
             child: Text(
               value,
               style: TextStyle(
-                color: enabled ? Colors.black : Colors.grey,
+                color: value == 'Selecione o tipo de alarme de incêndio'
+                    ? Colors.grey
+                    : Colors.black,
               ),
             ),
           );
