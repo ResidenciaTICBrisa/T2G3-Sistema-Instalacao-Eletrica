@@ -29,7 +29,9 @@ class EquipmentType(models.Model):
 class EquipmentDetail(models.Model):
 
     place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
-    equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE)
+    equipmentType = models.ForeignKey(EquipmentType, on_delete=models.CASCADE, null=True)
+    personalEquipmentType = models.ForeignKey(PersonalEquipmentType, on_delete=models.CASCADE, null=True)
+
 
     class Meta:
         db_table = 'equipments_equipment_details'
@@ -37,8 +39,8 @@ class EquipmentDetail(models.Model):
 class EquipmentPhoto(models.Model):
 
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
-    description = models.CharField(max_length=50)
-    equipment_detail = models.ForeignKey(EquipmentDetail, on_delete=models.CASCADE, null=True)
+    description = models.CharField(max_length=50, null=True)
+    
 
     def __str__(self):
         return self.description
