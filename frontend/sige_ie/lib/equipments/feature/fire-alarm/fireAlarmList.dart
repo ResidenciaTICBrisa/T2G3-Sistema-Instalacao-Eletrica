@@ -27,7 +27,7 @@ class listFireAlarms extends StatelessWidget {
           categoryNumber: categoryNumber,
           localName: localName,
           localId: localId,
-          areaId: areaId, // Passando areaId
+          areaId: areaId,
         ),
       ),
     );

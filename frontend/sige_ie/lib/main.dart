@@ -232,7 +232,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int? areaId = args['areaId']; // Adicione esta linha
+              final int? areaId = args['areaId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
               if (areaName != null &&
