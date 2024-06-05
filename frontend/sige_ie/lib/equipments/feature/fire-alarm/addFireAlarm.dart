@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +45,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   String? _selectedType;
   String? _selectedTypeToDelete;
   String? _newEquipmentTypeName;
+  int? _selectedTypeId; // ID of the selected type
 
   List<String> equipmentTypes = [];
   List<String> personalEquipmentTypes = [];
@@ -352,66 +354,81 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     }
   }
 
-  Future<void> _registerEquipmentDetail() async {
-    int systemId = widget.categoryNumber;
-    String categoryKey;
-
-    switch (systemId) {
+  void _registerEquipmentDetail() async {
+    FireAlarmEquipmentService service = FireAlarmEquipmentService();
+    String equipmentKey;
+    switch (widget.categoryNumber) {
       case 1:
-        categoryKey = 'ilumination_equipment';
+        equipmentKey = 'ilumination_equipment';
         break;
       case 2:
-        categoryKey = 'electrical_load_equipment';
+        equipmentKey = 'electrical_load_equipment';
         break;
       case 3:
-        categoryKey = 'electrical_line_equipment';
+        equipmentKey = 'electrical_line_equipment';
         break;
       case 4:
-        categoryKey = 'electrical_circuit_equipment';
+        equipmentKey = 'electrical_circuit_equipment';
         break;
       case 5:
-        categoryKey = 'distribution_board_equipment';
+        equipmentKey = 'distribution_board_equipment';
         break;
       case 6:
-        categoryKey = 'structured_cabling_equipment';
+        equipmentKey = 'structured_cabling_equipment';
         break;
       case 7:
-        categoryKey = 'atmospheric_discharge_equipment';
+        equipmentKey = 'atmospheric_discharge_equipment';
         break;
       case 8:
-        categoryKey = 'fire_alarm_equipment';
+        equipmentKey = 'fire_alarm_equipment';
         break;
       case 9:
-        categoryKey = 'refrigeration_equipment';
+        equipmentKey = 'refrigeration_equipment';
         break;
       default:
-        categoryKey = 'unknown';
+        equipmentKey = 'unknown';
     }
 
     Map<String, dynamic> equipmentDetail = {
-      "photos": [],
-      categoryKey: {
-        "area": widget.areaId,
-        "system": systemId,
-      },
-      "equipmentType": systemId,
+      'area': widget.areaId,
+      'system': widget.categoryNumber,
     };
 
-    FireAlarmEquipmentService service = FireAlarmEquipmentService();
-    int? id = await service.registerEquipmentDetail(equipmentDetail);
+    Map<String, dynamic> requestPayload = {
+      'photos': _images.map((imageData) {
+        return {
+          'file': base64Encode(imageData.imageFile.readAsBytesSync()),
+          'description': imageData.description,
+        };
+      }).toList(),
+      equipmentKey: equipmentDetail,
+      'equipmentType': _selectedTypeId,
+    };
 
-    if (id != null) {
+    bool success = await service.registerEquipmentDetail(requestPayload);
+
+    if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text('Detalhe do equipamento registrado com sucesso. ID: $id'),
+        const SnackBar(
+          content: Text('Detalhes do equipamento registrados com sucesso.'),
           backgroundColor: Colors.green,
         ),
+      );
+      Navigator.pushReplacementNamed(
+        context,
+        '/listFireAlarms',
+        arguments: {
+          'areaName': widget.areaName,
+          'categoryNumber': widget.categoryNumber,
+          'localName': widget.localName,
+          'localId': widget.localId,
+          'areaId': widget.areaId,
+        },
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Falha ao registrar o equipamento.'),
+          content: Text('Falha ao registrar os detalhes do equipamento.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -485,6 +502,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                                 'Selecione o tipo de alarme de incêndio') {
                               setState(() {
                                 _selectedType = newValue;
+                                _selectedTypeId =
+                                    personalEquipmentMap[newValue] ?? -1;
                               });
                             }
                           },

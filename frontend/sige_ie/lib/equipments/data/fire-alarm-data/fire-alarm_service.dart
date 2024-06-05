@@ -144,34 +144,26 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<int?> registerEquipmentDetail(
-      Map<String, dynamic> equipmentDetail) async {
+  Future<bool> registerEquipmentDetail(
+      Map<String, dynamic> requestPayload) async {
     var url = Uri.parse('${baseUrl}equipment-details/');
 
     try {
-      print('Sending POST request to $url');
-      print('Request body: ${jsonEncode(equipmentDetail)}');
-
       var response = await client.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(equipmentDetail),
+        body: jsonEncode(requestPayload),
       );
 
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
       if (response.statusCode == 201) {
-        Map<String, dynamic> responseData = jsonDecode(response.body);
-        print('Request successful, received ID: ${responseData['id']}');
-        return responseData['id'];
+        return true;
       } else {
         print('Failed to register equipment detail: ${response.statusCode}');
-        return null;
+        return false;
       }
     } catch (e) {
       print('Error during register equipment detail: $e');
-      return null;
+      return false;
     }
   }
 }
