@@ -185,14 +185,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listatmosphericEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(

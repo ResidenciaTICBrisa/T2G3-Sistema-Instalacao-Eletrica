@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/atmospheric-data/atmospheric_request_model.dart';
+import 'package:sige_ie/equipments/data/atmospheric-data/atmospheric_service.dart';
 
 class ImageData {
   File imageFile;
@@ -21,6 +23,7 @@ class AddatmosphericEquipmentScreen extends StatefulWidget {
   final String localName;
   final int localId;
   final int categoryNumber;
+  final int areaId;
 
   const AddatmosphericEquipmentScreen({
     super.key,
@@ -28,6 +31,7 @@ class AddatmosphericEquipmentScreen extends StatefulWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   @override
@@ -269,8 +273,18 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop();
-                navigateToEquipmentScreen();
+                _registerAtmosphericEquipment();
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/listatmosphericEquipment',
+                  arguments: {
+                    'areaName': widget.areaName,
+                    'categoryNumber': widget.categoryNumber,
+                    'localName': widget.localName,
+                    'localId': widget.localId,
+                    'areaId': widget.areaId,
+                  },
+                );
               },
             ),
           ],
@@ -279,20 +293,33 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
     );
   }
 
-  void navigateToEquipmentScreen() {
-    Navigator.of(context).pushNamed(
-      '/listatmosphericEquipment',
-      arguments: {
-        'areaName': widget.areaName,
-        'localName': widget.localName,
-        'localId': widget.localId,
-        'categoryNumber': widget.categoryNumber,
-      },
+  void _registerAtmosphericEquipment() async {
+    int areaId = widget.areaId;
+    int systemId = widget.categoryNumber;
+    int equipmentTypeId = 1;
+
+    AtmosphericEquipmentRequestModel requestModel =
+        AtmosphericEquipmentRequestModel(
+      photos: _images.map((imageData) => imageData.imageFile.path).toList(),
+      area: areaId,
+      system: systemId,
+      equipmentType: equipmentTypeId,
     );
+
+    AtmosphericEquipmentService service = AtmosphericEquipmentService();
+    int? id = await service.register(requestModel);
+
+    if (id != null) {
+      print('Atmospheric equipment registered with ID: $id');
+    } else {
+      print('Failed to register atmospheric equipment');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    List<String> combinedTypes = dischargeType + equipmentTypes;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -300,7 +327,17 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushReplacementNamed(
+              context,
+              '/listatmosphericEquipment',
+              arguments: {
+                'areaName': widget.areaName,
+                'categoryNumber': widget.categoryNumber,
+                'localName': widget.localName,
+                'localId': widget.localId,
+                'areaId': widget.areaId,
+              },
+            );
           },
         ),
       ),
@@ -333,55 +370,29 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: dischargeType,
-                    value: _selectDischargeType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectDischargeType = newValue;
-                        if (newValue == dischargeType[0]) {
-                          _selectDischargeType = null;
-                        }
-                        if (_selectDischargeType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectDischargeType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de descargas atmosféricas',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: ['Selecione o tipo de descarga atmosférica'] +
+                              combinedTypes,
+                          value: _selectDischargeType ?? _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
-                                _selectDischargeType = null;
-                              }
-                            });
+                            if (newValue !=
+                                'Selecione o tipo de descarga atmosférica') {
+                              setState(() {
+                                if (dischargeType.contains(newValue)) {
+                                  _selectDischargeType = newValue;
+                                  _selectedType = null;
+                                } else {
+                                  _selectedType = newValue;
+                                  _selectDischargeType = null;
+                                }
+                              });
+                            }
                           },
-                          enabled: _selectDischargeType == null,
+                          enabled: true,
                         ),
                       ),
                       Expanded(
@@ -395,10 +406,19 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
+                                if (equipmentTypes.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Nenhum equipamento adicionado para excluir.'),
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _selectedTypeToDelete = null;
+                                  });
+                                  _showDeleteDialog();
+                                }
                               },
                             ),
                           ],
@@ -410,6 +430,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                   TextButton(
                     onPressed: () {
                       setState(() {
+                        _selectDischargeType = null;
                         _selectedType = null;
                       });
                     },
@@ -519,25 +540,28 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                 'Selecione um equipamento para excluir:',
                 textAlign: TextAlign.center,
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: equipmentTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -576,7 +600,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first),
+        hint: Text(items.first, style: TextStyle(color: Colors.grey)),
         value: value,
         isExpanded: true,
         underline: Container(),
@@ -584,10 +608,13 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value.isEmpty ? null : value,
+            enabled: value != 'Selecione o tipo de descarga atmosférica',
             child: Text(
               value,
               style: TextStyle(
-                color: enabled ? Colors.black : Colors.grey,
+                color: value == 'Selecione o tipo de descarga atmosférica'
+                    ? Colors.grey
+                    : Colors.black,
               ),
             ),
           );

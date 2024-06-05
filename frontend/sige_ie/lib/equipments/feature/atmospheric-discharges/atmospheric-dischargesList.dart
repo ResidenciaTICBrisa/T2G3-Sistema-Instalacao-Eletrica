@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/addatmospheric-dischargesEquipment.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/addAtmospheric-dischargesEquipment.dart';
 
 class listatmosphericEquipment extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
+  final int areaId;
 
   const listatmosphericEquipment({
     super.key,
@@ -14,6 +15,7 @@ class listatmosphericEquipment extends StatelessWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   void navigateToAddEquipment(BuildContext context) {
@@ -25,6 +27,7 @@ class listatmosphericEquipment extends StatelessWidget {
           categoryNumber: categoryNumber,
           localName: localName,
           localId: localId,
+          areaId: areaId,
         ),
       ),
     );
@@ -51,6 +54,7 @@ class listatmosphericEquipment extends StatelessWidget {
                 'areaName': areaName,
                 'localName': localName,
                 'localId': localId,
+                'areaId': areaId,
                 'categoryNumber': categoryNumber,
               },
             );

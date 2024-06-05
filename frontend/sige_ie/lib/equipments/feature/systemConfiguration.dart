@@ -44,10 +44,12 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   categoryNumber: category);
             case '/atmosphericDischarges':
               return listatmosphericEquipment(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/fireAlarm':
               return listFireAlarms(
                   areaName: areaName,

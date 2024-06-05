@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/cooling/Addcooling.dart';
+import 'package:sige_ie/equipments/feature/cooling/addCooling.dart';
 
 class listCollingEquipment extends StatelessWidget {
   final String areaName;
