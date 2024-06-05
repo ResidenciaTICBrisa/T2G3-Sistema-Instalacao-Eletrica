@@ -43,15 +43,10 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
-  String? _selectedfireAlarmType;
   String? _newEquipmentTypeName;
 
   List<String> equipmentTypes = [];
-  List<String> fireAlarmType = [
-    'Sensor de Fumaça',
-    'Sensor de Temperatura',
-    'Acionadores',
-  ];
+  List<String> personalEquipmentTypes = [];
 
   @override
   void initState() {
@@ -62,10 +57,14 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   Future<void> _fetchEquipmentTypes() async {
     FireAlarmEquipmentService service = FireAlarmEquipmentService();
     List<FireAlarmEquipmentResponseModel> equipmentList =
-        await service.getAllEquipment(widget.categoryNumber);
+        await service.getAllEquipmentBySystem(widget.categoryNumber);
+    List<FireAlarmEquipmentResponseModel> personalEquipmentList =
+        await service.getAllPersonalEquipmentBySystem(widget.categoryNumber);
 
     setState(() {
       equipmentTypes = equipmentList.map((e) => e.name).toList();
+      personalEquipmentTypes =
+          personalEquipmentList.map((e) => e.name).toList();
     });
   }
 
@@ -183,21 +182,20 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _deleteEquipmentType() {
-    if (_selectedTypeToDelete == null) {
+    if (personalEquipmentTypes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:
-              Text('Selecione um tipo de equipamento válido para excluir.'),
+          content: Text('Não existem equipamentos pessoais a serem excluídos.'),
         ),
       );
       return;
     }
 
-    if (fireAlarmType.contains(_selectedTypeToDelete)) {
+    if (_selectedTypeToDelete == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text('Não é possível excluir tipos de equipamento predefinidos.'),
+              Text('Selecione um tipo de equipamento válido para excluir.'),
         ),
       );
       return;
@@ -221,7 +219,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
+                  personalEquipmentTypes.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -235,9 +233,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   void _showConfirmationDialog() {
     if (_equipmentQuantityController.text.isEmpty ||
-        (_selectedType == null &&
-            _selectedfireAlarmType == null &&
-            _newEquipmentTypeName == null)) {
+        (_selectedType == null && _newEquipmentTypeName == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -256,10 +252,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ??
-                    _selectedfireAlarmType ??
-                    _newEquipmentTypeName ??
-                    ''),
+                Text(_selectedType ?? _newEquipmentTypeName ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -342,7 +335,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       );
 
       setState(() {
-        equipmentTypes.add(_newEquipmentTypeName!);
+        personalEquipmentTypes.add(_newEquipmentTypeName!);
         _newEquipmentTypeName = null;
       });
     } else {
@@ -358,7 +351,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> combinedTypes = fireAlarmType + equipmentTypes;
+    List<String> combinedTypes = equipmentTypes + personalEquipmentTypes;
 
     return Scaffold(
       appBar: AppBar(
@@ -417,18 +410,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                         child: _buildStyledDropdown(
                           items: ['Selecione o tipo de alarme de incêndio'] +
                               combinedTypes,
-                          value: _selectedfireAlarmType ?? _selectedType,
+                          value: _selectedType,
                           onChanged: (newValue) {
                             if (newValue !=
                                 'Selecione o tipo de alarme de incêndio') {
                               setState(() {
-                                if (fireAlarmType.contains(newValue)) {
-                                  _selectedfireAlarmType = newValue;
-                                  _selectedType = null;
-                                } else {
-                                  _selectedType = newValue;
-                                  _selectedfireAlarmType = null;
-                                }
+                                _selectedType = newValue;
                               });
                             }
                           },
@@ -446,11 +433,11 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                if (equipmentTypes.isEmpty) {
+                                if (personalEquipmentTypes.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                          'Nenhum equipamento adicionado para excluir.'),
+                                          'Não existem equipamentos pessoais a serem excluídos.'),
                                     ),
                                   );
                                 } else {
@@ -470,7 +457,6 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        _selectedfireAlarmType = null;
                         _selectedType = null;
                       });
                     },
@@ -590,7 +576,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                         _selectedTypeToDelete = newValue;
                       });
                     },
-                    items: equipmentTypes
+                    items: personalEquipmentTypes
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,

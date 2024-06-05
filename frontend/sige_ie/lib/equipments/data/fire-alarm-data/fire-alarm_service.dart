@@ -108,14 +108,14 @@ class FireAlarmEquipmentService {
   Future<List<FireAlarmEquipmentResponseModel>> getAllEquipment(
       int systemId) async {
     try {
-      List<FireAlarmEquipmentResponseModel> personalEquipmentList =
-          await getAllPersonalEquipmentBySystem(systemId);
       List<FireAlarmEquipmentResponseModel> equipmentList =
           await getAllEquipmentBySystem(systemId);
+      List<FireAlarmEquipmentResponseModel> personalEquipmentList =
+          await getAllPersonalEquipmentBySystem(systemId);
 
       List<FireAlarmEquipmentResponseModel> combinedList = [
-        ...personalEquipmentList,
         ...equipmentList,
+        ...personalEquipmentList,
       ];
 
       print('Combined list length: ${combinedList.length}');
