@@ -21,6 +21,7 @@ class Addcooling extends StatefulWidget {
   final String localName;
   final int localId;
   final int categoryNumber;
+  final int areaId;
 
   const Addcooling({
     super.key,
@@ -28,6 +29,7 @@ class Addcooling extends StatefulWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   @override
@@ -287,6 +289,7 @@ class _AddEquipmentScreenState extends State<Addcooling> {
         'localName': widget.localName,
         'localId': widget.localId,
         'categoryNumber': widget.categoryNumber,
+        'areaId': widget.areaId,
       },
     );
   }

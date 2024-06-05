@@ -83,10 +83,12 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   categoryNumber: category);
             case '/cooling':
               return listCollingEquipment(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/lighting':
               return listIluminationEquipment(
                   areaName: areaName,

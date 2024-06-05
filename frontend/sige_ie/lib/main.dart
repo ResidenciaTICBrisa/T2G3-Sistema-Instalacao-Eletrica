@@ -267,15 +267,20 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+              final int? areaId = args['areaId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listCollingEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
