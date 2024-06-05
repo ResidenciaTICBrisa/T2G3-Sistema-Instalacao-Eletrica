@@ -86,17 +86,21 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              if (areaName != null && localName != null && localId != null) {
+              final int? areaId = args['areaId'];
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => SystemConfiguration(
                           areaName: areaName,
                           localName: localName,
                           localId: localId,
-                          categoryNumber: 0,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /systemLocation.');
+                    'Invalid arguments: One of areaName, localName, localId, or areaId is null in /systemLocation.');
               }
             }
             throw Exception(

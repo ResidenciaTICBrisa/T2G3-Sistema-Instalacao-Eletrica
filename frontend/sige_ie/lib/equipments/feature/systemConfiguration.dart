@@ -14,14 +14,14 @@ class SystemConfiguration extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
-  final int categoryNumber;
+  final int areaId;
 
   const SystemConfiguration({
     super.key,
     required this.areaName,
     required this.localName,
     required this.localId,
-    required this.categoryNumber,
+    required this.areaId,
   });
 
   @override
@@ -30,7 +30,7 @@ class SystemConfiguration extends StatefulWidget {
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
   void navigateTo(String routeName, String areaName, String localName,
-      int localId, dynamic category) {
+      int localId, int areaId, int category) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -145,55 +145,70 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   icon: Icons.fire_extinguisher,
                   label: 'ALARME DE INCÊNDIO',
                   onPressed: () => navigateTo('/fireAlarm', widget.areaName,
-                      widget.localName, widget.localId, 8),
+                      widget.localName, widget.localId, widget.areaId, 8),
                 ),
                 SystemIcon(
                   icon: Icons.cable,
                   label: 'CABEAMENTO ESTRUTURADO',
-                  onPressed: () => navigateTo('/structuredCabling',
-                      widget.areaName, widget.localName, widget.localId, 6),
+                  onPressed: () => navigateTo(
+                      '/structuredCabling',
+                      widget.areaName,
+                      widget.localName,
+                      widget.localId,
+                      widget.areaId,
+                      6),
                 ),
                 SystemIcon(
                   icon: Icons.electrical_services,
                   label: 'CARGAS ELÉTRICAS',
                   onPressed: () => navigateTo('/electricLoads', widget.areaName,
-                      widget.localName, widget.localId, 2),
+                      widget.localName, widget.localId, widget.areaId, 2),
                 ),
                 SystemIcon(
                   icon: Icons.electrical_services,
                   label: 'CIRCUITOS',
                   onPressed: () => navigateTo('/circuits', widget.areaName,
-                      widget.localName, widget.localId, 4),
+                      widget.localName, widget.localId, widget.areaId, 4),
                 ),
                 SystemIcon(
                   icon: Icons.bolt,
                   label: 'DESCARGAS ATMOSFÉRICAS',
-                  onPressed: () => navigateTo('/atmosphericDischarges',
-                      widget.areaName, widget.localName, widget.localId, 7),
+                  onPressed: () => navigateTo(
+                      '/atmosphericDischarges',
+                      widget.areaName,
+                      widget.localName,
+                      widget.localId,
+                      widget.areaId,
+                      7),
                 ),
                 SystemIcon(
                   icon: Icons.lightbulb,
                   label: 'ILUMINAÇÃO',
                   onPressed: () => navigateTo('/lighting', widget.areaName,
-                      widget.localName, widget.localId, 1),
+                      widget.localName, widget.localId, widget.areaId, 1),
                 ),
                 SystemIcon(
                   icon: Icons.power,
                   label: 'LINHAS ELÉTRICAS',
                   onPressed: () => navigateTo('/electricLines', widget.areaName,
-                      widget.localName, widget.localId, 3),
+                      widget.localName, widget.localId, widget.areaId, 3),
                 ),
                 SystemIcon(
                   icon: Icons.dashboard,
                   label: 'QUADRO DE DISTRIBUIÇÃO',
-                  onPressed: () => navigateTo('/distributionBoard',
-                      widget.areaName, widget.localName, widget.localId, 5),
+                  onPressed: () => navigateTo(
+                      '/distributionBoard',
+                      widget.areaName,
+                      widget.localName,
+                      widget.localId,
+                      widget.areaId,
+                      5),
                 ),
                 SystemIcon(
                   icon: Icons.ac_unit,
                   label: 'REFRIGERAÇÃO',
                   onPressed: () => navigateTo('/cooling', widget.areaName,
-                      widget.localName, widget.localId, 9),
+                      widget.localName, widget.localId, widget.areaId, 9),
                 ),
               ],
             ),
@@ -314,42 +329,6 @@ class SystemIcon extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SystemButton extends StatelessWidget {
-  final String title;
-  final VoidCallback onPressed;
-
-  const SystemButton({
-    super.key,
-    required this.title,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
-          foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
-          padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 25)),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          )),
-        ),
-        onPressed: onPressed,
-        child: Text(title,
-            style: const TextStyle(
-                color: AppColors.sigeIeBlue,
-                fontSize: 18,
-                fontWeight: FontWeight.w900)),
       ),
     );
   }
