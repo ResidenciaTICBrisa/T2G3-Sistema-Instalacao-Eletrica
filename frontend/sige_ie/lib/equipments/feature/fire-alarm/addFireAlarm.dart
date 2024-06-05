@@ -47,6 +47,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   List<String> equipmentTypes = [];
   List<String> personalEquipmentTypes = [];
+  Map<String, int> personalEquipmentMap =
+      {}; // Map to store equipment name and ID
 
   @override
   void initState() {
@@ -65,6 +67,10 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       equipmentTypes = equipmentList.map((e) => e.name).toList();
       personalEquipmentTypes =
           personalEquipmentList.map((e) => e.name).toList();
+      personalEquipmentMap = {
+        for (var equipment in personalEquipmentList)
+          equipment.name: equipment.id
+      };
     });
   }
 
@@ -181,7 +187,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     );
   }
 
-  void _deleteEquipmentType() {
+  void _deleteEquipmentType() async {
     if (personalEquipmentTypes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -201,34 +207,30 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       return;
     }
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmar exclusão'),
-          content: Text(
-              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Excluir'),
-              onPressed: () {
-                setState(() {
-                  personalEquipmentTypes.remove(_selectedTypeToDelete);
-                  _selectedTypeToDelete = null;
-                });
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
+
+    FireAlarmEquipmentService service = FireAlarmEquipmentService();
+    bool success = await service.deleteEquipment(equipmentId);
+
+    if (success) {
+      setState(() {
+        personalEquipmentTypes.remove(_selectedTypeToDelete);
+        _selectedTypeToDelete = null;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Equipamento excluído com sucesso.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao excluir o equipamento.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _showConfirmationDialog() {
@@ -336,6 +338,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
       setState(() {
         personalEquipmentTypes.add(_newEquipmentTypeName!);
+        personalEquipmentMap[_newEquipmentTypeName!] = id;
         _newEquipmentTypeName = null;
       });
     } else {
@@ -343,6 +346,72 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         const SnackBar(
           content:
               Text('Falha ao registrar o equipamento de alarme de incêndio.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _registerEquipmentDetail() async {
+    int systemId = widget.categoryNumber;
+    String categoryKey;
+
+    switch (systemId) {
+      case 1:
+        categoryKey = 'ilumination_equipment';
+        break;
+      case 2:
+        categoryKey = 'electrical_load_equipment';
+        break;
+      case 3:
+        categoryKey = 'electrical_line_equipment';
+        break;
+      case 4:
+        categoryKey = 'electrical_circuit_equipment';
+        break;
+      case 5:
+        categoryKey = 'distribution_board_equipment';
+        break;
+      case 6:
+        categoryKey = 'structured_cabling_equipment';
+        break;
+      case 7:
+        categoryKey = 'atmospheric_discharge_equipment';
+        break;
+      case 8:
+        categoryKey = 'fire_alarm_equipment';
+        break;
+      case 9:
+        categoryKey = 'refrigeration_equipment';
+        break;
+      default:
+        categoryKey = 'unknown';
+    }
+
+    Map<String, dynamic> equipmentDetail = {
+      "photos": [],
+      categoryKey: {
+        "area": widget.areaId,
+        "system": systemId,
+      },
+      "equipmentType": systemId,
+    };
+
+    FireAlarmEquipmentService service = FireAlarmEquipmentService();
+    int? id = await service.registerEquipmentDetail(equipmentDetail);
+
+    if (id != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text('Detalhe do equipamento registrado com sucesso. ID: $id'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao registrar o equipamento.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -536,7 +605,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                               MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ))),
-                      onPressed: _showConfirmationDialog,
+                      onPressed: _registerEquipmentDetail,
                       child: const Text(
                         'ADICIONAR EQUIPAMENTO',
                         style: TextStyle(

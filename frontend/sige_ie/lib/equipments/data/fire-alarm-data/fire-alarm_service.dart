@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_response_model.dart'; // Import the response model
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_response_model.dart';
 import 'package:sige_ie/main.dart';
 
 class FireAlarmEquipmentService {
@@ -123,6 +123,55 @@ class FireAlarmEquipmentService {
     } catch (e) {
       print('Error during get all equipment: $e');
       return [];
+    }
+  }
+
+  Future<bool> deleteEquipment(int id) async {
+    var url = Uri.parse('${baseUrl}personal-equipment-types/$id/');
+
+    try {
+      print('Sending DELETE request to $url');
+      var response = await client
+          .delete(url, headers: {'Content-Type': 'application/json'});
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Error during delete equipment: $e');
+      return false;
+    }
+  }
+
+  Future<int?> registerEquipmentDetail(
+      Map<String, dynamic> equipmentDetail) async {
+    var url = Uri.parse('${baseUrl}equipment-details/');
+
+    try {
+      print('Sending POST request to $url');
+      print('Request body: ${jsonEncode(equipmentDetail)}');
+
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(equipmentDetail),
+      );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        print('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        print('Failed to register equipment detail: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error during register equipment detail: $e');
+      return null;
     }
   }
 }
