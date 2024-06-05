@@ -53,6 +53,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                   areaName: areaName,
                   localName: localName,
                   localId: localId,
+                  areaId: areaId,
                   categoryNumber: category);
             case '/electricLoads':
               return listelectricalLoadEquipment(

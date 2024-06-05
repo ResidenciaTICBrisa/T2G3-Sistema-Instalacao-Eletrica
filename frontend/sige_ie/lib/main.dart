@@ -232,23 +232,29 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+              final int? areaId = args['areaId']; // Adicione esta linha
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listFireAlarms(
-                          areaName: areaName,
-                          categoryNumber: categoryNumber,
-                          localName: localName,
-                          localId: localId,
-                        ));
+                  builder: (context) => listFireAlarms(
+                    areaName: areaName,
+                    categoryNumber: categoryNumber,
+                    localName: localName,
+                    localId: localId,
+                    areaId: areaId,
+                  ),
+                );
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /listDistribuitionBoard.');
+                    'Invalid arguments: One of areaName, localName, localId, or areaId is null in /listFireAlarms.');
               }
             }
             throw Exception(
-                'Invalid route: Expected Map arguments for /listDistribuitionBoard.');
+                'Invalid route: Expected Map arguments for /listFireAlarms.');
 
           case '/listCollingEquipment':
             if (settings.arguments is Map) {

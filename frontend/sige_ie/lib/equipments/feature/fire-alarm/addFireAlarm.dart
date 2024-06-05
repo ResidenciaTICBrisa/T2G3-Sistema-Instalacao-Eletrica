@@ -23,6 +23,7 @@ class AddfireAlarm extends StatefulWidget {
   final String localName;
   final int localId;
   final int categoryNumber;
+  final int areaId;
 
   const AddfireAlarm({
     super.key,
@@ -30,6 +31,7 @@ class AddfireAlarm extends StatefulWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   @override
@@ -277,8 +279,18 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop();
                 _registerFireAlarmEquipment();
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/listFireAlarms',
+                  arguments: {
+                    'areaName': widget.areaName,
+                    'categoryNumber': widget.categoryNumber,
+                    'localName': widget.localName,
+                    'localId': widget.localId,
+                    'areaId': widget.areaId,
+                  },
+                );
               },
             ),
           ],
@@ -288,7 +300,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _registerFireAlarmEquipment() async {
-    int areaId = 1;
+    int areaId = widget.areaId;
     int systemId = widget.categoryNumber;
     int equipmentTypeId = 1;
 
@@ -321,7 +333,17 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushReplacementNamed(
+              context,
+              '/listFireAlarms',
+              arguments: {
+                'areaName': widget.areaName,
+                'categoryNumber': widget.categoryNumber,
+                'localName': widget.localName,
+                'localId': widget.localId,
+                'areaId': widget.areaId,
+              },
+            );
           },
         ),
       ),

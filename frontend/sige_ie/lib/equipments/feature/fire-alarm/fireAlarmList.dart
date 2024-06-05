@@ -7,6 +7,7 @@ class listFireAlarms extends StatelessWidget {
   final String localName;
   final int categoryNumber;
   final int localId;
+  final int areaId;
 
   const listFireAlarms({
     super.key,
@@ -14,6 +15,7 @@ class listFireAlarms extends StatelessWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   void navigateToAddEquipment(BuildContext context) {
@@ -25,6 +27,7 @@ class listFireAlarms extends StatelessWidget {
           categoryNumber: categoryNumber,
           localName: localName,
           localId: localId,
+          areaId: areaId, // Passando areaId
         ),
       ),
     );
@@ -51,7 +54,7 @@ class listFireAlarms extends StatelessWidget {
                 'areaName': areaName,
                 'localName': localName,
                 'localId': localId,
-                'categoryNumber': categoryNumber,
+                'areaId': areaId,
               },
             );
           },
