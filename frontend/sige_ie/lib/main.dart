@@ -113,14 +113,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listIluminationEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -137,14 +142,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listCicuitEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -161,14 +171,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listElectricalLineEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -214,14 +229,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listDistribuitionBoard(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -296,16 +316,21 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+              final int? areaId = args['areaId'];
 
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listStruturedCabling(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -322,14 +347,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listelectricalLoadEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(

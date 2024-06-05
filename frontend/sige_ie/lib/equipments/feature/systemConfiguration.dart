@@ -42,6 +42,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 localName: localName,
                 localId: localId,
                 categoryNumber: category,
+                areaId: areaId,
               );
             case '/atmosphericDischarges':
               return listatmosphericEquipment(
@@ -53,35 +54,44 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
               );
             case '/fireAlarm':
               return listFireAlarms(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  areaId: areaId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/electricLoads':
               return listelectricalLoadEquipment(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/electricLines':
               return listElectricalLineEquipment(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/circuits':
               return listCicuitEquipment(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/distributionBoard':
               return listDistribuitionBoard(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             case '/cooling':
               return listCollingEquipment(
                 areaName: areaName,
@@ -92,10 +102,12 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
               );
             case '/lighting':
               return listIluminationEquipment(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+                areaId: areaId,
+              );
             default:
               return Scaffold(
                 body: Center(child: Text('No route defined for $routeName')),
@@ -148,7 +160,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
               crossAxisSpacing: 10.0,
               children: <Widget>[
                 SystemIcon(
-                  icon: Icons.fire_extinguisher,
+                  icon: Icons.local_fire_department,
                   label: 'ALARME DE INCÊNDIO',
                   onPressed: () => navigateTo('/fireAlarm', widget.areaName,
                       widget.localName, widget.localId, widget.areaId, 8),
@@ -171,7 +183,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                       widget.localName, widget.localId, widget.areaId, 2),
                 ),
                 SystemIcon(
-                  icon: Icons.electrical_services,
+                  icon: Icons.electric_meter,
                   label: 'CIRCUITOS',
                   onPressed: () => navigateTo('/circuits', widget.areaName,
                       widget.localName, widget.localId, widget.areaId, 4),
