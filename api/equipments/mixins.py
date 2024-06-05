@@ -10,8 +10,13 @@ class ValidateAreaMixin:
         equipment_detail = data.get('equipment_detail')
         if equipment_detail:
             equipment_type_system = equipment_detail.equipmentType.system
+            personal_equipment_type_system = equipment_detail.personalEquipmentType.system
+            if equipment_detail.equipmentType and equipment_detail.personalEquipmentType:
+                raise serializers.ValidationError("Only one equipment type must exist")
             if equipment_type_system != data['system']:
                 raise serializers.ValidationError("The equipment type's system must match the equipment's system.")
+            elif personal_equipment_type_system != data['system']:
+                raise serializers.ValidationError("The personal equipment type's system must match the equipment's system.")
 
         return data
     
