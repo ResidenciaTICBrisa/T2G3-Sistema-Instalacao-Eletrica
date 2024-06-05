@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_request_model.dart';
 import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_service.dart';
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_response_model.dart';
 
 class ImageData {
   File imageFile;
@@ -43,14 +44,30 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   String? _selectedType;
   String? _selectedTypeToDelete;
   String? _selectedfireAlarmType;
+  String? _newEquipmentTypeName;
 
   List<String> equipmentTypes = [];
-
   List<String> fireAlarmType = [
     'Sensor de Fumaça',
     'Sensor de Temperatura',
     'Acionadores',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEquipmentTypes();
+  }
+
+  Future<void> _fetchEquipmentTypes() async {
+    FireAlarmEquipmentService service = FireAlarmEquipmentService();
+    List<FireAlarmEquipmentResponseModel> equipmentList =
+        await service.getAllEquipment(widget.categoryNumber);
+
+    setState(() {
+      equipmentTypes = equipmentList.map((e) => e.name).toList();
+    });
+  }
 
   @override
   void dispose() {
@@ -152,8 +169,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    _newEquipmentTypeName = typeController.text;
                   });
+                  _registerFireAlarmEquipment();
                   Navigator.of(context).pop();
                 }
               },
@@ -217,7 +235,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   void _showConfirmationDialog() {
     if (_equipmentQuantityController.text.isEmpty ||
-        (_selectedType == null && _selectedfireAlarmType == null)) {
+        (_selectedType == null &&
+            _selectedfireAlarmType == null &&
+            _newEquipmentTypeName == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -236,7 +256,10 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? _selectedfireAlarmType ?? ''),
+                Text(_selectedType ??
+                    _selectedfireAlarmType ??
+                    _newEquipmentTypeName ??
+                    ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -279,7 +302,6 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                _registerFireAlarmEquipment();
                 Navigator.pushReplacementNamed(
                   context,
                   '/listFireAlarms',
@@ -300,25 +322,37 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _registerFireAlarmEquipment() async {
-    int areaId = widget.areaId;
     int systemId = widget.categoryNumber;
-    int equipmentTypeId = 1;
-
     FireAlarmEquipmentRequestModel requestModel =
         FireAlarmEquipmentRequestModel(
-      photos: _images.map((imageData) => imageData.imageFile.path).toList(),
-      area: areaId,
       system: systemId,
-      equipmentType: equipmentTypeId,
+      name: _newEquipmentTypeName ?? '',
     );
 
     FireAlarmEquipmentService service = FireAlarmEquipmentService();
     int? id = await service.register(requestModel);
 
     if (id != null) {
-      print('Fire alarm equipment registered with ID: $id');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Equipamento de alarme de incêndio registrado com sucesso. ID: $id'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      setState(() {
+        equipmentTypes.add(_newEquipmentTypeName!);
+        _newEquipmentTypeName = null;
+      });
     } else {
-      print('Failed to register fire alarm equipment');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Falha ao registrar o equipamento de alarme de incêndio.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 

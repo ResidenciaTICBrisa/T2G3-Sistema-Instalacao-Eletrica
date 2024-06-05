@@ -1,31 +1,23 @@
 class FireAlarmEquipmentRequestModel {
-  List<String> photos;
-  int area;
-  int system;
-  int equipmentType;
+  String name;
+  int? system;
 
   FireAlarmEquipmentRequestModel({
-    required this.photos,
-    required this.area,
+    required this.name,
     required this.system,
-    required this.equipmentType,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'photos': photos,
-      'area': area,
+      'name': name,
       'system': system,
-      'equipmentType': equipmentType,
     };
   }
 
   factory FireAlarmEquipmentRequestModel.fromJson(Map<String, dynamic> json) {
     return FireAlarmEquipmentRequestModel(
-      photos: List<String>.from(json['photos'] ?? []),
-      area: json['area'],
+      name: json['name'],
       system: json['system'],
-      equipmentType: json['equipmentType'],
     );
   }
 }

@@ -38,10 +38,11 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
           switch (routeName) {
             case '/structuredCabling':
               return listStruturedCabling(
-                  areaName: areaName,
-                  localName: localName,
-                  localId: localId,
-                  categoryNumber: category);
+                areaName: areaName,
+                localName: localName,
+                localId: localId,
+                categoryNumber: category,
+              );
             case '/atmosphericDischarges':
               return listatmosphericEquipment(
                 areaName: areaName,

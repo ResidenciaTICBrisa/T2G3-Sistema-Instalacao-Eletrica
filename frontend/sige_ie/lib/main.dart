@@ -19,6 +19,7 @@ import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'core/feature/login/login.dart';
+//
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +29,6 @@ final cookieJar = CookieJar();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -296,6 +296,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
               if (areaName != null && localName != null && localId != null) {
