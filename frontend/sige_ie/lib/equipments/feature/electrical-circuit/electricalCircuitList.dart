@@ -7,6 +7,7 @@ class listCicuitEquipment extends StatelessWidget {
   final String localName;
   final int categoryNumber;
   final int localId;
+  final int areaId;
 
   const listCicuitEquipment({
     super.key,
@@ -14,6 +15,7 @@ class listCicuitEquipment extends StatelessWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   void navigateToAddEquipment(BuildContext context) {
@@ -51,7 +53,7 @@ class listCicuitEquipment extends StatelessWidget {
                 'areaName': areaName,
                 'localName': localName,
                 'localId': localId,
-                'categoryNumber': categoryNumber,
+                'areaId': areaId,
               },
             );
           },
