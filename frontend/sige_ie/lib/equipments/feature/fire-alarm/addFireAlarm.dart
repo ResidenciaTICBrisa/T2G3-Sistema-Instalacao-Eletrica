@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_request_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_service.dart';
 
 class ImageData {
   File imageFile;
@@ -276,7 +278,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               child: const Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
-                navigateToEquipmentScreen();
+                _registerFireAlarmEquipment();
               },
             ),
           ],
@@ -285,16 +287,27 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     );
   }
 
-  void navigateToEquipmentScreen() {
-    Navigator.of(context).pushNamed(
-      '/listFireAlarms',
-      arguments: {
-        'areaName': widget.areaName,
-        'localName': widget.localName,
-        'localId': widget.localId,
-        'categoryNumber': widget.categoryNumber,
-      },
+  void _registerFireAlarmEquipment() async {
+    int areaId = 1;
+    int systemId = widget.categoryNumber;
+    int equipmentTypeId = 1;
+
+    FireAlarmEquipmentRequestModel requestModel =
+        FireAlarmEquipmentRequestModel(
+      photos: _images.map((imageData) => imageData.imageFile.path).toList(),
+      area: areaId,
+      system: systemId,
+      equipmentType: equipmentTypeId,
     );
+
+    FireAlarmEquipmentService service = FireAlarmEquipmentService();
+    int? id = await service.register(requestModel);
+
+    if (id != null) {
+      print('Fire alarm equipment registered with ID: $id');
+    } else {
+      print('Failed to register fire alarm equipment');
+    }
   }
 
   @override
