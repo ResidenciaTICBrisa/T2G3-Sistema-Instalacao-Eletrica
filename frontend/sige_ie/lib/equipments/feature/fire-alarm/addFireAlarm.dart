@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_service.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire-alarm_response_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_request_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_service.dart';
+import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_response_model.dart';
 
 class ImageData {
   File imageFile;

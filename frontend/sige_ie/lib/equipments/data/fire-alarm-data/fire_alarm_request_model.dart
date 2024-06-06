@@ -1,8 +1,8 @@
-class IluminationRequestModel {
+class FireAlarmRequestModel {
   int? area;
   int? system;
 
-  IluminationRequestModel({
+  FireAlarmRequestModel({
     required this.area,
     required this.system,
   });
