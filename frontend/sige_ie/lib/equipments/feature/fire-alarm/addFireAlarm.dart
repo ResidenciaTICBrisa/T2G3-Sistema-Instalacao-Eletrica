@@ -5,9 +5,12 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_service.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_response_model.dart';
+import 'package:sige_ie/equipments/data/equipment-type/equipment_type_response_model.dart';
+import 'package:sige_ie/equipments/data/equipment-type/equipment_type_service.dart';
+import 'package:sige_ie/equipments/data/equipment_detail_service.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_service.dart';
+import 'package:sige_ie/equipments/data/mix-equipment-type/mix-equipment-type-service.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_service.dart';
 
 class ImageData {
   File imageFile;
@@ -41,6 +44,11 @@ class AddfireAlarm extends StatefulWidget {
 }
 
 class _AddEquipmentScreenState extends State<AddfireAlarm> {
+  EquipmentDetailService equipmentDetailService = EquipmentDetailService();
+  PersonalEquipmentTypeService personalEquipmentTypeService =
+      PersonalEquipmentTypeService();
+  EquipmentTypeService equipmentTypeService = EquipmentTypeService();
+  MixEquipmentTypeService mixEquipmentTypeService = MixEquipmentTypeService();
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
@@ -59,11 +67,17 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   Future<void> _fetchEquipmentTypes() async {
-    FireAlarmEquipmentService service = FireAlarmEquipmentService();
-    List<FireAlarmEquipmentResponseModel> equipmentList =
-        await service.getAllEquipmentBySystem(widget.categoryNumber);
-    List<FireAlarmEquipmentResponseModel> personalEquipmentList =
-        await service.getAllPersonalEquipmentBySystem(widget.categoryNumber);
+    List<EquipmentTypeResponseModel> equipmentTypeList =
+        await equipmentTypeService
+            .getAllEquipmentTypeBySystem(widget.categoryNumber);
+
+    List<EquipmentTypeResponseModel> personalEquipmentList =
+        await personalEquipmentTypeService
+            .getAllPersonalEquipmentBySystem(widget.categoryNumber);
+
+    List<EquipmentTypeResponseModel> equipmentList =
+        await mixEquipmentTypeService.getAllEquipmentBySystem(
+            widget.categoryNumber, equipmentTypeList, personalEquipmentList);
 
     setState(() {
       equipmentTypes = equipmentList.map((e) => e.name).toList();
@@ -211,8 +225,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
     int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
 
-    FireAlarmEquipmentService service = FireAlarmEquipmentService();
-    bool success = await service.deleteEquipment(equipmentId);
+    bool success = await personalEquipmentTypeService
+        .deletePersonalEquipmentType(equipmentId);
 
     if (success) {
       setState(() {
@@ -326,8 +340,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       name: _newEquipmentTypeName ?? '',
     );
 
-    FireAlarmEquipmentService service = FireAlarmEquipmentService();
-    int? id = await service.register(requestModel);
+    int? id = await equipmentDetailService.createFireAlarm(requestModel);
 
     if (id != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -356,40 +369,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   void _registerEquipmentDetail() async {
     FireAlarmEquipmentService service = FireAlarmEquipmentService();
-    String equipmentKey;
-    switch (widget.categoryNumber) {
-      case 1:
-        equipmentKey = 'ilumination_equipment';
-        break;
-      case 2:
-        equipmentKey = 'electrical_load_equipment';
-        break;
-      case 3:
-        equipmentKey = 'electrical_line_equipment';
-        break;
-      case 4:
-        equipmentKey = 'electrical_circuit_equipment';
-        break;
-      case 5:
-        equipmentKey = 'distribution_board_equipment';
-        break;
-      case 6:
-        equipmentKey = 'structured_cabling_equipment';
-        break;
-      case 7:
-        equipmentKey = 'atmospheric_discharge_equipment';
-        break;
-      case 8:
-        equipmentKey = 'fire_alarm_equipment';
-        break;
-      case 9:
-        equipmentKey = 'refrigeration_equipment';
-        break;
-      default:
-        equipmentKey = 'unknown';
-    }
 
-    Map<String, dynamic> equipmentDetail = {
+    Map<String, dynamic> fireAlarmEquipment = {
       'area': widget.areaId,
       'system': widget.categoryNumber,
     };
@@ -401,11 +382,11 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
           'description': imageData.description,
         };
       }).toList(),
-      equipmentKey: equipmentDetail,
+      'fire_alarm_equipment': fireAlarmEquipment,
       'equipmentType': _selectedTypeId,
     };
 
-    bool success = await service.registerEquipmentDetail(requestPayload);
+    bool success = await equipmentDetailService.createFireAlarm(requestPayload);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(

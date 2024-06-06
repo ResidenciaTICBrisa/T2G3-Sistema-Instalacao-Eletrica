@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
-import 'package:sige_ie/equipments/data/cooling-data/cooling_request_model.dart';
+import 'package:sige_ie/equipments/data/cooling/cooling_request_model.dart';
 import 'package:sige_ie/main.dart';
 
 class CoolingEquipmentService {

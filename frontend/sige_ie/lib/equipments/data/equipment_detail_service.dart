@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_equipment_detail_request_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_equipment_detail_request_model.dart';
 import 'package:sige_ie/main.dart';
 
 class EquipmentDetailService {
@@ -11,7 +11,7 @@ class EquipmentDetailService {
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<int?> createFireAlarm(
+  Future<bool> createFireAlarm(
       FireAlarmEquipmentDetailRequestModel
           fireAlarmEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
@@ -29,15 +29,15 @@ class EquipmentDetailService {
       if (response.statusCode == 201) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         print('Request successful, received ID: ${responseData['id']}');
-        return responseData['id'];
+        return true;
       } else {
         print(
             'Failed to register fire alarm equipment: ${response.statusCode}');
-        return null;
+        return false;
       }
     } catch (e) {
       print('Error during register: $e');
-      return null;
+      return false;
     }
   }
 }

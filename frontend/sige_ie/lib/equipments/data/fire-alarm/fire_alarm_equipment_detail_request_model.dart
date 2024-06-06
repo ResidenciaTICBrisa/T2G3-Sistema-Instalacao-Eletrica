@@ -1,5 +1,5 @@
-import 'package:sige_ie/equipments/data/fire-alarm-data/fire_alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/photo-data/photo_request_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_request_model.dart';
+import 'package:sige_ie/equipments/data/photo/photo_request_model.dart';
 
 class FireAlarmEquipmentDetailRequestModel {
   int? equipmenteType;

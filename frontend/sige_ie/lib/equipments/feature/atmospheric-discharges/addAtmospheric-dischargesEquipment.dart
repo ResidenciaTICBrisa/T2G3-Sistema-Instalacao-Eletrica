@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/atmospheric-data/atmospheric_request_model.dart';
-import 'package:sige_ie/equipments/data/atmospheric-data/atmospheric_service.dart';
+import 'package:sige_ie/equipments/data/atmospheric/atmospheric_request_model.dart';
+import 'package:sige_ie/equipments/data/atmospheric/atmospheric_service.dart';
 
 class ImageData {
   File imageFile;
