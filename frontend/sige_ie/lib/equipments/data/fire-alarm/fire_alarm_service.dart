@@ -17,7 +17,7 @@ class FireAlarmEquipmentService {
         ...equipmentTypeList,
         ...personalEquipmentList,
       ];
-
+    try{
       print('Combined list length: ${combinedList.length}');
       return combinedList;
     } catch (e) {
@@ -26,26 +26,4 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<bool> registerEquipmentDetail(
-      Map<String, dynamic> requestPayload) async {
-    var url = Uri.parse('${baseUrl}equipment-details/');
-
-    try {
-      var response = await client.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(requestPayload),
-      );
-
-      if (response.statusCode == 201) {
-        return true;
-      } else {
-        print('Failed to register equipment detail: ${response.statusCode}');
-        return false;
-      }
-    } catch (e) {
-      print('Error during register equipment detail: $e');
-      return false;
-    }
-  }
 }

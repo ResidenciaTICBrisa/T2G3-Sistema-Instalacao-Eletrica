@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/equipments/data/equipment-type/equipment_type_response_model.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_request_model.dart';
 import 'package:sige_ie/main.dart';
 
 class PersonalEquipmentTypeService {
@@ -35,6 +36,36 @@ class PersonalEquipmentTypeService {
     } catch (e) {
       print('Error during get all personal equipment by system: $e');
       return [];
+    }
+  }
+
+  Future<int> createPersonalEquipmentType(
+      PersonalEquipmentTypeRequestModel
+          personalEquipmentTypeRequestModel) async {
+    var url = Uri.parse('${baseUrl}personal-equipment-types/');
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(personalEquipmentTypeRequestModel.toJson()),
+      );
+
+      print('Response status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        print('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        print(
+            'Failed to register fire alarm equipment: ${response.statusCode}');
+        return -1;
+      }
+    } catch (e) {
+      print('Error during register: $e');
+      return -1;
     }
   }
 

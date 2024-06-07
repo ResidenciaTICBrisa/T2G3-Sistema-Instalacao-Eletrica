@@ -8,9 +8,13 @@ import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/equipment-type/equipment_type_response_model.dart';
 import 'package:sige_ie/equipments/data/equipment-type/equipment_type_service.dart';
 import 'package:sige_ie/equipments/data/equipment_detail_service.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_equipment_detail_request_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_request_model.dart';
 import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_service.dart';
 import 'package:sige_ie/equipments/data/mix-equipment-type/mix-equipment-type-service.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_request_model.dart';
 import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_service.dart';
+import 'package:sige_ie/equipments/data/photo/photo_request_model.dart';
 
 class ImageData {
   File imageFile;
@@ -192,7 +196,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   setState(() {
                     _newEquipmentTypeName = typeController.text;
                   });
-                  _registerFireAlarmEquipment();
+                  _registerPersonalEquipmentType();
                   Navigator.of(context).pop();
                 }
               },
@@ -332,21 +336,19 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     );
   }
 
-  void _registerFireAlarmEquipment() async {
+  void _registerPersonalEquipmentType() async {
     int systemId = widget.categoryNumber;
-    FireAlarmEquipmentRequestModel requestModel =
-        FireAlarmEquipmentRequestModel(
-      system: systemId,
-      name: _newEquipmentTypeName ?? '',
-    );
+    PersonalEquipmentTypeRequestModel personalEquipmentTypeRequestModel =
+        PersonalEquipmentTypeRequestModel(
+            name: _newEquipmentTypeName ?? '', system: systemId);
 
-    int? id = await equipmentDetailService.createFireAlarm(requestModel);
+    int id = await personalEquipmentTypeService.createPersonalEquipmentType(personalEquipmentTypeRequestModel);
 
-    if (id != null) {
+    if (id != -1) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+       const SnackBar(
           content: Text(
-              'Equipamento de alarme de incêndio registrado com sucesso. ID: $id'),
+              'Equipamento de alarme de incêndio registrado com sucesso.'),
           backgroundColor: Colors.green,
         ),
       );
@@ -368,25 +370,25 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _registerEquipmentDetail() async {
-    FireAlarmEquipmentService service = FireAlarmEquipmentService();
+  
+    List<PhotoRequestModel> photos = _images.map((imageData) {
+      return PhotoRequestModel(
+          photo: base64Encode(imageData.imageFile.readAsBytesSync()),
+          description: imageData.description);
+    }).toList();
 
-    Map<String, dynamic> fireAlarmEquipment = {
-      'area': widget.areaId,
-      'system': widget.categoryNumber,
-    };
+    final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
+        area: _selectedTypeId, system: widget.categoryNumber);
 
-    Map<String, dynamic> requestPayload = {
-      'photos': _images.map((imageData) {
-        return {
-          'file': base64Encode(imageData.imageFile.readAsBytesSync()),
-          'description': imageData.description,
-        };
-      }).toList(),
-      'fire_alarm_equipment': fireAlarmEquipment,
-      'equipmentType': _selectedTypeId,
-    };
+    final FireAlarmEquipmentDetailRequestModel fireAlarmEquipmentDetail =
+        FireAlarmEquipmentDetailRequestModel(
+      equipmentType: _selectedTypeId,
+      fireAlarm: fireAlarmModel,
+      photos: photos,
+    );
 
-    bool success = await equipmentDetailService.createFireAlarm(requestPayload);
+    bool success =
+        await equipmentDetailService.createFireAlarm(fireAlarmEquipmentDetail);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
