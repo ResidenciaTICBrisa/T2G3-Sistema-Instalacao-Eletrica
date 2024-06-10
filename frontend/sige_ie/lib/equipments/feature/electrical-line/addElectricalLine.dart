@@ -38,11 +38,6 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
-  String? _selectElectricalType;
-
-  List<String> equipmentTypes = [
-    'Selecione um tipo de Linha Elétrica',
-  ];
 
   List<String> ElectricalType = [
     'Selecione o tipo de Linha Elétrica',
@@ -50,6 +45,8 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
     'Eletroduto',
     'Interuptor',
   ];
+
+  List<String> additionalTypes = [];
 
   @override
   void dispose() {
@@ -86,7 +83,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -100,25 +97,23 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -127,17 +122,17 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
     );
   }
 
-  void _addNewEquipmentType() {
+  void _addNewElectricalType() {
     TextEditingController typeController = TextEditingController();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Adicionar novo tipo de equipamento'),
+          title: const Text('Adicionar novo tipo de linha elétrica'),
           content: TextField(
             controller: typeController,
             decoration: const InputDecoration(
-                hintText: 'Digite o novo tipo de equipamento'),
+                hintText: 'Digite o novo tipo de linha elétrica'),
           ),
           actions: <Widget>[
             TextButton(
@@ -151,7 +146,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    additionalTypes.add(typeController.text);
                   });
                   Navigator.of(context).pop();
                 }
@@ -163,13 +158,13 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
     );
   }
 
-  void _deleteEquipmentType() {
+  void _deleteElectricalType() {
     if (_selectedTypeToDelete == null ||
-        _selectedTypeToDelete == 'Selecione um equipamento') {
+        _selectedTypeToDelete == 'Selecione um tipo de linha elétrica') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text('Selecione um tipo de equipamento válido para excluir.'),
+              Text('Selecione um tipo de linha elétrica válido para excluir.'),
         ),
       );
       return;
@@ -181,7 +176,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
         return AlertDialog(
           title: const Text('Confirmar exclusão'),
           content: Text(
-              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
+              'Tem certeza de que deseja excluir o tipo de linha elétrica "$_selectedTypeToDelete"?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -193,7 +188,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
+                  additionalTypes.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -206,8 +201,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentQuantityController.text.isEmpty ||
-        (_selectedType == null && _selectElectricalType == null)) {
+    if (_equipmentQuantityController.text.isEmpty || _selectedType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -226,7 +220,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? _selectElectricalType ?? ''),
+                Text(_selectedType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -293,6 +287,8 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> combinedTypes = ElectricalType + additionalTypes;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -329,37 +325,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de descarga atmosférica',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: ElectricalType,
-                    value: _selectElectricalType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectElectricalType = newValue;
-                        if (newValue == ElectricalType[0]) {
-                          _selectElectricalType = null;
-                        }
-                        if (_selectElectricalType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectElectricalType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de descargas atmosféricas',
+                  const Text('Tipos de linha elétrica',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -368,20 +334,14 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
+                          items: combinedTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
                             setState(() {
                               _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
-                                _selectElectricalType = null;
-                              }
                             });
                           },
-                          enabled: _selectElectricalType == null,
+                          enabled: true,
                         ),
                       ),
                       Expanded(
@@ -390,15 +350,24 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.add),
-                              onPressed: _addNewEquipmentType,
+                              onPressed: _addNewElectricalType,
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
+                                if (additionalTypes.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Nenhum tipo de linha elétrica adicionado para excluir.'),
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _selectedTypeToDelete = null;
+                                  });
+                                  _showDeleteDialog();
+                                }
                               },
                             ),
                           ],
@@ -511,33 +480,36 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Excluir tipo de equipamento'),
+          title: const Text('Excluir tipo de linha elétrica'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Selecione um equipamento para excluir:',
+                'Selecione um tipo de linha elétrica para excluir:',
                 textAlign: TextAlign.center,
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: additionalTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -553,7 +525,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               onPressed: () {
                 if (_selectedTypeToDelete != null) {
                   Navigator.of(context).pop();
-                  _deleteEquipmentType();
+                  _deleteElectricalType();
                 }
               },
             ),
