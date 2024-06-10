@@ -240,7 +240,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text('Falhaao registrar o equipamento de alarme de incêndio.'),
+              Text('Falha ao registrar o equipamento de alarme de incêndio.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -269,29 +269,53 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
     int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
 
-    bool success = await personalEquipmentTypeService
-        .deletePersonalEquipmentType(equipmentId);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content:
+              const Text('Tem certeza de que deseja excluir este equipamento?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Excluir'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                bool success = await personalEquipmentTypeService
+                    .deletePersonalEquipmentType(equipmentId);
 
-    if (success) {
-      setState(() {
-        personalEquipmentTypes.remove(_selectedTypeToDelete);
-        _selectedTypeToDelete = null;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Equipamento excluído com sucesso.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      _fetchEquipmentTypes(); // Refresh the list of equipment types after deletion
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Falha ao excluir o equipamento.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+                if (success) {
+                  setState(() {
+                    personalEquipmentTypes.remove(_selectedTypeToDelete);
+                    _selectedTypeToDelete = null;
+                    _fetchEquipmentTypes(); // Refresh the list of equipment types after deletion
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Equipamento excluído com sucesso.'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Falha ao excluir o equipamento.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showConfirmationDialog() {
