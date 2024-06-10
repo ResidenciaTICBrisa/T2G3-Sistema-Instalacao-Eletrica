@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
@@ -11,13 +10,13 @@ class FireAlarmEquipmentService {
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<List<EquipmentTypeResponseModel>> getAllEquipment(int systemId, equipmentTypeList, personalEquipmentList) async {
-  
-      List<EquipmentTypeResponseModel> combinedList = [
-        ...equipmentTypeList,
-        ...personalEquipmentList,
-      ];
-    try{
+  Future<List<EquipmentTypeResponseModel>> getAllEquipment(
+      int systemId, equipmentTypeList, personalEquipmentList) async {
+    List<EquipmentTypeResponseModel> combinedList = [
+      ...equipmentTypeList,
+      ...personalEquipmentList,
+    ];
+    try {
       print('Combined list length: ${combinedList.length}');
       return combinedList;
     } catch (e) {
@@ -25,5 +24,4 @@ class FireAlarmEquipmentService {
       return [];
     }
   }
-
 }

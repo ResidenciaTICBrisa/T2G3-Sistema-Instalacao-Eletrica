@@ -10,7 +10,6 @@ import 'package:sige_ie/equipments/data/equipment-type/equipment_type_service.da
 import 'package:sige_ie/equipments/data/equipment_detail_service.dart';
 import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_equipment_detail_request_model.dart';
 import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_service.dart';
 import 'package:sige_ie/equipments/data/mix-equipment-type/mix-equipment-type-service.dart';
 import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_request_model.dart';
 import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_service.dart';
@@ -196,7 +195,13 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   setState(() {
                     _newEquipmentTypeName = typeController.text;
                   });
-                  _registerPersonalEquipmentType();
+                  _registerPersonalEquipmentType().then((_) {
+                    setState(() {
+                      _selectedType = null; // Clear the selected type
+                      _selectedTypeId = null; // Clear the selected type ID
+                      _fetchEquipmentTypes(); // Refresh the list of equipment types
+                    });
+                  });
                   Navigator.of(context).pop();
                 }
               },
@@ -205,6 +210,41 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         );
       },
     );
+  }
+
+  Future<void> _registerPersonalEquipmentType() async {
+    int systemId = widget.categoryNumber;
+    PersonalEquipmentTypeRequestModel personalEquipmentTypeRequestModel =
+        PersonalEquipmentTypeRequestModel(
+            name: _newEquipmentTypeName ?? '', system: systemId);
+
+    int id = await personalEquipmentTypeService
+        .createPersonalEquipmentType(personalEquipmentTypeRequestModel);
+
+    if (id != -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Equipamento de alarme de incêndio registrado com sucesso.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      setState(() {
+        personalEquipmentTypes.add(_newEquipmentTypeName!);
+        personalEquipmentMap[_newEquipmentTypeName!] = id;
+        _newEquipmentTypeName = null;
+        _fetchEquipmentTypes(); // Refresh the list of equipment types
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Falhaao registrar o equipamento de alarme de incêndio.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _deleteEquipmentType() async {
@@ -243,6 +283,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
           backgroundColor: Colors.green,
         ),
       );
+      _fetchEquipmentTypes(); // Refresh the list of equipment types after deletion
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -336,41 +377,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     );
   }
 
-  void _registerPersonalEquipmentType() async {
-    int systemId = widget.categoryNumber;
-    PersonalEquipmentTypeRequestModel personalEquipmentTypeRequestModel =
-        PersonalEquipmentTypeRequestModel(
-            name: _newEquipmentTypeName ?? '', system: systemId);
-
-    int id = await personalEquipmentTypeService.createPersonalEquipmentType(personalEquipmentTypeRequestModel);
-
-    if (id != -1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-       const SnackBar(
-          content: Text(
-              'Equipamento de alarme de incêndio registrado com sucesso.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-
-      setState(() {
-        personalEquipmentTypes.add(_newEquipmentTypeName!);
-        personalEquipmentMap[_newEquipmentTypeName!] = id;
-        _newEquipmentTypeName = null;
-      });
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('Falha ao registrar o equipamento de alarme de incêndio.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
   void _registerEquipmentDetail() async {
-  
     List<PhotoRequestModel> photos = _images.map((imageData) {
       return PhotoRequestModel(
           photo: base64Encode(imageData.imageFile.readAsBytesSync()),
@@ -420,7 +427,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> combinedTypes = equipmentTypes + personalEquipmentTypes;
+    // Combine equipment types into a set to remove duplicates
+    Set<String> combinedTypesSet = {
+      ...equipmentTypes,
+      ...personalEquipmentTypes
+    };
+    List<String> combinedTypes = combinedTypesSet.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -697,7 +709,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first, style: TextStyle(color: Colors.grey)),
+        hint: Text(items.first, style: const TextStyle(color: Colors.grey)),
         value: value,
         isExpanded: true,
         underline: Container(),
