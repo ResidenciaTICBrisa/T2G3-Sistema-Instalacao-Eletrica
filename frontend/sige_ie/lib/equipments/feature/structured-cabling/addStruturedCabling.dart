@@ -41,14 +41,14 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
   String? _selectedTypeToDelete;
   String? _selectedstruturedType;
 
-  List<String> equipmentTypes = [
-    'Selecione o tipo de cabeamento estruturado',
-  ];
-
   List<String> struturedType = [
     'Selecione o tipo de cabeamento estruturado',
     'Eletroduto',
     'Eletrocalha',
+  ];
+
+  List<String> equipmentTypes = [
+    'Selecione o tipo de cabeamento estruturado',
   ];
 
   @override
@@ -87,7 +87,7 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -101,25 +101,23 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -339,76 +337,43 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: struturedType,
-                    value: _selectedstruturedType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedstruturedType = newValue;
-                        if (newValue == struturedType[0]) {
-                          _selectedstruturedType = null;
-                        }
-                        if (_selectedstruturedType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedstruturedType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de cabeamento',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: struturedType,
+                          value: _selectedstruturedType,
                           onChanged: (newValue) {
                             setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
+                              _selectedstruturedType = newValue;
+                              if (newValue == struturedType[0]) {
                                 _selectedstruturedType = null;
+                              }
+                              if (_selectedstruturedType != null) {
+                                _selectedType = null;
                               }
                             });
                           },
-                          enabled: _selectedstruturedType == null,
+                          enabled: _selectedType == null,
                         ),
                       ),
-                      Expanded(
-                        flex: 0,
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: _addNewEquipmentType,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
-                              },
-                            ),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: _addNewEquipmentType,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                _selectedTypeToDelete = null;
+                              });
+                              _showDeleteDialog();
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -416,7 +381,7 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        _selectedType = null;
+                        _selectedstruturedType = null;
                       });
                     },
                     child: const Text('Limpar seleção'),

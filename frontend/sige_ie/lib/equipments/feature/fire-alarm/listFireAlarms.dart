@@ -42,7 +42,6 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
         this.equipmentList = equipmentList;
         isLoading = false;
       });
-      print('DEU BOM');
     } catch (e) {
       print('Error fetching equipment list: $e');
       setState(() {

@@ -71,11 +71,15 @@ class listStruturedCabling extends StatelessWidget {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('$areaName - $systemTitle',
-                    style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightText)),
+                child: Text(
+                  '$areaName - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -96,9 +100,10 @@ class listStruturedCabling extends StatelessWidget {
                           child: Text(
                             'Você ainda não tem equipamentos',
                             style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                   const SizedBox(height: 40),
