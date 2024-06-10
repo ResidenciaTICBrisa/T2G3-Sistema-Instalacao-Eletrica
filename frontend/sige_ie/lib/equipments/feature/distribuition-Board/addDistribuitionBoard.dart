@@ -42,16 +42,14 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
   String? _selectedTypeToDelete;
   String? _selectedBoardType;
 
-  List<String> equipmentTypes = [
-    'Selecione um tipo de quadro',
-  ];
-
   List<String> boardType = [
     'Selecione o tipo de quadro',
     'quadro 1',
     'quadro 2',
     'quadro 3',
   ];
+
+  List<String> additionalTypes = [];
 
   @override
   void dispose() {
@@ -89,7 +87,7 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -103,25 +101,23 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -130,17 +126,17 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
     );
   }
 
-  void _addNewEquipmentType() {
+  void _addNewBoardType() {
     TextEditingController typeController = TextEditingController();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Adicionar novo tipo de equipamento'),
+          title: const Text('Adicionar novo tipo de quadro'),
           content: TextField(
             controller: typeController,
-            decoration: const InputDecoration(
-                hintText: 'Digite o novo tipo de equipamento'),
+            decoration:
+                const InputDecoration(hintText: 'Digite o novo tipo de quadro'),
           ),
           actions: <Widget>[
             TextButton(
@@ -154,7 +150,7 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    additionalTypes.add(typeController.text);
                   });
                   Navigator.of(context).pop();
                 }
@@ -166,13 +162,12 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
     );
   }
 
-  void _deleteEquipmentType() {
+  void _deleteBoardType() {
     if (_selectedTypeToDelete == null ||
-        _selectedTypeToDelete == 'Selecione um equipamento') {
+        _selectedTypeToDelete == 'Selecione um tipo de quadro') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:
-              Text('Selecione um tipo de equipamento válido para excluir.'),
+          content: Text('Selecione um tipo de quadro válido para excluir.'),
         ),
       );
       return;
@@ -184,7 +179,7 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
         return AlertDialog(
           title: const Text('Confirmar exclusão'),
           content: Text(
-              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
+              'Tem certeza de que deseja excluir o tipo de quadro "$_selectedTypeToDelete"?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -196,7 +191,7 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
+                  additionalTypes.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -307,6 +302,8 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> combinedTypes = boardType + additionalTypes;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -347,55 +344,27 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: boardType,
-                    value: _selectedBoardType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedBoardType = newValue;
-                        if (newValue == boardType[0]) {
-                          _selectedBoardType = null;
-                        }
-                        if (_selectedBoardType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedBoardType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de Quadros',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: ['Selecione o tipo de quadro'] + combinedTypes,
+                          value: _selectedBoardType ?? _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
-                                _selectedBoardType = null;
-                              }
-                            });
+                            if (newValue != 'Selecione o tipo de quadro') {
+                              setState(() {
+                                if (boardType.contains(newValue)) {
+                                  _selectedBoardType = newValue;
+                                  _selectedType = null;
+                                } else {
+                                  _selectedType = newValue;
+                                  _selectedBoardType = null;
+                                }
+                              });
+                            }
                           },
-                          enabled: _selectedBoardType == null,
+                          enabled: true,
                         ),
                       ),
                       Expanded(
@@ -404,15 +373,24 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.add),
-                              onPressed: _addNewEquipmentType,
+                              onPressed: _addNewBoardType,
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
+                                if (additionalTypes.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Nenhum tipo de quadro adicionado para excluir.'),
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _selectedTypeToDelete = null;
+                                  });
+                                  _showDeleteDialog();
+                                }
                               },
                             ),
                           ],
@@ -424,6 +402,7 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
                   TextButton(
                     onPressed: () {
                       setState(() {
+                        _selectedBoardType = null;
                         _selectedType = null;
                       });
                     },
@@ -561,33 +540,36 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Excluir tipo de equipamento'),
+          title: const Text('Excluir tipo de quadro'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Selecione um equipamento para excluir:',
+                'Selecione um tipo de quadro para excluir:',
                 textAlign: TextAlign.center,
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: additionalTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -603,7 +585,7 @@ class _AddEquipmentScreenState extends State<AddDistribuitionBoard> {
               onPressed: () {
                 if (_selectedTypeToDelete != null) {
                   Navigator.of(context).pop();
-                  _deleteEquipmentType();
+                  _deleteBoardType();
                 }
               },
             ),
