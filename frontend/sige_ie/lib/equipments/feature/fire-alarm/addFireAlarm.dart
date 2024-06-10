@@ -56,12 +56,11 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   String? _selectedType;
   String? _selectedTypeToDelete;
   String? _newEquipmentTypeName;
-  int? _selectedTypeId; // ID of the selected type
+  int? _selectedTypeId;
 
   List<String> equipmentTypes = [];
   List<String> personalEquipmentTypes = [];
-  Map<String, int> personalEquipmentMap =
-      {}; // Map to store equipment name and ID
+  Map<String, int> personalEquipmentMap = {};
 
   @override
   void initState() {
@@ -128,7 +127,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -142,25 +141,23 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -197,9 +194,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   });
                   _registerPersonalEquipmentType().then((_) {
                     setState(() {
-                      _selectedType = null; // Clear the selected type
-                      _selectedTypeId = null; // Clear the selected type ID
-                      _fetchEquipmentTypes(); // Refresh the list of equipment types
+                      _selectedType = null;
+                      _selectedTypeId = null;
+                      _fetchEquipmentTypes();
                     });
                   });
                   Navigator.of(context).pop();
@@ -234,7 +231,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         personalEquipmentTypes.add(_newEquipmentTypeName!);
         personalEquipmentMap[_newEquipmentTypeName!] = id;
         _newEquipmentTypeName = null;
-        _fetchEquipmentTypes(); // Refresh the list of equipment types
+        _fetchEquipmentTypes();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -294,7 +291,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   setState(() {
                     personalEquipmentTypes.remove(_selectedTypeToDelete);
                     _selectedTypeToDelete = null;
-                    _fetchEquipmentTypes(); // Refresh the list of equipment types after deletion
+                    _fetchEquipmentTypes();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -380,19 +377,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Adicionar'),
               onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/listFireAlarms',
-                  arguments: {
-                    'areaName': widget.areaName,
-                    'categoryNumber': widget.categoryNumber,
-                    'localName': widget.localName,
-                    'localId': widget.localId,
-                    'areaId': widget.areaId,
-                  },
-                );
+                _registerEquipmentDetail();
               },
             ),
           ],
@@ -405,7 +392,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     List<PhotoRequestModel> photos = _images.map((imageData) {
       return PhotoRequestModel(
           photo: base64Encode(imageData.imageFile.readAsBytesSync()),
-          description: imageData.description);
+          description:
+              imageData.description.isNotEmpty ? imageData.description : '');
     }).toList();
 
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
@@ -451,7 +439,6 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   @override
   Widget build(BuildContext context) {
-    // Combine equipment types into a set to remove duplicates
     Set<String> combinedTypesSet = {
       ...equipmentTypes,
       ...personalEquipmentTypes
@@ -643,7 +630,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                               MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ))),
-                      onPressed: _registerEquipmentDetail,
+                      onPressed: _showConfirmationDialog,
                       child: const Text(
                         'ADICIONAR EQUIPAMENTO',
                         style: TextStyle(

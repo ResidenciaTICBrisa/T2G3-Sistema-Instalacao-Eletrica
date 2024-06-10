@@ -35,12 +35,20 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
   }
 
   Future<void> fetchEquipmentList() async {
-    final List<String> equipmentList =
-        await _service.getEquipmentListByArea(widget.areaId);
-    setState(() {
-      this.equipmentList = equipmentList;
-      isLoading = false;
-    });
+    try {
+      final List<String> equipmentList =
+          await _service.getEquipmentListByArea(widget.areaId);
+      setState(() {
+        this.equipmentList = equipmentList;
+        isLoading = false;
+      });
+      print('DEU BOM');
+    } catch (e) {
+      print('Error fetching equipment list: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void navigateToAddEquipment(BuildContext context) {
