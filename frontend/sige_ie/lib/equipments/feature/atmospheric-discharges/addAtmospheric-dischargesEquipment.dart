@@ -44,16 +44,14 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
   String? _selectedTypeToDelete;
   String? _selectDischargeType;
 
-  List<String> equipmentTypes = [
-    'Selecione um tipo de Descarga atmosféfica',
-  ];
-
   List<String> dischargeType = [
     'Selecione o tipo de Descarga Atmosféfica',
     'Para Raios',
     'Captação',
     'Subsistemas',
   ];
+
+  List<String> additionalTypes = [];
 
   @override
   void dispose() {
@@ -90,7 +88,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -104,25 +102,23 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -155,7 +151,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    additionalTypes.add(typeController.text);
                   });
                   Navigator.of(context).pop();
                 }
@@ -197,7 +193,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
+                  additionalTypes.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -318,7 +314,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> combinedTypes = dischargeType + equipmentTypes;
+    List<String> combinedTypes = dischargeType + additionalTypes;
 
     return Scaffold(
       appBar: AppBar(
@@ -375,8 +371,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: ['Selecione o tipo de descarga atmosférica'] +
-                              combinedTypes,
+                          items: combinedTypes,
                           value: _selectDischargeType ?? _selectedType,
                           onChanged: (newValue) {
                             if (newValue !=
@@ -406,7 +401,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                if (equipmentTypes.isEmpty) {
+                                if (additionalTypes.isEmpty) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text(
@@ -550,7 +545,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                         _selectedTypeToDelete = newValue;
                       });
                     },
-                    items: equipmentTypes
+                    items: additionalTypes
                         .map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
