@@ -44,14 +44,6 @@ class TeamsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text(
-                    'Lista de Equipes',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   ListView.builder(
                     shrinkWrap: true,
                     itemCount: teams.length,
