@@ -101,6 +101,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
               ),
               child: Center(
                 child: Text('${widget.areaName} - $systemTitle',
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

@@ -151,6 +151,7 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
                     equipmentTypes.add(typeController.text);
+                    struturedType.add(typeController.text); // Adicione aqui
                   });
                   Navigator.of(context).pop();
                 }
@@ -193,6 +194,7 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
               onPressed: () {
                 setState(() {
                   equipmentTypes.remove(_selectedTypeToDelete);
+                  struturedType.remove(_selectedTypeToDelete); // Adicione aqui
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -518,7 +520,7 @@ class _AddEquipmentScreenState extends State<AddstruturedCabling> {
                     _selectedTypeToDelete = newValue;
                   });
                 },
-                items: equipmentTypes
+                items: struturedType // Use struturedType aqui
                     .where((value) => value != 'Selecione um equipamento')
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
