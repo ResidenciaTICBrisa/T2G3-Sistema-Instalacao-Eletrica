@@ -72,6 +72,7 @@ class listIluminationEquipment extends StatelessWidget {
               ),
               child: Center(
                 child: Text('$areaName - $systemTitle',
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
