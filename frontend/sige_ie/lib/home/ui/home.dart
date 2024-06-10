@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sige_ie/Teams/teams.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import '../../users/feature/profile.dart';
 import '../../facilities/ui/facilities.dart';
@@ -61,6 +62,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               buildHomePage(context),
               const FacilitiesPage(),
+              const TeamsPage(),
               const MapsPage(),
               ProfilePage()
             ],
@@ -137,10 +139,6 @@ class _HomePageState extends State<HomePage> {
                         buildSmallRectangle(
                             context, 'Registrar novo local', 'Registrar', () {
                           Navigator.of(context).pushNamed('/newLocation');
-                        }),
-                        buildSmallRectangle(context, 'Equipes', 'Gerenciar',
-                            () {
-                          // Código aqui.
                         }),
                         const Spacer(),
                       ],
@@ -333,6 +331,10 @@ class _HomePageState extends State<HomePage> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.build, size: 35),
                 label: 'Instalações',
+                backgroundColor: Color(0xFFF1F60E)),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.group, size: 35),
+                label: 'Equipes',
                 backgroundColor: Color(0xFFF1F60E)),
             BottomNavigationBarItem(
                 icon: Icon(Icons.map, size: 35),
