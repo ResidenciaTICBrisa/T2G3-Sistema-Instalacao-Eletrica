@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_service.dart';
 import 'package:sige_ie/equipments/feature/fire-alarm/addFireAlarm.dart';
 
-class listFireAlarms extends StatelessWidget {
+class ListFireAlarms extends StatefulWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const listFireAlarms({
+  const ListFireAlarms({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -18,16 +19,40 @@ class listFireAlarms extends StatelessWidget {
     required this.areaId,
   });
 
+  @override
+  _ListFireAlarmsState createState() => _ListFireAlarmsState();
+}
+
+class _ListFireAlarmsState extends State<ListFireAlarms> {
+  List<String> equipmentList = [];
+  bool isLoading = true;
+  final FireAlarmEquipmentService _service = FireAlarmEquipmentService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEquipmentList();
+  }
+
+  Future<void> fetchEquipmentList() async {
+    final List<String> equipmentList =
+        await _service.getEquipmentListByArea(widget.areaId);
+    setState(() {
+      this.equipmentList = equipmentList;
+      isLoading = false;
+    });
+  }
+
   void navigateToAddEquipment(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddfireAlarm(
-          areaName: areaName,
-          categoryNumber: categoryNumber,
-          localName: localName,
-          localId: localId,
-          areaId: areaId,
+          areaName: widget.areaName,
+          categoryNumber: widget.categoryNumber,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
         ),
       ),
     );
@@ -35,10 +60,6 @@ class listFireAlarms extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> equipmentList = [
-      // Vazio para simular nenhum equipamento
-    ];
-
     String systemTitle = 'ALARME DE INCÊNDIO';
 
     return Scaffold(
@@ -51,10 +72,10 @@ class listFireAlarms extends StatelessWidget {
               context,
               '/systemLocation',
               arguments: {
-                'areaName': areaName,
-                'localName': localName,
-                'localId': localId,
-                'areaId': areaId,
+                'areaName': widget.areaName,
+                'localName': widget.localName,
+                'localId': widget.localId,
+                'areaId': widget.areaId,
               },
             );
           },
@@ -72,7 +93,7 @@ class listFireAlarms extends StatelessWidget {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('$areaName - $systemTitle',
+                child: Text('${widget.areaName} - $systemTitle',
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -85,23 +106,27 @@ class listFireAlarms extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  equipmentList.isNotEmpty
-                      ? Column(
-                          children: equipmentList.map((equipment) {
-                            return ListTile(
-                              title: Text(equipment),
-                            );
-                          }).toList(),
+                  isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
                         )
-                      : const Center(
-                          child: Text(
-                            'Você ainda não tem equipamentos',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
-                          ),
-                        ),
+                      : equipmentList.isNotEmpty
+                          ? Column(
+                              children: equipmentList.map((equipment) {
+                                return ListTile(
+                                  title: Text(equipment),
+                                );
+                              }).toList(),
+                            )
+                          : const Center(
+                              child: Text(
+                                'Você ainda não tem equipamentos',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54),
+                              ),
+                            ),
                   const SizedBox(height: 40),
                 ],
               ),

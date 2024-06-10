@@ -4,11 +4,11 @@ import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/fireAlarmList.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/listFireAlarms.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -53,7 +53,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaId: areaId,
               );
             case '/fireAlarm':
-              return listFireAlarms(
+              return ListFireAlarms(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
