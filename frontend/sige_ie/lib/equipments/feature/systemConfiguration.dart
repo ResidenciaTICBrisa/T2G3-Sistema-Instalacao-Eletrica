@@ -137,7 +137,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text(widget.areaName,
+                child: Text('$widget.areaId'
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

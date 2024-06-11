@@ -57,6 +57,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   String? _selectedTypeToDelete;
   String? _newEquipmentTypeName;
   int? _selectedTypeId;
+  int? _selectedPersonalEquipmentTypeId;
 
   List<String> equipmentTypes = [];
   List<String> personalEquipmentTypes = [];
@@ -397,11 +398,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     }).toList();
 
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
-        area: _selectedTypeId, system: widget.categoryNumber);
+        area: widget.areaId, system: widget.categoryNumber);
 
     final FireAlarmEquipmentDetailRequestModel fireAlarmEquipmentDetail =
         FireAlarmEquipmentDetailRequestModel(
       equipmentType: _selectedTypeId,
+      personalEquipmentType: _selectedPersonalEquipmentTypeId,
       fireAlarm: fireAlarmModel,
       photos: photos,
     );
@@ -508,7 +510,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                                 'Selecione o tipo de alarme de incêndio') {
                               setState(() {
                                 _selectedType = newValue;
-                                _selectedTypeId =
+                                _selectedPersonalEquipmentTypeId =
                                     personalEquipmentMap[newValue] ?? -1;
                               });
                             }
