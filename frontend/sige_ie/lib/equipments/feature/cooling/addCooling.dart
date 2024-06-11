@@ -16,40 +16,40 @@ class ImageData {
 List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
-class AddatmosphericEquipmentScreen extends StatefulWidget {
+class Addcooling extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
+  final int areaId;
 
-  const AddatmosphericEquipmentScreen({
+  const Addcooling({
     super.key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
+class _AddEquipmentScreenState extends State<Addcooling> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
-  String? _selectDischargeType;
+  String? _selectedCoolingType;
 
-  List<String> equipmentTypes = [
-    'Selecione um tipo de Descarga atmosféfica',
+  List<String> coolingTypes = [
+    'Selecione o tipo de refrigeração',
+    'Refrigeração1',
+    'Refrigeração2',
+    'Refrigeração3',
   ];
 
-  List<String> dischargeType = [
-    'Selecione o tipo de Descarga Atmosféfica',
-    'Para Raios',
-    'Captação',
-    'Subsistemas',
-  ];
+  List<String> additionalCoolingTypes = [];
 
   @override
   void dispose() {
@@ -86,7 +86,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -100,25 +100,23 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -127,17 +125,17 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
     );
   }
 
-  void _addNewEquipmentType() {
+  void _addNewCoolingType() {
     TextEditingController typeController = TextEditingController();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Adicionar novo tipo de equipamento'),
+          title: const Text('Adicionar novo tipo de refrigeração'),
           content: TextField(
             controller: typeController,
             decoration: const InputDecoration(
-                hintText: 'Digite o novo tipo de equipamento'),
+                hintText: 'Digite o novo tipo de refrigeração'),
           ),
           actions: <Widget>[
             TextButton(
@@ -151,7 +149,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    additionalCoolingTypes.add(typeController.text);
                   });
                   Navigator.of(context).pop();
                 }
@@ -163,13 +161,13 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
     );
   }
 
-  void _deleteEquipmentType() {
+  void _deleteCoolingType() {
     if (_selectedTypeToDelete == null ||
-        _selectedTypeToDelete == 'Selecione um equipamento') {
+        _selectedTypeToDelete == 'Selecione um tipo de refrigeração') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
-              Text('Selecione um tipo de equipamento válido para excluir.'),
+              Text('Selecione um tipo de refrigeração válido para excluir.'),
         ),
       );
       return;
@@ -181,7 +179,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
         return AlertDialog(
           title: const Text('Confirmar exclusão'),
           content: Text(
-              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
+              'Tem certeza de que deseja excluir o tipo de refrigeração "$_selectedTypeToDelete"?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -193,7 +191,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
+                  additionalCoolingTypes.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -207,7 +205,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
 
   void _showConfirmationDialog() {
     if (_equipmentQuantityController.text.isEmpty ||
-        (_selectedType == null && _selectDischargeType == null)) {
+        (_selectedType == null && _selectedCoolingType == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -226,7 +224,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? _selectDischargeType ?? ''),
+                Text(_selectedType ?? _selectedCoolingType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -281,18 +279,21 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
 
   void navigateToEquipmentScreen() {
     Navigator.of(context).pushNamed(
-      '/listatmosphericEquipment',
+      '/listCollingEquipment',
       arguments: {
         'areaName': widget.areaName,
         'localName': widget.localName,
         'localId': widget.localId,
         'categoryNumber': widget.categoryNumber,
+        'areaId': widget.areaId,
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    List<String> combinedTypes = coolingTypes + additionalCoolingTypes;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -329,37 +330,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de descarga atmosférica',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: dischargeType,
-                    value: _selectDischargeType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectDischargeType = newValue;
-                        if (newValue == dischargeType[0]) {
-                          _selectDischargeType = null;
-                        }
-                        if (_selectDischargeType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectDischargeType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de descargas atmosféricas',
+                  const Text('Tipos de refrigeração',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -368,20 +339,24 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: ['Selecione o tipo de refrigeração'] +
+                              combinedTypes,
+                          value: _selectedCoolingType ?? _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
-                                _selectDischargeType = null;
-                              }
-                            });
+                            if (newValue !=
+                                'Selecione o tipo de refrigeração') {
+                              setState(() {
+                                if (coolingTypes.contains(newValue)) {
+                                  _selectedCoolingType = newValue;
+                                  _selectedType = null;
+                                } else {
+                                  _selectedType = newValue;
+                                  _selectedCoolingType = null;
+                                }
+                              });
+                            }
                           },
-                          enabled: _selectDischargeType == null,
+                          enabled: true,
                         ),
                       ),
                       Expanded(
@@ -390,15 +365,24 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.add),
-                              onPressed: _addNewEquipmentType,
+                              onPressed: _addNewCoolingType,
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
+                                if (additionalCoolingTypes.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Nenhum tipo de refrigeração adicionado para excluir.'),
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _selectedTypeToDelete = null;
+                                  });
+                                  _showDeleteDialog();
+                                }
                               },
                             ),
                           ],
@@ -410,6 +394,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
                   TextButton(
                     onPressed: () {
                       setState(() {
+                        _selectedCoolingType = null;
                         _selectedType = null;
                       });
                     },
@@ -511,33 +496,36 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Excluir tipo de equipamento'),
+          title: const Text('Excluir tipo de refrigeração'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Selecione um equipamento para excluir:',
+                'Selecione um tipo de refrigeração para excluir:',
                 textAlign: TextAlign.center,
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: additionalCoolingTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -553,7 +541,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
               onPressed: () {
                 if (_selectedTypeToDelete != null) {
                   Navigator.of(context).pop();
-                  _deleteEquipmentType();
+                  _deleteCoolingType();
                 }
               },
             ),

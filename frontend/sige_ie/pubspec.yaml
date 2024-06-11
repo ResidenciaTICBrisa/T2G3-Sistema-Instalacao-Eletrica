@@ -42,8 +42,6 @@ dependencies:
     geolocator: ^9.0.2
     logger: ^1.0.0
 
-
-
 dev_dependencies:
     flutter_test:
         sdk: flutter
@@ -64,6 +62,7 @@ flutter:
         - assets/Loading.mp4
         - assets/1000x1000.png
         - assets/lighting.png
+        - assets/UNB.png
 
     # The following line ensures that the Material Icons font is
     # included with your application, so that you can use the icons in

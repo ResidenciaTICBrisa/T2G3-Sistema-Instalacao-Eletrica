@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/cooling/Addcooling.dart';
+import 'package:sige_ie/equipments/feature/cooling/addCooling.dart';
 
 class listCollingEquipment extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
+  final int areaId;
 
   const listCollingEquipment({
     super.key,
@@ -14,6 +15,7 @@ class listCollingEquipment extends StatelessWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   void navigateToAddEquipment(BuildContext context) {
@@ -25,6 +27,7 @@ class listCollingEquipment extends StatelessWidget {
           categoryNumber: categoryNumber,
           localName: localName,
           localId: localId,
+          areaId: areaId,
         ),
       ),
     );
@@ -51,7 +54,7 @@ class listCollingEquipment extends StatelessWidget {
                 'areaName': areaName,
                 'localName': localName,
                 'localId': localId,
-                'categoryNumber': categoryNumber,
+                'areaId': areaId,
               },
             );
           },
@@ -70,6 +73,7 @@ class listCollingEquipment extends StatelessWidget {
               ),
               child: Center(
                 child: Text('$areaName - $systemTitle',
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

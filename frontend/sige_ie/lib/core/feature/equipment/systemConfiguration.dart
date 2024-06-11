@@ -85,42 +85,70 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
-            SystemButton(
-                title: 'ALARME DE INCÊNDIO',
-                onPressed: () => navigateTo('/fireAlarm', widget.areaName,
-                    widget.localName, widget.localId, 8)),
-            SystemButton(
-                title: 'CABEAMENTO ESTRUTURADO',
-                onPressed: () => navigateTo('/structuredCabling',
-                    widget.areaName, widget.localName, widget.localId, 6)),
-            SystemButton(
-                title: 'CARGAS ELÉTRICAS',
-                onPressed: () => navigateTo('/electricLoads', widget.areaName,
-                    widget.localName, widget.localId, 2)),
-            SystemButton(
-                title: 'CIRCUITOS',
-                onPressed: () => navigateTo('/circuits', widget.areaName,
-                    widget.localName, widget.localId, 4)),
-            SystemButton(
-                title: 'DESCARGAS ATMOSFÉRICAS',
-                onPressed: () => navigateTo('/atmosphericDischarges',
-                    widget.areaName, widget.localName, widget.localId, 7)),
-            SystemButton(
-                title: 'ILUMINAÇÃO',
-                onPressed: () => navigateTo('/lighting', widget.areaName,
-                    widget.localName, widget.localId, 1)),
-            SystemButton(
-                title: 'LINHAS ELÉTRICAS',
-                onPressed: () => navigateTo('/electricLines', widget.areaName,
-                    widget.localName, widget.localId, 3)),
-            SystemButton(
-                title: 'QUADRO DE DISTRIBUIÇÃO',
-                onPressed: () => navigateTo('/distributionBoard',
-                    widget.areaName, widget.localName, widget.localId, 5)),
-            SystemButton(
-                title: 'REFRIGERAÇÃO',
-                onPressed: () => navigateTo('/cooling', widget.areaName,
-                    widget.localName, widget.localId, 9)),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 3,
+              childAspectRatio: 0.8, // Adjusted aspect ratio
+              padding: const EdgeInsets.all(10.0),
+              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 10.0,
+              children: <Widget>[
+                SystemIcon(
+                  icon: Icons.fire_extinguisher,
+                  label: 'ALARME DE INCÊNDIO',
+                  onPressed: () => navigateTo('/fireAlarm', widget.areaName,
+                      widget.localName, widget.localId, 8),
+                ),
+                SystemIcon(
+                  icon: Icons.cable,
+                  label: 'CABEAMENTO ESTRUTURADO',
+                  onPressed: () => navigateTo('/structuredCabling',
+                      widget.areaName, widget.localName, widget.localId, 6),
+                ),
+                SystemIcon(
+                  icon: Icons.electrical_services,
+                  label: 'CARGAS ELÉTRICAS',
+                  onPressed: () => navigateTo('/electricLoads', widget.areaName,
+                      widget.localName, widget.localId, 2),
+                ),
+                SystemIcon(
+                  icon: Icons.electrical_services,
+                  label: 'CIRCUITOS',
+                  onPressed: () => navigateTo('/circuits', widget.areaName,
+                      widget.localName, widget.localId, 4),
+                ),
+                SystemIcon(
+                  icon: Icons.bolt,
+                  label: 'DESCARGAS ATMOSFÉRICAS',
+                  onPressed: () => navigateTo('/atmosphericDischarges',
+                      widget.areaName, widget.localName, widget.localId, 7),
+                ),
+                SystemIcon(
+                  icon: Icons.lightbulb,
+                  label: 'ILUMINAÇÃO',
+                  onPressed: () => navigateTo('/lighting', widget.areaName,
+                      widget.localName, widget.localId, 1),
+                ),
+                SystemIcon(
+                  icon: Icons.power,
+                  label: 'LINHAS ELÉTRICAS',
+                  onPressed: () => navigateTo('/electricLines', widget.areaName,
+                      widget.localName, widget.localId, 3),
+                ),
+                SystemIcon(
+                  icon: Icons.dashboard,
+                  label: 'QUADRO DE DISTRIBUIÇÃO',
+                  onPressed: () => navigateTo('/distributionBoard',
+                      widget.areaName, widget.localName, widget.localId, 5),
+                ),
+                SystemIcon(
+                  icon: Icons.ac_unit,
+                  label: 'REFRIGERAÇÃO',
+                  onPressed: () => navigateTo('/cooling', widget.areaName,
+                      widget.localName, widget.localId, 9),
+                ),
+              ],
+            ),
             const SizedBox(
               height: 30,
             ),
@@ -189,37 +217,54 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
   }
 }
 
-class SystemButton extends StatelessWidget {
-  final String title;
+class SystemIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
   final VoidCallback onPressed;
 
-  const SystemButton({
+  const SystemIcon({
     super.key,
-    required this.title,
+    required this.icon,
+    required this.label,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      width: double.infinity,
-      child: ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(AppColors.sigeIeYellow),
-          foregroundColor: MaterialStateProperty.all(AppColors.sigeIeBlue),
-          padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(vertical: 25)),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          )),
-        ),
-        onPressed: onPressed,
-        child: Text(title,
-            style: const TextStyle(
+    return GestureDetector(
+      onTap: onPressed,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.sigeIeYellow,
+            ),
+            child: Icon(
+              icon,
+              size: 40.0,
+              color: AppColors.sigeIeBlue,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Flexible(
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
                 color: AppColors.sigeIeBlue,
-                fontSize: 18,
-                fontWeight: FontWeight.w900)),
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+              softWrap: true,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     );
   }

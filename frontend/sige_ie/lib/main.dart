@@ -8,7 +8,7 @@ import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/fireAlarmList.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/listFireAlarms.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
 import 'package:sige_ie/facilities/ui/facilities.dart';
 import 'package:sige_ie/home/ui/home.dart';
@@ -28,7 +28,6 @@ final cookieJar = CookieJar();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -86,17 +85,21 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              if (areaName != null && localName != null && localId != null) {
+              final int? areaId = args['areaId'];
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => SystemConfiguration(
                           areaName: areaName,
                           localName: localName,
                           localId: localId,
-                          categoryNumber: 0,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /systemLocation.');
+                    'Invalid arguments: One of areaName, localName, localId, or areaId is null in /systemLocation.');
               }
             }
             throw Exception(
@@ -109,14 +112,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listIluminationEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -133,14 +141,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listCicuitEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -157,14 +170,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listElectricalLineEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -181,14 +199,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listatmosphericEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -205,14 +228,19 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listDistribuitionBoard(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -228,23 +256,29 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+              final int? areaId = args['areaId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listFireAlarms(
-                          areaName: areaName,
-                          categoryNumber: categoryNumber,
-                          localName: localName,
-                          localId: localId,
-                        ));
+                  builder: (context) => ListFireAlarms(
+                    areaName: areaName,
+                    categoryNumber: categoryNumber,
+                    localName: localName,
+                    localId: localId,
+                    areaId: areaId,
+                  ),
+                );
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /listDistribuitionBoard.');
+                    'Invalid arguments: One of areaName, localName, localId, or areaId is null in /listFireAlarms.');
               }
             }
             throw Exception(
-                'Invalid route: Expected Map arguments for /listDistribuitionBoard.');
+                'Invalid route: Expected Map arguments for /listFireAlarms.');
 
           case '/listCollingEquipment':
             if (settings.arguments is Map) {
@@ -252,15 +286,20 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+              final int? areaId = args['areaId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listCollingEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
@@ -276,19 +315,25 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
+              final int? areaId = args['areaId'];
+
               final int categoryNumber = args['categoryNumber'] ?? 0;
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listStruturedCabling(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /listStruturedCabling.');
+                    'Invalid arguments: One of areaName, localName, ou localId is null in /listStruturedCabling.');
               }
             }
             throw Exception(
@@ -301,18 +346,23 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int? areaId = args['areaId'];
 
-              if (areaName != null && localName != null && localId != null) {
+              if (areaName != null &&
+                  localName != null &&
+                  localId != null &&
+                  areaId != null) {
                 return MaterialPageRoute(
                     builder: (context) => listelectricalLoadEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
                           localId: localId,
+                          areaId: areaId,
                         ));
               } else {
                 throw Exception(
-                    'Invalid arguments: One of areaName, localName, or localId is null in /electricalLineList.');
+                    'Invalid arguments: One of areaName, localName, ou localId is null in /electricalLineList.');
               }
             }
             throw Exception(

@@ -1,9 +1,19 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/equipment-type/equipment_type_response_model.dart';
+import 'package:sige_ie/equipments/data/equipment-type/equipment_type_service.dart';
+import 'package:sige_ie/equipments/data/equipment_detail_service.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_equipment_detail_request_model.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_request_model.dart';
+import 'package:sige_ie/equipments/data/mix-equipment-type/mix-equipment-type-service.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_request_model.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_service.dart';
+import 'package:sige_ie/equipments/data/photo/photo_request_model.dart';
 
 class ImageData {
   File imageFile;
@@ -21,6 +31,7 @@ class AddfireAlarm extends StatefulWidget {
   final String localName;
   final int localId;
   final int categoryNumber;
+  final int areaId;
 
   const AddfireAlarm({
     super.key,
@@ -28,6 +39,7 @@ class AddfireAlarm extends StatefulWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   @override
@@ -35,21 +47,51 @@ class AddfireAlarm extends StatefulWidget {
 }
 
 class _AddEquipmentScreenState extends State<AddfireAlarm> {
+  EquipmentDetailService equipmentDetailService = EquipmentDetailService();
+  PersonalEquipmentTypeService personalEquipmentTypeService =
+      PersonalEquipmentTypeService();
+  EquipmentTypeService equipmentTypeService = EquipmentTypeService();
+  MixEquipmentTypeService mixEquipmentTypeService = MixEquipmentTypeService();
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
-  String? _selectedfireAlarmType;
+  String? _newEquipmentTypeName;
+  int? _selectedTypeId;
+  int? _selectedPersonalEquipmentTypeId;
 
-  List<String> equipmentTypes = [
-    'Selecione o tipo de alarme incêndio',
-  ];
+  List<String> equipmentTypes = [];
+  List<String> personalEquipmentTypes = [];
+  Map<String, int> personalEquipmentMap = {};
 
-  List<String> fireAlarmType = [
-    'Selecione o tipo de alarme de incêndio',
-    'Sensor de Fumaça',
-    'Sensor de Temperatura',
-    'Acionadores',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchEquipmentTypes();
+  }
+
+  Future<void> _fetchEquipmentTypes() async {
+    List<EquipmentTypeResponseModel> equipmentTypeList =
+        await equipmentTypeService
+            .getAllEquipmentTypeBySystem(widget.categoryNumber);
+
+    List<EquipmentTypeResponseModel> personalEquipmentList =
+        await personalEquipmentTypeService
+            .getAllPersonalEquipmentBySystem(widget.categoryNumber);
+
+    List<EquipmentTypeResponseModel> equipmentList =
+        await mixEquipmentTypeService.getAllEquipmentBySystem(
+            widget.categoryNumber, equipmentTypeList, personalEquipmentList);
+
+    setState(() {
+      equipmentTypes = equipmentList.map((e) => e.name).toList();
+      personalEquipmentTypes =
+          personalEquipmentList.map((e) => e.name).toList();
+      personalEquipmentMap = {
+        for (var equipment in personalEquipmentList)
+          equipment.name: equipment.id
+      };
+    });
+  }
 
   @override
   void dispose() {
@@ -86,7 +128,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -100,25 +142,23 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -151,7 +191,14 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    _newEquipmentTypeName = typeController.text;
+                  });
+                  _registerPersonalEquipmentType().then((_) {
+                    setState(() {
+                      _selectedType = null;
+                      _selectedTypeId = null;
+                      _fetchEquipmentTypes();
+                    });
                   });
                   Navigator.of(context).pop();
                 }
@@ -163,9 +210,52 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     );
   }
 
-  void _deleteEquipmentType() {
-    if (_selectedTypeToDelete == null ||
-        _selectedTypeToDelete == 'Selecione um equipamento') {
+  Future<void> _registerPersonalEquipmentType() async {
+    int systemId = widget.categoryNumber;
+    PersonalEquipmentTypeRequestModel personalEquipmentTypeRequestModel =
+        PersonalEquipmentTypeRequestModel(
+            name: _newEquipmentTypeName ?? '', system: systemId);
+
+    int id = await personalEquipmentTypeService
+        .createPersonalEquipmentType(personalEquipmentTypeRequestModel);
+
+    if (id != -1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Equipamento de alarme de incêndio registrado com sucesso.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      setState(() {
+        personalEquipmentTypes.add(_newEquipmentTypeName!);
+        personalEquipmentMap[_newEquipmentTypeName!] = id;
+        _newEquipmentTypeName = null;
+        _fetchEquipmentTypes();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Falha ao registrar o equipamento de alarme de incêndio.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _deleteEquipmentType() async {
+    if (personalEquipmentTypes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não existem equipamentos pessoais a serem excluídos.'),
+        ),
+      );
+      return;
+    }
+
+    if (_selectedTypeToDelete == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -175,13 +265,15 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       return;
     }
 
+    int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmar exclusão'),
-          content: Text(
-              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
+          title: const Text('Confirmar Exclusão'),
+          content:
+              const Text('Tem certeza de que deseja excluir este equipamento?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -191,12 +283,31 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
             ),
             TextButton(
               child: const Text('Excluir'),
-              onPressed: () {
-                setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
-                  _selectedTypeToDelete = null;
-                });
+              onPressed: () async {
                 Navigator.of(context).pop();
+                bool success = await personalEquipmentTypeService
+                    .deletePersonalEquipmentType(equipmentId);
+
+                if (success) {
+                  setState(() {
+                    personalEquipmentTypes.remove(_selectedTypeToDelete);
+                    _selectedTypeToDelete = null;
+                    _fetchEquipmentTypes();
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Equipamento excluído com sucesso.'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Falha ao excluir o equipamento.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -207,7 +318,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   void _showConfirmationDialog() {
     if (_equipmentQuantityController.text.isEmpty ||
-        (_selectedType == null && _selectedfireAlarmType == null)) {
+        (_selectedType == null && _newEquipmentTypeName == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -226,7 +337,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? _selectedfireAlarmType ?? ''),
+                Text(_selectedType ?? _newEquipmentTypeName ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -267,10 +378,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: const Text('Adicionar'),
               onPressed: () {
-                Navigator.of(context).pop();
-                navigateToEquipmentScreen();
+                _registerEquipmentDetail();
               },
             ),
           ],
@@ -279,20 +389,64 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     );
   }
 
-  void navigateToEquipmentScreen() {
-    Navigator.of(context).pushNamed(
-      '/listFireAlarms',
-      arguments: {
-        'areaName': widget.areaName,
-        'localName': widget.localName,
-        'localId': widget.localId,
-        'categoryNumber': widget.categoryNumber,
-      },
+  void _registerEquipmentDetail() async {
+    List<PhotoRequestModel> photos = _images.map((imageData) {
+      return PhotoRequestModel(
+          photo: base64Encode(imageData.imageFile.readAsBytesSync()),
+          description:
+              imageData.description.isNotEmpty ? imageData.description : '');
+    }).toList();
+
+    final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
+        area: widget.areaId, system: widget.categoryNumber);
+
+    final FireAlarmEquipmentDetailRequestModel fireAlarmEquipmentDetail =
+        FireAlarmEquipmentDetailRequestModel(
+      equipmentType: _selectedTypeId,
+      personalEquipmentType: _selectedPersonalEquipmentTypeId,
+      fireAlarm: fireAlarmModel,
+      photos: photos,
     );
+
+    bool success =
+        await equipmentDetailService.createFireAlarm(fireAlarmEquipmentDetail);
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Detalhes do equipamento registrados com sucesso.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushReplacementNamed(
+        context,
+        '/listFireAlarms',
+        arguments: {
+          'areaName': widget.areaName,
+          'categoryNumber': widget.categoryNumber,
+          'localName': widget.localName,
+          'localId': widget.localId,
+          'areaId': widget.areaId,
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao registrar os detalhes do equipamento.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Set<String> combinedTypesSet = {
+      ...equipmentTypes,
+      ...personalEquipmentTypes
+    };
+    List<String> combinedTypes = combinedTypesSet.toList();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.sigeIeBlue,
@@ -300,7 +454,17 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.pushReplacementNamed(
+              context,
+              '/listFireAlarms',
+              arguments: {
+                'areaName': widget.areaName,
+                'categoryNumber': widget.categoryNumber,
+                'localName': widget.localName,
+                'localId': widget.localId,
+                'areaId': widget.areaId,
+              },
+            );
           },
         ),
       ),
@@ -333,55 +497,25 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: fireAlarmType,
-                    value: _selectedfireAlarmType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedfireAlarmType = newValue;
-                        if (newValue == fireAlarmType[0]) {
-                          _selectedfireAlarmType = null;
-                        }
-                        if (_selectedfireAlarmType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedfireAlarmType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de alarme de incêndio',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
+                          items: ['Selecione o tipo de alarme de incêndio'] +
+                              combinedTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
-                                _selectedfireAlarmType = null;
-                              }
-                            });
+                            if (newValue !=
+                                'Selecione o tipo de alarme de incêndio') {
+                              setState(() {
+                                _selectedType = newValue;
+                                _selectedPersonalEquipmentTypeId =
+                                    personalEquipmentMap[newValue] ?? -1;
+                              });
+                            }
                           },
-                          enabled: _selectedfireAlarmType == null,
+                          enabled: true,
                         ),
                       ),
                       Expanded(
@@ -395,10 +529,19 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                             IconButton(
                               icon: const Icon(Icons.delete),
                               onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
+                                if (personalEquipmentTypes.isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Não existem equipamentos pessoais a serem excluídos.'),
+                                    ),
+                                  );
+                                } else {
+                                  setState(() {
+                                    _selectedTypeToDelete = null;
+                                  });
+                                  _showDeleteDialog();
+                                }
                               },
                             ),
                           ],
@@ -519,25 +662,28 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                 'Selecione um equipamento para excluir:',
                 textAlign: TextAlign.center,
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
+              StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: personalEquipmentTypes
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      );
+                    }).toList(),
                   );
-                }).toList(),
+                },
               ),
             ],
           ),
@@ -576,7 +722,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first),
+        hint: Text(items.first, style: const TextStyle(color: Colors.grey)),
         value: value,
         isExpanded: true,
         underline: Container(),
@@ -584,10 +730,13 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         items: items.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
             value: value.isEmpty ? null : value,
+            enabled: value != 'Selecione o tipo de alarme de incêndio',
             child: Text(
               value,
               style: TextStyle(
-                color: enabled ? Colors.black : Colors.grey,
+                color: value == 'Selecione o tipo de alarme de incêndio'
+                    ? Colors.grey
+                    : Colors.black,
               ),
             ),
           );

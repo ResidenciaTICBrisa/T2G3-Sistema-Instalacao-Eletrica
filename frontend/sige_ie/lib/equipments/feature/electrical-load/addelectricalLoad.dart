@@ -92,7 +92,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -106,25 +106,23 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -157,6 +155,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
+                    loadTypes.add(typeController.text);
                     equipmentTypes.add(typeController.text);
                   });
                   Navigator.of(context).pop();
@@ -199,6 +198,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
+                  loadTypes.remove(_selectedTypeToDelete);
                   equipmentTypes.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
@@ -354,76 +354,43 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: loadTypes,
-                    value: _selectedLoadType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedLoadType = newValue;
-                        if (newValue == loadTypes[0]) {
-                          _selectedLoadType = null;
-                        }
-                        if (_selectedLoadType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectedLoadType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de Cargas',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: loadTypes,
+                          value: _selectedLoadType,
                           onChanged: (newValue) {
                             setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
+                              _selectedLoadType = newValue;
+                              if (newValue == loadTypes[0]) {
                                 _selectedLoadType = null;
+                              }
+                              if (_selectedLoadType != null) {
+                                _selectedType = null;
                               }
                             });
                           },
-                          enabled: _selectedLoadType == null,
+                          enabled: _selectedType == null,
                         ),
                       ),
-                      Expanded(
-                        flex: 0,
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: _addNewEquipmentType,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
-                              },
-                            ),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: _addNewEquipmentType,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                _selectedTypeToDelete = null;
+                              });
+                              _showDeleteDialog();
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -431,7 +398,7 @@ class _AddEquipmentScreenState extends State<AddelectricalLoadEquipmentScreen> {
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        _selectedType = null;
+                        _selectedLoadType = null;
                       });
                     },
                     child: const Text('Limpar seleção'),

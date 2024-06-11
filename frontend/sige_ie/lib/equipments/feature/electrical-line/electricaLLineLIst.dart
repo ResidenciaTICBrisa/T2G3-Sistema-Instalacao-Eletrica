@@ -7,6 +7,7 @@ class listElectricalLineEquipment extends StatelessWidget {
   final String localName;
   final int categoryNumber;
   final int localId;
+  final int areaId;
 
   const listElectricalLineEquipment({
     super.key,
@@ -14,6 +15,7 @@ class listElectricalLineEquipment extends StatelessWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   void navigateToAddEquipment(BuildContext context) {
@@ -51,7 +53,7 @@ class listElectricalLineEquipment extends StatelessWidget {
                 'areaName': areaName,
                 'localName': localName,
                 'localId': localId,
-                'categoryNumber': categoryNumber,
+                'areaId': areaId,
               },
             );
           },
@@ -70,6 +72,7 @@ class listElectricalLineEquipment extends StatelessWidget {
               ),
               child: Center(
                 child: Text('$areaName - $systemTitle',
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,

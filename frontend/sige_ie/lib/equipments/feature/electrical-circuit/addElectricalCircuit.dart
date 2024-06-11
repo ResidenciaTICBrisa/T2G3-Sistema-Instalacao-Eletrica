@@ -41,13 +41,8 @@ class _AddEquipmentScreenState
   final _breakerStateController = TextEditingController();
   final _wireTypeController = TextEditingController();
   final _dimensionController = TextEditingController();
-  String? _selectedType;
   String? _selectedTypeToDelete;
   String? _selectCircuitType;
-
-  List<String> equipmentTypes = [
-    'Selecione um tipo de Circuito Elétrico',
-  ];
 
   List<String> cicuitType = [
     'Selecione o tipo de Circuito Elétrico',
@@ -95,7 +90,7 @@ class _AddEquipmentScreenState
               TextField(
                 controller: descriptionController,
                 decoration: const InputDecoration(
-                    hintText: 'Digite a descrição da imagem'),
+                    hintText: 'Digite a descrição da imagem (opcional)'),
               ),
             ],
           ),
@@ -109,25 +104,23 @@ class _AddEquipmentScreenState
             TextButton(
               child: const Text('Salvar'),
               onPressed: () {
-                if (descriptionController.text.isNotEmpty) {
-                  setState(() {
-                    if (existingImage != null) {
-                      existingImage.description = descriptionController.text;
-                    } else {
-                      final imageData = ImageData(
-                        imageFile,
-                        descriptionController.text,
-                      );
-                      final categoryNumber = widget.categoryNumber;
-                      if (!categoryImagesMap.containsKey(categoryNumber)) {
-                        categoryImagesMap[categoryNumber] = [];
-                      }
-                      categoryImagesMap[categoryNumber]!.add(imageData);
-                      _images = categoryImagesMap[categoryNumber]!;
+                setState(() {
+                  if (existingImage != null) {
+                    existingImage.description = descriptionController.text;
+                  } else {
+                    final imageData = ImageData(
+                      imageFile,
+                      descriptionController.text,
+                    );
+                    final categoryNumber = widget.categoryNumber;
+                    if (!categoryImagesMap.containsKey(categoryNumber)) {
+                      categoryImagesMap[categoryNumber] = [];
                     }
-                  });
-                  Navigator.of(context).pop();
-                }
+                    categoryImagesMap[categoryNumber]!.add(imageData);
+                    _images = categoryImagesMap[categoryNumber]!;
+                  }
+                });
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -142,11 +135,11 @@ class _AddEquipmentScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Adicionar novo tipo de equipamento'),
+          title: const Text('Adicionar novo tipo de Circuito Elétrico'),
           content: TextField(
             controller: typeController,
             decoration: const InputDecoration(
-                hintText: 'Digite o novo tipo de equipamento'),
+                hintText: 'Digite o novo tipo de Circuito Elétrico'),
           ),
           actions: <Widget>[
             TextButton(
@@ -160,7 +153,7 @@ class _AddEquipmentScreenState
               onPressed: () {
                 if (typeController.text.isNotEmpty) {
                   setState(() {
-                    equipmentTypes.add(typeController.text);
+                    cicuitType.add(typeController.text);
                   });
                   Navigator.of(context).pop();
                 }
@@ -177,8 +170,8 @@ class _AddEquipmentScreenState
         _selectedTypeToDelete == 'Selecione um equipamento') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:
-              Text('Selecione um tipo de equipamento válido para excluir.'),
+          content: Text(
+              'Selecione um tipo de Circuito Elétrico válido para excluir.'),
         ),
       );
       return;
@@ -190,7 +183,7 @@ class _AddEquipmentScreenState
         return AlertDialog(
           title: const Text('Confirmar exclusão'),
           content: Text(
-              'Tem certeza de que deseja excluir o tipo de equipamento "$_selectedTypeToDelete"?'),
+              'Tem certeza de que deseja excluir o tipo de Circuito Elétrico "$_selectedTypeToDelete"?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -202,7 +195,7 @@ class _AddEquipmentScreenState
               child: const Text('Excluir'),
               onPressed: () {
                 setState(() {
-                  equipmentTypes.remove(_selectedTypeToDelete);
+                  cicuitType.remove(_selectedTypeToDelete);
                   _selectedTypeToDelete = null;
                 });
                 Navigator.of(context).pop();
@@ -216,7 +209,7 @@ class _AddEquipmentScreenState
 
   void _showConfirmationDialog() {
     if (_equipmentQuantityController.text.isEmpty ||
-        (_selectedType == null && _selectCircuitType == null)) {
+        _selectCircuitType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -235,7 +228,7 @@ class _AddEquipmentScreenState
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectedType ?? _selectCircuitType ?? ''),
+                Text(_selectCircuitType ?? ''),
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -355,37 +348,7 @@ class _AddEquipmentScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de Lâmpada',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  _buildStyledDropdown(
-                    items: cicuitType,
-                    value: _selectCircuitType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectCircuitType = newValue;
-                        if (newValue == cicuitType[0]) {
-                          _selectCircuitType = null;
-                        }
-                        if (_selectCircuitType != null) {
-                          _selectedType = null;
-                        }
-                      });
-                    },
-                    enabled: _selectedType == null,
-                  ),
-                  const SizedBox(height: 8),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        _selectCircuitType = null;
-                      });
-                    },
-                    child: const Text('Limpar seleção'),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Seus tipos de lâmpadas',
+                  const Text('Tipos de Circuito Elétrico',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -394,41 +357,35 @@ class _AddEquipmentScreenState
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: equipmentTypes,
-                          value: _selectedType,
+                          items: cicuitType,
+                          value: _selectCircuitType,
                           onChanged: (newValue) {
                             setState(() {
-                              _selectedType = newValue;
-                              if (newValue == equipmentTypes[0]) {
-                                _selectedType = null;
-                              }
-                              if (_selectedType != null) {
+                              _selectCircuitType = newValue;
+                              if (newValue == cicuitType[0]) {
                                 _selectCircuitType = null;
                               }
                             });
                           },
-                          enabled: _selectCircuitType == null,
+                          enabled: true,
                         ),
                       ),
-                      Expanded(
-                        flex: 0,
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: _addNewEquipmentType,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  _selectedTypeToDelete = null;
-                                });
-                                _showDeleteDialog();
-                              },
-                            ),
-                          ],
-                        ),
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: _addNewEquipmentType,
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                _selectedTypeToDelete = null;
+                              });
+                              _showDeleteDialog();
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -436,7 +393,7 @@ class _AddEquipmentScreenState
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        _selectedType = null;
+                        _selectCircuitType = null;
                       });
                     },
                     child: const Text('Limpar seleção'),
@@ -617,12 +574,12 @@ class _AddEquipmentScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Excluir tipo de equipamento'),
+          title: const Text('Excluir tipo de Circuito Elétrico'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Selecione um equipamento para excluir:',
+                'Selecione um tipo de Circuito Elétrico para excluir:',
                 textAlign: TextAlign.center,
               ),
               DropdownButton<String>(
@@ -633,8 +590,9 @@ class _AddEquipmentScreenState
                     _selectedTypeToDelete = newValue;
                   });
                 },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
+                items: cicuitType
+                    .where((value) =>
+                        value != 'Selecione um tipo de Circuito Elétrico')
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

@@ -7,6 +7,7 @@ class listStruturedCabling extends StatelessWidget {
   final String localName;
   final int categoryNumber;
   final int localId;
+  final int areaId;
 
   const listStruturedCabling({
     super.key,
@@ -14,6 +15,7 @@ class listStruturedCabling extends StatelessWidget {
     required this.categoryNumber,
     required this.localName,
     required this.localId,
+    required this.areaId,
   });
 
   void navigateToAddEquipment(BuildContext context) {
@@ -51,7 +53,7 @@ class listStruturedCabling extends StatelessWidget {
                 'areaName': areaName,
                 'localName': localName,
                 'localId': localId,
-                'categoryNumber': categoryNumber,
+                'areaId': areaId,
               },
             );
           },
@@ -69,11 +71,15 @@ class listStruturedCabling extends StatelessWidget {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('$areaName - $systemTitle',
-                    style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightText)),
+                child: Text(
+                  '$areaName - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -94,9 +100,10 @@ class listStruturedCabling extends StatelessWidget {
                           child: Text(
                             'Você ainda não tem equipamentos',
                             style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                   const SizedBox(height: 40),

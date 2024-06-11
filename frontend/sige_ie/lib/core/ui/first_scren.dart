@@ -6,12 +6,15 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff123c75),
+      backgroundColor: const Color(0xffe1e1e1),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Image.asset('assets/1000x1000.png'),
+            Image.asset('assets/UNB.png'),
+            const SizedBox(
+              height: 50,
+            ),
             ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/loginScreen');

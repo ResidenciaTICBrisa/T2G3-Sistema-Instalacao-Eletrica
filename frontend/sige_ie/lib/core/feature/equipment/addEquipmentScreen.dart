@@ -112,8 +112,7 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
   }
 
   void _deleteEquipmentType() {
-    if (_selectedTypeToDelete == null ||
-        _selectedTypeToDelete == 'Selecione um equipamento') {
+    if (_selectedTypeToDelete == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:
@@ -452,54 +451,62 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Excluir tipo de equipamento'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Selecione um equipamento para excluir:',
-                textAlign: TextAlign.center,
+        _selectedTypeToDelete = null; // Inicialize com null
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Excluir tipo de equipamento'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Selecione um equipamento para excluir:',
+                    textAlign: TextAlign.center,
+                  ),
+                  DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedTypeToDelete,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedTypeToDelete = newValue;
+                      });
+                    },
+                    items: [...equipmentTypes]
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                        enabled:
+                            value != 'Selecione um equipamento para deletar',
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
-              DropdownButton<String>(
-                isExpanded: true,
-                value: _selectedTypeToDelete,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedTypeToDelete = newValue;
-                  });
-                },
-                items: equipmentTypes
-                    .where((value) => value != 'Selecione um equipamento')
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Excluir'),
-              onPressed: () {
-                if (_selectedTypeToDelete != null) {
-                  Navigator.of(context).pop();
-                  _deleteEquipmentType();
-                }
-              },
-            ),
-          ],
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancelar'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Excluir'),
+                  onPressed: () {
+                    if (_selectedTypeToDelete != null &&
+                        _selectedTypeToDelete !=
+                            'Selecione um equipamento para deletar') {
+                      Navigator.of(context).pop();
+                      _deleteEquipmentType();
+                    }
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -529,7 +536,6 @@ class _AddEquipmentScreenState extends State<AddEquipmentScreen> {
               value,
               style: const TextStyle(color: Colors.black),
             ),
-            enabled: value != items.first,
           );
         }).toList(),
       ),
