@@ -23,7 +23,6 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
     permission_classes = [AllowAny]
@@ -86,7 +85,7 @@ class LogoutView(APIView):
     def post(self, request, format=None):
         logout(request)
         return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
-    
+
 class Email(APIView):
     permission_classes = []
 
@@ -105,8 +104,6 @@ class Email(APIView):
             return Response({'message': 'Email de redefinição de senha enviado'}, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'Usuário não encontrado'}, status=status.HTTP_404_NOT_FOUND)
-        
-
 
 class PasswordResetConfirmView(APIView):
     permission_classes = []

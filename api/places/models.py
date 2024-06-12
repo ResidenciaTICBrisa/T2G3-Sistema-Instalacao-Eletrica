@@ -1,6 +1,7 @@
+import uuid
 from django.db import models
 from django.core.validators import MinValueValidator
-from users.models import PlaceOwner
+from users.models import PlaceOwner, PlaceEditor
 
 class Place(models.Model):
 
@@ -9,6 +10,7 @@ class Place(models.Model):
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     photo = models.ImageField(null=True, upload_to='place_photos/')
+    editors = models.ManyToManyField(PlaceEditor, related_name='places')
 
     def __str__(self):
         return self.name

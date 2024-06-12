@@ -1,7 +1,7 @@
 # serializers.py
 from rest_framework import serializers, response
 from django.contrib.auth.models import User
-from .models import PlaceOwner
+from .models import PlaceOwner, PlaceEditor
 import re
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,6 +40,9 @@ class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(min_length=6, max_length=23, required=True)
     password = serializers.CharField(min_length=6, max_length=200, required=True)
 
+class UsernameSerializer(serializers.Serializer):
+    username = serializers.CharField(min_length=6, max_length=23, required=True)
+
 class UserUpdateSerializer(serializers.Serializer):
     first_name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
@@ -53,4 +56,9 @@ class UserUpdateSerializer(serializers.Serializer):
 class PlaceOwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlaceOwner
+        fields = ['id']
+
+class PlaceEditorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlaceEditor
         fields = ['id']
