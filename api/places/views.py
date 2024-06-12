@@ -1,12 +1,14 @@
 from django.shortcuts import render
-
-from users.models import PlaceOwner
+from rest_framework.views import APIView
+from django.contrib.auth.models import User
+from users.models import PlaceOwner, PlaceEditor
 from rest_framework import generics
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from places.permissions import IsPlaceOwner
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
@@ -23,6 +25,10 @@ class PlaceViewSet(viewsets.ModelViewSet):
             return user.placeowner
         except PlaceOwner.DoesNotExist:
             return PlaceOwner.objects.create(user=user)
+
+    def _has_permission(self, request, place):
+        place_owner = place.place_owner
+        return request.user == place_owner.user or place.editors.filter(user=request.user).exists()
 
     def create(self, request, *args, **kwargs):
         user = request.user
@@ -51,26 +57,22 @@ class PlaceViewSet(viewsets.ModelViewSet):
         return Response(place_serializer.data)
 
     def retrieve(self, request, pk=None):
-        place_owner_id = request.user.placeowner.id
-
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.id == place_owner_id:
+        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
             serializer = PlaceSerializer(place)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def update(self, request, pk=None):
-        place_owner_id = request.user.placeowner.id
-
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.id == place_owner_id:
+        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
             serializer = PlaceSerializer(place, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
         place_owner_id = request.user.placeowner.id
@@ -150,3 +152,27 @@ class AreaViewSet(viewsets.ModelViewSet):
             return Response({"message": "Area deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
+
+class GrantAccessViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated, IsPlaceOwner]
+
+    @action(detail=True, methods=['post'])
+    def grant_access(self, request, pk=None):
+        place = get_object_or_404(Place, pk=pk)
+        place_owner = place.place_owner
+
+        if request.user != place_owner.user:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+        username = request.data.get('username')
+
+        if not username:
+            return Response({'error': 'Username is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(User, username=username)
+
+        place_editor, created = PlaceEditor.objects.get_or_create(user=user)
+
+        place.editors.add(place_editor)
+
+        return Response({'message': 'Access granted successfully'}, status=status.HTTP_200_OK)
