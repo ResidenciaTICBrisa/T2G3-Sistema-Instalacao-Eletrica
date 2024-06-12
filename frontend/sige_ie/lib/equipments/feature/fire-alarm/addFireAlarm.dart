@@ -390,6 +390,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _registerEquipmentDetail() async {
+    print('areaId: ${widget.areaId}');
+    print('categoryNumber: ${widget.categoryNumber}');
+    print('_selectedType: $_selectedType');
+    print(
+        '_selectedPersonalEquipmentTypeId: $_selectedPersonalEquipmentTypeId');
+
     List<PhotoRequestModel> photos = _images.map((imageData) {
       return PhotoRequestModel(
           photo: base64Encode(imageData.imageFile.readAsBytesSync()),
