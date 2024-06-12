@@ -26,6 +26,10 @@ class PlaceViewSet(viewsets.ModelViewSet):
         except PlaceOwner.DoesNotExist:
             return PlaceOwner.objects.create(user=user)
 
+    def _has_permission(self, request, place):
+        place_owner = place.place_owner
+        return request.user == place_owner.user or place.editors.filter(user=request.user).exists()
+
     def create(self, request, *args, **kwargs):
         user = request.user
 
@@ -53,26 +57,22 @@ class PlaceViewSet(viewsets.ModelViewSet):
         return Response(place_serializer.data)
 
     def retrieve(self, request, pk=None):
-        place_owner_id = request.user.placeowner.id
-
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.id == place_owner_id:
+        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
             serializer = PlaceSerializer(place)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def update(self, request, pk=None):
-        place_owner_id = request.user.placeowner.id
-
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.id == place_owner_id:
+        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
             serializer = PlaceSerializer(place, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
         place_owner_id = request.user.placeowner.id
