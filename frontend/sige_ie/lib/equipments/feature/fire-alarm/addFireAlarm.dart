@@ -81,10 +81,10 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
     setState(() {
       equipmentTypes = equipmentTypeList
-          .map((e) => {'name': e.name, 'id': e.id, 'type': 0})
+          .map((e) => {'name': e.name, 'id': e.id, 'type': 'generico'})
           .toList();
       personalEquipmentTypes = personalEquipmentList
-          .map((e) => {'name': e.name, 'id': e.id, 'type': 1})
+          .map((e) => {'name': e.name, 'id': e.id, 'type': 'pessoal'})
           .toList();
       personalEquipmentMap = {
         for (var equipment in personalEquipmentList)
@@ -230,7 +230,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
       setState(() {
         personalEquipmentTypes
-            .add({'name': _newEquipmentTypeName!, 'id': id, 'type': 1});
+            .add({'name': _newEquipmentTypeName!, 'id': id, 'type': 'pessoal'});
         personalEquipmentMap[_newEquipmentTypeName!] = id;
         _newEquipmentTypeName = null;
         _fetchEquipmentTypes();
@@ -538,7 +538,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                                 Map<String, Object> selected =
                                     combinedTypes.firstWhere((element) =>
                                         element['name'] == newValue);
-                                _isPersonalTypeSelected = selected['type'] == 1;
+                                _isPersonalTypeSelected =
+                                    selected['type'] == 'pessoal';
                                 if (_isPersonalTypeSelected) {
                                   _selectedPersonalEquipmentTypeId =
                                       selected['id'] as int;

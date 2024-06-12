@@ -9,7 +9,7 @@ class FireAlarmRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'name': area,
+      'area': area,
       'system': system,
     };
   }
