@@ -3,16 +3,16 @@ from .models import *
 from .serializers import *
 from .mixins import ValidateAreaMixin
 
-class PersonalEquipmentTypeSerializer(serializers.ModelSerializer):
+class PersonalEquipmentCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = PersonalEquipmentType
+        model = PersonalEquipmentCategory
         fields = '__all__'
 
-class EquipmentTypeSerializer(serializers.ModelSerializer):
+class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = EquipmentType
+        model = GenericEquipmentCategory
         fields = '__all__'
 
 class EquipmentPhotoSerializer(serializers.ModelSerializer):
@@ -75,7 +75,7 @@ class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSeria
         model = RefrigerationEquipment
         fields = '__all__'    
 
-class EquipmentDetailSerializer(serializers.ModelSerializer):
+class EquipmentSerializer(serializers.ModelSerializer):
 
     photos = EquipmentPhotoSerializer(many=True, required=False)
 
@@ -90,7 +90,7 @@ class EquipmentDetailSerializer(serializers.ModelSerializer):
     refrigeration_equipment = RefrigerationEquipmentSerializer(required=False)
 
     class Meta:
-        model = EquipmentDetail
+        model = Equipment
         fields = '__all__'
         extra_kwargs = {'place_owner': {'read_only': True}}
     
@@ -110,28 +110,28 @@ class EquipmentDetailSerializer(serializers.ModelSerializer):
         ilumination_equipment_data = validated_data.pop('ilumination_equipment', None)
         refrigeration_equipment_data = validated_data.pop('refrigeration_equipment', None)
 
-        equipment_detail = EquipmentDetail.objects.create(**validated_data)
+        equipment = Equipment.objects.create(**validated_data)
 
         for photo_data in photos_data:
-            EquipmentPhoto.objects.create(equipment_detail=equipment_detail, **photo_data)
+            EquipmentPhoto.objects.create(equipment=equipment, **photo_data)
 
         if fire_alarm_data:
-            FireAlarmEquipment.objects.create(equipment_detail=equipment_detail, **fire_alarm_data)
+            FireAlarmEquipment.objects.create(equipment=equipment, **fire_alarm_data)
         elif atmospheric_discharge_data:
-            AtmosphericDischargeEquipment.objects.create(equipment_detail=equipment_detail, **atmospheric_discharge_data)
+            AtmosphericDischargeEquipment.objects.create(equipment=equipment, **atmospheric_discharge_data)
         elif structured_cabling_data:
-            StructuredCablingEquipment.objects.create(equipment_detail=equipment_detail, **structured_cabling_data)
+            StructuredCablingEquipment.objects.create(equipment=equipment, **structured_cabling_data)
         elif distribution_board_data:
-            DistributionBoardEquipment.objects.create(equipment_detail=equipment_detail, **distribution_board_data)
+            DistributionBoardEquipment.objects.create(equipment=equipment, **distribution_board_data)
         elif electrical_circuit_data:
-            ElectricalCircuitEquipment.objects.create(equipment_detail=equipment_detail, **electrical_circuit_data)
+            ElectricalCircuitEquipment.objects.create(equipment=equipment, **electrical_circuit_data)
         elif electrical_line_data:
-            ElectricalLineEquipment.objects.create(equipment_detail=equipment_detail, **electrical_line_data)
+            ElectricalLineEquipment.objects.create(equipment=equipment, **electrical_line_data)
         elif electrical_load_data:
-            ElectricalLoadEquipment.objects.create(equipment_detail=equipment_detail, **electrical_load_data)
+            ElectricalLoadEquipment.objects.create(equipment=equipment, **electrical_load_data)
         elif ilumination_equipment_data:
-            IluminationEquipment.objects.create(equipment_detail=equipment_detail, **ilumination_equipment_data)
+            IluminationEquipment.objects.create(equipment=equipment, **ilumination_equipment_data)
         elif refrigeration_equipment_data:
-            RefrigerationEquipment.objects.create(equipment_detail=equipment_detail, **refrigeration_equipment_data)
+            RefrigerationEquipment.objects.create(equipment=equipment, **refrigeration_equipment_data)
 
-        return equipment_detail
+        return equipment

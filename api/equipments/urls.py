@@ -2,14 +2,14 @@ from .views import *
 from django.urls import path
 
 urlpatterns = [
-    path('personal-equipment-types/', PersonalEquipmentTypeCreate.as_view(), name='personal_equipment_types'),
-    path('personal-equipment-types/by-system/<int:system_id>/', PersonalEquipmentTypeList.as_view(), name='personal_equipment_types_by_system'),
-    path('personal-equipment-types/<pk>/', PersonalEquipmentTypeDetail.as_view()),
-    path('equipment-types/by-system/<int:system_id>/', EquipmentTypeList.as_view(), name='personal_equipment_types_by_system'),
-    path('equipment-types/<pk>/', EquipmentTypeDetail.as_view()),
-    path('equipment-details/', EquipmentDetailCreate.as_view(), name='equipment-detail-create'),
-    path('equipment-details/', EquipmentDetailList.as_view()),
-    path('equipment-details/<pk>/', EquipmentDetailDetail.as_view()),
+    path('personal-equipment-types/', PersonalEquipmentCategoryCreate.as_view(), name='personal_equipment_category_create'),
+    path('personal-equipment-types/by-system/<int:system_id>/', PersonalEquipmentCategoryList.as_view(), name='personal_equipment_category_by_system'),
+    path('personal-equipment-types/<pk>/', PersonalEquipmentCategoryDetail.as_view()),
+    path('equipment-types/by-system/<int:system_id>/', GenericEquipmentCategoryList.as_view(), name='personal_equipment_types_by_system'),
+    path('equipment-types/<pk>/', GenericEquipmentCategoryDetail.as_view()),
+    path('equipment-details/', EquipmentCreate.as_view(), name='equipment-create'),
+    path('equipment-details/', EquipmentList.as_view()),
+    path('equipment-details/<pk>/', EquipmentDetail.as_view()),
     path('equipment-photos/', EquipmentPhotoList.as_view()),
     path('equipment-photos/<pk>/', EquipmentPhotoDetail.as_view()),
     path('refrigerations/', RefrigerationEquipmentList.as_view()),
