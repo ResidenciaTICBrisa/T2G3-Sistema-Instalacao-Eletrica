@@ -36,6 +36,7 @@ dependencies:
     cookie_jar: ^4.0.8
     http_interceptor: ^1.0.1
     image_picker: ^0.8.5
+    mime: ^1.0.0
     cupertino_icons: ^1.0.6
     get: ^4.6.5
     google_maps_flutter: ^2.0.6

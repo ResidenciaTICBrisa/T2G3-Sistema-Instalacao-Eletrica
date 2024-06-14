@@ -1,11 +1,11 @@
 import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/photo/photo_request_model.dart';
+import 'package:sige_ie/shared/data/equipment-photo/photo_request_model.dart';
 
 class FireAlarmEquipmentRequestModel {
   int? genericEquipmentCategory;
   int? personalEquipmentCategory;
   FireAlarmRequestModel? fireAlarm;
-  List<PhotoRequestModel>? photos;
+  List<EquipmentPhotoRequestModel>? photos;
 
   FireAlarmEquipmentRequestModel({
     required this.genericEquipmentCategory,

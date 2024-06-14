@@ -1,8 +1,8 @@
-class PhotoRequestModel {
+class EquipmentPhotoRequestModel {
   String photo;
   String description;
 
-  PhotoRequestModel({
+  EquipmentPhotoRequestModel({
     required this.photo,
     required this.description,
   });
