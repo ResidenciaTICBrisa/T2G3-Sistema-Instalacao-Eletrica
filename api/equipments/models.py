@@ -29,8 +29,8 @@ class GenericEquipmentCategory(models.Model):
 class Equipment(models.Model):
 
     place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
-    genericEquipmentCategory = models.ForeignKey(GenericEquipmentCategory, on_delete=models.CASCADE, null=True)
-    personalEquipmentCategory = models.ForeignKey(PersonalEquipmentCategory, on_delete=models.CASCADE, null=True)
+    generic_equipment_category = models.ForeignKey(GenericEquipmentCategory, on_delete=models.CASCADE, null=True)
+    personal_equipment_category = models.ForeignKey(PersonalEquipmentCategory, on_delete=models.CASCADE, null=True)
 
     class Meta:
         db_table = 'equipments_equipment_details'

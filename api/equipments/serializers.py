@@ -96,7 +96,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         request = self.context.get('request')
-        validated_data['place_owner'] = request.user.placeowner
+        validated_data['place_owner'] = request.user.place_owner
 
         photos_data = validated_data.pop('photos', [])
 

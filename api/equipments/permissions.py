@@ -16,7 +16,7 @@ class IsEquipmentOwner(BasePermission):
         else:
             return False
 
-class IsPlaceOwner(BasePermission):
+class IsAreaOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.area.place.place_owner == request.user.place_owner:
             return True
