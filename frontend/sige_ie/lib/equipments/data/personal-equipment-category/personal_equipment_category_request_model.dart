@@ -1,8 +1,8 @@
-class PersonalEquipmentTypeRequestModel {
+class PersonalEquipmentCategoryRequestModel {
   String name;
   int? system;
 
-  PersonalEquipmentTypeRequestModel({
+  PersonalEquipmentCategoryRequestModel({
     required this.name,
     required this.system,
   });

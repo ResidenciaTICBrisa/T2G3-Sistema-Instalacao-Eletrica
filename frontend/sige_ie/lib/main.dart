@@ -8,7 +8,7 @@ import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/listFireAlarms.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
 import 'package:sige_ie/facilities/ui/facilities.dart';
 import 'package:sige_ie/home/ui/home.dart';

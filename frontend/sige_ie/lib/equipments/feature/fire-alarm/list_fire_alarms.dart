@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_service.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/addFireAlarm.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/add_fire_alarm.dart';
 
 class ListFireAlarms extends StatefulWidget {
   final String areaName;
@@ -37,7 +37,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
   Future<void> fetchEquipmentList() async {
     try {
       final List<String> equipmentList =
-          await _service.getEquipmentListByArea(widget.areaId);
+          await _service.getFireAlarmListByArea(widget.areaId);
       setState(() {
         this.equipmentList = equipmentList;
         isLoading = false;

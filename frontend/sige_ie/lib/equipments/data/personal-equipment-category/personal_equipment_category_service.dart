@@ -2,18 +2,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
-import 'package:sige_ie/equipments/data/equipment-type/equipment_type_response_model.dart';
-import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_request_model.dart';
+import 'package:sige_ie/equipments/data/generic-equipment-category/generic_equipment_category_response_model.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-category/personal_equipment_category_request_model.dart';
 import 'package:sige_ie/main.dart';
 
-class PersonalEquipmentTypeService {
+class PersonalEquipmentCategoryService {
   final String baseUrl = 'http://10.0.2.2:8000/api/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<List<EquipmentTypeResponseModel>> getAllPersonalEquipmentBySystem(
-      int systemId) async {
+  Future<List<EquipmentCategoryResponseModel>>
+      getAllPersonalEquipmentCategoryBySystem(int systemId) async {
     var url =
         Uri.parse('${baseUrl}personal-equipment-types/by-system/$systemId/');
 
@@ -23,8 +23,8 @@ class PersonalEquipmentTypeService {
 
       if (response.statusCode == 200) {
         List<dynamic> responseData = jsonDecode(response.body);
-        List<EquipmentTypeResponseModel> equipmentList = responseData
-            .map((item) => EquipmentTypeResponseModel.fromJson(item))
+        List<EquipmentCategoryResponseModel> equipmentList = responseData
+            .map((item) => EquipmentCategoryResponseModel.fromJson(item))
             .toList();
         //print('Request successful, received ${equipmentList.length} items');
         return equipmentList;
@@ -39,8 +39,8 @@ class PersonalEquipmentTypeService {
     }
   }
 
-  Future<int> createPersonalEquipmentType(
-      PersonalEquipmentTypeRequestModel
+  Future<int> createPersonalEquipmentCategory(
+      PersonalEquipmentCategoryRequestModel
           personalEquipmentTypeRequestModel) async {
     var url = Uri.parse('${baseUrl}personal-equipment-types/');
 
@@ -69,7 +69,7 @@ class PersonalEquipmentTypeService {
     }
   }
 
-  Future<bool> deletePersonalEquipmentType(int id) async {
+  Future<bool> deletePersonalEquipmentCategory(int id) async {
     var url = Uri.parse('${baseUrl}personal-equipment-types/$id/');
 
     try {

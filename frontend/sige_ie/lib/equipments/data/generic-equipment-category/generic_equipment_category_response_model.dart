@@ -1,17 +1,16 @@
-class PersonalEquipmentTypeResponseModel {
+class EquipmentCategoryResponseModel {
   int id;
   String name;
   int system;
 
-  PersonalEquipmentTypeResponseModel({
+  EquipmentCategoryResponseModel({
     required this.id,
     required this.name,
     required this.system,
   });
 
-  factory PersonalEquipmentTypeResponseModel.fromJson(
-      Map<String, dynamic> json) {
-    return PersonalEquipmentTypeResponseModel(
+  factory EquipmentCategoryResponseModel.fromJson(Map<String, dynamic> json) {
+    return EquipmentCategoryResponseModel(
       id: json['id'],
       name: json['name'],
       system: json['system'],

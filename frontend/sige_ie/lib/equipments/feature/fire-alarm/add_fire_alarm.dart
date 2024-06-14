@@ -1,23 +1,21 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/equipment-type/equipment_type_response_model.dart';
-import 'package:sige_ie/equipments/data/equipment-type/equipment_type_service.dart';
-import 'package:sige_ie/equipments/data/equipment_detail_service.dart';
-import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_equipment_detail_request_model.dart';
+import 'package:sige_ie/equipments/data/generic-equipment-category/generic_equipment_category_response_model.dart';
+import 'package:sige_ie/equipments/data/generic-equipment-category/generic_equipment_category_service.dart';
+import 'package:sige_ie/equipments/data/equipment_service.dart';
+import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/fire-alarm/fire_alarm_request_model.dart';
-import 'package:sige_ie/equipments/data/mix-equipment-type/mix-equipment-type-service.dart';
-import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_request_model.dart';
-import 'package:sige_ie/equipments/data/personal-equipment-type/personal_equipment_type_service.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-category/personal_equipment_category_request_model.dart';
+import 'package:sige_ie/equipments/data/personal-equipment-category/personal_equipment_category_service.dart';
 import 'package:sige_ie/equipments/data/photo/photo_request_model.dart';
 
 class ImageData {
-  File imageFile;
   int id;
+  File imageFile;
   String description;
 
   ImageData(this.imageFile, this.description) : id = Random().nextInt(1000000);
@@ -47,47 +45,50 @@ class AddfireAlarm extends StatefulWidget {
 }
 
 class _AddEquipmentScreenState extends State<AddfireAlarm> {
-  EquipmentDetailService equipmentDetailService = EquipmentDetailService();
-  PersonalEquipmentTypeService personalEquipmentTypeService =
-      PersonalEquipmentTypeService();
-  EquipmentTypeService equipmentTypeService = EquipmentTypeService();
-  MixEquipmentTypeService mixEquipmentTypeService = MixEquipmentTypeService();
+  EquipmentService equipmentService = EquipmentService();
+
+  PersonalEquipmentCategoryService personalEquipmentCategoryService =
+      PersonalEquipmentCategoryService();
+
+  GenericEquipmentCategoryService genericEquipmentCategoryService =
+      GenericEquipmentCategoryService();
+
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
   String? _newEquipmentTypeName;
-  int? _selectedTypeId;
-  int? _selectedPersonalEquipmentTypeId;
-  bool _isPersonalTypeSelected = false;
+  int? _selectedGenericEquipmentCategoryId;
+  int? _selectedPersonalEquipmentCategoryId;
+  bool _isPersonalEquipmentCategorySelected = false;
 
-  List<Map<String, Object>> equipmentTypes = [];
+  List<Map<String, Object>> genericEquipmentTypes = [];
   List<Map<String, Object>> personalEquipmentTypes = [];
   Map<String, int> personalEquipmentMap = {};
 
   @override
   void initState() {
     super.initState();
-    _fetchEquipmentTypes();
+    _fetchEquipmentCategory();
   }
 
-  Future<void> _fetchEquipmentTypes() async {
-    List<EquipmentTypeResponseModel> equipmentTypeList =
-        await equipmentTypeService
-            .getAllEquipmentTypeBySystem(widget.categoryNumber);
+  Future<void> _fetchEquipmentCategory() async {
+    List<EquipmentCategoryResponseModel> genericEquipmentCategoryList =
+        await genericEquipmentCategoryService
+            .getAllGenericEquipmentCategoryBySystem(widget.categoryNumber);
 
-    List<EquipmentTypeResponseModel> personalEquipmentList =
-        await personalEquipmentTypeService
-            .getAllPersonalEquipmentBySystem(widget.categoryNumber);
+    List<EquipmentCategoryResponseModel> personalEquipmentCategoryList =
+        await personalEquipmentCategoryService
+            .getAllPersonalEquipmentCategoryBySystem(widget.categoryNumber);
 
     setState(() {
-      equipmentTypes = equipmentTypeList
-          .map((e) => {'name': e.name, 'id': e.id, 'type': 'generico'})
+      genericEquipmentTypes = genericEquipmentCategoryList
+          .map((e) => {'id': e.id, 'name': e.name, 'type': 'generico'})
           .toList();
-      personalEquipmentTypes = personalEquipmentList
-          .map((e) => {'name': e.name, 'id': e.id, 'type': 'pessoal'})
+      personalEquipmentTypes = personalEquipmentCategoryList
+          .map((e) => {'id': e.id, 'name': e.name, 'type': 'pessoal'})
           .toList();
       personalEquipmentMap = {
-        for (var equipment in personalEquipmentList)
+        for (var equipment in personalEquipmentCategoryList)
           equipment.name: equipment.id
       };
     });
@@ -196,8 +197,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                   _registerPersonalEquipmentType().then((_) {
                     setState(() {
                       _selectedType = null;
-                      _selectedTypeId = null;
-                      _fetchEquipmentTypes();
+                      _selectedGenericEquipmentCategoryId = null;
+                      _fetchEquipmentCategory();
                     });
                   });
                   Navigator.of(context).pop();
@@ -212,12 +213,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   Future<void> _registerPersonalEquipmentType() async {
     int systemId = widget.categoryNumber;
-    PersonalEquipmentTypeRequestModel personalEquipmentTypeRequestModel =
-        PersonalEquipmentTypeRequestModel(
+    PersonalEquipmentCategoryRequestModel personalEquipmentTypeRequestModel =
+        PersonalEquipmentCategoryRequestModel(
             name: _newEquipmentTypeName ?? '', system: systemId);
 
-    int id = await personalEquipmentTypeService
-        .createPersonalEquipmentType(personalEquipmentTypeRequestModel);
+    int id = await personalEquipmentCategoryService
+        .createPersonalEquipmentCategory(personalEquipmentTypeRequestModel);
 
     if (id != -1) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -233,7 +234,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
             .add({'name': _newEquipmentTypeName!, 'id': id, 'type': 'pessoal'});
         personalEquipmentMap[_newEquipmentTypeName!] = id;
         _newEquipmentTypeName = null;
-        _fetchEquipmentTypes();
+        _fetchEquipmentCategory();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -250,7 +251,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     if (personalEquipmentTypes.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Não existem equipamentos pessoais a serem excluídos.'),
+          content:
+              Text('Não existem categorias de equipamentos a serem excluídas.'),
         ),
       );
       return;
@@ -259,8 +261,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     if (_selectedTypeToDelete == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:
-              Text('Selecione um tipo de equipamento válido para excluir.'),
+          content: Text(
+              'Selecione uma categoria de equipamento válida para excluir.'),
         ),
       );
       return;
@@ -286,15 +288,15 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               child: const Text('Excluir'),
               onPressed: () async {
                 Navigator.of(context).pop();
-                bool success = await personalEquipmentTypeService
-                    .deletePersonalEquipmentType(equipmentId);
+                bool success = await personalEquipmentCategoryService
+                    .deletePersonalEquipmentCategory(equipmentId);
 
                 if (success) {
                   setState(() {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
-                    _fetchEquipmentTypes();
+                    _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -396,39 +398,39 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     print('categoryNumber: ${widget.categoryNumber}');
     print('_selectedType: $_selectedType');
     print(
-        '_selectedPersonalEquipmentTypeId: $_selectedPersonalEquipmentTypeId');
+        '_selectedPersonalEquipmentCategoryId: $_selectedPersonalEquipmentCategoryId');
 
     List<PhotoRequestModel> photos = _images.map((imageData) {
       return PhotoRequestModel(
-          photo: base64Encode(imageData.imageFile.readAsBytesSync()),
+          photo: imageData.imageFile.toString(),
           description:
               imageData.description.isNotEmpty ? imageData.description : '');
     }).toList();
 
-    int? equipmentType;
-    int? personalEquipmentType;
+    int? genericEquipmentCategory;
+    int? personalEquipmentCategory;
 
-    if (_isPersonalTypeSelected) {
-      equipmentType = null;
-      personalEquipmentType = _selectedPersonalEquipmentTypeId;
+    if (_isPersonalEquipmentCategorySelected) {
+      genericEquipmentCategory = null;
+      personalEquipmentCategory = _selectedPersonalEquipmentCategoryId;
     } else {
-      equipmentType = _selectedTypeId;
-      personalEquipmentType = null;
+      genericEquipmentCategory = _selectedGenericEquipmentCategoryId;
+      personalEquipmentCategory = null;
     }
 
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
         area: widget.areaId, system: widget.categoryNumber);
 
-    final FireAlarmEquipmentDetailRequestModel fireAlarmEquipmentDetail =
-        FireAlarmEquipmentDetailRequestModel(
-      equipmentType: equipmentType,
-      personalEquipmentType: personalEquipmentType,
+    final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
+        FireAlarmEquipmentRequestModel(
+      genericEquipmentCategory: genericEquipmentCategory,
+      personalEquipmentCategory: personalEquipmentCategory,
       fireAlarm: fireAlarmModel,
       photos: photos,
     );
 
     bool success =
-        await equipmentDetailService.createFireAlarm(fireAlarmEquipmentDetail);
+        await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -461,7 +463,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, Object>> combinedTypes = [
-      ...equipmentTypes,
+      ...genericEquipmentTypes,
       ...personalEquipmentTypes
     ];
 
@@ -538,15 +540,16 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                                 Map<String, Object> selected =
                                     combinedTypes.firstWhere((element) =>
                                         element['name'] == newValue);
-                                _isPersonalTypeSelected =
+                                _isPersonalEquipmentCategorySelected =
                                     selected['type'] == 'pessoal';
-                                if (_isPersonalTypeSelected) {
-                                  _selectedPersonalEquipmentTypeId =
+                                if (_isPersonalEquipmentCategorySelected) {
+                                  _selectedPersonalEquipmentCategoryId =
                                       selected['id'] as int;
-                                  _selectedTypeId = null;
+                                  _selectedGenericEquipmentCategoryId = null;
                                 } else {
-                                  _selectedTypeId = selected['id'] as int;
-                                  _selectedPersonalEquipmentTypeId = null;
+                                  _selectedGenericEquipmentCategoryId =
+                                      selected['id'] as int;
+                                  _selectedPersonalEquipmentCategoryId = null;
                                 }
                               });
                             }

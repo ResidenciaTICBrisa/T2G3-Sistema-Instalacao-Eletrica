@@ -8,7 +8,7 @@ import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/listFireAlarms.dart';
+import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
