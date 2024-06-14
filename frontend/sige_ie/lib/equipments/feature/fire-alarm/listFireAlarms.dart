@@ -100,7 +100,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('${widget.areaId} - {widget.areaName} - $systemTitle',
+                child: Text('${widget.areaName} - $systemTitle',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 26,

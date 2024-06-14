@@ -58,9 +58,10 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   String? _newEquipmentTypeName;
   int? _selectedTypeId;
   int? _selectedPersonalEquipmentTypeId;
+  bool _isPersonalTypeSelected = false;
 
-  List<String> equipmentTypes = [];
-  List<String> personalEquipmentTypes = [];
+  List<Map<String, Object>> equipmentTypes = [];
+  List<Map<String, Object>> personalEquipmentTypes = [];
   Map<String, int> personalEquipmentMap = {};
 
   @override
@@ -78,14 +79,13 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         await personalEquipmentTypeService
             .getAllPersonalEquipmentBySystem(widget.categoryNumber);
 
-    List<EquipmentTypeResponseModel> equipmentList =
-        await mixEquipmentTypeService.getAllEquipmentBySystem(
-            widget.categoryNumber, equipmentTypeList, personalEquipmentList);
-
     setState(() {
-      equipmentTypes = equipmentList.map((e) => e.name).toList();
-      personalEquipmentTypes =
-          personalEquipmentList.map((e) => e.name).toList();
+      equipmentTypes = equipmentTypeList
+          .map((e) => {'name': e.name, 'id': e.id, 'type': 'generico'})
+          .toList();
+      personalEquipmentTypes = personalEquipmentList
+          .map((e) => {'name': e.name, 'id': e.id, 'type': 'pessoal'})
+          .toList();
       personalEquipmentMap = {
         for (var equipment in personalEquipmentList)
           equipment.name: equipment.id
@@ -229,7 +229,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       );
 
       setState(() {
-        personalEquipmentTypes.add(_newEquipmentTypeName!);
+        personalEquipmentTypes
+            .add({'name': _newEquipmentTypeName!, 'id': id, 'type': 'pessoal'});
         personalEquipmentMap[_newEquipmentTypeName!] = id;
         _newEquipmentTypeName = null;
         _fetchEquipmentTypes();
@@ -290,7 +291,8 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
                 if (success) {
                   setState(() {
-                    personalEquipmentTypes.remove(_selectedTypeToDelete);
+                    personalEquipmentTypes.removeWhere(
+                        (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
                     _fetchEquipmentTypes();
                   });
@@ -390,6 +392,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _registerEquipmentDetail() async {
+    print('areaId: ${widget.areaId}');
+    print('categoryNumber: ${widget.categoryNumber}');
+    print('_selectedType: $_selectedType');
+    print(
+        '_selectedPersonalEquipmentTypeId: $_selectedPersonalEquipmentTypeId');
+
     List<PhotoRequestModel> photos = _images.map((imageData) {
       return PhotoRequestModel(
           photo: base64Encode(imageData.imageFile.readAsBytesSync()),
@@ -397,13 +405,24 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               imageData.description.isNotEmpty ? imageData.description : '');
     }).toList();
 
+    int? equipmentType;
+    int? personalEquipmentType;
+
+    if (_isPersonalTypeSelected) {
+      equipmentType = null;
+      personalEquipmentType = _selectedPersonalEquipmentTypeId;
+    } else {
+      equipmentType = _selectedTypeId;
+      personalEquipmentType = null;
+    }
+
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
         area: widget.areaId, system: widget.categoryNumber);
 
     final FireAlarmEquipmentDetailRequestModel fireAlarmEquipmentDetail =
         FireAlarmEquipmentDetailRequestModel(
-      equipmentType: _selectedTypeId,
-      personalEquipmentType: _selectedPersonalEquipmentTypeId,
+      equipmentType: equipmentType,
+      personalEquipmentType: personalEquipmentType,
       fireAlarm: fireAlarmModel,
       photos: photos,
     );
@@ -441,11 +460,10 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
 
   @override
   Widget build(BuildContext context) {
-    Set<String> combinedTypesSet = {
+    List<Map<String, Object>> combinedTypes = [
       ...equipmentTypes,
       ...personalEquipmentTypes
-    };
-    List<String> combinedTypes = combinedTypesSet.toList();
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -502,7 +520,14 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                       Expanded(
                         flex: 4,
                         child: _buildStyledDropdown(
-                          items: ['Selecione o tipo de alarme de incêndio'] +
+                          items: [
+                                {
+                                  'name':
+                                      'Selecione o tipo de alarme de incêndio',
+                                  'id': -1,
+                                  'type': -1
+                                }
+                              ] +
                               combinedTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
@@ -510,8 +535,19 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                                 'Selecione o tipo de alarme de incêndio') {
                               setState(() {
                                 _selectedType = newValue;
-                                _selectedPersonalEquipmentTypeId =
-                                    personalEquipmentMap[newValue] ?? -1;
+                                Map<String, Object> selected =
+                                    combinedTypes.firstWhere((element) =>
+                                        element['name'] == newValue);
+                                _isPersonalTypeSelected =
+                                    selected['type'] == 'pessoal';
+                                if (_isPersonalTypeSelected) {
+                                  _selectedPersonalEquipmentTypeId =
+                                      selected['id'] as int;
+                                  _selectedTypeId = null;
+                                } else {
+                                  _selectedTypeId = selected['id'] as int;
+                                  _selectedPersonalEquipmentTypeId = null;
+                                }
                               });
                             }
                           },
@@ -672,12 +708,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                         _selectedTypeToDelete = newValue;
                       });
                     },
-                    items: personalEquipmentTypes
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: personalEquipmentTypes.map<DropdownMenuItem<String>>(
+                        (Map<String, Object> value) {
                       return DropdownMenuItem<String>(
-                        value: value,
+                        value: value['name'] as String,
                         child: Text(
-                          value,
+                          value['name'] as String,
                           style: const TextStyle(color: Colors.black),
                         ),
                       );
@@ -710,7 +746,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   Widget _buildStyledDropdown({
-    required List<String> items,
+    required List<Map<String, Object>> items,
     String? value,
     required Function(String?) onChanged,
     bool enabled = true,
@@ -722,19 +758,20 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first, style: const TextStyle(color: Colors.grey)),
+        hint: Text(items.first['name'] as String,
+            style: const TextStyle(color: Colors.grey)),
         value: value,
         isExpanded: true,
         underline: Container(),
         onChanged: enabled ? onChanged : null,
-        items: items.map<DropdownMenuItem<String>>((String value) {
+        items: items.map<DropdownMenuItem<String>>((Map<String, Object> value) {
           return DropdownMenuItem<String>(
-            value: value.isEmpty ? null : value,
-            enabled: value != 'Selecione o tipo de alarme de incêndio',
+            value: value['name'] as String,
+            enabled: value['name'] != 'Selecione o tipo de alarme de incêndio',
             child: Text(
-              value,
+              value['name'] as String,
               style: TextStyle(
-                color: value == 'Selecione o tipo de alarme de incêndio'
+                color: value['name'] == 'Selecione o tipo de alarme de incêndio'
                     ? Colors.grey
                     : Colors.black,
               ),
