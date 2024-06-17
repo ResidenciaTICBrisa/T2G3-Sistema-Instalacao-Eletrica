@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
           case '/MapsPage':
             return MaterialPageRoute(builder: (context) => const MapsPage());
           case '/newLocation':
-            return MaterialPageRoute(builder: (context) => NewPlace());
+            return MaterialPageRoute(builder: (context) => const NewPlace());
           case '/arealocation':
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;

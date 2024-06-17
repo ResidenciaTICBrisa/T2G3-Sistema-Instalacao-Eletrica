@@ -323,7 +323,7 @@ class SystemIcon extends StatelessWidget {
           Container(
             width: 80,
             height: 80,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.sigeIeYellow,
             ),

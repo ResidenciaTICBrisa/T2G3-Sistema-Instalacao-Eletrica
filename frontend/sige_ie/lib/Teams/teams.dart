@@ -52,7 +52,7 @@ class TeamsPage extends StatelessWidget {
                       return Card(
                         child: ListTile(
                           leading:
-                              Icon(Icons.group, color: AppColors.sigeIeBlue),
+                              const Icon(Icons.group, color: AppColors.sigeIeBlue),
                           title: Text(team.name),
                           subtitle: Text('Membros: ${team.members.length}'),
                           onTap: () {

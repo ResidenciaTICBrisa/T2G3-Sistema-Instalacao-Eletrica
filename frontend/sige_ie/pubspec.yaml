@@ -37,11 +37,13 @@ dependencies:
     http_interceptor: ^1.0.1
     image_picker: ^0.8.5
     mime: ^1.0.0
+    http_parser: ^4.0.2
     cupertino_icons: ^1.0.6
     get: ^4.6.5
     google_maps_flutter: ^2.0.6
     geolocator: ^9.0.2
     logger: ^1.0.0
+    logging: ^1.2.0
 
 dev_dependencies:
     flutter_test:

@@ -595,7 +595,7 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first, style: TextStyle(color: Colors.grey)),
+        hint: Text(items.first, style: const TextStyle(color: Colors.grey)),
         value: value,
         isExpanded: true,
         underline: Container(),

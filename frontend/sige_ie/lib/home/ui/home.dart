@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
               const FacilitiesPage(),
               const TeamsPage(),
               const MapsPage(),
-              ProfilePage()
+              const ProfilePage()
             ],
           ),
         ],
