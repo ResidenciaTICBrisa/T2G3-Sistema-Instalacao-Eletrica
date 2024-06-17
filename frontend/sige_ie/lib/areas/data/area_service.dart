@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:logging/logging.dart';
 import 'package:sige_ie/areas/data/area_response_model.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/areas/data/area_request_model.dart';
 
 class AreaService {
+  final Logger _logger = Logger('AreaService');
   Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
@@ -64,8 +66,8 @@ class AreaService {
   Future<bool> updateArea(int areaId, AreaRequestModel areaRequestModel) async {
     var url = Uri.parse('$baseUrl$areaId/');
 
-    print('Sending PUT request to $url');
-    print('Request body: ${jsonEncode(areaRequestModel.toJson())}');
+    _logger.info('Sending PUT request to $url');
+    _logger.info('Request body: ${jsonEncode(areaRequestModel.toJson())}');
 
     var response = await client.put(
       url,
@@ -73,8 +75,8 @@ class AreaService {
       body: jsonEncode(areaRequestModel.toJson()),
     );
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    _logger.info('Response status: ${response.statusCode}');
+    _logger.info('Response body: ${response.body}');
 
     return response.statusCode == 200;
   }

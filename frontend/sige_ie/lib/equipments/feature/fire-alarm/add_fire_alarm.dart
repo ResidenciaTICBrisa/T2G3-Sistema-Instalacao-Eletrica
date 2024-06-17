@@ -1,11 +1,11 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/shared/data/equipment-photo/photo_request_model.dart';
+import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
+import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_service.dart';
 import 'package:sige_ie/equipments/data/equipment_service.dart';
@@ -47,6 +47,8 @@ class AddfireAlarm extends StatefulWidget {
 
 class _AddEquipmentScreenState extends State<AddfireAlarm> {
   EquipmentService equipmentService = EquipmentService();
+
+  EquipmentPhotoService equipmentPhotoService = EquipmentPhotoService();
 
   PersonalEquipmentCategoryService personalEquipmentCategoryService =
       PersonalEquipmentCategoryService();
@@ -401,15 +403,6 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     print(
         '_selectedPersonalEquipmentCategoryId: $_selectedPersonalEquipmentCategoryId');
 
-    List<EquipmentPhotoRequestModel> photos = _images.map((imageData) {
-      List<int> imageBytes = imageData.imageFile.readAsBytesSync();
-      String base64Image = base64Encode(imageBytes);
-      return EquipmentPhotoRequestModel(
-        photo: base64Image,
-        description: imageData.description,
-      );
-    }).toList();
-
     int? genericEquipmentCategory;
     int? personalEquipmentCategory;
 
@@ -428,14 +421,23 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         FireAlarmEquipmentRequestModel(
       genericEquipmentCategory: genericEquipmentCategory,
       personalEquipmentCategory: personalEquipmentCategory,
-      fireAlarm: fireAlarmModel,
-      photos: photos,
+      fireAlarmRequestModel: fireAlarmModel,
     );
 
-    bool success =
+    int? equipmentId =
         await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
 
-    if (success) {
+    if (equipmentId != null) {
+      await Future.wait(_images.map((imageData) async {
+        await equipmentPhotoService.createPhoto(
+          EquipmentPhotoRequestModel(
+            photo: imageData.imageFile,
+            description: imageData.description,
+            equipment: equipmentId,
+          ),
+        );
+      }));
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Detalhes do equipamento registrados com sucesso.'),
