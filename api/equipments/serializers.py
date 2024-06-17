@@ -1,3 +1,5 @@
+import base64
+from django.core.files.base import ContentFile
 from rest_framework import serializers
 from .models import *
 from .serializers import *
@@ -16,10 +18,23 @@ class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EquipmentPhotoSerializer(serializers.ModelSerializer):
+    photo = serializers.CharField(write_only=True)
 
     class Meta:
         model = EquipmentPhoto
         fields = '__all__'
+
+    def create(self, validated_data):
+        photo_data = validated_data.pop('photo')
+        try:
+            format, imgstr = photo_data.split(';base64,')
+            ext = format.split('/')[-1]
+            photo = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        except ValueError:
+            raise serializers.ValidationError("Invalid image data")
+
+        equipment_photo = EquipmentPhoto.objects.create(photo=photo, **validated_data)
+        return equipment_photo
 
 class FireAlarmEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
@@ -77,7 +92,7 @@ class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSeria
 
 class EquipmentSerializer(serializers.ModelSerializer):
 
-    photos = EquipmentPhotoSerializer(many=True, required=False)
+    #photos = EquipmentPhotoSerializer(many=True, required=False)
 
     fire_alarm_equipment = FireAlarmEquipmentSerializer(required=False)
     atmospheric_discharge_equipment = AtmosphericDischargeEquipmentSerializer(required=False)
@@ -98,7 +113,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         validated_data['place_owner'] = request.user.place_owner
 
-        photos_data = validated_data.pop('photos', [])
+       # photos_data = validated_data.pop('photos', [])
 
         fire_alarm_data = validated_data.pop('fire_alarm_equipment', None)
         atmospheric_discharge_data = validated_data.pop('atmospheric_discharge_equipment', None)
@@ -112,8 +127,8 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
         equipment = Equipment.objects.create(**validated_data)
 
-        for photo_data in photos_data:
-            EquipmentPhoto.objects.create(equipment=equipment, **photo_data)
+       # for photo_data in photos_data:
+        #    EquipmentPhoto.objects.create(equipment=equipment, **photo_data)
 
         if fire_alarm_data:
             FireAlarmEquipment.objects.create(equipment=equipment, **fire_alarm_data)
