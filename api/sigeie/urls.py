@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include('systems.urls')),
     path('auth/', include('rest_framework.urls')),
-    path('api/', include('equipments.urls'))
+    path('api/', include('equipments.urls')),
+    path('api/', include('places.urls'))
 ]
