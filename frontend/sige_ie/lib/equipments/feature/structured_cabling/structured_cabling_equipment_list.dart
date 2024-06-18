@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/structured-cabling/addStruturedCabling.dart';
+import 'package:sige_ie/equipments/feature/structured_cabling/add_structured_cabling.dart';
 
-class listStruturedCabling extends StatelessWidget {
+class ListStructuredCabling extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const listStruturedCabling({
+  const ListStructuredCabling({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -22,7 +22,7 @@ class listStruturedCabling extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddstruturedCabling(
+        builder: (context) => AddStructuredCabling(
           areaName: areaName,
           categoryNumber: categoryNumber,
           localName: localName,

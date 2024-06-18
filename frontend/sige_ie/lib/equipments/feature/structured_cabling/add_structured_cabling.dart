@@ -16,13 +16,13 @@ class ImageData {
 List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
-class AddstruturedCabling extends StatefulWidget {
+class AddStructuredCabling extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
 
-  const AddstruturedCabling({
+  const AddStructuredCabling({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -34,7 +34,7 @@ class AddstruturedCabling extends StatefulWidget {
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddEquipmentScreenState extends State<AddstruturedCabling> {
+class _AddEquipmentScreenState extends State<AddStructuredCabling> {
   final _equipmentchargeController = TextEditingController();
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;

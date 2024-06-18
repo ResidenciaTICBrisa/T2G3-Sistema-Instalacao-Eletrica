@@ -9,11 +9,11 @@ import 'package:sige_ie/equipments/feature/distribuition_board/distribuition_boa
 import 'package:sige_ie/equipments/feature/electrical_line/electrical_line_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_load/eletrical_load_list.dart';
 import 'package:sige_ie/equipments/feature/fire_alarm/list_fire_alarms.dart';
-import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/structured_cabling/structured_cabling_equipment_list.dart';
 import 'package:sige_ie/facilities/ui/facilities.dart';
 import 'package:sige_ie/home/ui/home.dart';
 import 'package:sige_ie/maps/feature/maps.dart';
-import 'package:sige_ie/equipments/feature/iluminations/Ilumination_equipment_list.dart';
+import 'package:sige_ie/equipments/feature/iluminations/ilumination_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/system_configuration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
@@ -324,7 +324,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listStruturedCabling(
+                    builder: (context) => ListStructuredCabling(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,

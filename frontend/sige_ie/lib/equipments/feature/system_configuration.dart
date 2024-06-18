@@ -4,10 +4,10 @@ import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/distribuition_board/distribuition_board_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_circuit/electrical_circuit_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_line/electrical_line_list.dart';
-import 'package:sige_ie/equipments/feature/iluminations/Ilumination_equipment_list.dart';
+import 'package:sige_ie/equipments/feature/iluminations/ilumination_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_load/eletrical_load_list.dart';
-import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/structured_cabling/structured_cabling_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/fire_alarm/list_fire_alarms.dart';
 
 class SystemConfiguration extends StatefulWidget {
@@ -37,7 +37,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
         builder: (context) {
           switch (routeName) {
             case '/structuredCabling':
-              return listStruturedCabling(
+              return ListStructuredCabling(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
