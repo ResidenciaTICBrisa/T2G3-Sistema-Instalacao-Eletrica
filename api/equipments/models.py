@@ -52,7 +52,7 @@ class EquipmentPhoto(models.Model):
 
 class FireAlarmEquipment(models.Model):
 
-   area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="firealarmequipment")
+   area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="fire_alarm_equipment")
    equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
    system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
 
@@ -60,7 +60,7 @@ class FireAlarmEquipment(models.Model):
        db_table = 'equipments_fire_alarm_equipments'
 
 class AtmosphericDischargeEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name= "AtmosphericDischargeEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name= "atmospheric_discharge_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=7)
 
@@ -68,7 +68,7 @@ class AtmosphericDischargeEquipment(models.Model):
         db_table = 'equipments_atmospheric_discharge_equipments'
 
 class StructuredCablingEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="StructuredCablingEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="structured_cabling_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=6)
     
@@ -76,7 +76,7 @@ class StructuredCablingEquipment(models.Model):
         db_table = 'equipments_structured_cabling_equipments'
 
 class DistributionBoardEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="DistributionBoardEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="distribution_board_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=5)
     
@@ -84,7 +84,7 @@ class DistributionBoardEquipment(models.Model):
         db_table = 'equipments_distribution_board_equipments'
 
 class ElectricalCircuitEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name='ElectricalCircuitEquipment')
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name='electrical_circuit_equipment')
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
     
@@ -92,7 +92,7 @@ class ElectricalCircuitEquipment(models.Model):
         db_table = 'equipments_electrical_circuit_equipments'
 
 class ElectricalLineEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="ElectricalLineEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="electrical_line_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=3)
     
@@ -100,7 +100,7 @@ class ElectricalLineEquipment(models.Model):
         db_table = 'equipments_electrical_line_equipments'
 
 class ElectricalLoadEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="ElectricalLoadEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="electrical_load_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
     
@@ -108,7 +108,7 @@ class ElectricalLoadEquipment(models.Model):
         db_table = 'equipments_electrical_load_equipments'
 
 class IluminationEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="IluminationEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="ilumination_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=1)
  
@@ -116,7 +116,7 @@ class IluminationEquipment(models.Model):
         db_table = 'equipments_ilumination_equipments'
 
 class RefrigerationEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="RefrigerationEquipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="refrigeration_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
     

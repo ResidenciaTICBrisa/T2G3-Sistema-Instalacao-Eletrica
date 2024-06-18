@@ -110,7 +110,7 @@ class RefrigerationEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
     
 class RefrigerationEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = RefrigerationEquipmentSerializer
+    serializer_class = RefrigerationEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -141,7 +141,7 @@ class FireAlarmEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class FireAlarmEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = FireAlarmEquipmentSerializer
+    serializer_class = FireAlarmEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -172,7 +172,7 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = AtmosphericDischargeEquipmentSerializer
+    serializer_class = AtmosphericDischargeEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -203,7 +203,7 @@ class StructuredCablingEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class StructuredCablingEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = StructuredCablingEquipmentSerializer
+    serializer_class = StructuredCablingEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -234,7 +234,7 @@ class DistributionBoardEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class DistributionBoardEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = DistributionBoardEquipmentSerializer
+    serializer_class = DistributionBoardEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -265,7 +265,7 @@ class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class ElectricalCircuitEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = ElectricalCircuitEquipmentSerializer
+    serializer_class = ElectricalCircuitEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -296,7 +296,7 @@ class ElectricalLineEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
     
 class ElectricalLineEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = ElectricalLineEquipmentSerializer
+    serializer_class = ElectricalLineEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -327,7 +327,7 @@ class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class ElectricalLoadEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = ElectricalLoadEquipmentSerializer
+    serializer_class = ElectricalLoadEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):
@@ -358,7 +358,7 @@ class IluminationEquipmentList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 
 class IluminationEquipmentByAreaList(generics.ListAPIView):
-    serializer_class = IluminationEquipmentSerializer
+    serializer_class = IluminationEquipmentResponseSerializer
     permission_classes = [IsAreaOwner, IsAuthenticated]
 
     def get_queryset(self):

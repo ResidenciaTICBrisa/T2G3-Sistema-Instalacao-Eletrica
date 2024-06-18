@@ -11,11 +11,31 @@ class PersonalEquipmentCategorySerializer(serializers.ModelSerializer):
         model = PersonalEquipmentCategory
         fields = '__all__'
 
+class PersonalEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PersonalEquipmentCategory
+        fields = ['name']
+
 class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GenericEquipmentCategory
         fields = '__all__'
+
+class GenericEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GenericEquipmentCategory
+        fields = ['name']
+
+class EquipmentResponseSerializer(serializers.ModelSerializer):
+    generic_equipment_category = serializers.CharField(source='generic_equipment_category.name', read_only=True)
+    personal_equipment_category = serializers.CharField(source='personal_equipment_category.name', read_only=True)
+
+    class Meta:
+        model = Equipment
+        fields = ['generic_equipment_category', 'personal_equipment_category']
 
 class EquipmentPhotoSerializer(serializers.ModelSerializer):
     photo = serializers.CharField(write_only=True)
@@ -42,11 +62,25 @@ class FireAlarmEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerialize
         model = FireAlarmEquipment
         fields = '__all__'
 
+class FireAlarmEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = FireAlarmEquipment
+        fields = ['id', 'area', 'equipment', 'system']
+
 class AtmosphericDischargeEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
     class Meta:
         model = AtmosphericDischargeEquipment
         fields = '__all__'
+
+class  AtmosphericDischargeEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = AtmosphericDischargeEquipment
+        fields = ['id', 'area', 'equipment', 'system']
 
 class StructuredCablingEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
@@ -54,11 +88,25 @@ class StructuredCablingEquipmentSerializer(ValidateAreaMixin, serializers.ModelS
         model = StructuredCablingEquipment
         fields = '__all__' 
 
+class StructuredCablingEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = StructuredCablingEquipment
+        fields = ['id', 'area', 'equipment', 'system']
+
 class DistributionBoardEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = DistributionBoardEquipment
         fields = '__all__'  
+
+class DistributionBoardEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = StructuredCablingEquipment
+        fields = ['id', 'area', 'equipment', 'system']
 
 class ElectricalCircuitEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
@@ -66,11 +114,25 @@ class ElectricalCircuitEquipmentSerializer(ValidateAreaMixin, serializers.ModelS
         model = ElectricalCircuitEquipment
         fields = '__all__'  
 
+class ElectricalCircuitEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = ElectricalCircuitEquipment
+        fields = ['id', 'area', 'equipment', 'system']
+
 class ElectricalLineEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = ElectricalLineEquipment
         fields = '__all__'   
+
+class ElectricalLineEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = ElectricalLineEquipment
+        fields = ['id', 'area', 'equipment', 'system']
 
 class ElectricalLoadEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
@@ -78,17 +140,38 @@ class ElectricalLoadEquipmentSerializer(ValidateAreaMixin, serializers.ModelSeri
         model = ElectricalLoadEquipment
         fields = '__all__'  
 
+class ElectricalLoadEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = ElectricalLoadEquipment
+        fields = ['id', 'area', 'equipment', 'system']
+
 class IluminationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = IluminationEquipment
-        fields = '__all__'    
+        fields = '__all__'   
+
+class IluminationEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = IluminationEquipment
+        fields = ['id', 'area', 'equipment', 'system']
 
 class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
      class Meta:
         model = RefrigerationEquipment
         fields = '__all__'    
+
+class RefrigerationEquipmentResponseSerializer(serializers.ModelSerializer):
+    equipment = EquipmentResponseSerializer()
+
+    class Meta:
+        model = RefrigerationEquipment
+        fields = ['id', 'area', 'equipment', 'system']
 
 class EquipmentSerializer(serializers.ModelSerializer):
 

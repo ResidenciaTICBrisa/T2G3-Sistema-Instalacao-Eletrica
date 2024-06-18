@@ -195,11 +195,8 @@ def genericOrPersonal(system):
                     else:
                         return system.equipment.personal_equipment_category
 
-
-
 class GeneratePDFView(APIView):
     permission_classes = [IsAuthenticated]
-    
 
     def get(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
@@ -210,70 +207,66 @@ class GeneratePDFView(APIView):
         p = canvas.Canvas(response, pagesize=A4)
         alt = Altura()  
 
-
         p.setFont('Helvetica-Bold', 16)
-
        
         p.drawString(205, alt.get_alt(p), f"Relatório do Local: {place.name}")
 
- 
         p.setFont('Helvetica-Bold', 14)
         p.drawString(100, alt.get_alt(p), "Áreas:")
 
-  
         for area in place.areas.all():
             p.setFont('Helvetica-Bold', 14)
             p.drawString(120, alt.get_alt(p), f"Relatório da Área: {area.name}")
 
-            for system in area.firealarmequipment.all():
+            for system in area.fire_alarm_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
             
-            for system in area.AtmosphericDischargeEquipment.all():
+            for system in area.atmospheric_discharge_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
             
-            for system in area.StructuredCablingEquipment.all():
+            for system in area.structured_cabling_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
             
-            for system in area.DistributionBoardEquipment.all():
+            for system in area.distribution_board_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
-            for system in area.ElectricalCircuitEquipment.all():
+            for system in area.electrical_circuit_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
             
-            for system in area.ElectricalLineEquipment.all():
+            for system in area.electrical_line_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
             
-            for system in area.ElectricalLoadEquipment.all():
+            for system in area.electrical_load_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
             
-            for system in area.IluminationEquipment.all():
+            for system in area.ilumination_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
-            for system in area.RefrigerationEquipment.all():
+            for system in area.refrigeration_equipment.all():
                 if(system == None):
                     break
                 p.setFont('Helvetica', 12)
