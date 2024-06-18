@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/iluminations/ilumination_service.dart';
 import 'package:sige_ie/equipments/feature/iluminations/add_ilumination_equipment.dart';
 
-class ListIluminationEquipment extends StatelessWidget {
+class ListIluminationEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
@@ -10,23 +11,60 @@ class ListIluminationEquipment extends StatelessWidget {
   final int areaId;
 
   const ListIluminationEquipment({
-    super.key,
+    Key? key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
     required this.areaId,
-  });
+  }) : super(key: key);
+
+  @override
+  _ListIluminationEquipmentState createState() =>
+      _ListIluminationEquipmentState();
+}
+
+class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
+  List<String> equipmentList = [];
+  bool isLoading = true;
+  final IluminationEquipmentService _service = IluminationEquipmentService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEquipmentList();
+  }
+
+  Future<void> fetchEquipmentList() async {
+    try {
+      final List<String> equipmentList =
+          await _service.getIluminationListByArea(widget.areaId);
+      if (mounted) {
+        setState(() {
+          this.equipmentList = equipmentList;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching equipment list: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   void navigateToAddEquipment(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddIluminationEquipmentScreen(
-          areaName: areaName,
-          categoryNumber: categoryNumber,
-          localName: localName,
-          localId: localId,
+          areaName: widget.areaName,
+          categoryNumber: widget.categoryNumber,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
         ),
       ),
     );
@@ -34,10 +72,6 @@ class ListIluminationEquipment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> equipmentList = [
-      // Vazio para simular nenhum equipamento
-    ];
-
     String systemTitle = 'ILUMINAÇÃO';
 
     return Scaffold(
@@ -50,10 +84,10 @@ class ListIluminationEquipment extends StatelessWidget {
               context,
               '/systemLocation',
               arguments: {
-                'areaName': areaName,
-                'localName': localName,
-                'localId': localId,
-                'areaId': areaId,
+                'areaName': widget.areaName,
+                'localName': widget.localName,
+                'localId': widget.localId,
+                'areaId': widget.areaId,
               },
             );
           },
@@ -71,7 +105,7 @@ class ListIluminationEquipment extends StatelessWidget {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('$areaName - $systemTitle',
+                child: Text('${widget.areaName} - $systemTitle',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 26,
@@ -85,23 +119,27 @@ class ListIluminationEquipment extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  equipmentList.isNotEmpty
-                      ? Column(
-                          children: equipmentList.map((equipment) {
-                            return ListTile(
-                              title: Text(equipment),
-                            );
-                          }).toList(),
+                  isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
                         )
-                      : const Center(
-                          child: Text(
-                            'Você ainda não tem equipamentos',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
-                          ),
-                        ),
+                      : equipmentList.isNotEmpty
+                          ? Column(
+                              children: equipmentList.map((equipment) {
+                                return ListTile(
+                                  title: Text(equipment),
+                                );
+                              }).toList(),
+                            )
+                          : const Center(
+                              child: Text(
+                                'Você ainda não tem equipamentos',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54),
+                              ),
+                            ),
                   const SizedBox(height: 40),
                 ],
               ),
