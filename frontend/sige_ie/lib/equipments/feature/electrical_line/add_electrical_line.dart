@@ -39,7 +39,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
   String? _selectedType;
   String? _selectedTypeToDelete;
 
-  List<String> ElectricalType = [
+  List<String> electricalType = [
     'Selecione o tipo de Linha Elétrica',
     'Eletrocalha',
     'Eletroduto',
@@ -287,7 +287,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> combinedTypes = ElectricalType + additionalTypes;
+    List<String> combinedTypes = electricalType + additionalTypes;
 
     return Scaffold(
       appBar: AppBar(

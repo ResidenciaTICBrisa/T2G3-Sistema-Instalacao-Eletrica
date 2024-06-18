@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/electrical-load/addelectricalLoad.dart';
+import 'package:sige_ie/equipments/feature/electrical_load/add_electrical_load.dart';
 
-class listelectricalLoadEquipment extends StatelessWidget {
+class ListElectricalLoadEquipment extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const listelectricalLoadEquipment({
+  const ListElectricalLoadEquipment({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -22,7 +22,7 @@ class listelectricalLoadEquipment extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddelectricalLoadEquipmentScreen(
+        builder: (context) => AddElectricalLoadEquipmentScreen(
           areaName: areaName,
           categoryNumber: categoryNumber,
           localName: localName,

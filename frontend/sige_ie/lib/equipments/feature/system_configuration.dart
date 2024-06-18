@@ -6,9 +6,9 @@ import 'package:sige_ie/equipments/feature/electrical_circuit/electrical_circuit
 import 'package:sige_ie/equipments/feature/electrical_line/electrical_line_list.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
-import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
+import 'package:sige_ie/equipments/feature/electrical_load/eletrical_load_list.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
+import 'package:sige_ie/equipments/feature/fire_alarm/list_fire_alarms.dart';
 
 class SystemConfiguration extends StatefulWidget {
   final String areaName;
@@ -61,7 +61,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaId: areaId,
               );
             case '/electricLoads':
-              return listelectricalLoadEquipment(
+              return ListElectricalLoadEquipment(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,

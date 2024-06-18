@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_service.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/add_fire_alarm.dart';
+import 'package:sige_ie/equipments/feature/fire_alarm/add_fire_alarm.dart';
 
 class ListFireAlarms extends StatefulWidget {
   final String areaName;
