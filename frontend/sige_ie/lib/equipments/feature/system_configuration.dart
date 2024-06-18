@@ -85,7 +85,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaId: areaId,
               );
             case '/distributionBoard':
-              return ListDistribuitionBoard(
+              return ListDistributionBoard(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
