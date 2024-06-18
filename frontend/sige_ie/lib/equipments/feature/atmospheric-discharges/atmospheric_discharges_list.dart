@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/atmospheric/atmospheric_service.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/add_atmospheric_discharges_equipment.dart';
 
-class ListAtmosphericEquipment extends StatelessWidget {
+class ListAtmosphericEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
@@ -10,24 +11,60 @@ class ListAtmosphericEquipment extends StatelessWidget {
   final int areaId;
 
   const ListAtmosphericEquipment({
-    super.key,
+    Key? key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
     required this.areaId,
-  });
+  }) : super(key: key);
+
+  @override
+  _ListAtmosphericEquipmentState createState() =>
+      _ListAtmosphericEquipmentState();
+}
+
+class _ListAtmosphericEquipmentState extends State<ListAtmosphericEquipment> {
+  List<String> equipmentList = [];
+  bool isLoading = true;
+  final AtmosphericEquipmentService _service = AtmosphericEquipmentService();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchEquipmentList();
+  }
+
+  Future<void> fetchEquipmentList() async {
+    try {
+      final List<String> equipmentList =
+          await _service.getAtmosphericListByArea(widget.areaId);
+      if (mounted) {
+        setState(() {
+          this.equipmentList = equipmentList;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching equipment list: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   void navigateToAddEquipment(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddatmosphericEquipmentScreen(
-          areaName: areaName,
-          categoryNumber: categoryNumber,
-          localName: localName,
-          localId: localId,
-          areaId: areaId,
+        builder: (context) => AddAtmosphericEquipmentScreen(
+          areaName: widget.areaName,
+          categoryNumber: widget.categoryNumber,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
         ),
       ),
     );
@@ -35,10 +72,6 @@ class ListAtmosphericEquipment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> equipmentList = [
-      // Vazio para simular nenhum equipamento
-    ];
-
     String systemTitle = 'DESCARGAS ATMOSFÉRICAS';
 
     return Scaffold(
@@ -51,11 +84,10 @@ class ListAtmosphericEquipment extends StatelessWidget {
               context,
               '/systemLocation',
               arguments: {
-                'areaName': areaName,
-                'localName': localName,
-                'localId': localId,
-                'areaId': areaId,
-                'categoryNumber': categoryNumber,
+                'areaName': widget.areaName,
+                'localName': widget.localName,
+                'localId': widget.localId,
+                'areaId': widget.areaId,
               },
             );
           },
@@ -73,12 +105,15 @@ class ListAtmosphericEquipment extends StatelessWidget {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('$areaName - $systemTitle',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightText)),
+                child: Text(
+                  '${widget.areaName} - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -87,23 +122,28 @@ class ListAtmosphericEquipment extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  equipmentList.isNotEmpty
-                      ? Column(
-                          children: equipmentList.map((equipment) {
-                            return ListTile(
-                              title: Text(equipment),
-                            );
-                          }).toList(),
+                  isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
                         )
-                      : const Center(
-                          child: Text(
-                            'Você ainda não tem equipamentos',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black54),
-                          ),
-                        ),
+                      : equipmentList.isNotEmpty
+                          ? Column(
+                              children: equipmentList.map((equipment) {
+                                return ListTile(
+                                  title: Text(equipment),
+                                );
+                              }).toList(),
+                            )
+                          : const Center(
+                              child: Text(
+                                'Você ainda não tem equipamentos',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
                   const SizedBox(height: 40),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_service.dart';
 import 'package:sige_ie/equipments/feature/electrical_load/add_electrical_load.dart';
 
 class ListElectricalLoadEquipment extends StatefulWidget {
@@ -27,21 +28,42 @@ class _ListElectricalLoadEquipmentState
     extends State<ListElectricalLoadEquipment> {
   List<String> equipmentList = [];
   bool isLoading = true;
+  // You may need to replace this with actual service integration
+  final EletricalLoadEquipmentService _service =
+      EletricalLoadEquipmentService();
+  bool _isMounted = false;
 
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
     fetchEquipmentList();
   }
 
+  @override
+  void dispose() {
+    _isMounted = false;
+    super.dispose();
+  }
+
   Future<void> fetchEquipmentList() async {
-    // Simulação de requisição ou carga de dados
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      // Exemplo de lista de equipamentos (vazia neste caso)
-      equipmentList = [];
-      isLoading = false;
-    });
+    try {
+      final List<String> equipmentList =
+          await _service.getEletricalLoadListByArea(widget.areaId);
+      if (_isMounted) {
+        setState(() {
+          this.equipmentList = equipmentList;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching equipment list: $e');
+      if (_isMounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   void navigateToAddEquipment(BuildContext context) {
@@ -94,12 +116,15 @@ class _ListElectricalLoadEquipmentState
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('${widget.areaName} - $systemTitle',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightText)),
+                child: Text(
+                  '${widget.areaName} - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -124,9 +149,10 @@ class _ListElectricalLoadEquipmentState
                               child: Text(
                                 'Você ainda não tem equipamentos',
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
                               ),
                             ),
                   const SizedBox(height: 40),
