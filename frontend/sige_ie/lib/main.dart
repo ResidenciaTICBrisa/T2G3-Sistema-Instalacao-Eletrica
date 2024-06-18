@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/core/ui/first_scren.dart';
 import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_dischargesList.dart';
 import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/addAtmospheric-dischargesEquipment.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/add_atmospheric_discharges_equipment.dart';
 
 class listatmosphericEquipment extends StatelessWidget {
   final String areaName;

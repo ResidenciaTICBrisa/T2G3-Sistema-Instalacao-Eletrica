@@ -5,7 +5,7 @@ import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoar
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_dischargesList.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
