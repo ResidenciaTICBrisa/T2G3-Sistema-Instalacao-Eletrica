@@ -16,14 +16,14 @@ class ImageData {
 List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
-class Addcooling extends StatefulWidget {
+class AddCooling extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
   final int areaId;
 
-  const Addcooling({
+  const AddCooling({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -36,7 +36,7 @@ class Addcooling extends StatefulWidget {
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddEquipmentScreenState extends State<Addcooling> {
+class _AddEquipmentScreenState extends State<AddCooling> {
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   String? _selectedTypeToDelete;
