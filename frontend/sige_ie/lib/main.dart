@@ -6,7 +6,7 @@ import 'package:sige_ie/core/ui/splash_screen.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
 import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/distribuition_board/distribuition_board_equipment_list.dart';
-import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
+import 'package:sige_ie/equipments/feature/electrical_line/electrical_line_list.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
@@ -177,7 +177,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listElectricalLineEquipment(
+                    builder: (context) => ListElectricalLineEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
