@@ -31,7 +31,7 @@ class EletricalLineEquipmentService {
     }
   }
 
-  Future<List<String>> getEletricalLineListByArea(int areaId) async {
+  Future<List<String>> getElectricalLineListByArea(int areaId) async {
     final url = '${baseUrl}electrical-lines/by-area/$areaId';
     try {
       final response = await client.get(Uri.parse(url));
