@@ -5,7 +5,7 @@ import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
 import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
-import 'package:sige_ie/equipments/feature/distribuition-Board/distribuition_board_equipment_list.dart';
+import 'package:sige_ie/equipments/feature/distribuition_board/distribuition_board_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
@@ -17,7 +17,7 @@ import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList
 import 'package:sige_ie/equipments/feature/system_configuration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
-import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
+import 'package:sige_ie/equipments/feature/electrical_circuit/electrical_circuit_list.dart';
 import 'core/feature/login/login.dart';
 
 void main() {
@@ -148,7 +148,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listCicuitEquipment(
+                    builder: (context) => ListCicuitEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,

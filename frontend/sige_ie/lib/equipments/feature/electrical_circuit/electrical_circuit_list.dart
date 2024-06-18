@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/electrical-circuit/addElectricalCircuit.dart';
+import 'package:sige_ie/equipments/feature/electrical_circuit/add_electrical_circuit.dart';
 
-class listCicuitEquipment extends StatelessWidget {
+class ListCicuitEquipment extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const listCicuitEquipment({
+  const ListCicuitEquipment({
     super.key,
     required this.areaName,
     required this.categoryNumber,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/distribuition-Board/add_distribuition_board.dart';
+import 'package:sige_ie/equipments/feature/distribuition_board/add_distribuition_board.dart';
 
 class ListDistribuitionBoard extends StatelessWidget {
   final String areaName;
