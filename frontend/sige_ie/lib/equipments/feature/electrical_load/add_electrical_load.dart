@@ -466,7 +466,7 @@ class _AddElectricalLoadEquipmentScreenState
       );
       Navigator.pushReplacementNamed(
         context,
-        '/listIluminationEquipment',
+        '/listelectricalLoadEquipment',
         arguments: {
           'areaName': widget.areaName,
           'categoryNumber': widget.categoryNumber,
@@ -521,7 +521,7 @@ class _AddElectricalLoadEquipmentScreenState
             });
             Navigator.pushReplacementNamed(
               context,
-              '/listIluminationEquipment',
+              '/listelectricalLoadEquipment',
               arguments: {
                 'areaName': widget.areaName,
                 'categoryNumber': widget.categoryNumber,
