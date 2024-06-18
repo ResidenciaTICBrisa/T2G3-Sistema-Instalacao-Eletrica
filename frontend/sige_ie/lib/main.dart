@@ -14,7 +14,7 @@ import 'package:sige_ie/facilities/ui/facilities.dart';
 import 'package:sige_ie/home/ui/home.dart';
 import 'package:sige_ie/maps/feature/maps.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/systemConfiguration.dart';
+import 'package:sige_ie/equipments/feature/system_configuration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
