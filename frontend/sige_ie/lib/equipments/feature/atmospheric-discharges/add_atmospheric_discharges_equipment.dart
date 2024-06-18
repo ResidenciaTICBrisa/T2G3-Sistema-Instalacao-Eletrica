@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/atmospheric/atmospheric_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/atmospheric/atmospheric_request_model.dart';
 import 'package:sige_ie/equipments/data/atmospheric/atmospheric_service.dart';
 
@@ -269,7 +270,6 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
             TextButton(
               child: const Text('OK'),
               onPressed: () {
-                _registerAtmosphericEquipment();
                 Navigator.pushReplacementNamed(
                   context,
                   '/listatmosphericEquipment',
@@ -287,29 +287,6 @@ class _AddEquipmentScreenState extends State<AddatmosphericEquipmentScreen> {
         );
       },
     );
-  }
-
-  void _registerAtmosphericEquipment() async {
-    int areaId = widget.areaId;
-    int systemId = widget.categoryNumber;
-    int equipmentTypeId = 1;
-
-    AtmosphericEquipmentRequestModel requestModel =
-        AtmosphericEquipmentRequestModel(
-      photos: _images.map((imageData) => imageData.imageFile.path).toList(),
-      area: areaId,
-      system: systemId,
-      equipmentType: equipmentTypeId,
-    );
-
-    AtmosphericEquipmentService service = AtmosphericEquipmentService();
-    int? id = await service.register(requestModel);
-
-    if (id != null) {
-      print('Atmospheric equipment registered with ID: $id');
-    } else {
-      print('Failed to register atmospheric equipment');
-    }
   }
 
   @override

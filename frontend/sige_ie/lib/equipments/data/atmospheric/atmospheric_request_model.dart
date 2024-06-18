@@ -1,31 +1,16 @@
-class AtmosphericEquipmentRequestModel {
-  List<String> photos;
-  int area;
-  int system;
-  int equipmentType;
+class AtmosphericRequestModel {
+  int? area;
+  int? system;
 
-  AtmosphericEquipmentRequestModel({
-    required this.photos,
+  AtmosphericRequestModel({
     required this.area,
     required this.system,
-    required this.equipmentType,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'photos': photos,
       'area': area,
       'system': system,
-      'equipmentType': equipmentType,
     };
-  }
-
-  factory AtmosphericEquipmentRequestModel.fromJson(Map<String, dynamic> json) {
-    return AtmosphericEquipmentRequestModel(
-      photos: List<String>.from(json['photos'] ?? []),
-      area: json['area'],
-      system: json['system'],
-      equipmentType: json['equipmentType'],
-    );
   }
 }

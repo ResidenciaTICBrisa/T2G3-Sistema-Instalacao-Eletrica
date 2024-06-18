@@ -1,17 +1,17 @@
-class EletricalCircuitEquipmentResponseModel {
+class RefrigerationsEquipmentResponseModel {
   int id;
   String area;
   int system;
 
-  EletricalCircuitEquipmentResponseModel({
+  RefrigerationsEquipmentResponseModel({
     required this.id,
     required this.area,
     required this.system,
   });
 
-  factory EletricalCircuitEquipmentResponseModel.fromJson(
+  factory RefrigerationsEquipmentResponseModel.fromJson(
       Map<String, dynamic> json) {
-    return EletricalCircuitEquipmentResponseModel(
+    return RefrigerationsEquipmentResponseModel(
       id: json['id'],
       area: json['name'],
       system: json['system'],

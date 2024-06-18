@@ -1,8 +1,8 @@
-class DistributionRequestModel {
+class RefrigerationsRequestModel {
   int? area;
   int? system;
 
-  DistributionRequestModel({
+  RefrigerationsRequestModel({
     required this.area,
     required this.system,
   });

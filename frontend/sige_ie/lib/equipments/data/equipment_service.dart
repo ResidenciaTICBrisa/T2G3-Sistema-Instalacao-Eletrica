@@ -3,8 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
-import 'package:sige_ie/equipments/data/atmospheric/atmospheric_request_model.dart';
-import 'package:sige_ie/equipments/data/cooling/cooling_request_model.dart';
+import 'package:sige_ie/equipments/data/atmospheric/atmospheric_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/distribution/distribution_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical_line/eletrical_line_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/refrigerations/refrigerations_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/iluminations/ilumination__equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_equipment_request_model.dart';
@@ -106,8 +110,8 @@ class EquipmentService {
     }
   }
 
-  /* Future<int?> createElectricalLoad(
-      ElectricalLoadEquipmentRequestModel
+  Future<int?> createElectricalLoad(
+      EletricalLoadEquipmentRequestModel
           electricalLoadEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
 
@@ -137,7 +141,7 @@ class EquipmentService {
   }
 
   Future<int?> createElectricalLine(
-      ElectricalLineEquipmentRequestModel
+      EletricalLineEquipmentRequestModel
           electricalLineEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
 
@@ -167,7 +171,7 @@ class EquipmentService {
   }
 
   Future<int?> createElectricalCircuit(
-      ElectricalCircuitEquipmentRequestModel
+      EletricalCircuitEquipmentRequestModel
           electricalCircuitEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
 
@@ -225,9 +229,9 @@ class EquipmentService {
       return null;
     }
   }
- */
-  Future<int?> createCooling(
-      CoolingEquipmentRequestModel coolingEquipmentRequestModel) async {
+
+  Future<int?> createRefrigerations(
+      RefrigerationsEquipmentRequestModel coolingEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
 
     try {
