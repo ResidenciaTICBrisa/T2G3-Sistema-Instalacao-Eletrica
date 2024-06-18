@@ -77,7 +77,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaId: areaId,
               );
             case '/circuits':
-              return ListCicuitEquipment(
+              return ListCircuitEquipment(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,

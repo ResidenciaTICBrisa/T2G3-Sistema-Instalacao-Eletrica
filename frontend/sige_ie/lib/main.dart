@@ -148,7 +148,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => ListCicuitEquipment(
+                    builder: (context) => ListCircuitEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
