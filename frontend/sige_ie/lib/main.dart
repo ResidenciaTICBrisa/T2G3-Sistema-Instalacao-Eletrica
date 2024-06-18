@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/core/ui/first_scren.dart';
 import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_dischargesList.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
 import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
-import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/distribuition-Board/distribuition_board_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
@@ -235,7 +235,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listDistribuitionBoard(
+                    builder: (context) => ListDistribuitionBoard(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,

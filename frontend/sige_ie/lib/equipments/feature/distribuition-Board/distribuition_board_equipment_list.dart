@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/distribuition-Board/addDistribuitionBoard.dart';
+import 'package:sige_ie/equipments/feature/distribuition-Board/add_distribuition_board.dart';
 
-class listDistribuitionBoard extends StatelessWidget {
+class ListDistribuitionBoard extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const listDistribuitionBoard({
+  const ListDistribuitionBoard({
     super.key,
     required this.areaName,
     required this.categoryNumber,

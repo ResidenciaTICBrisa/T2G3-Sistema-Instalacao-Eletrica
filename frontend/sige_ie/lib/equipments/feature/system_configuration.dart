@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
-import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/distribuition-Board/distribuition_board_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
 import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
 import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_dischargesList.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
 import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
 import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
@@ -85,7 +85,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaId: areaId,
               );
             case '/distributionBoard':
-              return listDistribuitionBoard(
+              return ListDistribuitionBoard(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
