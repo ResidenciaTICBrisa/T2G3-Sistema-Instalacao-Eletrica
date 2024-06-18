@@ -283,11 +283,11 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
   }
 
   void _editPlace(BuildContext context, PlaceResponseModel place) {
-    final TextEditingController _nameController =
+    final TextEditingController nameController =
         TextEditingController(text: place.name);
-    final TextEditingController _lonController =
+    final TextEditingController lonController =
         TextEditingController(text: place.lon.toString());
-    final TextEditingController _latController =
+    final TextEditingController latController =
         TextEditingController(text: place.lat.toString());
 
     showDialog(
@@ -299,16 +299,16 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
             child: Column(
               children: [
                 TextField(
-                  controller: _nameController,
+                  controller: nameController,
                   decoration: const InputDecoration(labelText: 'Nome do Local'),
                 ),
                 TextField(
-                  controller: _lonController,
+                  controller: lonController,
                   decoration: const InputDecoration(labelText: 'Longitude'),
                   keyboardType: TextInputType.number,
                 ),
                 TextField(
-                  controller: _latController,
+                  controller: latController,
                   decoration: const InputDecoration(labelText: 'Latitude'),
                   keyboardType: TextInputType.number,
                 ),
@@ -325,9 +325,9 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
             TextButton(
               child: const Text('Salvar'),
               onPressed: () async {
-                String newName = _nameController.text;
-                double? newLon = double.tryParse(_lonController.text);
-                double? newLat = double.tryParse(_latController.text);
+                String newName = nameController.text;
+                double? newLon = double.tryParse(lonController.text);
+                double? newLat = double.tryParse(latController.text);
                 Navigator.of(context).pop();
 
                 if (newName.isNotEmpty && newLon != null && newLat != null) {

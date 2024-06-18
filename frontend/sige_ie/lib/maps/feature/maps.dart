@@ -4,11 +4,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../controller/maps_controller.dart';
 
 class MapsPage extends StatelessWidget {
-  const MapsPage({Key? key}) : super(key: key);
+  const MapsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final MapsController _controller = Get.put(MapsController());
+    final MapsController controller = Get.put(MapsController());
 
     return Scaffold(
       appBar: AppBar(
@@ -17,8 +17,8 @@ class MapsPage extends StatelessWidget {
         elevation: 0,
       ),
       body: Obx(() {
-        if (_controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+        if (controller.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +47,9 @@ class MapsPage extends StatelessWidget {
             ),
             Expanded(
               child: GoogleMap(
-                onMapCreated: _controller.onMapCreated,
-                initialCameraPosition: _controller.initialCameraPosition,
-                markers: Set<Marker>.of(_controller.markers),
+                onMapCreated: controller.onMapCreated,
+                initialCameraPosition: controller.initialCameraPosition,
+                markers: Set<Marker>.of(controller.markers),
                 myLocationEnabled: true,
                 myLocationButtonEnabled: true,
               ),

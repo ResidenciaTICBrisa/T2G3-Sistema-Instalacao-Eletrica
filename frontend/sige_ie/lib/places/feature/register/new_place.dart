@@ -171,8 +171,6 @@ class NewPlaceState extends State<NewPlace> {
 
                         int? placeId = await placeService.register(place);
                         if (placeId != null) {
-                          print(
-                              'Local Registrado: ${nameController.text} em latitude: ${positionController.lat} e longitude: ${positionController.lon}');
                           Navigator.of(context)
                               .pushNamed('/arealocation', arguments: {
                             'placeName': nameController.text.trim(),

@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:sige_ie/core/ui/first_scren.dart';
 import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
-import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric-dischargesList.dart';
-import 'package:sige_ie/equipments/feature/cooling/coolingEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/distribuition-Board/distribuitionBoardEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/electrical-line/electricaLLineLIst.dart';
-import 'package:sige_ie/equipments/feature/electrical-load/eletricalLoadList.dart';
-import 'package:sige_ie/equipments/feature/fire-alarm/list_fire_alarms.dart';
-import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
+import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
+import 'package:sige_ie/equipments/feature/distribuition_board/distribuition_board_equipment_list.dart';
+import 'package:sige_ie/equipments/feature/electrical_line/electrical_line_list.dart';
+import 'package:sige_ie/equipments/feature/electrical_load/eletrical_load_list.dart';
+import 'package:sige_ie/equipments/feature/fire_alarm/list_fire_alarms.dart';
+import 'package:sige_ie/equipments/feature/structured_cabling/structured_cabling_equipment_list.dart';
 import 'package:sige_ie/facilities/ui/facilities.dart';
 import 'package:sige_ie/home/ui/home.dart';
 import 'package:sige_ie/maps/feature/maps.dart';
-import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
-import 'package:sige_ie/equipments/feature/systemConfiguration.dart';
+import 'package:sige_ie/equipments/feature/iluminations/ilumination_equipment_list.dart';
+import 'package:sige_ie/equipments/feature/system_configuration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
-import 'package:sige_ie/equipments/feature/electrical-circuit/electricalCircuitList.dart';
+import 'package:sige_ie/equipments/feature/electrical_circuit/electrical_circuit_list.dart';
 import 'core/feature/login/login.dart';
 
 void main() {
@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
           case '/MapsPage':
             return MaterialPageRoute(builder: (context) => const MapsPage());
           case '/newLocation':
-            return MaterialPageRoute(builder: (context) => NewPlace());
+            return MaterialPageRoute(builder: (context) => const NewPlace());
           case '/arealocation':
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listIluminationEquipment(
+                    builder: (context) => ListIluminationEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -148,7 +148,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listCicuitEquipment(
+                    builder: (context) => ListCicuitEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -177,7 +177,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listElectricalLineEquipment(
+                    builder: (context) => ListElectricalLineEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -206,7 +206,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listatmosphericEquipment(
+                    builder: (context) => ListAtmosphericEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -235,7 +235,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listDistribuitionBoard(
+                    builder: (context) => ListDistribuitionBoard(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -294,7 +294,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listCollingEquipment(
+                    builder: (context) => ListCollingEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -324,7 +324,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listStruturedCabling(
+                    builder: (context) => ListStructuredCabling(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
@@ -353,7 +353,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listelectricalLoadEquipment(
+                    builder: (context) => ListElectricalLoadEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,

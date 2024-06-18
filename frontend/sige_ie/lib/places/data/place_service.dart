@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
 import 'package:sige_ie/places/data/place_response_model.dart';
 
 class PlaceService {
+  final Logger _logger = Logger('PlaceService');
   final String baseUrl = 'http://10.0.2.2:8000/api/places/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
@@ -27,11 +29,11 @@ class PlaceService {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         return responseData['id'];
       } else {
-        print('Failed to register place: ${response.statusCode}');
+        _logger.info('Failed to register place: ${response.statusCode}');
         return null;
       }
     } catch (e) {
-      print('Error during register: $e');
+      _logger.info('Error during register: $e');
       return null;
     }
   }
@@ -51,7 +53,7 @@ class PlaceService {
         throw Exception('Failed to load places');
       }
     } catch (e) {
-      print('Error during fetchAllPlaces: $e');
+      _logger.info('Error during fetchAllPlaces: $e');
       throw Exception('Failed to load places');
     }
   }
@@ -70,7 +72,7 @@ class PlaceService {
         throw Exception('Failed to load place with ID $placeId');
       }
     } catch (e) {
-      print('Error during fetchPlace: $e');
+      _logger.info('Error during fetchPlace: $e');
       throw Exception('Failed to load place with ID $placeId');
     }
   }
@@ -89,7 +91,7 @@ class PlaceService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Error during updatePlace: $e');
+      _logger.info('Error during updatePlace: $e');
       return false;
     }
   }
@@ -103,7 +105,7 @@ class PlaceService {
 
       return response.statusCode == 204;
     } catch (e) {
-      print('Error during deletePlace: $e');
+      _logger.info('Error during deletePlace: $e');
       return false;
     }
   }

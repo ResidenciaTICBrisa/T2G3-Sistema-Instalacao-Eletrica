@@ -261,7 +261,6 @@ Widget _buildDropdown({
   required List<String> items,
   required String? value,
   required void Function(String?) onChanged,
-  VoidCallback? addNew,
 }) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10),
