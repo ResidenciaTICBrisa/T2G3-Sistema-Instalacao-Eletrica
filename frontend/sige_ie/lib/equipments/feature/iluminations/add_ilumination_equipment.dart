@@ -16,13 +16,13 @@ class ImageData {
 List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
-class AddiluminationEquipmentScreen extends StatefulWidget {
+class AddIluminationEquipmentScreen extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
 
-  const AddiluminationEquipmentScreen({
+  const AddIluminationEquipmentScreen({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -34,7 +34,7 @@ class AddiluminationEquipmentScreen extends StatefulWidget {
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddEquipmentScreenState extends State<AddiluminationEquipmentScreen> {
+class _AddEquipmentScreenState extends State<AddIluminationEquipmentScreen> {
   final _equipmentchargeController = TextEditingController();
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;

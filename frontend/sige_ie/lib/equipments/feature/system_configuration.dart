@@ -4,7 +4,7 @@ import 'package:sige_ie/equipments/feature/cooling/cooling_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/distribuition_board/distribuition_board_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_circuit/electrical_circuit_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_line/electrical_line_list.dart';
-import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/iluminations/Ilumination_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/atmospheric-discharges/atmospheric_discharges_list.dart';
 import 'package:sige_ie/equipments/feature/electrical_load/eletrical_load_list.dart';
 import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEquipmentList.dart';
@@ -101,7 +101,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaId: areaId,
               );
             case '/lighting':
-              return listIluminationEquipment(
+              return ListIluminationEquipment(
                 areaName: areaName,
                 localName: localName,
                 localId: localId,

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/feature/iluminations/addIluminationEquipment.dart';
+import 'package:sige_ie/equipments/feature/iluminations/add_ilumination_equipment.dart';
 
-class listIluminationEquipment extends StatelessWidget {
+class ListIluminationEquipment extends StatelessWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const listIluminationEquipment({
+  const ListIluminationEquipment({
     super.key,
     required this.areaName,
     required this.categoryNumber,
@@ -22,7 +22,7 @@ class listIluminationEquipment extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddiluminationEquipmentScreen(
+        builder: (context) => AddIluminationEquipmentScreen(
           areaName: areaName,
           categoryNumber: categoryNumber,
           localName: localName,

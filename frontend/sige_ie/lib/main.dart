@@ -13,7 +13,7 @@ import 'package:sige_ie/equipments/feature/structured-cabling/struturedCablingEq
 import 'package:sige_ie/facilities/ui/facilities.dart';
 import 'package:sige_ie/home/ui/home.dart';
 import 'package:sige_ie/maps/feature/maps.dart';
-import 'package:sige_ie/equipments/feature/iluminations/IluminationEquipmentList.dart';
+import 'package:sige_ie/equipments/feature/iluminations/Ilumination_equipment_list.dart';
 import 'package:sige_ie/equipments/feature/system_configuration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
                   localId != null &&
                   areaId != null) {
                 return MaterialPageRoute(
-                    builder: (context) => listIluminationEquipment(
+                    builder: (context) => ListIluminationEquipment(
                           areaName: areaName,
                           categoryNumber: categoryNumber,
                           localName: localName,
