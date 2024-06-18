@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/main.dart';
 
 class FireAlarmEquipmentService {
+  final Logger _logger = Logger('FireAlarmEquipmentService');
   final String baseUrl = 'http://10.0.2.2:8000/api/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
@@ -21,10 +23,10 @@ class FireAlarmEquipmentService {
       ...personalEquipmentCategoryList,
     ];
     try {
-      print('Combined list length: ${combinedList.length}');
+      _logger.info('Combined list length: ${combinedList.length}');
       return combinedList;
     } catch (e) {
-      print('Error during get all equipment: $e');
+      _logger.info('Error during get all equipment: $e');
       return [];
     }
   }
@@ -40,7 +42,7 @@ class FireAlarmEquipmentService {
         throw Exception('Failed to load fire alarm equipment');
       }
     } catch (e) {
-      print('Error during get fire alarm equipment list: $e');
+      _logger.info('Error during get fire alarm equipment list: $e');
       return [];
     }
   }

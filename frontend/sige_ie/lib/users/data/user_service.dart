@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/users/data/user_request_model.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
 
 class UserService {
+  final Logger _logger = Logger('UserService');
   Future<bool> register(UserRequestModel userRequestModel) async {
     var url = Uri.parse('http://10.0.2.2:8000/api/users/');
 
@@ -77,14 +79,14 @@ class UserService {
         throw Exception('Falha ao carregar dados do perfil');
       }
     } on http.ClientException catch (e) {
-      print('Erro ao carregar dados do perfil (ClientException): $e');
+      _logger.info('Erro ao carregar dados do perfil (ClientException): $e');
       throw Exception(
           'Erro na conexão com o servidor. Por favor, tente novamente mais tarde.');
     } on SocketException catch (e) {
-      print('Erro ao carregar dados do perfil (SocketException): $e');
+      _logger.info('Erro ao carregar dados do perfil (SocketException): $e');
       throw Exception('Erro de rede. Verifique sua conexão com a internet.');
     } catch (e) {
-      print('Erro ao carregar dados do perfil: $e');
+      _logger.info('Erro ao carregar dados do perfil: $e');
       throw Exception(
           'Ocorreu um erro inesperado. Por favor, tente novamente.');
     }
