@@ -397,12 +397,6 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   }
 
   void _registerEquipment() async {
-    print('areaId: ${widget.areaId}');
-    print('categoryNumber: ${widget.categoryNumber}');
-    print('_selectedType: $_selectedType');
-    print(
-        '_selectedPersonalEquipmentCategoryId: $_selectedPersonalEquipmentCategoryId');
-
     int? genericEquipmentCategory;
     int? personalEquipmentCategory;
 
@@ -415,7 +409,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     }
 
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
-        area: widget.areaId, system: widget.categoryNumber);
+      area: widget.areaId,
+      system: widget.categoryNumber,
+    );
 
     final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
         FireAlarmEquipmentRequestModel(
@@ -455,6 +451,13 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
           'areaId': widget.areaId,
         },
       );
+      setState(() {
+        _equipmentQuantityController.clear();
+        _selectedType = null;
+        _selectedPersonalEquipmentCategoryId = null;
+        _selectedGenericEquipmentCategoryId = null;
+        _images.clear();
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -479,6 +482,13 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
+            setState(() {
+              _equipmentQuantityController.clear();
+              _selectedType = null;
+              _selectedPersonalEquipmentCategoryId = null;
+              _selectedGenericEquipmentCategoryId = null;
+              _images.clear();
+            });
             Navigator.pushReplacementNamed(
               context,
               '/listFireAlarms',

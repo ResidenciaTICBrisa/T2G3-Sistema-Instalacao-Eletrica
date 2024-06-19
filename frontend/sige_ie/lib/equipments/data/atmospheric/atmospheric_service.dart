@@ -1,46 +1,49 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
+import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
-import 'package:sige_ie/equipments/data/atmospheric/atmospheric_request_model.dart';
+import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/main.dart';
 
 class AtmosphericEquipmentService {
-  final String baseUrl = 'http://10.0.2.2:8000/api/equipment-details/';
+  final Logger _logger = Logger('AtmosphericEquipmentService');
+  final String baseUrl = 'http://10.0.2.2:8000/api/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<int?> register(
-      AtmosphericEquipmentRequestModel atmosphericEquipmentRequestModel) async {
-    var url = Uri.parse(baseUrl);
-
+  Future<List<EquipmentCategoryResponseModel>> getAllEquipment(
+      int systemId,
+      List<EquipmentCategoryResponseModel> genericEquipmentCategoryList,
+      List<EquipmentCategoryResponseModel>
+          personalEquipmentCategoryList) async {
+    List<EquipmentCategoryResponseModel> combinedList = [
+      ...genericEquipmentCategoryList,
+      ...personalEquipmentCategoryList,
+    ];
     try {
-      print('Sending POST request to $url');
-      print(
-          'Request body: ${jsonEncode(atmosphericEquipmentRequestModel.toJson())}');
+      _logger.info('Combined list length: ${combinedList.length}');
+      return combinedList;
+    } catch (e) {
+      _logger.info('Error during get all equipment: $e');
+      return [];
+    }
+  }
 
-      var response = await client.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(atmosphericEquipmentRequestModel.toJson()),
-      );
-
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      if (response.statusCode == 201) {
-        Map<String, dynamic> responseData = jsonDecode(response.body);
-        print('Request successful, received ID: ${responseData['id']}');
-        return responseData['id'];
+  Future<List<String>> getAtmosphericListByArea(int areaId) async {
+    final url = '${baseUrl}atmospheric-discharges/by-area/$areaId';
+    try {
+      final response = await client.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((item) => item['name'] as String).toList();
       } else {
-        print(
-            'Failed to register atmospheric equipment: ${response.statusCode}');
-        return null;
+        throw Exception('Failed to load structured cabling equipment');
       }
     } catch (e) {
-      print('Error during register: $e');
-      return null;
+      _logger.info('Error during get structured cabling equipment list: $e');
+      return [];
     }
   }
 }

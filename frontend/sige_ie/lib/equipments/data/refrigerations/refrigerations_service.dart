@@ -6,8 +6,8 @@ import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/main.dart';
 
-class DistributionEquipmentService {
-  final Logger _logger = Logger('DistributionEquipmentService');
+class RefrigerationsEquipmentService {
+  final Logger _logger = Logger('RefrigerationsEquipmentService');
   final String baseUrl = 'http://10.0.2.2:8000/api/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
@@ -31,8 +31,8 @@ class DistributionEquipmentService {
     }
   }
 
-  Future<List<String>> getDistributionListByArea(int areaId) async {
-    final url = '${baseUrl}distribution-boards/by-area/$areaId';
+  Future<List<String>> getRefrigerationsListByArea(int areaId) async {
+    final url = '${baseUrl}refrigerations/by-area/$areaId';
     try {
       final response = await client.get(Uri.parse(url));
       if (response.statusCode == 200) {

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_service.dart';
-import 'package:sige_ie/equipments/feature/structured_cabling/add_structured_cabling.dart';
+import 'package:sige_ie/equipments/data/refrigerations/refrigerations_service.dart';
+import 'package:sige_ie/equipments/feature/refrigerations/add_refrigeration.dart';
 
-class ListStructuredCabling extends StatefulWidget {
+class ListRefrigerationEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
   final int categoryNumber;
   final int localId;
   final int areaId;
 
-  const ListStructuredCabling({
+  const ListRefrigerationEquipment({
     Key? key,
     required this.areaName,
     required this.categoryNumber,
@@ -20,34 +20,28 @@ class ListStructuredCabling extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ListStructuredCablingState createState() => _ListStructuredCablingState();
+  _ListRefrigerationEquipmentState createState() =>
+      _ListRefrigerationEquipmentState();
 }
 
-class _ListStructuredCablingState extends State<ListStructuredCabling> {
+class _ListRefrigerationEquipmentState
+    extends State<ListRefrigerationEquipment> {
   List<String> equipmentList = [];
   bool isLoading = true;
-  final StructuredCablingEquipmentService _service =
-      StructuredCablingEquipmentService();
-  bool _isMounted = false;
+  final RefrigerationsEquipmentService _service =
+      RefrigerationsEquipmentService();
 
   @override
   void initState() {
     super.initState();
-    _isMounted = true;
     fetchEquipmentList();
-  }
-
-  @override
-  void dispose() {
-    _isMounted = false;
-    super.dispose();
   }
 
   Future<void> fetchEquipmentList() async {
     try {
       final List<String> equipmentList =
-          await _service.getStructuredCablingListByArea(widget.areaId);
-      if (_isMounted) {
+          await _service.getRefrigerationsListByArea(widget.areaId);
+      if (mounted) {
         setState(() {
           this.equipmentList = equipmentList;
           isLoading = false;
@@ -55,7 +49,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
       }
     } catch (e) {
       print('Error fetching equipment list: $e');
-      if (_isMounted) {
+      if (mounted) {
         setState(() {
           isLoading = false;
         });
@@ -67,7 +61,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddStructuredCabling(
+        builder: (context) => AddRefrigeration(
           areaName: widget.areaName,
           categoryNumber: widget.categoryNumber,
           localName: widget.localName,
@@ -80,7 +74,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
 
   @override
   Widget build(BuildContext context) {
-    String systemTitle = 'CABEAMENTO ESTRUTURADO';
+    String systemTitle = 'Refrigeração';
 
     return Scaffold(
       appBar: AppBar(

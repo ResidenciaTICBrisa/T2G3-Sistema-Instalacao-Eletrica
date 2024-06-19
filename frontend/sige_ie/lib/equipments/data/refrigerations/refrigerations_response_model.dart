@@ -1,17 +1,17 @@
-class StructuredCablingEquipmentResponseModel {
+class RefrigerationsEquipmentResponseModel {
   int id;
   String area;
   int system;
 
-  StructuredCablingEquipmentResponseModel({
+  RefrigerationsEquipmentResponseModel({
     required this.id,
     required this.area,
     required this.system,
   });
 
-  factory StructuredCablingEquipmentResponseModel.fromJson(
+  factory RefrigerationsEquipmentResponseModel.fromJson(
       Map<String, dynamic> json) {
-    return StructuredCablingEquipmentResponseModel(
+    return RefrigerationsEquipmentResponseModel(
       id: json['id'],
       area: json['name'],
       system: json['system'],

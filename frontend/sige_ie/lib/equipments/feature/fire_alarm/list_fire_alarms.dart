@@ -27,26 +27,38 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
   List<String> equipmentList = [];
   bool isLoading = true;
   final FireAlarmEquipmentService _service = FireAlarmEquipmentService();
+  bool _isMounted = false;
 
   @override
   void initState() {
     super.initState();
+    _isMounted = true;
     fetchEquipmentList();
+  }
+
+  @override
+  void dispose() {
+    _isMounted = false;
+    super.dispose();
   }
 
   Future<void> fetchEquipmentList() async {
     try {
       final List<String> equipmentList =
           await _service.getFireAlarmListByArea(widget.areaId);
-      setState(() {
-        this.equipmentList = equipmentList;
-        isLoading = false;
-      });
+      if (_isMounted) {
+        setState(() {
+          this.equipmentList = equipmentList;
+          isLoading = false;
+        });
+      }
     } catch (e) {
       print('Error fetching equipment list: $e');
-      setState(() {
-        isLoading = false;
-      });
+      if (_isMounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 

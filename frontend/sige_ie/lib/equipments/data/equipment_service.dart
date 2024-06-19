@@ -3,7 +3,15 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/equipments/data/atmospheric/atmospheric_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/distribution/distribution_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical_line/eletrical_line_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/refrigerations/refrigerations_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/iluminations/ilumination__equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_equipment_request_model.dart';
 import 'package:sige_ie/main.dart';
 
 class EquipmentService {
@@ -34,6 +42,244 @@ class EquipmentService {
       } else {
         _logger.info(
             'Failed to register fire alarm equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createStructuredCabling(
+      StructuredCablingEquipmentRequestModel
+          structuredCablingEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(structuredCablingEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register structured cabling equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createIlumination(
+      IluminationEquipmentRequestModel
+          illuminationEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(illuminationEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register illumination equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createElectricalLoad(
+      EletricalLoadEquipmentRequestModel
+          electricalLoadEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(electricalLoadEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register electrical load equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createElectricalLine(
+      EletricalLineEquipmentRequestModel
+          electricalLineEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(electricalLineEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register electrical line equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createElectricalCircuit(
+      EletricalCircuitEquipmentRequestModel
+          electricalCircuitEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(electricalCircuitEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register electrical circuit equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createDistribution(
+      DistributionEquipmentRequestModel
+          distributionEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(distributionEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register distribution equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createRefrigerations(
+      RefrigerationsEquipmentRequestModel coolingEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(coolingEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register cooling equipment: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      _logger.info('Error during register: $e');
+      return null;
+    }
+  }
+
+  Future<int?> createAtmospheric(
+      AtmosphericEquipmentRequestModel atmosphericEquipmentRequestModel) async {
+    var url = Uri.parse(baseUrl);
+
+    try {
+      var response = await client.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(atmosphericEquipmentRequestModel.toJson()),
+      );
+
+      _logger.info('Response status code: ${response.statusCode}');
+      _logger.info('Response body: ${response.body}');
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        _logger.info('Request successful, received ID: ${responseData['id']}');
+        return responseData['id'];
+      } else {
+        _logger.info(
+            'Failed to register atmospheric equipment: ${response.statusCode}');
         return null;
       }
     } catch (e) {
