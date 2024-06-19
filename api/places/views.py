@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from django.contrib.auth.models import User
 from users.models import PlaceOwner, PlaceEditor
@@ -8,10 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from places.permissions import IsPlaceOwner
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 from .models import Place, Area
 from .serializers import PlaceSerializer, AreaSerializer
 
@@ -176,3 +176,103 @@ class GrantAccessViewSet(viewsets.ViewSet):
         place.editors.add(place_editor)
 
         return Response({'message': 'Access granted successfully'}, status=status.HTTP_200_OK)
+
+class Altura:
+    def __init__(self):
+        self.alt = 840
+
+    def get_alt(self, p, margin=30):
+        self.alt -= 40 
+        if self.alt < margin:
+            p.showPage()  
+            self.alt = 800  
+            return self.alt
+        return self.alt
+
+def genericOrPersonal(system):
+                    if system.equipment.generic_equipment_category is not None:
+                        return system.equipment.generic_equipment_category
+                    else:
+                        return system.equipment.personal_equipment_category
+
+class GeneratePDFView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk=None):
+        place = get_object_or_404(Place, pk=pk)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="place_{place.id}_report.pdf"'
+
+        p = canvas.Canvas(response, pagesize=A4)
+        alt = Altura()  
+
+        p.setFont('Helvetica-Bold', 16)
+       
+        p.drawString(205, alt.get_alt(p), f"Relatório do Local: {place.name}")
+
+        p.setFont('Helvetica-Bold', 14)
+        p.drawString(100, alt.get_alt(p), "Áreas:")
+
+        for area in place.areas.all():
+            p.setFont('Helvetica-Bold', 14)
+            p.drawString(120, alt.get_alt(p), f"Relatório da Área: {area.name}")
+
+            for system in area.fire_alarm_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+            
+            for system in area.atmospheric_discharge_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+            
+            for system in area.structured_cabling_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+            
+            for system in area.distribution_board_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+
+            for system in area.electrical_circuit_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+            
+            for system in area.electrical_line_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+            
+            for system in area.electrical_load_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+            
+            for system in area.ilumination_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+
+            for system in area.refrigeration_equipment.all():
+                if(system == None):
+                    break
+                p.setFont('Helvetica', 12)
+                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+
+
+        p.showPage()
+        p.save()
+        return response
