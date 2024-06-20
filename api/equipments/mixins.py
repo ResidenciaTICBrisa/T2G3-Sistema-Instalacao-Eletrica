@@ -9,7 +9,7 @@ class ValidateAreaMixin:
         Garante que o equipment pertence ao place owner.
         """
         user = self.context['request'].user
-        if value.equipment.place_owner != user.place_owner:
+        if value.place_owner != user.place_owner:
             raise serializers.ValidationError("You are not the owner of the equipment")
         return value
 
