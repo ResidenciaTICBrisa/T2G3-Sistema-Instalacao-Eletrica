@@ -28,11 +28,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-
-        try:
-            place_owner = user.place_owner
-        except PlaceOwner.DoesNotExist:
-            place_owner = PlaceOwner.objects.create(user=user)
+        place_owner = self.get_place_owner(user)
 
         place_data = request.data.copy()
         place_data['place_owner'] = place_owner.id
@@ -57,7 +53,9 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
+        user = request.user
+        place_owner = self.get_place_owner(user)
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             serializer = PlaceSerializer(place)
             return Response(serializer.data)
         else:
@@ -65,7 +63,9 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
+        user = request.user
+        place_owner = self.get_place_owner(user)
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             serializer = PlaceSerializer(place, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -74,10 +74,11 @@ class PlaceViewSet(viewsets.ModelViewSet):
             return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
-        place_owner_id = request.user.place_owner.id
+        user = request.user
+        place_owner = self.get_place_owner(user)
 
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.id == place_owner_id:
+        if place.place_owner.id == place_owner.id:
             place.delete()
             return Response({"message": "Place deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
@@ -103,11 +104,11 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
+        place_owner = self.get_place_owner(user)
         place_id = request.data.get('place')
-
         place = get_object_or_404(Place, id=place_id)
 
-        if place.place_owner.user == user or place.editors.filter(user=user).exists():
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             area_serializer = AreaSerializer(data=request.data)
             area_serializer.is_valid(raise_exception=True)
             area_serializer.save()
@@ -117,7 +118,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def list(self,request,*args, **kwargs):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = self.get_place_owner(user)
         place_id = request.query_params.get('place')
 
         if not place_id:
@@ -131,21 +132,23 @@ class AreaViewSet(viewsets.ModelViewSet):
         return Response(area_serializer.data)
 
     def retrieve(self, request, pk=None):
-        place_owner = request.user.place_owner.id
+        user = request.user
+        place_owner = self.get_place_owner(user)
 
         area = get_object_or_404(Area,pk=pk)
 
-        if(area.place.place_owner.id == place_owner or area.place.editors.filter(user=request.user).exists()):
+        if(area.place.place_owner.id == place_owner.id or area.place.editors.filter(user=user).exists()):
             serializer = AreaSerializer(area)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this area"}, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
-        place_owner_id = request.user.place_owner.id
+        user = request.user
+        place_owner = self.get_place_owner(user)
         area = get_object_or_404(Area, pk=pk)
 
-        if area.place.place_owner.id == place_owner_id:
+        if area.place.place_owner.id == place_owner.id:
             area.delete()
             return Response({"message": "Area deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:

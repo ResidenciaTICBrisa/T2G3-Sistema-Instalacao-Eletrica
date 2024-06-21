@@ -6,7 +6,7 @@ from users.models import PlaceOwner
 class PersonalEquipmentCategory(models.Model):
     name = models.CharField(max_length=50)
     system = models.ForeignKey(System, on_delete=models.CASCADE)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True) # remover
 
     def __str__(self):
         return self.name
@@ -27,7 +27,7 @@ class GenericEquipmentCategory(models.Model):
 class Equipment(models.Model):
     generic_equipment_category = models.ForeignKey(GenericEquipmentCategory, on_delete=models.CASCADE, null=True)
     personal_equipment_category = models.ForeignKey(PersonalEquipmentCategory, on_delete=models.CASCADE, null=True)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True, related_name='equipment')
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True) # remover
 
     def __str__(self):
         if(self.generic_equipment_category != None):

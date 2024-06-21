@@ -6,19 +6,25 @@ from .serializers import *
 from .permissions import *
 from rest_framework import status
 
+def get_place_owner(self, user):
+    try:
+        return user.place_owner
+    except PlaceOwner.DoesNotExist:
+        return PlaceOwner.objects.create(user=user)
+
 class PersonalEquipmentCategoryCreate(generics.CreateAPIView):
     queryset = PersonalEquipmentCategory.objects.all()
     serializer_class = PersonalEquipmentCategorySerializer
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-
-        if(IsPlaceOwner):
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(place_owner=request.user.place_owner)
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        user = request.user
+        place_owner = self.get_place_owner(user)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(place_owner=place_owner)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class PersonalEquipmentCategoryList(generics.ListAPIView):
     queryset = PersonalEquipmentCategory.objects.all()

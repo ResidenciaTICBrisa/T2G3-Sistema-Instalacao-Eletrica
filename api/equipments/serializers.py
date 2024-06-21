@@ -207,22 +207,40 @@ class EquipmentSerializer(serializers.ModelSerializer):
         equipment = Equipment.objects.create(**validated_data)
 
         if fire_alarm_data:
+            if 'equipment' in fire_alarm_data:
+                fire_alarm_data.pop('equipment')
             FireAlarmEquipment.objects.create(equipment=equipment, **fire_alarm_data)
         elif atmospheric_discharge_data:
+            if 'equipment' in atmospheric_discharge_data:
+                atmospheric_discharge_data.pop('equipment')        
             AtmosphericDischargeEquipment.objects.create(equipment=equipment, **atmospheric_discharge_data)
         elif structured_cabling_data:
+            if 'equipment' in structured_cabling_data:
+                structured_cabling_data.pop('equipment')  
             StructuredCablingEquipment.objects.create(equipment=equipment, **structured_cabling_data)
         elif distribution_board_data:
+            if 'equipment' in distribution_board_data:
+                distribution_board_data.pop('equipment') 
             DistributionBoardEquipment.objects.create(equipment=equipment, **distribution_board_data)
         elif electrical_circuit_data:
+            if 'equipment' in electrical_circuit_data:
+                electrical_circuit_data.pop('equipment') 
             ElectricalCircuitEquipment.objects.create(equipment=equipment, **electrical_circuit_data)
         elif electrical_line_data:
+            if 'equipment' in electrical_line_data:
+                electrical_line_data.pop('equipment') 
             ElectricalLineEquipment.objects.create(equipment=equipment, **electrical_line_data)
         elif electrical_load_data:
+            if 'equipment' in electrical_load_data:
+                electrical_load_data.pop('equipment') 
             ElectricalLoadEquipment.objects.create(equipment=equipment, **electrical_load_data)
         elif ilumination_equipment_data:
+            if 'equipment' in ilumination_equipment_data:
+                ilumination_equipment_data.pop('equipment') 
             IluminationEquipment.objects.create(equipment=equipment, **ilumination_equipment_data)
         elif refrigeration_equipment_data:
+            if 'equipment' in refrigeration_equipment_data:
+                refrigeration_equipment_data.pop('equipment') 
             RefrigerationEquipment.objects.create(equipment=equipment, **refrigeration_equipment_data)
 
         return equipment
