@@ -15,7 +15,7 @@ class PersonalEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalEquipmentCategory
-        fields = ['name']
+        fields = ['id', 'name']
 
 class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
 
@@ -27,7 +27,7 @@ class GenericEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GenericEquipmentCategory
-        fields = ['name']
+        fields = ['id', 'name']
 
 class EquipmentResponseSerializer(serializers.ModelSerializer):
     generic_equipment_category = serializers.CharField(source='generic_equipment_category.name', read_only=True)
@@ -175,8 +175,6 @@ class RefrigerationEquipmentResponseSerializer(serializers.ModelSerializer):
 
 class EquipmentSerializer(serializers.ModelSerializer):
 
-    #photos = EquipmentPhotoSerializer(many=True, required=False)
-
     fire_alarm_equipment = FireAlarmEquipmentSerializer(required=False)
     atmospheric_discharge_equipment = AtmosphericDischargeEquipmentSerializer(required=False)
     structured_cabling_equipment = StructuredCablingEquipmentSerializer(required=False)
@@ -196,8 +194,6 @@ class EquipmentSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         validated_data['place_owner'] = request.user.place_owner
 
-       # photos_data = validated_data.pop('photos', [])
-
         fire_alarm_data = validated_data.pop('fire_alarm_equipment', None)
         atmospheric_discharge_data = validated_data.pop('atmospheric_discharge_equipment', None)
         structured_cabling_data = validated_data.pop('structured_cabling_equipment', None)
@@ -209,9 +205,6 @@ class EquipmentSerializer(serializers.ModelSerializer):
         refrigeration_equipment_data = validated_data.pop('refrigeration_equipment', None)
 
         equipment = Equipment.objects.create(**validated_data)
-
-       # for photo_data in photos_data:
-        #    EquipmentPhoto.objects.create(equipment=equipment, **photo_data)
 
         if fire_alarm_data:
             FireAlarmEquipment.objects.create(equipment=equipment, **fire_alarm_data)

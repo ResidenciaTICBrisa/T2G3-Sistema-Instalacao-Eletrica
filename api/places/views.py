@@ -188,10 +188,10 @@ class Altura:
         return self.alt
 
 def genericOrPersonal(system):
-                    if system.equipment.generic_equipment_category is not None:
-                        return system.equipment.generic_equipment_category
-                    else:
-                        return system.equipment.personal_equipment_category
+    if system.equipment.generic_equipment_category is not None:
+        return system.equipment.generic_equipment_category
+    else:
+        return system.equipment.personal_equipment_category
 
 class GeneratePDFView(APIView):
     permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
