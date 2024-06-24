@@ -19,7 +19,7 @@ class PersonalEquipmentCategoryCreate(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = user.place_owner
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(place_owner=place_owner)
