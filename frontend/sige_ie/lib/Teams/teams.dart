@@ -57,7 +57,8 @@ class TeamsPage extends StatelessWidget {
                           title: Text(team.name),
                           subtitle: Text('Membros: ${team.members.length}'),
                           trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
+                            icon:
+                                const Icon(Icons.delete, color: AppColors.warn),
                             onPressed: () {
                               // Lógica para sair da equipe
                             },
