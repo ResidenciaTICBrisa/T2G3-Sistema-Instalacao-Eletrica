@@ -78,6 +78,14 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     );
   }
 
+  void _editEquipment(BuildContext context, String equipment) {
+    // Implement the logic to edit the equipment
+  }
+
+  void _deleteEquipment(BuildContext context, String equipment) {
+    // Implement the logic to delete the equipment
+  }
+
   @override
   Widget build(BuildContext context) {
     String systemTitle = 'ALARME DE INCÊNDIO';
@@ -134,8 +142,34 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                       : equipmentList.isNotEmpty
                           ? Column(
                               children: equipmentList.map((equipment) {
-                                return ListTile(
-                                  title: Text(equipment),
+                                return Container(
+                                  color: AppColors.sigeIeBlue,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  child: ListTile(
+                                    title: Text(
+                                      equipment,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.edit,
+                                              color: Colors.blue),
+                                          onPressed: () => _editEquipment(
+                                              context, equipment),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                          onPressed: () => _deleteEquipment(
+                                              context, equipment),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               }).toList(),
                             )
