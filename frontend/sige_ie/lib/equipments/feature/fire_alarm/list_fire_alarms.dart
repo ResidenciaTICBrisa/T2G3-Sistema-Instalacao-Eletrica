@@ -52,6 +52,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
           isLoading = false;
         });
       }
+      print('Equipment list fetched: $equipmentList');
     } catch (e) {
       print('Error fetching equipment list: $e');
       if (_isMounted) {
