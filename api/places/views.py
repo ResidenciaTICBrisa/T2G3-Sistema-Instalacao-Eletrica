@@ -104,7 +104,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = user.place_owner
         place_id = request.data.get('place')
         place = get_object_or_404(Place, id=place_id)
 
