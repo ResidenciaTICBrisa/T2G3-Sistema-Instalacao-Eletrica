@@ -118,7 +118,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def list(self,request,*args, **kwargs):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = user.place_owner
         place_id = request.query_params.get('place')
 
         if not place_id:
@@ -133,7 +133,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = user.place_owner
 
         area = get_object_or_404(Area,pk=pk)
 
@@ -145,7 +145,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = user.place_owner
         area = get_object_or_404(Area, pk=pk)
 
         if area.place.place_owner.id == place_owner.id:
