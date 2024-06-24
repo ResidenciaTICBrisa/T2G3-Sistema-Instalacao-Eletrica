@@ -49,10 +49,10 @@ class IluminationEquipmentService {
           }
         }).toList();
       } else {
-        throw Exception('Failed to load fire alarm equipment');
+        throw Exception('Failed to load ilumination equipment');
       }
     } catch (e) {
-      _logger.info('Error during get fire alarm equipment list: $e');
+      _logger.info('Error during get ilumination equipment list: $e');
       return [];
     }
   }
