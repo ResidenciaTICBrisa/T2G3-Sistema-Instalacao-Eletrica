@@ -46,15 +46,22 @@ class TeamsPage extends StatelessWidget {
                 children: <Widget>[
                   ListView.builder(
                     shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: teams.length,
                     itemBuilder: (context, index) {
                       final team = teams[index];
                       return Card(
                         child: ListTile(
-                          leading:
-                              const Icon(Icons.group, color: AppColors.sigeIeBlue),
+                          leading: const Icon(Icons.group,
+                              color: AppColors.sigeIeBlue),
                           title: Text(team.name),
                           subtitle: Text('Membros: ${team.members.length}'),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              // Lógica para sair da equipe
+                            },
+                          ),
                           onTap: () {
                             // Navegação para a página de detalhes da equipe
                           },
@@ -67,6 +74,41 @@ class TeamsPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              final TextEditingController _controller = TextEditingController();
+              return AlertDialog(
+                title: const Text('Entrar em uma equipe'),
+                content: TextField(
+                  controller: _controller,
+                  decoration: const InputDecoration(
+                    hintText: 'Digite o código da equipe',
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancelar'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Entrar'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        backgroundColor: AppColors.sigeIeYellow,
+        child: const Icon(Icons.add, color: AppColors.sigeIeBlue),
       ),
     );
   }
