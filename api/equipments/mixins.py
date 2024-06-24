@@ -1,23 +1,15 @@
 from .models import Equipment, PersonalEquipmentCategory
 from rest_framework import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from .permissions import *
 
 class ValidateAreaMixin:
 
-    def validate_equipment(self, value):
-        """
-        Garante que o equipment pertence ao place owner.
-        """
-        user = self.context['request'].user
-        if value.equipment.place_owner != user.place_owner:
-            raise serializers.ValidationError("You are not the owner of the equipment")
-        return value
-
     def validate_area(self, value):
         """
-        Garante que a area pertence ao place owner.
+        Garante que a area pertence ao place owner ou ao editor.
         """
         user = self.context['request'].user
-        if value.place.place_owner != user.place_owner:
-            raise serializers.ValidationError("You are not the owner of this place")
+        if value.place.place_owner != user.place_owner and not value.place.editors.filter(user=user).exists():
+            raise serializers.ValidationError("You are not the owner or editor of this place")
         return value

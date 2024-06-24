@@ -1,24 +1,18 @@
 from rest_framework.permissions import BasePermission
 
-from places.models import Area
-
-class IsOwner(BasePermission):
+class IsPlaceOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.place_owner == request.user.place_owner:
             return True
-        else:
-            return False
+        return False
 
 class IsEquipmentOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if obj.equipment.place_owner == request.user.place_owner:
+        if obj.equipment.place.place_owner == request.user.place_owner:
             return True
         else:
             return False
 
-class IsAreaOwner(BasePermission):
+class IsSpecificEquipmentEditor(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if obj.area.place.place_owner == request.user.place_owner:
-            return True
-        return False
-
+        return obj.area.place.editors.filter(user=request.user).exists()

@@ -1,10 +1,10 @@
 from rest_framework.views import APIView
+from django.db.models import Q
 from django.contrib.auth.models import User
 from users.models import PlaceOwner, PlaceEditor
-from rest_framework import generics
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from places.permissions import IsPlaceOwner
+from places.permissions import IsPlaceOwner, IsPlaceEditor
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -18,7 +18,7 @@ from .serializers import PlaceSerializer, AreaSerializer
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
 
     def get_place_owner(self, user):
         try:
@@ -26,17 +26,9 @@ class PlaceViewSet(viewsets.ModelViewSet):
         except PlaceOwner.DoesNotExist:
             return PlaceOwner.objects.create(user=user)
 
-    def _has_permission(self, request, place):
-        place_owner = place.place_owner
-        return request.user == place_owner.user or place.editors.filter(user=request.user).exists()
-
     def create(self, request, *args, **kwargs):
         user = request.user
-
-        try:
-            place_owner = user.place_owner
-        except PlaceOwner.DoesNotExist:
-            place_owner = PlaceOwner.objects.create(user=user)
+        place_owner = self.get_place_owner(user)
 
         place_data = request.data.copy()
         place_data['place_owner'] = place_owner.id
@@ -51,14 +43,19 @@ class PlaceViewSet(viewsets.ModelViewSet):
         user = request.user
         place_owner = self.get_place_owner(user)
 
-        places = Place.objects.filter(place_owner=place_owner)
+        places = Place.objects.filter(
+            Q(place_owner=place_owner) | 
+            Q(editors__user=user)
+        ).distinct()
 
         place_serializer = PlaceSerializer(places, many=True)
         return Response(place_serializer.data)
 
     def retrieve(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
+        user = request.user
+        place_owner = self.get_place_owner(user)
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             serializer = PlaceSerializer(place)
             return Response(serializer.data)
         else:
@@ -66,7 +63,9 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def update(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.user == request.user or place.editors.filter(user=request.user).exists():
+        user = request.user
+        place_owner = self.get_place_owner(user)
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             serializer = PlaceSerializer(place, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -75,22 +74,23 @@ class PlaceViewSet(viewsets.ModelViewSet):
             return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
-        place_owner_id = request.user.place_owner.id
+        user = request.user
+        place_owner = self.get_place_owner(user)
 
         place = get_object_or_404(Place, pk=pk)
-        if place.place_owner.id == place_owner_id:
+        if place.place_owner.id == place_owner.id:
             place.delete()
             return Response({"message": "Place deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
 
-    @action(detail=True, methods=['get'])
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, IsPlaceOwner | IsPlaceEditor])
     def areas(self, request, pk=None):
         place = self.get_object()
         serializer = AreaSerializer(place.areas.all(), many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_path='areas/(?P<area_pk>\d+)')
+    @action(detail=True, methods=['get'], url_path='areas/(?P<area_pk>\d+)', permission_classes=[IsAuthenticated, IsPlaceOwner | IsPlaceEditor])
     def area(self, request, pk=None, area_pk=None):
         place = self.get_object()
         area = get_object_or_404(place.areas.all(), pk=area_pk)
@@ -104,22 +104,21 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = self.get_place_owner(user)
         place_id = request.data.get('place')
+        place = get_object_or_404(Place, id=place_id)
 
-        place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
-
-        if place.place_owner == place_owner:
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             area_serializer = AreaSerializer(data=request.data)
             area_serializer.is_valid(raise_exception=True)
             area_serializer.save()
             return Response(area_serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
-        
+            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
+
     def list(self,request,*args, **kwargs):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = self.get_place_owner(user)
         place_id = request.query_params.get('place')
 
         if not place_id:
@@ -133,21 +132,23 @@ class AreaViewSet(viewsets.ModelViewSet):
         return Response(area_serializer.data)
 
     def retrieve(self, request, pk=None):
-        place_owner = request.user.place_owner.id
+        user = request.user
+        place_owner = self.get_place_owner(user)
 
         area = get_object_or_404(Area,pk=pk)
 
-        if(area.place.place_owner.id == place_owner):
+        if(area.place.place_owner.id == place_owner.id or area.place.editors.filter(user=user).exists()):
             serializer = AreaSerializer(area)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this area"}, status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
-        place_owner_id = request.user.place_owner.id
+        user = request.user
+        place_owner = self.get_place_owner(user)
         area = get_object_or_404(Area, pk=pk)
 
-        if area.place.place_owner.id == place_owner_id:
+        if area.place.place_owner.id == place_owner.id:
             area.delete()
             return Response({"message": "Area deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
@@ -190,16 +191,18 @@ class Altura:
         return self.alt
 
 def genericOrPersonal(system):
-                    if system.equipment.generic_equipment_category is not None:
-                        return system.equipment.generic_equipment_category
-                    else:
-                        return system.equipment.personal_equipment_category
+    if system.equipment.generic_equipment_category is not None:
+        return system.equipment.generic_equipment_category
+    else:
+        return system.equipment.personal_equipment_category
 
 class GeneratePDFView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
 
     def get(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
+
+        self.check_object_permissions(request, place)
 
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="place_{place.id}_report.pdf"'
@@ -259,7 +262,7 @@ class GeneratePDFView(APIView):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-            
+
             for system in area.ilumination_equipment.all():
                 if(system == None):
                     break
@@ -271,7 +274,6 @@ class GeneratePDFView(APIView):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-
 
         p.showPage()
         p.save()

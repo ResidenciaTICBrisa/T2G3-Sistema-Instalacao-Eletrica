@@ -15,7 +15,7 @@ class PersonalEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PersonalEquipmentCategory
-        fields = ['name']
+        fields = ['id', 'name']
 
 class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
 
@@ -27,7 +27,7 @@ class GenericEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GenericEquipmentCategory
-        fields = ['name']
+        fields = ['id', 'name']
 
 class EquipmentResponseSerializer(serializers.ModelSerializer):
     generic_equipment_category = serializers.CharField(source='generic_equipment_category.name', read_only=True)
@@ -175,8 +175,6 @@ class RefrigerationEquipmentResponseSerializer(serializers.ModelSerializer):
 
 class EquipmentSerializer(serializers.ModelSerializer):
 
-    #photos = EquipmentPhotoSerializer(many=True, required=False)
-
     fire_alarm_equipment = FireAlarmEquipmentSerializer(required=False)
     atmospheric_discharge_equipment = AtmosphericDischargeEquipmentSerializer(required=False)
     structured_cabling_equipment = StructuredCablingEquipmentSerializer(required=False)
@@ -196,8 +194,6 @@ class EquipmentSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         validated_data['place_owner'] = request.user.place_owner
 
-       # photos_data = validated_data.pop('photos', [])
-
         fire_alarm_data = validated_data.pop('fire_alarm_equipment', None)
         atmospheric_discharge_data = validated_data.pop('atmospheric_discharge_equipment', None)
         structured_cabling_data = validated_data.pop('structured_cabling_equipment', None)
@@ -210,26 +206,41 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
         equipment = Equipment.objects.create(**validated_data)
 
-       # for photo_data in photos_data:
-        #    EquipmentPhoto.objects.create(equipment=equipment, **photo_data)
-
         if fire_alarm_data:
+            if 'equipment' in fire_alarm_data:
+                fire_alarm_data.pop('equipment')
             FireAlarmEquipment.objects.create(equipment=equipment, **fire_alarm_data)
         elif atmospheric_discharge_data:
+            if 'equipment' in atmospheric_discharge_data:
+                atmospheric_discharge_data.pop('equipment')        
             AtmosphericDischargeEquipment.objects.create(equipment=equipment, **atmospheric_discharge_data)
         elif structured_cabling_data:
+            if 'equipment' in structured_cabling_data:
+                structured_cabling_data.pop('equipment')  
             StructuredCablingEquipment.objects.create(equipment=equipment, **structured_cabling_data)
         elif distribution_board_data:
+            if 'equipment' in distribution_board_data:
+                distribution_board_data.pop('equipment') 
             DistributionBoardEquipment.objects.create(equipment=equipment, **distribution_board_data)
         elif electrical_circuit_data:
+            if 'equipment' in electrical_circuit_data:
+                electrical_circuit_data.pop('equipment') 
             ElectricalCircuitEquipment.objects.create(equipment=equipment, **electrical_circuit_data)
         elif electrical_line_data:
+            if 'equipment' in electrical_line_data:
+                electrical_line_data.pop('equipment') 
             ElectricalLineEquipment.objects.create(equipment=equipment, **electrical_line_data)
         elif electrical_load_data:
+            if 'equipment' in electrical_load_data:
+                electrical_load_data.pop('equipment') 
             ElectricalLoadEquipment.objects.create(equipment=equipment, **electrical_load_data)
         elif ilumination_equipment_data:
+            if 'equipment' in ilumination_equipment_data:
+                ilumination_equipment_data.pop('equipment') 
             IluminationEquipment.objects.create(equipment=equipment, **ilumination_equipment_data)
         elif refrigeration_equipment_data:
+            if 'equipment' in refrigeration_equipment_data:
+                refrigeration_equipment_data.pop('equipment') 
             RefrigerationEquipment.objects.create(equipment=equipment, **refrigeration_equipment_data)
 
         return equipment
