@@ -88,7 +88,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
 
   @override
   Widget build(BuildContext context) {
-    String systemTitle = 'ALARME DE INCÊNDIO';
+    String systemTitle = 'Alarme de Incêndio';
 
     return Scaffold(
       appBar: AppBar(
@@ -121,12 +121,15 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('${widget.areaName} - $systemTitle',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightText)),
+                child: Text(
+                  '${widget.areaName} - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -143,18 +146,29 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                           ? Column(
                               children: equipmentList.map((equipment) {
                                 return Container(
-                                  color: AppColors.sigeIeBlue,
                                   margin:
                                       const EdgeInsets.symmetric(vertical: 5),
-                                  child: ListTile(
-                                    title: Text(
-                                      equipment,
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.sigeIeBlue,
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
+                                    child: Row(
                                       children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              equipment,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                         IconButton(
                                           icon: const Icon(Icons.edit,
                                               color: Colors.blue),
@@ -177,9 +191,10 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                               child: Text(
                                 'Você ainda não tem equipamentos',
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
                               ),
                             ),
                   const SizedBox(height: 40),
