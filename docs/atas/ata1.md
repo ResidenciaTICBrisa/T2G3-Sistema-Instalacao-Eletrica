@@ -38,8 +38,8 @@
 - Estabelecimento de ferramentas para desenvolvimento e conclusão do projeto dentro do prazo estabelecido.
 
 ## Próxima Reunião:
-- Data: 27 de fevereiro de 2024
-- Horário: 14 horas
+- Data: 20 de Março de 2024
+- Horário: 15 horas
 - Local: LTDEA 206
 
 ## Observações:
