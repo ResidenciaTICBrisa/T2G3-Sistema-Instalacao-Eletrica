@@ -32,7 +32,7 @@ class RefrigerationsEquipmentService {
   }
 
   Future<List<String>> getRefrigerationsListByArea(int areaId) async {
-    final url = '${baseUrl}refrigerations/by-area/$areaId';
+    final url = '${baseUrl}refrigeration/by-area/$areaId';
     try {
       final response = await client.get(Uri.parse(url));
       if (response.statusCode == 200) {
