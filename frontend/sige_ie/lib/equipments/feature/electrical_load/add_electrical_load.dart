@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-
-import 'package:sige_ie/equipments/data/iluminations/ilumination__equipment_request_model.dart';
-import 'package:sige_ie/equipments/data/iluminations/ilumination_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_request_model.dart.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
@@ -432,20 +431,21 @@ class _AddElectricalLoadEquipmentScreenState
       personalEquipmentCategory = null;
     }
 
-    final IluminationRequestModel iluminationModel = IluminationRequestModel(
+    final EletricalLoadRequestModel EletricalLoadModel =
+        EletricalLoadRequestModel(
       area: widget.areaId,
       system: widget.categoryNumber,
     );
 
-    final IluminationEquipmentRequestModel iluminationEquipmentDetail =
-        IluminationEquipmentRequestModel(
+    final EletricalLoadEquipmentRequestModel EletricalLoadEquipmentDetail =
+        EletricalLoadEquipmentRequestModel(
       genericEquipmentCategory: genericEquipmentCategory,
       personalEquipmentCategory: personalEquipmentCategory,
-      iluminationRequestModel: iluminationModel,
+      eletricalLoadRequestModel: EletricalLoadModel,
     );
 
-    int? equipmentId =
-        await equipmentService.createIlumination(iluminationEquipmentDetail);
+    int? equipmentId = await equipmentService
+        .createElectricalLoad(EletricalLoadEquipmentDetail);
 
     if (equipmentId != null) {
       await Future.wait(_images.map((imageData) async {

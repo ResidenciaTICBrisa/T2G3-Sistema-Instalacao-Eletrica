@@ -280,7 +280,7 @@ class MyApp extends StatelessWidget {
             throw Exception(
                 'Invalid route: Expected Map arguments for /listFireAlarms.');
 
-          case '/listCollingEquipment':
+          case '/listRefrigerationEquipment':
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
               final String? areaName = args['areaName']?.toString();

@@ -450,7 +450,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
       );
       Navigator.pushReplacementNamed(
         context,
-        '/listCollingEquipment',
+        '/listRefrigerationEquipment',
         arguments: {
           'areaName': widget.areaName,
           'categoryNumber': widget.categoryNumber,
@@ -501,7 +501,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
             });
             Navigator.pushReplacementNamed(
               context,
-              '/listCollingEquipment',
+              '/listRefrigerationEquipment',
               arguments: {
                 'areaName': widget.areaName,
                 'categoryNumber': widget.categoryNumber,
