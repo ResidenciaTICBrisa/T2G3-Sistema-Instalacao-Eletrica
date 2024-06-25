@@ -82,7 +82,7 @@ class _ListElectricalLineEquipmentState
 
   @override
   Widget build(BuildContext context) {
-    String systemTitle = 'LINHAS ELÉTRICAS';
+    String systemTitle = 'Linhas Elétricas';
 
     return Scaffold(
       appBar: AppBar(
@@ -140,18 +140,29 @@ class _ListElectricalLineEquipmentState
                           ? Column(
                               children: equipmentList.map((equipment) {
                                 return Container(
-                                  color: AppColors.sigeIeBlue,
                                   margin:
                                       const EdgeInsets.symmetric(vertical: 5),
-                                  child: ListTile(
-                                    title: Text(
-                                      equipment,
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.sigeIeBlue,
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
+                                    child: Row(
                                       children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              equipment,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                         IconButton(
                                           icon: const Icon(Icons.edit,
                                               color: Colors.blue),
