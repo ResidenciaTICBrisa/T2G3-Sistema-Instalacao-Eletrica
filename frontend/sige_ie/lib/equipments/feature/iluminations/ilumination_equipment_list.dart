@@ -70,9 +70,17 @@ class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
     );
   }
 
+  void _editEquipment(BuildContext context, String equipment) {
+    // Implement the logic to edit the equipment
+  }
+
+  void _deleteEquipment(BuildContext context, String equipment) {
+    // Implement the logic to delete the equipment
+  }
+
   @override
   Widget build(BuildContext context) {
-    String systemTitle = 'ILUMINAÇÃO';
+    String systemTitle = 'Iluminação';
 
     return Scaffold(
       appBar: AppBar(
@@ -105,12 +113,15 @@ class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
               child: Center(
-                child: Text('${widget.areaName} - $systemTitle',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.lightText)),
+                child: Text(
+                  '${widget.areaName} - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -126,8 +137,45 @@ class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
                       : equipmentList.isNotEmpty
                           ? Column(
                               children: equipmentList.map((equipment) {
-                                return ListTile(
-                                  title: Text(equipment),
+                                return Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.sigeIeBlue,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              equipment,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit,
+                                              color: Colors.blue),
+                                          onPressed: () => _editEquipment(
+                                              context, equipment),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                          onPressed: () => _deleteEquipment(
+                                              context, equipment),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               }).toList(),
                             )
@@ -135,9 +183,10 @@ class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
                               child: Text(
                                 'Você ainda não tem equipamentos',
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54,
+                                ),
                               ),
                             ),
                   const SizedBox(height: 40),

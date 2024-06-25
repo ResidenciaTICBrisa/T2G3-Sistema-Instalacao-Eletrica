@@ -231,14 +231,15 @@ class EquipmentService {
   }
 
   Future<int?> createRefrigerations(
-      RefrigerationsEquipmentRequestModel coolingEquipmentRequestModel) async {
+      RefrigerationsEquipmentRequestModel
+          RefrigerationsEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
 
     try {
       var response = await client.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(coolingEquipmentRequestModel.toJson()),
+        body: jsonEncode(RefrigerationsEquipmentRequestModel.toJson()),
       );
 
       _logger.info('Response status code: ${response.statusCode}');
@@ -250,7 +251,7 @@ class EquipmentService {
         return responseData['id'];
       } else {
         _logger.info(
-            'Failed to register cooling equipment: ${response.statusCode}');
+            'Failed to register refrigeration equipment: ${response.statusCode}');
         return null;
       }
     } catch (e) {

@@ -72,9 +72,17 @@ class _ListElectricalLineEquipmentState
     );
   }
 
+  void _editEquipment(BuildContext context, String equipment) {
+    // Implement the logic to edit the equipment
+  }
+
+  void _deleteEquipment(BuildContext context, String equipment) {
+    // Implement the logic to delete the equipment
+  }
+
   @override
   Widget build(BuildContext context) {
-    String systemTitle = 'LINHAS ELÉTRICAS';
+    String systemTitle = 'Linhas Elétricas';
 
     return Scaffold(
       appBar: AppBar(
@@ -131,8 +139,45 @@ class _ListElectricalLineEquipmentState
                       : equipmentList.isNotEmpty
                           ? Column(
                               children: equipmentList.map((equipment) {
-                                return ListTile(
-                                  title: Text(equipment),
+                                return Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.sigeIeBlue,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 10),
+                                            child: Text(
+                                              equipment,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.edit,
+                                              color: Colors.blue),
+                                          onPressed: () => _editEquipment(
+                                              context, equipment),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete,
+                                              color: Colors.red),
+                                          onPressed: () => _deleteEquipment(
+                                              context, equipment),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               }).toList(),
                             )

@@ -1,5 +1,6 @@
 asgiref==3.7.2
 async-timeout==4.0.3
+chardet==5.2.0
 Django==4.2
 django-cors-headers==4.3.1
 django-redis==5.4.0
@@ -10,4 +11,5 @@ mysqlclient==2.2.4
 pillow==10.3.0
 pytz==2024.1
 redis==5.0.3
+reportlab==4.2.0
 sqlparse==0.4.4
