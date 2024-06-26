@@ -8,7 +8,7 @@ class IsPlaceOwner(BasePermission):
 
 class IsEquipmentOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if obj.equipment.place.place_owner == request.user.place_owner:
+        if obj.equipment.place_owner == request.user.place_owner:
             return True
         else:
             return False
