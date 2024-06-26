@@ -6,7 +6,7 @@ from .serializers import *
 from .permissions import *
 from rest_framework import status
 
-def get_place_owner(self, user):
+def get_place_owner_or_create(user):
     try:
         return user.place_owner
     except PlaceOwner.DoesNotExist:
@@ -19,7 +19,7 @@ class PersonalEquipmentCategoryCreate(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = get_place_owner_or_create(user)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(place_owner=place_owner)
@@ -103,7 +103,8 @@ class RefrigerationEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return RefrigerationEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return RefrigerationEquipment.objects.filter(area__place__place_owner=place_owner)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -134,7 +135,8 @@ class FireAlarmEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return FireAlarmEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return FireAlarmEquipment.objects.filter(area__place__place_owner=place_owner)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -165,7 +167,8 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return AtmosphericDischargeEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return AtmosphericDischargeEquipment.objects.filter(area__place__place_owner=place_owner)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -196,7 +199,8 @@ class StructuredCablingEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return StructuredCablingEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return StructuredCablingEquipment.objects.filter(area__place__place_owner=place_owner)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -227,7 +231,8 @@ class DistributionBoardEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return DistributionBoardEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return DistributionBoardEquipment.objects.filter(area__place__place_owner=place_owner)
     
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -258,7 +263,8 @@ class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return ElectricalCircuitEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return ElectricalCircuitEquipment.objects.filter(area__place__place_owner=place_owner)
     
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -289,7 +295,8 @@ class ElectricalLineEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return ElectricalLineEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return ElectricalLineEquipment.objects.filter(area__place__place_owner=place_owner)
     
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -320,7 +327,8 @@ class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return ElectricalLoadEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return ElectricalLoadEquipment.objects.filter(area__place__place_owner=place_owner)
     
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
@@ -351,7 +359,8 @@ class IluminationEquipmentList(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return IluminationEquipment.objects.filter(area__place__place_owner=user.place_owner)
+        place_owner = get_place_owner_or_create(user)
+        return IluminationEquipment.objects.filter(area__place__place_owner=place_owner)
 
     def create(self, request, *args, **kwargs):
         data = request.data.copy() 
