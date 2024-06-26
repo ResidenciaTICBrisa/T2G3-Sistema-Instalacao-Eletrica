@@ -15,20 +15,20 @@ from reportlab.pdfgen import canvas
 from .models import Place, Area
 from .serializers import PlaceSerializer, AreaSerializer
 
+def get_place_owner_or_create(user):
+    try:
+        return user.place_owner
+    except PlaceOwner.DoesNotExist:
+        return PlaceOwner.objects.create(user=user)
+
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
     serializer_class = PlaceSerializer
     permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
 
-    def get_place_owner(self, user):
-        try:
-            return user.place_owner
-        except PlaceOwner.DoesNotExist:
-            return PlaceOwner.objects.create(user=user)
-
     def create(self, request, *args, **kwargs):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = get_place_owner_or_create(user)
 
         place_data = request.data.copy()
         place_data['place_owner'] = place_owner.id
@@ -41,7 +41,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = get_place_owner_or_create(user)
 
         places = Place.objects.filter(
             Q(place_owner=place_owner) | 
@@ -54,7 +54,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = get_place_owner_or_create(user)
         if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             serializer = PlaceSerializer(place)
             return Response(serializer.data)
@@ -64,7 +64,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def update(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = get_place_owner_or_create(user)
         if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
             serializer = PlaceSerializer(place, data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -75,7 +75,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         user = request.user
-        place_owner = self.get_place_owner(user)
+        place_owner = get_place_owner_or_create(user)
 
         place = get_object_or_404(Place, pk=pk)
         if place.place_owner.id == place_owner.id:
@@ -104,7 +104,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = get_place_owner_or_create(user)
         place_id = request.data.get('place')
         place = get_object_or_404(Place, id=place_id)
 
@@ -116,24 +116,26 @@ class AreaViewSet(viewsets.ModelViewSet):
         else:
             return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
-    def list(self,request,*args, **kwargs):
+    def list(self, request, *args, **kwargs):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = get_place_owner_or_create(user)
         place_id = request.query_params.get('place')
 
         if not place_id:
             raise NotFound("Place ID must be provided.")
 
-        place = get_object_or_404(Place, id=place_id, place_owner=place_owner)
+        place = get_object_or_404(Place, id=place_id)
 
-        areas = Area.objects.filter(place=place)
-
-        area_serializer = AreaSerializer(areas, many=True)
-        return Response(area_serializer.data)
+        if place.place_owner.id == place_owner.id or place.editors.filter(user=user).exists():
+            areas = Area.objects.filter(place=place)
+            area_serializer = AreaSerializer(areas, many=True)
+            return Response(area_serializer.data)
+        else:
+            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
 
     def retrieve(self, request, pk=None):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = get_place_owner_or_create(user)
 
         area = get_object_or_404(Area,pk=pk)
 
@@ -145,7 +147,7 @@ class AreaViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, pk=None):
         user = request.user
-        place_owner = user.place_owner
+        place_owner = get_place_owner_or_create(user)
         area = get_object_or_404(Area, pk=pk)
 
         if area.place.place_owner.id == place_owner.id:
