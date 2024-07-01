@@ -1,11 +1,13 @@
 class EletricalCircuitEquipmentResponseModel {
   int id;
-  String area;
+  int area;
+  String equipmentCategory;
   int system;
 
   EletricalCircuitEquipmentResponseModel({
     required this.id,
     required this.area,
+    required this.equipmentCategory,
     required this.system,
   });
 
@@ -13,16 +15,9 @@ class EletricalCircuitEquipmentResponseModel {
       Map<String, dynamic> json) {
     return EletricalCircuitEquipmentResponseModel(
       id: json['id'],
-      area: json['name'],
+      area: json['area'],
+      equipmentCategory: json['equipment_category'],
       system: json['system'],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'area': area,
-      'system': system,
-    };
   }
 }
