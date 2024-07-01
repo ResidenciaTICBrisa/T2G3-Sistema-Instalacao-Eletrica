@@ -11,6 +11,7 @@ urlpatterns = [
     path('equipment-details/', EquipmentList.as_view()),
     path('equipment-details/<pk>/', EquipmentDetail.as_view()),
     path('equipment-photos/', EquipmentPhotoList.as_view()),
+    path('equipment-photos/by-equipment/<int:equipment_id>/', EquipmentPhotoByEquipmentList.as_view(), name='equipment-photo-list'),
     path('equipment-photos/<pk>/', EquipmentPhotoDetail.as_view()),
     path('refrigerations/', RefrigerationEquipmentList.as_view()),
     path('refrigeration/by-area/<int:area_id>/', RefrigerationEquipmentByAreaList.as_view()),

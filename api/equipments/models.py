@@ -3,16 +3,18 @@ from places.models import Place, Area
 from systems.models import System
 from users.models import PlaceOwner
 
+
 class PersonalEquipmentCategory(models.Model):
     name = models.CharField(max_length=50)
     system = models.ForeignKey(System, on_delete=models.CASCADE)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True) # remover
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        db_table = 'equipments_personal_equipment_categories'
+        db_table = 'personal_equipment_categories'
+
 
 class GenericEquipmentCategory(models.Model):
     name = models.CharField(max_length=50)
@@ -22,21 +24,24 @@ class GenericEquipmentCategory(models.Model):
         return self.name
 
     class Meta:
-        db_table = 'equipments_generic_equipment_categories'
+        db_table = 'generic_equipment_categories'
+
 
 class Equipment(models.Model):
     generic_equipment_category = models.ForeignKey(GenericEquipmentCategory, on_delete=models.CASCADE, null=True)
     personal_equipment_category = models.ForeignKey(PersonalEquipmentCategory, on_delete=models.CASCADE, null=True)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True) # remover
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        if(self.generic_equipment_category != None):
-            return str(self.generic_equipment_category)
-        else:
-            return str(self.personal_equipment_category)
+        if self.generic_equipment_category is not None:
+            return str(self.generic_equipment_category.name)
+        elif self.personal_equipment_category is not None:
+            return str(self.personal_equipment_category.name)
+        return 'No category'
 
     class Meta:
-        db_table = 'equipments_equipment_details'
+        db_table = 'equipments'
+
 
 class EquipmentPhoto(models.Model):
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
@@ -46,13 +51,18 @@ class EquipmentPhoto(models.Model):
     def __str__(self):
         return self.description
 
+    class Meta:
+        db_table = 'equipments_photos'
+
+
 class IluminationEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="ilumination_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=1)
 
     class Meta:
-        db_table = 'equipments_ilumination_equipments'
+        db_table = 'equipments_illuminations'
+
 
 class ElectricalLoadEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="electrical_load_equipment")
@@ -60,7 +70,8 @@ class ElectricalLoadEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
 
     class Meta:
-        db_table = 'equipments_electrical_load_equipments'
+        db_table = 'equipments_electrical_loads'
+
 
 class ElectricalLineEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="electrical_line_equipment")
@@ -68,7 +79,8 @@ class ElectricalLineEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=3)
 
     class Meta:
-        db_table = 'equipments_electrical_line_equipments'
+        db_table = 'equipments_electrical_lines'
+
 
 class ElectricalCircuitEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name='electrical_circuit_equipment')
@@ -76,7 +88,8 @@ class ElectricalCircuitEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
 
     class Meta:
-        db_table = 'equipments_electrical_circuit_equipments'
+        db_table = 'equipments_electrical_circuits'
+
 
 class DistributionBoardEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="distribution_board_equipment")
@@ -84,7 +97,8 @@ class DistributionBoardEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=5)
 
     class Meta:
-        db_table = 'equipments_distribution_board_equipments'
+        db_table = 'equipments_distribution_boards'
+
 
 class StructuredCablingEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="structured_cabling_equipment")
@@ -92,23 +106,26 @@ class StructuredCablingEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=6)
 
     class Meta:
-        db_table = 'equipments_structured_cabling_equipments'
+        db_table = 'equipments_structured_cabling'
+
 
 class AtmosphericDischargeEquipment(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name= "atmospheric_discharge_equipment")
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="atmospheric_discharge_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=7)
 
     class Meta:
-        db_table = 'equipments_atmospheric_discharge_equipments'
+        db_table = 'equipments_atmospheric_discharges'
+
 
 class FireAlarmEquipment(models.Model):
-   area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="fire_alarm_equipment")
-   equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True, related_name="fire_alarm")
-   system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="fire_alarm_equipment")
+    equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True, related_name="fire_alarm")
+    system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
 
-   class Meta:
-       db_table = 'equipments_fire_alarm_equipments'
+    class Meta:
+        db_table = 'equipments_fire_alarms'
+
 
 class RefrigerationEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="refrigeration_equipment")
@@ -116,4 +133,4 @@ class RefrigerationEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=9)
 
     class Meta:
-        db_table = 'equipments_refrigeration_equipments'
+        db_table = 'equipments_refrigeration'

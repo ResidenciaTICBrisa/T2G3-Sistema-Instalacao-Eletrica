@@ -15,11 +15,13 @@ from reportlab.pdfgen import canvas
 from .models import Place, Area
 from .serializers import PlaceSerializer, AreaSerializer
 
+
 def get_place_owner_or_create(user):
     try:
         return user.place_owner
     except PlaceOwner.DoesNotExist:
         return PlaceOwner.objects.create(user=user)
+
 
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.all()
@@ -44,7 +46,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
         place_owner = get_place_owner_or_create(user)
 
         places = Place.objects.filter(
-            Q(place_owner=place_owner) | 
+            Q(place_owner=place_owner) |
             Q(editors__user=user)
         ).distinct()
 
@@ -59,7 +61,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
             serializer = PlaceSerializer(place)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"},
+                            status=status.HTTP_403_FORBIDDEN)
 
     def update(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
@@ -71,7 +74,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"},
+                            status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
         user = request.user
@@ -90,12 +94,14 @@ class PlaceViewSet(viewsets.ModelViewSet):
         serializer = AreaSerializer(place.areas.all(), many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['get'], url_path='areas/(?P<area_pk>\d+)', permission_classes=[IsAuthenticated, IsPlaceOwner | IsPlaceEditor])
+    @action(detail=True, methods=['get'], url_path='areas/(?P<area_pk>\d+)',
+            permission_classes=[IsAuthenticated, IsPlaceOwner | IsPlaceEditor])
     def area(self, request, pk=None, area_pk=None):
         place = self.get_object()
         area = get_object_or_404(place.areas.all(), pk=area_pk)
         serializer = AreaSerializer(area)
         return Response(serializer.data)
+
 
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()
@@ -114,7 +120,8 @@ class AreaViewSet(viewsets.ModelViewSet):
             area_serializer.save()
             return Response(area_serializer.data, status=status.HTTP_201_CREATED)
         else:
-            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"},
+                            status=status.HTTP_403_FORBIDDEN)
 
     def list(self, request, *args, **kwargs):
         user = request.user
@@ -131,19 +138,21 @@ class AreaViewSet(viewsets.ModelViewSet):
             area_serializer = AreaSerializer(areas, many=True)
             return Response(area_serializer.data)
         else:
-            return Response({"message": "You are not the owner or an editor of this place"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this place"},
+                            status=status.HTTP_403_FORBIDDEN)
 
     def retrieve(self, request, pk=None):
         user = request.user
         place_owner = get_place_owner_or_create(user)
 
-        area = get_object_or_404(Area,pk=pk)
+        area = get_object_or_404(Area, pk=pk)
 
-        if(area.place.place_owner.id == place_owner.id or area.place.editors.filter(user=user).exists()):
+        if area.place.place_owner.id == place_owner.id or area.place.editors.filter(user=user).exists():
             serializer = AreaSerializer(area)
             return Response(serializer.data)
         else:
-            return Response({"message": "You are not the owner or an editor of this area"}, status=status.HTTP_403_FORBIDDEN)
+            return Response({"message": "You are not the owner or an editor of this area"},
+                            status=status.HTTP_403_FORBIDDEN)
 
     def destroy(self, request, pk=None):
         user = request.user
@@ -155,6 +164,7 @@ class AreaViewSet(viewsets.ModelViewSet):
             return Response({"message": "Area deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
+
 
 class GrantAccessViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsPlaceOwner]
@@ -180,23 +190,26 @@ class GrantAccessViewSet(viewsets.ViewSet):
 
         return Response({'message': 'Access granted successfully'}, status=status.HTTP_200_OK)
 
+
 class Altura:
     def __init__(self):
         self.alt = 840
 
     def get_alt(self, p, margin=30):
-        self.alt -= 40 
+        self.alt -= 40
         if self.alt < margin:
-            p.showPage()  
-            self.alt = 800  
+            p.showPage()
+            self.alt = 800
             return self.alt
         return self.alt
+
 
 def genericOrPersonal(system):
     if system.equipment.generic_equipment_category is not None:
         return system.equipment.generic_equipment_category
     else:
         return system.equipment.personal_equipment_category
+
 
 class GeneratePDFView(APIView):
     permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
@@ -210,10 +223,10 @@ class GeneratePDFView(APIView):
         response['Content-Disposition'] = f'attachment; filename="place_{place.id}_report.pdf"'
 
         p = canvas.Canvas(response, pagesize=A4)
-        alt = Altura()  
+        alt = Altura()
 
         p.setFont('Helvetica-Bold', 16)
-       
+
         p.drawString(205, alt.get_alt(p), f"Relatório do Local: {place.name}")
 
         p.setFont('Helvetica-Bold', 14)
@@ -224,55 +237,55 @@ class GeneratePDFView(APIView):
             p.drawString(120, alt.get_alt(p), f"Relatório da Área: {area.name}")
 
             for system in area.fire_alarm_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-            
+
             for system in area.atmospheric_discharge_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-            
+
             for system in area.structured_cabling_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-            
+
             for system in area.distribution_board_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
             for system in area.electrical_circuit_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-            
+
             for system in area.electrical_line_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
-            
+
             for system in area.electrical_load_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
             for system in area.ilumination_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
             for system in area.refrigeration_equipment.all():
-                if(system == None):
+                if (system == None):
                     break
                 p.setFont('Helvetica', 12)
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
