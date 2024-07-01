@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/main.dart';
 
@@ -31,29 +32,26 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<List<String>> getFireAlarmListByArea(int areaId) async {
-    final url = '${baseUrl}fire-alarms/by-area/$areaId';
+  Future<List<FireAlarmEquipmentResponseModel>> getFireAlarmListByArea(
+      int areaId) async {
+    var url = Uri.parse('${baseUrl}fire-alarms/by-area/$areaId/');
     try {
-      final response = await client.get(Uri.parse(url));
+      var response = await client.get(url);
+
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        _logger.info('API response data: $data');
-        return data.map((item) {
-          if (item['equipment'].containsKey('generic_equipment_category')) {
-            return item['equipment']['generic_equipment_category'] as String;
-          } else if (item['equipment']
-              .containsKey('personal_equipment_category')) {
-            return item['equipment']['personal_equipment_category'] as String;
-          } else {
-            return 'Unknown Equipment';
-          }
-        }).toList();
+        List<dynamic> dataList = jsonDecode(response.body);
+        return dataList
+            .map((data) => FireAlarmEquipmentResponseModel.fromJson(data))
+            .toList();
       } else {
+        _logger.info(
+            'Failed to load fire alarm equipment with status code: ${response.statusCode}');
+        _logger.info('Response body: ${response.body}');
         throw Exception('Failed to load fire alarm equipment');
       }
     } catch (e) {
       _logger.info('Error during get fire alarm equipment list: $e');
-      return [];
+      throw Exception('Failed to load fire alarm equipment');
     }
   }
 }
