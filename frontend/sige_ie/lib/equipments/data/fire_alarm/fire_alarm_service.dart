@@ -4,7 +4,6 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
-import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/main.dart';
 
 class FireAlarmEquipmentService {
@@ -13,24 +12,6 @@ class FireAlarmEquipmentService {
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
-
-  Future<List<EquipmentCategoryResponseModel>> getAllEquipment(
-      int systemId,
-      List<EquipmentCategoryResponseModel> genericEquipmentCategoryList,
-      List<EquipmentCategoryResponseModel>
-          personalEquipmentCategoryList) async {
-    List<EquipmentCategoryResponseModel> combinedList = [
-      ...genericEquipmentCategoryList,
-      ...personalEquipmentCategoryList,
-    ];
-    try {
-      _logger.info('Combined list length: ${combinedList.length}');
-      return combinedList;
-    } catch (e) {
-      _logger.info('Error during get all equipment: $e');
-      return [];
-    }
-  }
 
   Future<List<FireAlarmEquipmentResponseModel>> getFireAlarmListByArea(
       int areaId) async {
