@@ -2,40 +2,21 @@ import base64
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 from .models import *
-from .serializers import *
-from .mixins import ValidateAreaMixin
+
+from .mixins import ValidateAreaMixin, EquipmentCategoryMixin
+
 
 class PersonalEquipmentCategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = PersonalEquipmentCategory
         fields = '__all__'
 
-class PersonalEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = PersonalEquipmentCategory
-        fields = ['id', 'name']
 
 class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
-
     class Meta:
         model = GenericEquipmentCategory
         fields = '__all__'
 
-class GenericEquipmentCategoryResponseSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = GenericEquipmentCategory
-        fields = ['id', 'name']
-
-class EquipmentResponseSerializer(serializers.ModelSerializer):
-    generic_equipment_category = serializers.CharField(source='generic_equipment_category.name', read_only=True)
-    personal_equipment_category = serializers.CharField(source='personal_equipment_category.name', read_only=True)
-
-    class Meta:
-        model = Equipment
-        fields = ['generic_equipment_category', 'personal_equipment_category']
 
 class EquipmentPhotoSerializer(serializers.ModelSerializer):
     photo = serializers.CharField(write_only=True)
@@ -56,131 +37,140 @@ class EquipmentPhotoSerializer(serializers.ModelSerializer):
         equipment_photo = EquipmentPhoto.objects.create(photo=photo, **validated_data)
         return equipment_photo
 
-class FireAlarmEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
+class FireAlarmEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
     class Meta:
         model = FireAlarmEquipment
         fields = '__all__'
 
-class FireAlarmEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
-
-    class Meta:
-        model = FireAlarmEquipment
-        fields = ['id', 'area', 'equipment', 'system']
 
 class AtmosphericDischargeEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
-
     class Meta:
         model = AtmosphericDischargeEquipment
         fields = '__all__'
 
-class  AtmosphericDischargeEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+
+class StructuredCablingEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = StructuredCablingEquipment
+        fields = '__all__'
+
+
+class DistributionBoardEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = DistributionBoardEquipment
+        fields = '__all__'
+
+
+class ElectricalCircuitEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = ElectricalCircuitEquipment
+        fields = '__all__'
+
+
+class ElectricalLineEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = ElectricalLineEquipment
+        fields = '__all__'
+
+
+class ElectricalLoadEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = ElectricalLoadEquipment
+        fields = '__all__'
+
+
+class IluminationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = IluminationEquipment
+        fields = '__all__'
+
+
+class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
+    class Meta:
+        model = RefrigerationEquipment
+        fields = '__all__'
+
+
+class FireAlarmEquipmentResponseSerializer(ValidateAreaMixin, EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
+
+    class Meta:
+        model = FireAlarmEquipment
+        fields = ['id', 'area', 'equipment_category', 'system']
+
+
+class AtmosphericDischargeEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = AtmosphericDischargeEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class StructuredCablingEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-    class Meta:
-        model = StructuredCablingEquipment
-        fields = '__all__' 
-
-class StructuredCablingEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class StructuredCablingEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = StructuredCablingEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class DistributionBoardEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-     class Meta:
-        model = DistributionBoardEquipment
-        fields = '__all__'  
-
-class DistributionBoardEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class DistributionBoardEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = StructuredCablingEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class ElectricalCircuitEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-     class Meta:
-        model = ElectricalCircuitEquipment
-        fields = '__all__'  
-
-class ElectricalCircuitEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class ElectricalCircuitEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = ElectricalCircuitEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class ElectricalLineEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-     class Meta:
-        model = ElectricalLineEquipment
-        fields = '__all__'   
-
-class ElectricalLineEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class ElectricalLineEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = ElectricalLineEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class ElectricalLoadEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-     class Meta:
-        model = ElectricalLoadEquipment
-        fields = '__all__'  
-
-class ElectricalLoadEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class ElectricalLoadEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = ElectricalLoadEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class IluminationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-     class Meta:
-        model = IluminationEquipment
-        fields = '__all__'   
-
-class IluminationEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class IluminationEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = IluminationEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
 
-class RefrigerationEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
 
-     class Meta:
-        model = RefrigerationEquipment
-        fields = '__all__'    
-
-class RefrigerationEquipmentResponseSerializer(serializers.ModelSerializer):
-    equipment = EquipmentResponseSerializer()
+class RefrigerationEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
+    equipment_category = serializers.SerializerMethodField()
 
     class Meta:
         model = RefrigerationEquipment
-        fields = ['id', 'area', 'equipment', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system']
+
 
 class EquipmentSerializer(serializers.ModelSerializer):
-
     fire_alarm_equipment = FireAlarmEquipmentSerializer(required=False)
     atmospheric_discharge_equipment = AtmosphericDischargeEquipmentSerializer(required=False)
     structured_cabling_equipment = StructuredCablingEquipmentSerializer(required=False)
     distribution_board_equipment = DistributionBoardEquipmentSerializer(required=False)
     electrical_circuit_equipment = ElectricalCircuitEquipmentSerializer(required=False)
-    electrical_line_equipment  = ElectricalLineEquipmentSerializer(required=False)
+    electrical_line_equipment = ElectricalLineEquipmentSerializer(required=False)
     electrical_load_equipment = ElectricalLoadEquipmentSerializer(required=False)
     ilumination_equipment = IluminationEquipmentSerializer(required=False)
     refrigeration_equipment = RefrigerationEquipmentSerializer(required=False)
@@ -189,7 +179,7 @@ class EquipmentSerializer(serializers.ModelSerializer):
         model = Equipment
         fields = '__all__'
         extra_kwargs = {'place_owner': {'read_only': True}}
-    
+
     def create(self, validated_data):
         request = self.context.get('request')
         validated_data['place_owner'] = request.user.place_owner
@@ -212,35 +202,35 @@ class EquipmentSerializer(serializers.ModelSerializer):
             FireAlarmEquipment.objects.create(equipment=equipment, **fire_alarm_data)
         elif atmospheric_discharge_data:
             if 'equipment' in atmospheric_discharge_data:
-                atmospheric_discharge_data.pop('equipment')        
+                atmospheric_discharge_data.pop('equipment')
             AtmosphericDischargeEquipment.objects.create(equipment=equipment, **atmospheric_discharge_data)
         elif structured_cabling_data:
             if 'equipment' in structured_cabling_data:
-                structured_cabling_data.pop('equipment')  
+                structured_cabling_data.pop('equipment')
             StructuredCablingEquipment.objects.create(equipment=equipment, **structured_cabling_data)
         elif distribution_board_data:
             if 'equipment' in distribution_board_data:
-                distribution_board_data.pop('equipment') 
+                distribution_board_data.pop('equipment')
             DistributionBoardEquipment.objects.create(equipment=equipment, **distribution_board_data)
         elif electrical_circuit_data:
             if 'equipment' in electrical_circuit_data:
-                electrical_circuit_data.pop('equipment') 
+                electrical_circuit_data.pop('equipment')
             ElectricalCircuitEquipment.objects.create(equipment=equipment, **electrical_circuit_data)
         elif electrical_line_data:
             if 'equipment' in electrical_line_data:
-                electrical_line_data.pop('equipment') 
+                electrical_line_data.pop('equipment')
             ElectricalLineEquipment.objects.create(equipment=equipment, **electrical_line_data)
         elif electrical_load_data:
             if 'equipment' in electrical_load_data:
-                electrical_load_data.pop('equipment') 
+                electrical_load_data.pop('equipment')
             ElectricalLoadEquipment.objects.create(equipment=equipment, **electrical_load_data)
         elif ilumination_equipment_data:
             if 'equipment' in ilumination_equipment_data:
-                ilumination_equipment_data.pop('equipment') 
+                ilumination_equipment_data.pop('equipment')
             IluminationEquipment.objects.create(equipment=equipment, **ilumination_equipment_data)
         elif refrigeration_equipment_data:
             if 'equipment' in refrigeration_equipment_data:
-                refrigeration_equipment_data.pop('equipment') 
+                refrigeration_equipment_data.pop('equipment')
             RefrigerationEquipment.objects.create(equipment=equipment, **refrigeration_equipment_data)
 
         return equipment
