@@ -1,5 +1,4 @@
 site_name: "<div style='text-align: center;'><span style='font-family: Arial, sans-serif;'>Sigeie</span></div>"
-
 site_name: Sigeie
 
 theme:
@@ -34,6 +33,8 @@ theme:
     - navigation.top
     - navigation.tracking
     - navigation.tabs.sticky
+  extra_css:
+    - css/custom.css
 
 nav:
   - Ínicio: index.md
@@ -71,3 +72,4 @@ nav:
 plugins:
   - search
   - with-pdf
+
