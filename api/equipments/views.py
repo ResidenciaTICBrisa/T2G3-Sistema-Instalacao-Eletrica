@@ -144,7 +144,21 @@ class RefrigerationEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return RefrigerationEquipment.objects.filter(area_id=area_id)
+        queryset = RefrigerationEquipment.objects.filter(area_id=area_id)
+
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 
 class RefrigerationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -228,8 +242,21 @@ class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return AtmosphericDischargeEquipment.objects.filter(area_id=area_id)
+        queryset = AtmosphericDischargeEquipment.objects.filter(area_id=area_id)
 
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
@@ -263,8 +290,21 @@ class StructuredCablingEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return StructuredCablingEquipment.objects.filter(area_id=area_id)
+        queryset = StructuredCablingEquipment.objects.filter(area_id=area_id)
 
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 class StructuredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = StructuredCablingEquipment.objects.all()
@@ -298,7 +338,21 @@ class DistributionBoardEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return DistributionBoardEquipment.objects.filter(area_id=area_id)
+        queryset = DistributionBoardEquipment.objects.filter(area_id=area_id)
+
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 
 class DistributionBoardEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -333,8 +387,21 @@ class ElectricalCircuitEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return ElectricalCircuitEquipment.objects.filter(area_id=area_id)
+        queryset = ElectricalCircuitEquipment.objects.filter(area_id=area_id)
 
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 class ElectricalCircuitEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalCircuitEquipment.objects.all()
@@ -368,7 +435,21 @@ class ElectricalLineEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return ElectricalLineEquipment.objects.filter(area_id=area_id)
+        queryset = ElectricalLineEquipment.objects.filter(area_id=area_id)
+
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 
 class ElectricalLineEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -403,7 +484,21 @@ class ElectricalLoadEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return ElectricalLoadEquipment.objects.filter(area_id=area_id)
+        queryset = ElectricalLoadEquipment.objects.filter(area_id=area_id)
+
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 
 class ElectricalLoadEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -438,7 +533,21 @@ class IluminationEquipmentByAreaList(generics.ListAPIView):
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
-        return IluminationEquipment.objects.filter(area_id=area_id)
+        queryset = IluminationEquipment.objects.filter(area_id=area_id)
+
+        permitted_objects = []
+        for obj in queryset:
+            if self.check_object_permissions(self.request, obj):
+                permitted_objects.append(obj.id)
+
+        return queryset.filter(id__in=permitted_objects)
+
+    def check_object_permissions(self, request, obj):
+
+        for permission in self.get_permissions():
+            if not permission.has_object_permission(request, self, obj):
+                return False
+        return True
 
 
 class IluminationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
