@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_service.dart';
 import 'package:sige_ie/equipments/feature/fire_alarm/add_fire_alarm.dart';
 
@@ -24,43 +25,20 @@ class ListFireAlarms extends StatefulWidget {
 }
 
 class _ListFireAlarmsState extends State<ListFireAlarms> {
-  List<String> equipmentList = [];
+  late Future<List<FireAlarmEquipmentResponseModel>> _fireAlarmList;
   bool isLoading = true;
-  final FireAlarmEquipmentService _service = FireAlarmEquipmentService();
-  bool _isMounted = false;
+  final FireAlarmEquipmentService _fireAlarmService =
+      FireAlarmEquipmentService();
 
   @override
   void initState() {
     super.initState();
-    _isMounted = true;
-    fetchEquipmentList();
+    _fireAlarmList = _fireAlarmService.getFireAlarmListByArea(widget.areaId);
   }
 
   @override
   void dispose() {
-    _isMounted = false;
     super.dispose();
-  }
-
-  Future<void> fetchEquipmentList() async {
-    try {
-      final List<String> equipmentList =
-          await _service.getFireAlarmListByArea(widget.areaId);
-      if (_isMounted) {
-        setState(() {
-          this.equipmentList = equipmentList;
-          isLoading = false;
-        });
-      }
-      print('Equipment list fetched: $equipmentList');
-    } catch (e) {
-      print('Error fetching equipment list: $e');
-      if (_isMounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
   }
 
   void navigateToAddEquipment(BuildContext context) {
@@ -78,11 +56,11 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     );
   }
 
-  void _editEquipment(BuildContext context, String equipment) {
+  void _editEquipment(BuildContext context, int equipmentId) {
     // Implement the logic to edit the equipment
   }
 
-  void _deleteEquipment(BuildContext context, String equipment) {
+  void _deleteEquipment(BuildContext context, int equipmentId) {
     // Implement the logic to delete the equipment
   }
 
@@ -109,100 +87,68 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: const BoxDecoration(
-                color: AppColors.sigeIeBlue,
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(20)),
-              ),
-              child: Center(
-                child: Text(
-                  '${widget.areaName} - $systemTitle',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightText,
+      body: FutureBuilder<List<FireAlarmEquipmentResponseModel>>(
+        future: _fireAlarmList,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Erro: ${snapshot.error}'));
+          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                var equipment = snapshot.data![index];
+                return Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.sigeIeBlue,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    title: Text(
+                      equipment.equipmentCategory,
+                      style: const TextStyle(
+                          color: AppColors.lightText,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () =>
+                              _editEquipment(context, equipment.id),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _deleteEquipment(context, equipment.id),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text(
+                'Nenhum equipamento encontrado.',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : equipmentList.isNotEmpty
-                          ? Column(
-                              children: equipmentList.map((equipment) {
-                                return Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.sigeIeBlue,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 10),
-                                            child: Text(
-                                              equipment,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.edit,
-                                              color: Colors.blue),
-                                          onPressed: () => _editEquipment(
-                                              context, equipment),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete,
-                                              color: Colors.red),
-                                          onPressed: () => _deleteEquipment(
-                                              context, equipment),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            )
-                          : const Center(
-                              child: Text(
-                                'Você ainda não tem equipamentos',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => navigateToAddEquipment(context),
