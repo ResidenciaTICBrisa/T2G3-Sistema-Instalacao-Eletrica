@@ -60,8 +60,49 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     // Implement the logic to edit the equipment
   }
 
-  void _deleteEquipment(BuildContext context, int equipmentId) {
-    // Implement the logic to delete the equipment
+  Future<void> _deleteEquipment(BuildContext context, int equipmentId) async {
+    try {
+      await _fireAlarmService.deleteFireAlarm(equipmentId);
+      setState(() {
+        _fireAlarmList =
+            _fireAlarmService.getFireAlarmListByArea(widget.areaId);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Equipamento deletado com sucesso')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Falha ao deletar o equipamento')),
+      );
+    }
+  }
+
+  void _confirmDelete(BuildContext context, int equipmentId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmar Exclusão'),
+          content:
+              Text('Você tem certeza que deseja excluir este equipamento?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Excluir'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteEquipment(context, equipmentId);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -155,7 +196,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                                 icon:
                                     const Icon(Icons.delete, color: Colors.red),
                                 onPressed: () =>
-                                    _deleteEquipment(context, equipment.id),
+                                    _confirmDelete(context, equipment.id),
                               ),
                             ],
                           ),
@@ -166,12 +207,14 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                 } else {
                   return const Padding(
                     padding: EdgeInsets.all(10.0),
-                    child: Text(
-                      'Nenhum equipamento encontrado.',
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54),
+                    child: Center(
+                      child: Text(
+                        'Nenhum equipamento encontrado.',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54),
+                      ),
                     ),
                   );
                 }

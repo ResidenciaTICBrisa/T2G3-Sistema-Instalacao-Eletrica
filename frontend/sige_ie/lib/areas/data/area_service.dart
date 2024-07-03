@@ -48,7 +48,6 @@ class AreaService {
     }
   }
 
-  // Ainda não testado
   // GET
   Future<AreaResponseModel> fetchArea(int areaId) async {
     var url = Uri.parse('$baseUrl$areaId/');
