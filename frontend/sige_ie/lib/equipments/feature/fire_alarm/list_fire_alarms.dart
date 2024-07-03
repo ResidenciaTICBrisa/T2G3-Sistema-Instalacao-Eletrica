@@ -87,68 +87,98 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
           },
         ),
       ),
-      body: FutureBuilder<List<FireAlarmEquipmentResponseModel>>(
-        future: _fireAlarmList,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erro: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var equipment = snapshot.data![index];
-                return Container(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: AppColors.sigeIeBlue,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    title: Text(
-                      equipment.equipmentCategory,
-                      style: const TextStyle(
-                          color: AppColors.lightText,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () =>
-                              _editEquipment(context, equipment.id),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () =>
-                              _deleteEquipment(context, equipment.id),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          } else {
-            return const Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text(
-                'Nenhum equipamento encontrado.',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+              decoration: const BoxDecoration(
+                color: AppColors.sigeIeBlue,
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
-            );
-          }
-        },
+              child: Center(
+                child: Text(
+                  '${widget.areaName} - $systemTitle',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.lightText,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            FutureBuilder<List<FireAlarmEquipmentResponseModel>>(
+              future: _fireAlarmList,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Erro: ${snapshot.error}'));
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var equipment = snapshot.data![index];
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: AppColors.sigeIeBlue,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          title: Text(
+                            equipment.equipmentCategory,
+                            style: const TextStyle(
+                                color: AppColors.lightText,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () =>
+                                    _editEquipment(context, equipment.id),
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () =>
+                                    _deleteEquipment(context, equipment.id),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text(
+                      'Nenhum equipamento encontrado.',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => navigateToAddEquipment(context),
