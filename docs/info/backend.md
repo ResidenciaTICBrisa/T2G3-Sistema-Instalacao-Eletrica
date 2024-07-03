@@ -1,94 +1,95 @@
-### Como subir o projeto
+# Como Subir o Projeto
+
 Estas etapas são válidas para Linux OS e WSL.
-#### Como subir o back-end:
 
-Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379. Então atualize o seu sistema:
-  ```
-  sudo apt-get update
-  ```
+## Como Subir o Backend
 
-  ```
-  sudo apt-get upgrade
-  ```
+1. **Atualização do Sistema:**
 
-Em seguida, caso já não tenha instalado:
+    Primeiramente, interrompa qualquer processo que utilize as portas 8080, 3306 e 6379. Em seguida, atualize o sistema:
 
-- Instale o Python, Pip e os cabeçalhos do Python e MySQL:
-
-  Python:
-  ```
-  sudo apt-get install python3.11
-  ```
-
-  Pip:
-  ```
-   sudo apt-get install python3-pip
-  ```
-
-  Cabeçalhos:
-  ```
-  sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config
-  ```
-
-   mysqlclient:
-
-   ```
-   pip install mysqlclient
-   ```
-
-- Instale o virtualenv para criar um ambiente virtual do projeto:
-
-    Virtualenv:
-    ```
-    sudo pip3 install virtualenv
+    ```bash
+    sudo apt-get update
+    sudo apt-get upgrade
     ```
 
-Vá para dentro da pasta raiz `api`:
+2. **Instalação de Dependências:**
 
-1. Cria o ambiente virtual e ative-o:
+    - Instale o Python 3.11, Pip e os cabeçalhos necessários:
 
-    Criar ambiente virtual:
-     ```
-     virtualenv -p python3.11 venv
-     ``` 
-  
-    Ativar ambiente:
-     ```
-     source venv/bin/activate
-     ``` 
+        ```bash
+        sudo apt-get install python3.11
+        sudo apt-get install python3-pip python3.11-dev default-libmysqlclient-dev build-essential pkg-config
+        ```
 
-3. Com o ambiente virtual ativado, instale as dependências:
+    - Instale o `mysqlclient`:
 
-   ```
-   pip install -r requirements.txt
-   ```
+        ```bash
+        pip install mysqlclient
+        ```
 
-4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
+3. **Instalação do Virtualenv:**
 
-   ```
-   docker-compose build
-   ```
+    - Instale o `virtualenv` para gerenciar ambientes virtuais:
 
-6. Suba a imagem:
+        ```bash
+        sudo pip3 install virtualenv
+        ```
 
-   ```
-   docker-compose up
-   ```
+4. **Configuração do Ambiente Virtual:**
 
-8. Ainda no diretório raiz `api`, aplique as migrações:
+    - Vá para o diretório raiz do projeto `api`:
 
-   ```
-   python manage.py makemigrations
-   ```
+        ```bash
+        cd caminho/para/o/diretorio/api
+        ```
 
-   ```
-   python3 manage.py migrate
-   ```
+    - Crie e ative o ambiente virtual:
 
-10. Inicie o servidor:
+        ```bash
+        virtualenv -p python3.11 venv
+        source venv/bin/activate
+        ```
 
-    ```
-    python3 manage.py runserver
-    ```
+5. **Instalação de Dependências do Projeto:**
 
-Pronto, o servidor já está rodando com o banco de dados configurado.
+    - Com o ambiente virtual ativado, instale as dependências listadas no arquivo `requirements.txt`:
+
+        ```bash
+        pip install -r requirements.txt
+        ```
+
+6. **Configuração do Banco de Dados com Docker:**
+
+    - Com o Docker iniciado, construa a imagem do banco de dados:
+
+        ```bash
+        docker-compose build
+        ```
+
+7. **Iniciar Docker:**
+
+    - Suba o contêiner do banco de dados:
+
+        ```bash
+        docker-compose up
+        ```
+
+8. **Aplicação de Migrações:**
+
+    - Ainda no diretório raiz `api`, aplique as migrações ao banco de dados:
+
+        ```bash
+        python manage.py makemigrations
+        python manage.py migrate
+        ```
+
+9. **Iniciar o Servidor:**
+
+    - Finalmente, inicie o servidor Django:
+
+        ```bash
+        python manage.py runserver
+        ```
+
+Pronto! O servidor está configurado e em execução com o banco de dados configurado.
