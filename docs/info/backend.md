@@ -1,95 +1,114 @@
-# Como Subir o Projeto
-
+### Como subir o projeto
 Estas etapas são válidas para Linux OS e WSL.
+#### Como subir o back-end:
 
-## Como Subir o Backend
+Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379. Então atualize o seu sistema:
+  ```
+  sudo apt-get update
+  ```
 
-1. **Atualização do Sistema:**
-
-    Primeiramente, interrompa qualquer processo que utilize as portas 8080, 3306 e 6379. Em seguida, atualize o sistema:
-
-    ```bash
-    sudo apt-get update
-    sudo apt-get upgrade
-    ```
+  ```
+  sudo apt-get upgrade
+  ```
 
 2. **Instalação de Dependências:**
 
-    - Instale o Python 3.11, Pip e os cabeçalhos necessários:
+- Instale o Python, Pip e os cabeçalhos do Python e MySQL:
 
-        ```bash
-        sudo apt-get install python3.11
-        sudo apt-get install python3-pip python3.11-dev default-libmysqlclient-dev build-essential pkg-config
-        ```
+  Python:
+  ```
+  sudo apt-get install python3.11
+  ```
 
-    - Instale o `mysqlclient`:
+  Pip:
+  ```
+   sudo apt-get install python3-pip
+  ```
 
-        ```bash
-        pip install mysqlclient
-        ```
+  Cabeçalhos:
+  ```
+  sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config
+  ```
 
-3. **Instalação do Virtualenv:**
+   mysqlclient:
 
-    - Instale o `virtualenv` para gerenciar ambientes virtuais:
+   ```
+   pip install mysqlclient
+   ```
 
-        ```bash
-        sudo pip3 install virtualenv
-        ```
+- Instale o virtualenv para criar um ambiente virtual do projeto:
 
-4. **Configuração do Ambiente Virtual:**
+    Virtualenv:
+    ```
+    sudo pip3 install virtualenv
+    ```
 
-    - Vá para o diretório raiz do projeto `api`:
+Vá para dentro da pasta raiz `api`:
 
-        ```bash
-        cd caminho/para/o/diretorio/api
-        ```
+1. Cria o ambiente virtual e ative-o:
 
-    - Crie e ative o ambiente virtual:
+    Criar ambiente virtual:
+     ```
+     virtualenv -p python3.11 venv
+     ``` 
+  
+    Ativar ambiente:
+     ```
+     source venv/bin/activate
+     ``` 
 
-        ```bash
-        virtualenv -p python3.11 venv
-        source venv/bin/activate
-        ```
+3. Com o ambiente virtual ativado, instale as dependências:
 
-5. **Instalação de Dependências do Projeto:**
+   ```
+   pip install -r requirements.txt
+   ```
 
-    - Com o ambiente virtual ativado, instale as dependências listadas no arquivo `requirements.txt`:
+4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
 
-        ```bash
-        pip install -r requirements.txt
-        ```
+   ```
+   docker-compose build
+   ```
 
-6. **Configuração do Banco de Dados com Docker:**
+6. Suba a imagem:
 
-    - Com o Docker iniciado, construa a imagem do banco de dados:
+   ```
+   docker-compose up
+   ```
 
-        ```bash
-        docker-compose build
-        ```
+8. Ainda no diretório raiz `api`, aplique as migrações:
 
-7. **Iniciar Docker:**
+   ```
+   python manage.py makemigrations
+   ```
 
-    - Suba o contêiner do banco de dados:
+   ```
+   python3 manage.py migrate
+   ```
 
-        ```bash
-        docker-compose up
-        ```
+10. Inicie o servidor:
 
-8. **Aplicação de Migrações:**
-
-    - Ainda no diretório raiz `api`, aplique as migrações ao banco de dados:
-
-        ```bash
-        python manage.py makemigrations
-        python manage.py migrate
-        ```
-
-9. **Iniciar o Servidor:**
-
-    - Finalmente, inicie o servidor Django:
-
-        ```bash
-        python manage.py runserver
-        ```
+    ```
+    python3 manage.py runserver
+    ```
 
 Pronto! O servidor está configurado e em execução com o banco de dados configurado.
+
+#### Pela segunda vez
+
+Garanta que não haja nenhum processo que use o porto `8080`, `3306` e `6379`. Por fim, com todas as dependências configuradas, basta:
+
+- Iniciar o Docker e o container `sigeie`;
+- Baixar as atualizações (caso haja):
+
+```sh
+git pull
+```
+
+- Atualizar as dependências, fazer as migrações e iniciar o servidor:
+
+```sh
+source venv/bin/activate && pip install -r requirements.txt && python manage.py makemigrations && python manage.py migrate && python manage.py runserver
+```
+
+Isso é tudo, pessoal.
+```
