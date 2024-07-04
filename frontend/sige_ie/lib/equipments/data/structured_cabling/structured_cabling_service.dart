@@ -4,6 +4,7 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/main.dart';
+import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_response_model.dart';
 
 class StructuredCablingEquipmentService {
   final Logger _logger = Logger('StructuredCablingEquipmentService');
@@ -12,29 +13,46 @@ class StructuredCablingEquipmentService {
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<List<String>> getStructuredCablingListByArea(int areaId) async {
+  Future<List<StructuredCablingEquipmentResponseModel>>
+      getStructuredCablingListByArea(int areaId) async {
     final url = '${baseUrl}structured-cabling/by-area/$areaId';
     try {
       final response = await client.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         _logger.info('API response data: $data');
-        return data.map((item) {
-          if (item['equipment'].containsKey('generic_equipment_category')) {
-            return item['equipment']['generic_equipment_category'] as String;
-          } else if (item['equipment']
-              .containsKey('personal_equipment_category')) {
-            return item['equipment']['personal_equipment_category'] as String;
-          } else {
-            return 'Unknown Equipment';
-          }
-        }).toList();
+        return data
+            .map((item) =>
+                StructuredCablingEquipmentResponseModel.fromJson(item))
+            .toList();
       } else {
-        throw Exception('Failed to load structured-cabling equipment');
+        _logger.severe(
+            'Failed to load structured-cabling equipment with status code: ${response.statusCode}, response body: ${response.body}');
+        throw Exception(
+            'Failed to load structured-cabling equipment with status code: ${response.statusCode}');
       }
     } catch (e) {
-      _logger.info('Error during get structured-cabling equipment list: $e');
-      return [];
+      _logger.severe('Error during get structured-cabling equipment list: $e');
+      throw Exception('Failed to load structured-cabling equipment. Error: $e');
+    }
+  }
+
+  Future<void> deleteStructuredCabling(int equipmentId) async {
+    var url = Uri.parse('${baseUrl}structured-cabling/$equipmentId/');
+    try {
+      var response = await client.delete(url);
+      if (response.statusCode == 204) {
+        _logger.info(
+            'Successfully deleted structured cabling equipment with ID: $equipmentId');
+      } else {
+        _logger.info(
+            'Failed to delete structured cabling equipment with status code: ${response.statusCode}');
+        _logger.info('Response body: ${response.body}');
+        throw Exception('Failed to delete structured cabling equipment');
+      }
+    } catch (e) {
+      _logger.info('Error during delete structured cabling equipment: $e');
+      throw Exception('Failed to delete structured cabling equipment');
     }
   }
 }
