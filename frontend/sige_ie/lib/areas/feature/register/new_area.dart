@@ -32,6 +32,12 @@ class _AreaLocationState extends State<AreaLocation> {
     super.dispose();
   }
 
+  void logState() {
+    print('selectedFloor: $selectedFloor');
+    print('areaController.text: ${areaController.text}');
+    print('floorController.text: ${floorController.text}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,6 +129,7 @@ class _AreaLocationState extends State<AreaLocation> {
                         setState(() {
                           selectedFloor = int.tryParse(value);
                         });
+                        logState(); // Log the state after changing the value
                       },
                     ),
                   ),
@@ -144,6 +151,9 @@ class _AreaLocationState extends State<AreaLocation> {
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                       ),
+                      onChanged: (value) {
+                        logState(); // Log the state after changing the value
+                      },
                     ),
                   ),
                   const SizedBox(height: 60),
@@ -186,6 +196,7 @@ class _AreaLocationState extends State<AreaLocation> {
                           ),
                         ),
                         onPressed: () async {
+                          logState(); // Log the state before making the API call
                           if (selectedFloor != null &&
                               areaController.text.isNotEmpty) {
                             AreaService areaService = AreaService();
@@ -206,6 +217,7 @@ class _AreaLocationState extends State<AreaLocation> {
                                     'areaId': newArea.id,
                                   });
                             } catch (e) {
+                              print('Erro ao criar sala: $e'); // Log the error
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
@@ -289,3 +301,4 @@ Widget _buildDropdown({
     ),
   );
 }
+

@@ -20,17 +20,27 @@ class AreaService {
   Future<AreaResponseModel> createArea(
       AreaRequestModel areaRequestModel) async {
     var url = Uri.parse(baseUrl);
+    print('URL: $url'); // Log da URL
+    print(
+        'Request Body: ${jsonEncode(areaRequestModel.toJson())}'); // Log do corpo da requisição
+
     var response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(areaRequestModel.toJson()),
     );
 
+    print(
+        'Response Status Code: ${response.statusCode}'); // Log do status da resposta
+    print('Response Body: ${response.body}'); // Log do corpo da resposta
+
     if (response.statusCode == 201) {
-      // Assumindo que a resposta inclua o id da área criada.
       var data = jsonDecode(response.body);
+      print('Response Data: $data'); // Log dos dados da resposta
       return AreaResponseModel.fromJson(data);
     } else {
+      print(
+          'Failed to create area. Status Code: ${response.statusCode}'); // Log do erro com status code
       throw Exception('Failed to create area');
     }
   }

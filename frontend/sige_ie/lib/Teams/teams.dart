@@ -1,8 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
-class TeamsPage extends StatelessWidget {
+class TeamsPage extends StatefulWidget {
   const TeamsPage({super.key});
+
+  @override
+  _TeamsPageState createState() => _TeamsPageState();
+}
+
+class _TeamsPageState extends State<TeamsPage> {
+  final List<Team> teams = [
+    Team('Equipe 1', ['Membro 1', 'Membro 2', 'Membro 3']),
+    Team('Equipe 2', ['Membro 4', 'Membro 5']),
+    Team('Equipe 3', ['Membro 6', 'Membro 7', 'Membro 8']),
+  ];
+
+  void _addTeam(String teamName) {
+    setState(() {
+      teams.add(Team(teamName, []));
+    });
+  }
+
+  void _removeTeam(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content: const Text('Você realmente deseja excluir esta equipe?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Excluir'),
+              onPressed: () {
+                setState(() {
+                  teams.removeAt(index);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _switchTeam(String teamName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Troca de Equipe'),
+          content:
+              Text('Você realmente deseja trocar para a equipe "$teamName"?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Trocar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                        'Troca concluída. Você agora está na equipe "$teamName".'),
+                    backgroundColor: AppColors.sigeIeBlue,
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +126,7 @@ class TeamsPage extends StatelessWidget {
                 children: <Widget>[
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: teams.length,
                     itemBuilder: (context, index) {
                       final team = teams[index];
@@ -60,11 +140,11 @@ class TeamsPage extends StatelessWidget {
                             icon:
                                 const Icon(Icons.delete, color: AppColors.warn),
                             onPressed: () {
-                              // Lógica para sair da equipe
+                              _removeTeam(index);
                             },
                           ),
                           onTap: () {
-                            // Navegação para a página de detalhes da equipe
+                            _switchTeam(team.name);
                           },
                         ),
                       );
@@ -83,11 +163,11 @@ class TeamsPage extends StatelessWidget {
             builder: (context) {
               final TextEditingController _controller = TextEditingController();
               return AlertDialog(
-                title: const Text('Entrar em uma equipe'),
+                title: const Text('Adicionar nova equipe'),
                 content: TextField(
                   controller: _controller,
                   decoration: const InputDecoration(
-                    hintText: 'Digite o código da equipe',
+                    hintText: 'Digite o nome da equipe',
                   ),
                 ),
                 actions: [
@@ -99,9 +179,12 @@ class TeamsPage extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pop();
+                      if (_controller.text.isNotEmpty) {
+                        _addTeam(_controller.text);
+                        Navigator.of(context).pop();
+                      }
                     },
-                    child: const Text('Entrar'),
+                    child: const Text('Adicionar'),
                   ),
                 ],
               );
@@ -121,9 +204,3 @@ class Team {
 
   Team(this.name, this.members);
 }
-
-final List<Team> teams = [
-  Team('Equipe 1', ['Membro 1', 'Membro 2', 'Membro 3']),
-  Team('Equipe 2', ['Membro 4', 'Membro 5']),
-  Team('Equipe 3', ['Membro 6', 'Membro 7', 'Membro 8']),
-];
