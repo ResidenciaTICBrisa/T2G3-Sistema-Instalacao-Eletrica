@@ -37,6 +37,8 @@ theme:
     - css/custom.css
 
 nav:
+  - Landing Pages: landingPages/<!DOCTYPE html>.html
+  
   - Ínicio: index.md
   
   - Subir o projeto:

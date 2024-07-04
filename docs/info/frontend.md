@@ -1,6 +1,3 @@
-Claro! Aqui está o texto formatado em Markdown adequado para MkDocs em um único código contínuo:
-
-```markdown
 # Guia de Configuração do Front-end
 
 ## Como subir o front-end:
