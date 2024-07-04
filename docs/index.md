@@ -65,6 +65,6 @@ Como a versão LTS mais recente do Django (2024) é a 4.2, escolhemos configurar
 | --- | --- | --- | --- |
 | Cliente | Validar as entregas | Loana | Loana e Alex |
 | Desenvolvedor back-end | Codificar o backend, configurar a infraestrutura | Pedro | Pedro, Kauan e Oscar |
-| Desenvolvedor frontend | Codificar o frontend, realizar integração com backend | Danilo | Danilo, Ramires e Pedro |
+| Desenvolvedor frontend | Codificar o frontend, realizar integração com backend | Danilo | Danilo, Ramires, Pedro e Oscar |
 | UX design | Projetar a interface do usuário, criar protótipos e realizar entrevistas com os clientes | Danilo | Danilo |
 | Analista de requisitos | Levantar requisitos, gerenciar a documentação, validar com cliente | Oscar | Oscar, Ramires e Pedro |

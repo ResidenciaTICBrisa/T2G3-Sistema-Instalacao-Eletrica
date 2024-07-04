@@ -1,94 +1,110 @@
-### Como subir o projeto
-Estas etapas são válidas para Linux OS e WSL.
-#### Como subir o back-end:
+Claro! Aqui está o texto formatado em Markdown adequado para MkDocs em um único código contínuo:
 
-Primeiramente, interrompa qualquer processo que use o porto 8080, 3306 e 6379. Então atualize o seu sistema:
-  ```
-  sudo apt-get update
-  ```
+```markdown
+# Guia de Configuração do Back-end
 
-  ```
-  sudo apt-get upgrade
-  ```
+## Estas etapas são válidas para Linux OS e WSL.
+
+### Como subir o back-end:
+
+#### Pela primeira vez
+
+Primeiramente, interrompa qualquer processo que use o porto `8080`, `3306` e `6379`. Então atualize o seu sistema:
+
+```sh
+sudo apt-get update
+sudo apt-get upgrade
+```
 
 Em seguida, caso já não tenha instalado:
 
-- Instale o Python, Pip e os cabeçalhos do Python e MySQL:
+#### Instale o Python, Pip e os cabeçalhos do Python e MySQL:
 
-  Python:
-  ```
-  sudo apt-get install python3.11
-  ```
+##### Python:
 
-  Pip:
-  ```
-   sudo apt-get install python3-pip
-  ```
+```sh
+sudo apt-get install python3.11
+```
 
-  Cabeçalhos:
-  ```
-  sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config
-  ```
+##### Pip:
 
-   mysqlclient:
+```sh
+sudo apt-get install python3-pip
+```
 
-   ```
-   pip install mysqlclient
-   ```
+##### Cabeçalhos:
 
-- Instale o virtualenv para criar um ambiente virtual do projeto:
+```sh
+sudo apt-get install python3.11-dev default-libmysqlclient-dev build-essential pkg-config
+```
 
-    Virtualenv:
-    ```
-    sudo pip3 install virtualenv
-    ```
+#### Instale o virtualenv para criar um ambiente virtual do projeto:
 
-Vá para dentro da pasta raiz `api`:
+##### Virtualenv:
 
-1. Cria o ambiente virtual e ative-o:
+```sh
+sudo pip3 install virtualenv
+```
 
-    Criar ambiente virtual:
-     ```
-     virtualenv -p python3.11 venv
-     ``` 
-  
-    Ativar ambiente:
-     ```
-     source venv/bin/activate
-     ``` 
+#### Vá para dentro da pasta raiz `api`:
 
-3. Com o ambiente virtual ativado, instale as dependências:
+##### Cria o ambiente virtual e ative-o:
 
-   ```
-   pip install -r requirements.txt
-   ```
+###### Criar ambiente virtual:
 
-4. Com o docker iniciado, crie a imagem do banco de dados pela primeira vez:
+```sh
+virtualenv -p python3.11 venv
+```
 
-   ```
-   docker-compose build
-   ```
+###### Ativar ambiente:
 
-6. Suba a imagem:
+```sh
+source venv/bin/activate
+```
 
-   ```
-   docker-compose up
-   ```
+#### Com o ambiente virtual ativado, instale as dependências:
 
-8. Ainda no diretório raiz `api`, aplique as migrações:
+```sh
+pip install -r requirements.txt
+```
 
-   ```
-   python manage.py makemigrations
-   ```
+#### Inicie o Docker, depois vá para o diretório `api/sigeie` e crie a imagem do banco de dados pela primeira vez:
 
-   ```
-   python3 manage.py migrate
-   ```
+```sh
+docker-compose up -d
+```
 
-10. Inicie o servidor:
+#### Ainda no mesmo terminal, retorne para o diretório raiz `api` e aplique as migrações:
 
-    ```
-    python3 manage.py runserver
-    ```
+```sh
+python manage.py makemigrations
+python manage.py migrate
+```
+
+#### Inicie o servidor:
+
+```sh
+python manage.py runserver
+```
 
 Pronto, o servidor já está rodando com o banco de dados configurado.
+
+#### Pela segunda vez
+
+Garanta que não haja nenhum processo que use o porto `8080`, `3306` e `6379`. Por fim, com todas as dependências configuradas, basta:
+
+- Iniciar o Docker e o container `sigeie`;
+- Baixar as atualizações (caso haja):
+
+```sh
+git pull
+```
+
+- Atualizar as dependências, fazer as migrações e iniciar o servidor:
+
+```sh
+source venv/bin/activate && pip install -r requirements.txt && python manage.py makemigrations && python manage.py migrate && python manage.py runserver
+```
+
+Isso é tudo, pessoal.
+```
