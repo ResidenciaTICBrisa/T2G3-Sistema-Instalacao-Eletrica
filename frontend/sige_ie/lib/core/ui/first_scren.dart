@@ -6,7 +6,7 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffe1e1e1),
+      backgroundColor: Color.fromARGB(255, 99, 153, 190),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,

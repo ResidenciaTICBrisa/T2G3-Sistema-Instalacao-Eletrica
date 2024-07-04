@@ -505,34 +505,49 @@ class FloorAreaWidget extends StatelessWidget {
     return Column(
       children: [
         Expanded(
-          child: ListView(
-            children: sortedKeys.map((floor) {
-              List<AreaResponseModel> areas = groupedAreas[floor]!;
-              String floorName = floor == 0 ? "Térreo" : "$floor° andar";
-              return ExpansionTile(
-                title: Text(floorName),
-                children: areas.map((area) {
-                  return ListTile(
-                    title: Text(area.name),
-                    onTap: () => onTapArea(area.id),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () => onEditArea(area.id),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => onDeleteArea(area.id),
-                        ),
-                      ],
+          child: groupedAreas.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      'Você ainda não tem uma sala neste local.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey[600],
+                      ),
                     ),
-                  );
-                }).toList(),
-              );
-            }).toList(),
-          ),
+                  ),
+                )
+              : ListView(
+                  children: sortedKeys.map((floor) {
+                    List<AreaResponseModel> areas = groupedAreas[floor]!;
+                    String floorName = floor == 0 ? "Térreo" : "$floor° andar";
+                    return ExpansionTile(
+                      title: Text(floorName),
+                      children: areas.map((area) {
+                        return ListTile(
+                          title: Text(area.name),
+                          onTap: () => onTapArea(area.id),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.edit, color: Colors.blue),
+                                onPressed: () => onEditArea(area.id),
+                              ),
+                              IconButton(
+                                icon:
+                                    const Icon(Icons.delete, color: Colors.red),
+                                onPressed: () => onDeleteArea(area.id),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  }).toList(),
+                ),
         ),
         ListTile(
           leading: const Icon(Icons.add),
