@@ -42,6 +42,12 @@ class _TeamsPageState extends State<TeamsPage> {
                   teams.removeAt(index);
                 });
                 Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Equipe excluída com sucesso!'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
               },
             ),
           ],
@@ -73,7 +79,7 @@ class _TeamsPageState extends State<TeamsPage> {
                   SnackBar(
                     content: Text(
                         'Troca concluída. Você agora está na equipe "$teamName".'),
-                    backgroundColor: AppColors.sigeIeBlue,
+                    backgroundColor: Colors.green,
                   ),
                 );
               },
@@ -167,7 +173,7 @@ class _TeamsPageState extends State<TeamsPage> {
                 content: TextField(
                   controller: _controller,
                   decoration: const InputDecoration(
-                    hintText: 'Digite o nome da equipe',
+                    hintText: 'Digite o código da equipe',
                   ),
                 ),
                 actions: [
@@ -182,6 +188,19 @@ class _TeamsPageState extends State<TeamsPage> {
                       if (_controller.text.isNotEmpty) {
                         _addTeam(_controller.text);
                         Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Equipe adicionada com sucesso!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Nome da equipe não pode ser vazio!'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
                       }
                     },
                     child: const Text('Adicionar'),
