@@ -19,5 +19,5 @@ class AreaSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'name': {'required': True},
             'floor': {'required': True},
-            'place': {'read_only': True}
+            'place': {'required': True}
         }
