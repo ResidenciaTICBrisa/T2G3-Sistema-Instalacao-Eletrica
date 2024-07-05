@@ -49,13 +49,26 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,
+          equipmentId: null,
         ),
       ),
     );
   }
 
   void _editEquipment(BuildContext context, int equipmentId) {
-    // Implement the logic to edit the equipment
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddfireAlarm(
+          areaName: widget.areaName,
+          categoryNumber: widget.categoryNumber,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
+          equipmentId: equipmentId, // Passando o ID do equipamento
+        ),
+      ),
+    );
   }
 
   Future<void> _deleteEquipment(BuildContext context, int equipmentId) async {

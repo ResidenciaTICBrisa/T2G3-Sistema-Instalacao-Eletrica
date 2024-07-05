@@ -31,6 +31,7 @@ class AddfireAlarm extends StatefulWidget {
   final int localId;
   final int categoryNumber;
   final int areaId;
+  final int? equipmentId; // Add this parameter
 
   const AddfireAlarm({
     super.key,
@@ -39,6 +40,7 @@ class AddfireAlarm extends StatefulWidget {
     required this.localName,
     required this.localId,
     required this.areaId,
+    this.equipmentId, // Add this parameter
   });
 
   @override
@@ -47,22 +49,19 @@ class AddfireAlarm extends StatefulWidget {
 
 class _AddEquipmentScreenState extends State<AddfireAlarm> {
   EquipmentService equipmentService = EquipmentService();
-
   EquipmentPhotoService equipmentPhotoService = EquipmentPhotoService();
-
   PersonalEquipmentCategoryService personalEquipmentCategoryService =
       PersonalEquipmentCategoryService();
-
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
 
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
-  String? _selectedTypeToDelete;
-  String? _newEquipmentTypeName;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
   bool _isPersonalEquipmentCategorySelected = false;
+  String? _newEquipmentTypeName;
+  String? _selectedTypeToDelete;
 
   List<Map<String, Object>> genericEquipmentTypes = [];
   List<Map<String, Object>> personalEquipmentTypes = [];
@@ -72,6 +71,42 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
   void initState() {
     super.initState();
     _fetchEquipmentCategory();
+
+    if (widget.equipmentId != null) {
+      _fetchEquipmentDetails(widget.equipmentId!);
+    }
+  }
+
+  Future<void> _fetchEquipmentDetails(int equipmentId) async {
+    try {
+      // Buscar detalhes do alarme de incêndio
+      final fireAlarmDetails =
+          await equipmentService.getFireAlarmById(equipmentId);
+
+      // Buscar detalhes do equipamento
+      final equipmentDetails = await equipmentService
+          .getEquipmentById(fireAlarmDetails['equipment']);
+
+      setState(() {
+        if (equipmentDetails['personal_equipment_category'] != null) {
+          _selectedPersonalEquipmentCategoryId =
+              equipmentDetails['personal_equipment_category'];
+          _selectedType = personalEquipmentTypes.firstWhere((element) =>
+                  element['id'] == _selectedPersonalEquipmentCategoryId)['name']
+              as String;
+          _isPersonalEquipmentCategorySelected = true;
+        } else {
+          _selectedGenericEquipmentCategoryId =
+              equipmentDetails['generic_equipment_category'];
+          _selectedType = genericEquipmentTypes.firstWhere((element) =>
+                  element['id'] == _selectedGenericEquipmentCategoryId)['name']
+              as String;
+          _isPersonalEquipmentCategorySelected = false;
+        }
+      });
+    } catch (e) {
+      print('Erro ao buscar detalhes do equipamento: $e');
+    }
   }
 
   Future<void> _fetchEquipmentCategory() async {

@@ -20,6 +20,39 @@ class EquipmentService {
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
+  Future<Map<String, dynamic>> getFireAlarmById(int id) async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/fire-alarms/$id/');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        _logger.info(
+            'Failed to load fire alarm with status code: ${response.statusCode}');
+        throw Exception('Failed to load fire alarm');
+      }
+    } catch (e) {
+      _logger.info('Error during get fire alarm: $e');
+      throw Exception('Failed to load fire alarm');
+    }
+  }
+
+  Future<Map<String, dynamic>> getEquipmentById(int id) async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$id/');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        _logger.info(
+            'Failed to load equipment with status code: ${response.statusCode}');
+        throw Exception('Failed to load equipment');
+      }
+    } catch (e) {
+      _logger.info('Error during get equipment: $e');
+      throw Exception('Failed to load equipment');
+    }
+  }
 
   Future<int?> createFireAlarm(
       FireAlarmEquipmentRequestModel fireAlarmEquipmentRequestModel) async {
