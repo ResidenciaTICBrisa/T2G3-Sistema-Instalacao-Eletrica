@@ -5,7 +5,7 @@ from users.models import PlaceOwner, PlaceEditor
 
 class Place(models.Model):
     name = models.CharField(max_length=50)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
+    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True, related_name="places")
     lon = models.FloatField(null=True)
     lat = models.FloatField(null=True)
     photo = models.ImageField(null=True, upload_to='place_photos/')

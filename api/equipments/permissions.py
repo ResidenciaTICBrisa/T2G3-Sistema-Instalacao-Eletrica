@@ -19,6 +19,13 @@ class IsEquipmentOwner(BasePermission):
             return obj.equipment.place_owner == request.user.place_owner
         return False
 
+class IsEquipmentEditor(BasePermission):
+    def has_object_permission(self, request, view, obj):
+            return obj.place_owner.places.editors.filter(user=request.user).exists()
+
+class IsEquipmentEditorPhoto(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.equipment.place_owner.places.editors.filter(user=request.user).exists()
 
 class IsSpecificEquipmentEditor(BasePermission):
     def has_object_permission(self, request, view, obj):

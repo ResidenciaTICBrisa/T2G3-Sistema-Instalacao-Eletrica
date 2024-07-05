@@ -75,7 +75,7 @@ class EquipmentList(generics.ListAPIView):
 class EquipmentCreate(generics.CreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner or IsEquipmentEditor]
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -88,13 +88,13 @@ class EquipmentCreate(generics.CreateAPIView):
 class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
+    permission_classes = [IsAuthenticated, IsOwner or IsEquipmentEditor]
 
 
 class EquipmentPhotoList(generics.ListCreateAPIView):
     queryset = EquipmentPhoto.objects.all()
     serializer_class = EquipmentPhotoSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentOwner]
+    permission_classes = [IsAuthenticated, IsEquipmentOwner or IsEquipmentEditorPhoto]
 
     def get_queryset(self):
         user = self.request.user
