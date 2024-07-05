@@ -11,6 +11,20 @@
         .gradient {
             background: linear-gradient(90deg, #003366 0%, #ffcc00 100%);
         }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            max-width: 300px; /* Tamanho máximo das imagens */
+            border-radius: 8px;
+            margin: 0 auto;
+        }
     </style>
 </head>
 
@@ -70,10 +84,7 @@
                     Sistema de Auxilio para Operação e Manutenção de Instalação Elétrica.
                 </h1>
                 <p class="leading-normal text-2xl mb-8">
-                    Uma ferramenta concebida para facilitar o processo de coleta de dados,essencial no suporte ás operações e manutençoes e
-                    sistemas de instalação elétrica.Este sistema foi desenvolvido com o propósito específico de agilizar a obtenção de informações
-                    cruciais, aprimorando assim a eficiência nas operações e garantindo uma gestão mais eficaz das instalaçoes elétricas.
-
+                    Uma ferramenta concebida para facilitar o processo de coleta de dados, essencial no suporte às operações e manutenções e sistemas de instalação elétrica. Este sistema foi desenvolvido com o propósito específico de agilizar a obtenção de informações cruciais, aprimorando assim a eficiência nas operações e garantindo uma gestão mais eficaz das instalações elétricas.
                 </p>
                 <button
                     class="mx-auto lg:mx-0 hover:underline bg-yellow-500 text-gray-800 font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
@@ -128,24 +139,31 @@
                             </h3>
                             <p class="text-gray-600 mb-8">
                                 Cadastre Locais e Gerenciar os sistemas de instalações elétricas, sistema de iluminação, cargas elétricas, linhas elétricas,
-                                cabeamento estruturado,sistema de refrigeração, sistema de alarme de proteção contra incêndio,quadro de distribuição,circuitos
+                                cabeamento estruturado, sistema de refrigeração, sistema de alarme de proteção contra incêndio, quadro de distribuição, circuitos
                                 elétricos e sistema de proteção contra Descargas Atmosféricas.
                                 <br />
                                 <br />
                             </p>
                         </div>
-                        <div class="w-1/3">
+                        <div class="w-1/3 image-container">
                             <img src="../assets/adicionar.equipamentos.jpeg" alt="Gerenciamento de Instalações" />
                         </div>
                     </div>
                 </div>
                 <div class="w-full sm:w-1/2 p-6">
                     <div class="flex">
-                        <svg class="w-full sm:h-64 mx-auto" viewBox="0 0 3000 3000" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Your SVG content here -->
-                        </svg>
-                        <div class="w-1/3">
-                            <img src="../assets/locais.jpeg" alt="Feature Image" />
+                        <div class="w-2/3">
+                            <h3 class="text-3xl text-gray-800 font-bold leading-none mb-3">
+                                Cadastro de Locais.
+                            </h3>
+                            <p class="text-gray-600 mb-8">
+                                Crie e mantenha um registro detalhado de todos os locais e salas dentro da instalação, facilitando a gestão e manutenção das instalações elétricas.
+                                <br />
+                                <br />
+                            </p>
+                        </div>
+                        <div class="w-1/3 image-container">
+                            <img src="../assets/locais.jpeg" alt="Cadastro de Locais" />
                         </div>
                     </div>
                 </div>
@@ -153,11 +171,18 @@
             <div class="flex flex-wrap flex-col-reverse sm:flex-row">
                 <div class="w-full sm:w-1/2 p-6 mt-6">
                     <div class="flex">
-                        <svg class="w-full sm:h-64 mx-auto" viewBox="0 0 3000 3000" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Your SVG content here -->
-                        </svg>
-                        <div class="w-1/3">
-                            <img src="../assets/menu.instalaçoes.jpeg" alt="Integração com Mapas" />
+                        <div class="w-2/3">
+                            <h3 class="text-3xl text-gray-800 font-bold leading-none mb-3">
+                                Menu de Instalações.
+                            </h3>
+                            <p class="text-gray-600 mb-8">
+                                Acesse rapidamente todas as instalações registradas e visualize informações detalhadas sobre cada uma delas, incluindo status de manutenção e histórico de serviços.
+                                <br />
+                                <br />
+                            </p>
+                        </div>
+                        <div class="w-1/3 image-container">
+                            <img src="../assets/menu.instalaçoes.jpeg" alt="Menu de Instalações" />
                         </div>
                     </div>
                 </div>
@@ -180,7 +205,7 @@
                                     <br />
                                 </p>
                             </div>
-                            <div class="w-1/3">
+                            <div class="w-1/3 image-container">
                                 <img src="../assets/imagem.mapa.jpeg" alt="Map Integration" />
                             </div>
                         </div>
@@ -249,6 +274,10 @@
                 navcontent.classList.remove("bg-white");
                 navcontent.classList.add("bg-gray-100");
             }
+        });
+
+        document.getElementById('nav-toggle').addEventListener('click', function () {
+            document.getElementById('nav-content').classList.toggle('hidden');
         });
     </script>
 </body>
