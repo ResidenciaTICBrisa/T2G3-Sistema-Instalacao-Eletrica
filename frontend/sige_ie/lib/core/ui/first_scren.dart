@@ -6,7 +6,7 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 99, 153, 190),
+      backgroundColor: Color(0xFF6399BE),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -14,7 +14,7 @@ class FirstScreen extends StatelessWidget {
             Image.asset('assets/UNB.png'),
             Image.asset('assets/1000x1000Horizontal.png'),
             const SizedBox(
-              height: 130,
+              height: 140,
             ),
             ElevatedButton(
               onPressed: () {
