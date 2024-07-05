@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from users.models import PlaceOwner, PlaceEditor
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from places.permissions import IsPlaceOwner, IsPlaceEditor
+from places.permissions import *
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -95,12 +95,14 @@ class PlaceViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=True, methods=['get'], url_path='areas/(?P<area_pk>\d+)',
-            permission_classes=[IsAuthenticated, IsPlaceOwner | IsPlaceEditor])
+            permission_classes=[IsAuthenticated])
     def area(self, request, pk=None, area_pk=None):
         place = self.get_object()
         area = get_object_or_404(place.areas.all(), pk=area_pk)
-        serializer = AreaSerializer(area)
-        return Response(serializer.data)
+        if(request.user.place_owner == area.place.place_owner or area.place.editors.filter(user=request.user).exists()):
+            serializer = AreaSerializer(area)
+            return Response(serializer.data)
+        return Response({"Error" : "You're not the owner or editor of this Area"})
 
 
 class AreaViewSet(viewsets.ModelViewSet):
@@ -165,6 +167,33 @@ class AreaViewSet(viewsets.ModelViewSet):
         else:
             return Response({"message": "You are not the owner of this area"}, status=status.HTTP_403_FORBIDDEN)
 
+
+class RefuseAccessViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated, IsPlaceOwner]
+
+    @action(detail=True, methods=['post'])
+    def refuse_access(self, request, pk=None):
+        place = get_object_or_404(Place, pk=pk)
+        place_owner = place.place_owner
+
+        if request.user != place_owner.user:
+            return Response({"message": "You are not the owner of this place"}, status=status.HTTP_403_FORBIDDEN)
+
+        username = request.data.get('username')
+
+        if not username:
+            return Response({'error': 'Username is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(User, username=username)
+
+        place_editor = PlaceEditor.objects.filter(user=user).first()
+
+        if not place_editor:
+            return Response({'error': 'This user is not an editor of the place'}, status=status.HTTP_400_BAD_REQUEST)
+
+        place.editors.remove(place_editor)
+
+        return Response({'message': 'Access revoked successfully'}, status=status.HTTP_200_OK)
 
 class GrantAccessViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsPlaceOwner]
