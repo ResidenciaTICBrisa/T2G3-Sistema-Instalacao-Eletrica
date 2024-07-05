@@ -63,6 +63,7 @@ dev_dependencies:
 flutter:
     assets:
         - assets/Loading.mp4
+        - assets/1000x1000Horizontal.png
         - assets/1000x1000.png
         - assets/lighting.png
         - assets/UNB.png
