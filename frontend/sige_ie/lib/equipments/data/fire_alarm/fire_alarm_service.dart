@@ -35,4 +35,23 @@ class FireAlarmEquipmentService {
       throw Exception('Failed to load fire alarm equipment');
     }
   }
+
+  Future<void> deleteFireAlarm(int equipmentId) async {
+    var url = Uri.parse('${baseUrl}fire-alarms/$equipmentId/');
+    try {
+      var response = await client.delete(url);
+      if (response.statusCode == 204) {
+        _logger.info(
+            'Successfully deleted fire alarm equipment with ID: $equipmentId');
+      } else {
+        _logger.info(
+            'Failed to delete fire alarm equipment with status code: ${response.statusCode}');
+        _logger.info('Response body: ${response.body}');
+        throw Exception('Failed to delete fire alarm equipment');
+      }
+    } catch (e) {
+      _logger.info('Error during delete fire alarm equipment: $e');
+      throw Exception('Failed to delete fire alarm equipment');
+    }
+  }
 }
