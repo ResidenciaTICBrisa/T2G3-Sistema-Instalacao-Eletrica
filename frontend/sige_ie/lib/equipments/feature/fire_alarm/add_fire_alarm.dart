@@ -560,11 +560,13 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     }
 
     if (equipmentId != null) {
+      print('Registering photos for equipment ID: $equipmentId');
       await Future.wait(_images.map((imageData) async {
+        print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
-            description: imageData.description,
+            description: imageData.description, // Pode ser nulo ou vazio
             equipment: equipmentId!,
           ),
         );

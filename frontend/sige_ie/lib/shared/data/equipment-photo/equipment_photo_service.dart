@@ -17,6 +17,9 @@ class EquipmentPhotoService {
       EquipmentPhotoRequestModel equipmentPhotoRequestModel) async {
     var url = Uri.parse(baseUrl);
 
+    print(
+        'Sending request to: $url with body: ${jsonEncode(equipmentPhotoRequestModel.toJson())}');
+
     try {
       var response = await client.post(
         url,
@@ -32,13 +35,17 @@ class EquipmentPhotoService {
       if (response.statusCode == 201 || response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
         _logger.info('Request successful, received ID: ${responseData['id']}');
+        print('Request successful, received ID: ${responseData['id']}');
         return true;
       } else {
-        _logger.info('Failed to register equipment photo: ${response.statusCode}');
+        _logger
+            .info('Failed to register equipment photo: ${response.statusCode}');
+        print('Failed to register equipment photo: ${response.statusCode}');
         return false;
       }
     } catch (e) {
       _logger.info('Error during register: $e');
+      print('Error during register: $e');
       return false;
     }
   }
