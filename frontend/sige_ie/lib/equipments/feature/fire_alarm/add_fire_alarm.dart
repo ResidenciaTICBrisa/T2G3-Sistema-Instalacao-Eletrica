@@ -77,6 +77,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
 
     if (widget.isEdit && widget.equipmentId != null) {
       _fetchEquipmentDetails(widget.equipmentId!);
+      _fetchExistingPhotos(widget.equipmentId!);
     }
   }
 
@@ -108,6 +109,25 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       });
     } catch (e) {
       print('Erro ao buscar detalhes do equipamento: $e');
+    }
+  }
+
+  void _fetchExistingPhotos(int fireAlarmId) async {
+    try {
+      List<Map<String, dynamic>> photos =
+          await equipmentPhotoService.getPhotosByEquipmentId(fireAlarmId);
+
+      setState(() {
+        _images = photos.map((photo) {
+          return ImageData(
+            File(photo['imagePath']),
+            photo['description'] ?? '',
+          );
+        }).toList();
+        categoryImagesMap[widget.categoryNumber] = _images;
+      });
+    } catch (e) {
+      print('Erro ao buscar fotos existentes: $e');
     }
   }
 
@@ -184,12 +204,15 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               child: const Text('Salvar'),
               onPressed: () {
                 setState(() {
+                  String? description = descriptionController.text.isEmpty
+                      ? null
+                      : descriptionController.text;
                   if (existingImage != null) {
-                    existingImage.description = descriptionController.text;
+                    existingImage.description = description ?? '';
                   } else {
                     final imageData = ImageData(
                       imageFile,
-                      descriptionController.text,
+                      description ?? '',
                     );
                     final categoryNumber = widget.categoryNumber;
                     if (!categoryImagesMap.containsKey(categoryNumber)) {
@@ -566,7 +589,8 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
-            description: imageData.description, // Pode ser nulo ou vazio
+            description:
+                imageData.description.isEmpty ? null : imageData.description,
             equipment: equipmentId!,
           ),
         );
