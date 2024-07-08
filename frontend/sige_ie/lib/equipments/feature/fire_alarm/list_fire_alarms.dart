@@ -29,7 +29,6 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
   final FireAlarmEquipmentService _fireAlarmService =
       FireAlarmEquipmentService();
 
-  // Chave global para ScaffoldMessenger
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 

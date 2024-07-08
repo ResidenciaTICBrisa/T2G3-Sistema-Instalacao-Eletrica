@@ -32,7 +32,7 @@ dependencies:
         sdk: flutter
     shared_preferences: ^2.0.15
     video_player: ^2.2.14
-    http: ^0.13.3
+    http: ^0.13.4
     cookie_jar: ^4.0.8
     http_interceptor: ^1.0.1
     image_picker: ^0.8.5
@@ -44,6 +44,8 @@ dependencies:
     geolocator: ^9.0.2
     logger: ^1.0.0
     logging: ^1.2.0
+    path_provider: ^2.0.2
+
 
 dev_dependencies:
     flutter_test:
