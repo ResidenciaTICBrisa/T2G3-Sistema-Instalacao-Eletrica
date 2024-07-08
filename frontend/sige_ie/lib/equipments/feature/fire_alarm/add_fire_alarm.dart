@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_service.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
@@ -25,36 +26,38 @@ class ImageData {
 List<ImageData> _images = [];
 Map<int, List<ImageData>> categoryImagesMap = {};
 
-class AddfireAlarm extends StatefulWidget {
+class AddFireAlarm extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int categoryNumber;
   final int areaId;
-  final int? equipmentId; // Add this parameter
+  final int? equipmentId;
+  final bool isEdit;
 
-  const AddfireAlarm({
+  const AddFireAlarm({
     super.key,
     required this.areaName,
     required this.categoryNumber,
     required this.localName,
     required this.localId,
     required this.areaId,
-    this.equipmentId, // Add this parameter
+    this.equipmentId,
+    this.isEdit = false,
   });
 
   @override
   _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddEquipmentScreenState extends State<AddfireAlarm> {
+class _AddEquipmentScreenState extends State<AddFireAlarm> {
   EquipmentService equipmentService = EquipmentService();
+  FireAlarmEquipmentService fireAlarmService = FireAlarmEquipmentService();
   EquipmentPhotoService equipmentPhotoService = EquipmentPhotoService();
   PersonalEquipmentCategoryService personalEquipmentCategoryService =
       PersonalEquipmentCategoryService();
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
-
   final _equipmentQuantityController = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
@@ -72,36 +75,35 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
     super.initState();
     _fetchEquipmentCategory();
 
-    if (widget.equipmentId != null) {
+    if (widget.isEdit && widget.equipmentId != null) {
       _fetchEquipmentDetails(widget.equipmentId!);
     }
   }
 
   Future<void> _fetchEquipmentDetails(int equipmentId) async {
     try {
-      // Buscar detalhes do alarme de incêndio
       final fireAlarmDetails =
-          await equipmentService.getFireAlarmById(equipmentId);
+          await fireAlarmService.getFireAlarmById(equipmentId);
 
-      // Buscar detalhes do equipamento
       final equipmentDetails = await equipmentService
           .getEquipmentById(fireAlarmDetails['equipment']);
 
       setState(() {
-        if (equipmentDetails['personal_equipment_category'] != null) {
+        _isPersonalEquipmentCategorySelected =
+            equipmentDetails['personal_equipment_category'] != null;
+
+        if (_isPersonalEquipmentCategorySelected) {
           _selectedPersonalEquipmentCategoryId =
               equipmentDetails['personal_equipment_category'];
           _selectedType = personalEquipmentTypes.firstWhere((element) =>
                   element['id'] == _selectedPersonalEquipmentCategoryId)['name']
               as String;
-          _isPersonalEquipmentCategorySelected = true;
         } else {
           _selectedGenericEquipmentCategoryId =
               equipmentDetails['generic_equipment_category'];
           _selectedType = genericEquipmentTypes.firstWhere((element) =>
                   element['id'] == _selectedGenericEquipmentCategoryId)['name']
               as String;
-          _isPersonalEquipmentCategorySelected = false;
         }
       });
     } catch (e) {
@@ -247,6 +249,90 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
         );
       },
     );
+  }
+
+  void _updateEquipment() async {
+    int? genericEquipmentCategory;
+    int? personalEquipmentCategory;
+
+    if (_isPersonalEquipmentCategorySelected) {
+      genericEquipmentCategory = null;
+      personalEquipmentCategory = _selectedPersonalEquipmentCategoryId;
+    } else {
+      genericEquipmentCategory = _selectedGenericEquipmentCategoryId;
+      personalEquipmentCategory = null;
+    }
+
+    final fireAlarmDetails =
+        await fireAlarmService.getFireAlarmById(widget.equipmentId!);
+    final equipmentId = fireAlarmDetails['equipment'];
+
+    final Map<String, dynamic> equipmentTypeUpdate = {
+      "generic_equipment_category": genericEquipmentCategory,
+      "personal_equipment_category": personalEquipmentCategory,
+      "place_owner": fireAlarmDetails['place_owner'],
+    };
+
+    bool typeUpdateSuccess = await equipmentService.updateEquipmentType(
+        equipmentId, equipmentTypeUpdate);
+
+    if (typeUpdateSuccess) {
+      final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
+        area: widget.areaId,
+        system: widget.categoryNumber,
+      );
+
+      final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
+          FireAlarmEquipmentRequestModel(
+        genericEquipmentCategory: genericEquipmentCategory,
+        personalEquipmentCategory: personalEquipmentCategory,
+        fireAlarmRequestModel: fireAlarmModel,
+      );
+
+      bool fireAlarmUpdateSuccess = await fireAlarmService.updateFireAlarm(
+          widget.equipmentId!, fireAlarmEquipmentDetail);
+
+      if (fireAlarmUpdateSuccess) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Detalhes do equipamento atualizados com sucesso.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacementNamed(
+          context,
+          '/listFireAlarms',
+          arguments: {
+            'areaName': widget.areaName,
+            'categoryNumber': widget.categoryNumber,
+            'localName': widget.localName,
+            'localId': widget.localId,
+            'areaId': widget.areaId,
+          },
+        );
+        setState(() {
+          _equipmentQuantityController.clear();
+          _selectedType = null;
+          _selectedPersonalEquipmentCategoryId = null;
+          _selectedGenericEquipmentCategoryId = null;
+          _images.clear();
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Falha ao atualizar os detalhes do equipamento.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao atualizar o tipo do equipamento.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _registerPersonalEquipmentType() async {
@@ -420,7 +506,9 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
               },
             ),
             TextButton(
-              child: const Text('Adicionar'),
+              child: widget.equipmentId == null
+                  ? const Text('Adicionar')
+                  : const Text('Atualizar'),
               onPressed: () {
                 _registerEquipment();
               },
@@ -455,8 +543,16 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
       fireAlarmRequestModel: fireAlarmModel,
     );
 
-    int? equipmentId =
-        await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
+    int? equipmentId;
+    if (widget.isEdit) {
+      equipmentId = widget.equipmentId;
+      bool success = await fireAlarmService.updateFireAlarm(
+          equipmentId!, fireAlarmEquipmentDetail);
+      if (!success) equipmentId = null;
+    } else {
+      equipmentId =
+          await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
+    }
 
     if (equipmentId != null) {
       await Future.wait(_images.map((imageData) async {
@@ -464,7 +560,7 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
             description: imageData.description,
-            equipment: equipmentId,
+            equipment: equipmentId!,
           ),
         );
       }));
@@ -550,9 +646,12 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
-              child: const Center(
-                child: Text('Adicionar equipamentos ',
-                    style: TextStyle(
+              child: Center(
+                child: Text(
+                    widget.equipmentId == null
+                        ? 'Adicionar Equipamento'
+                        : 'Editar Equipamento',
+                    style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white)),
@@ -721,10 +820,14 @@ class _AddEquipmentScreenState extends State<AddfireAlarm> {
                               MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ))),
-                      onPressed: _showConfirmationDialog,
-                      child: const Text(
-                        'ADICIONAR EQUIPAMENTO',
-                        style: TextStyle(
+                      onPressed: widget.isEdit
+                          ? _updateEquipment
+                          : _showConfirmationDialog,
+                      child: Text(
+                        widget.isEdit
+                            ? 'ATUALIZAR EQUIPAMENTO'
+                            : 'ADICIONAR EQUIPAMENTO',
+                        style: const TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                     ),

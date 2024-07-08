@@ -43,7 +43,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddfireAlarm(
+        builder: (context) => AddFireAlarm(
           areaName: widget.areaName,
           categoryNumber: widget.categoryNumber,
           localName: widget.localName,
@@ -59,13 +59,14 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddfireAlarm(
+        builder: (context) => AddFireAlarm(
           areaName: widget.areaName,
           categoryNumber: widget.categoryNumber,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,
-          equipmentId: equipmentId, // Passando o ID do equipamento
+          equipmentId: equipmentId,
+          isEdit: true,
         ),
       ),
     );
