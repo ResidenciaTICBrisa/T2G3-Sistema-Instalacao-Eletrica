@@ -506,11 +506,16 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               },
             ),
             TextButton(
-              child: widget.equipmentId == null
-                  ? const Text('Adicionar')
-                  : const Text('Atualizar'),
+              child: widget.isEdit
+                  ? const Text('Atualizar')
+                  : const Text('Adicionar'),
               onPressed: () {
-                _registerEquipment();
+                if (widget.isEdit) {
+                  _updateEquipment();
+                } else {
+                  _registerEquipment();
+                }
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -820,9 +825,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                               MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ))),
-                      onPressed: widget.isEdit
-                          ? _updateEquipment
-                          : _showConfirmationDialog,
+                      onPressed: _showConfirmationDialog,
                       child: Text(
                         widget.isEdit
                             ? 'ATUALIZAR EQUIPAMENTO'
