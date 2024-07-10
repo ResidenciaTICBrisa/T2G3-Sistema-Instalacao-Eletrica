@@ -19,7 +19,7 @@ class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
 
 
 class EquipmentPhotoSerializer(serializers.ModelSerializer):
-    photo = serializers.CharField(write_only=True)
+    photo = serializers.CharField()
 
     class Meta:
         model = EquipmentPhoto
