@@ -59,6 +59,11 @@ class IluminationEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="ilumination_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=1)
+    power = models.IntegerField(default=1)
+    tecnology = models.CharField(max_length=30, default=None)
+    format = models.CharField(max_length=30, default=None)
+    quantity = models.IntegerField(default=0)
+
 
     class Meta:
         db_table = 'equipments_illuminations'
@@ -68,6 +73,11 @@ class ElectricalLoadEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="electrical_load_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=2)
+    brand = models.CharField(max_length=30, default=None)
+    model = models.CharField(max_length=50, default=None)
+    power = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
+
 
     class Meta:
         db_table = 'equipments_electrical_loads'
@@ -86,6 +96,8 @@ class ElectricalCircuitEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name='electrical_circuit_equipment')
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
+    size = models.IntegerField(default=0)
+    isolament = models.CharField(max_length=30, default=None)
 
     class Meta:
         db_table = 'equipments_electrical_circuits'
@@ -95,6 +107,13 @@ class DistributionBoardEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="distribution_board_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=5)
+    power = models.IntegerField(default=0)
+    dr = models.BooleanField(default=False)
+    dps = models.BooleanField(default=False)
+    grounding = models.BooleanField(default=False)
+    type_material = models.CharField(max_length=30, null=True)
+    method_installation = models.CharField(max_length=50, null=True)
+
 
     class Meta:
         db_table = 'equipments_distribution_boards'
@@ -131,6 +150,8 @@ class RefrigerationEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="refrigeration_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=9)
+    power = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'equipments_refrigeration'
