@@ -100,16 +100,10 @@ class EquipmentPhotoByEquipmentList(generics.ListAPIView):
         return EquipmentPhoto.objects.filter(equipment_id=equipment_id, equipment__place_owner__user=user)
 
 
-class EquipmentPhotoDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = EquipmentPhoto.objects.all()
-    serializer_class = EquipmentPhotoSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner]
-
-
 class RefrigerationEquipmentList(generics.ListCreateAPIView):
     queryset = RefrigerationEquipment.objects.all()
     serializer_class = RefrigerationEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner, IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner, IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -128,7 +122,7 @@ class RefrigerationEquipmentList(generics.ListCreateAPIView):
 
 class RefrigerationEquipmentByAreaList(generics.ListAPIView):
     serializer_class = RefrigerationEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -152,13 +146,13 @@ class RefrigerationEquipmentByAreaList(generics.ListAPIView):
 class RefrigerationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = RefrigerationEquipment.objects.all()
     serializer_class = RefrigerationEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class FireAlarmEquipmentList(generics.ListCreateAPIView):
     queryset = FireAlarmEquipment.objects.all()
     serializer_class = FireAlarmEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -177,7 +171,7 @@ class FireAlarmEquipmentList(generics.ListCreateAPIView):
 
 class FireAlarmEquipmentByAreaList(generics.ListAPIView):
     serializer_class = FireAlarmEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -201,13 +195,13 @@ class FireAlarmEquipmentByAreaList(generics.ListAPIView):
 class FireAlarmEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = FireAlarmEquipment.objects.all()
     serializer_class = FireAlarmEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
     serializer_class = AtmosphericDischargeEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -226,7 +220,7 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
 
 class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
     serializer_class = AtmosphericDischargeEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner, IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner, IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -250,13 +244,13 @@ class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
 class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
     serializer_class = AtmosphericDischargeEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class StructuredCablingEquipmentList(generics.ListCreateAPIView):
     queryset = StructuredCablingEquipment.objects.all()
     serializer_class = StructuredCablingEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -275,7 +269,7 @@ class StructuredCablingEquipmentList(generics.ListCreateAPIView):
 
 class StructuredCablingEquipmentByAreaList(generics.ListAPIView):
     serializer_class = StructuredCablingEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -299,13 +293,13 @@ class StructuredCablingEquipmentByAreaList(generics.ListAPIView):
 class StructuredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = StructuredCablingEquipment.objects.all()
     serializer_class = StructuredCablingEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class DistributionBoardEquipmentList(generics.ListCreateAPIView):
     queryset = DistributionBoardEquipment.objects.all()
     serializer_class = DistributionBoardEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -324,7 +318,7 @@ class DistributionBoardEquipmentList(generics.ListCreateAPIView):
 
 class DistributionBoardEquipmentByAreaList(generics.ListAPIView):
     serializer_class = DistributionBoardEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -348,13 +342,13 @@ class DistributionBoardEquipmentByAreaList(generics.ListAPIView):
 class DistributionBoardEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = DistributionBoardEquipment.objects.all()
     serializer_class = DistributionBoardEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
     queryset = ElectricalCircuitEquipment.objects.all()
     serializer_class = ElectricalCircuitEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -373,7 +367,7 @@ class ElectricalCircuitEquipmentList(generics.ListCreateAPIView):
 
 class ElectricalCircuitEquipmentByAreaList(generics.ListAPIView):
     serializer_class = ElectricalCircuitEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -397,13 +391,13 @@ class ElectricalCircuitEquipmentByAreaList(generics.ListAPIView):
 class ElectricalCircuitEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalCircuitEquipment.objects.all()
     serializer_class = ElectricalCircuitEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class ElectricalLineEquipmentList(generics.ListCreateAPIView):
     queryset = ElectricalLineEquipment.objects.all()
     serializer_class = ElectricalLineEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -422,7 +416,7 @@ class ElectricalLineEquipmentList(generics.ListCreateAPIView):
 
 class ElectricalLineEquipmentByAreaList(generics.ListAPIView):
     serializer_class = ElectricalLineEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -446,13 +440,13 @@ class ElectricalLineEquipmentByAreaList(generics.ListAPIView):
 class ElectricalLineEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalLineEquipment.objects.all()
     serializer_class = ElectricalLineEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
     queryset = ElectricalLoadEquipment.objects.all()
     serializer_class = ElectricalLoadEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -471,7 +465,7 @@ class ElectricalLoadEquipmentList(generics.ListCreateAPIView):
 
 class ElectricalLoadEquipmentByAreaList(generics.ListAPIView):
     serializer_class = ElectricalLoadEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -495,13 +489,13 @@ class ElectricalLoadEquipmentByAreaList(generics.ListAPIView):
 class ElectricalLoadEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalLoadEquipment.objects.all()
     serializer_class = ElectricalLoadEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
 
 class IluminationEquipmentList(generics.ListCreateAPIView):
     queryset = IluminationEquipment.objects.all()
     serializer_class = IluminationEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         user = self.request.user
@@ -520,7 +514,7 @@ class IluminationEquipmentList(generics.ListCreateAPIView):
 
 class IluminationEquipmentByAreaList(generics.ListAPIView):
     serializer_class = IluminationEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']
@@ -544,4 +538,4 @@ class IluminationEquipmentByAreaList(generics.ListAPIView):
 class IluminationEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = IluminationEquipment.objects.all()
     serializer_class = IluminationEquipmentSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentPhotoOwner | IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsSpecificOwner | IsSpecificEquipmentEditor]

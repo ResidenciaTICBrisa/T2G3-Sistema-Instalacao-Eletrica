@@ -58,10 +58,7 @@ class IluminationEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="ilumination_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=1)
-    power = models.IntegerField(default=1)
-    tecnology = models.CharField(max_length=30, default=None)
-    format = models.CharField(max_length=30, default=None)
-    quantity = models.IntegerField(default=0)
+
 
 
     class Meta:

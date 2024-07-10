@@ -62,3 +62,7 @@ class IsSpecificEquipmentEditor(BasePermission):
         if obj.area and obj.area.place:
             return obj.area.place.editors.filter(user=request.user).exists()
         return False
+
+class IsSpecificOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.area.place.place_owner == request.user.place_owner
