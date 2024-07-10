@@ -29,7 +29,6 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
   final FireAlarmEquipmentService _fireAlarmService =
       FireAlarmEquipmentService();
 
-  // Chave global para ScaffoldMessenger
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
@@ -43,19 +42,33 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AddfireAlarm(
+        builder: (context) => AddFireAlarm(
           areaName: widget.areaName,
           categoryNumber: widget.categoryNumber,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,
+          equipmentId: null,
         ),
       ),
     );
   }
 
   void _editEquipment(BuildContext context, int equipmentId) {
-    // Implement the logic to edit the equipment
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddFireAlarm(
+          areaName: widget.areaName,
+          categoryNumber: widget.categoryNumber,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
+          equipmentId: equipmentId,
+          isEdit: true,
+        ),
+      ),
+    );
   }
 
   Future<void> _deleteEquipment(BuildContext context, int equipmentId) async {

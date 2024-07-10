@@ -16,10 +16,51 @@ import 'package:sige_ie/main.dart';
 
 class EquipmentService {
   final Logger _logger = Logger('EquipmentService');
-  final String baseUrl = 'http://10.0.2.2:8000/api/equipment-details/';
+  final String baseUrl = 'http://10.0.2.2:8000/api/equipments/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
+
+  Future<Map<String, dynamic>> getEquipmentById(int id) async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$id/');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        _logger.info(
+            'Failed to load equipment with status code: ${response.statusCode}');
+        throw Exception('Failed to load equipment');
+      }
+    } catch (e) {
+      _logger.info('Error during get equipment: $e');
+      throw Exception('Failed to load equipment');
+    }
+  }
+
+  Future<bool> updateEquipmentType(int id, Map<String, dynamic> data) async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$id/');
+
+    try {
+      var response = await client.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(data),
+      );
+
+      if (response.statusCode == 200) {
+        _logger.info('Successfully updated equipment type with ID: $id');
+        return true;
+      } else {
+        _logger.info(
+            'Failed to update equipment type with status code: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      _logger.info('Error during update equipment type: $e');
+      return false;
+    }
+  }
 
   Future<int?> createFireAlarm(
       FireAlarmEquipmentRequestModel fireAlarmEquipmentRequestModel) async {

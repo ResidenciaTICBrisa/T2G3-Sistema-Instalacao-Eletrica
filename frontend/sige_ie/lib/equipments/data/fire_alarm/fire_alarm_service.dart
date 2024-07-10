@@ -5,6 +5,7 @@ import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
 import 'package:sige_ie/main.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_equipment_request_model.dart';
 
 class FireAlarmEquipmentService {
   final Logger _logger = Logger('FireAlarmEquipmentService');
@@ -52,6 +53,48 @@ class FireAlarmEquipmentService {
     } catch (e) {
       _logger.info('Error during delete fire alarm equipment: $e');
       throw Exception('Failed to delete fire alarm equipment');
+    }
+  }
+
+  Future<Map<String, dynamic>> getFireAlarmById(int id) async {
+    var url = Uri.parse('${baseUrl}fire-alarms/$id/');
+    try {
+      var response = await client.get(url);
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        _logger.info(
+            'Failed to load fire alarm with status code: ${response.statusCode}');
+        throw Exception('Failed to load fire alarm');
+      }
+    } catch (e) {
+      _logger.info('Error during get fire alarm: $e');
+      throw Exception('Failed to load fire alarm');
+    }
+  }
+
+  Future<bool> updateFireAlarm(int id,
+      FireAlarmEquipmentRequestModel fireAlarmEquipmentRequestModel) async {
+    var url = Uri.parse('${baseUrl}fire-alarms/$id/');
+
+    try {
+      var response = await client.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(fireAlarmEquipmentRequestModel.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        _logger.info('Successfully updated fire alarm equipment with ID: $id');
+        return true;
+      } else {
+        _logger.info(
+            'Failed to update fire alarm equipment with status code: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      _logger.info('Error during update fire alarm equipment: $e');
+      return false;
     }
   }
 }
