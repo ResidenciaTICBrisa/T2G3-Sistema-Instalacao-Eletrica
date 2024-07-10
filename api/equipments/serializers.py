@@ -120,8 +120,8 @@ class DistributionBoardEquipmentResponseSerializer(EquipmentCategoryMixin, seria
     equipment_category = serializers.SerializerMethodField()
 
     class Meta:
-        model = StructuredCablingEquipment
-        fields = ['id', 'area', 'equipment_category', 'system']
+        model = DistributionBoardEquipment
+        fields = ['id', 'area', 'equipment_category', 'system', 'power', 'dr', 'dps', 'grounding', 'type_material', 'method_installation']
 
 
 class ElectricalCircuitEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -129,7 +129,7 @@ class ElectricalCircuitEquipmentResponseSerializer(EquipmentCategoryMixin, seria
 
     class Meta:
         model = ElectricalCircuitEquipment
-        fields = ['id', 'area', 'equipment_category', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system', 'size', 'isolament']
 
 
 class ElectricalLineEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -161,7 +161,7 @@ class RefrigerationEquipmentResponseSerializer(EquipmentCategoryMixin, serialize
 
     class Meta:
         model = RefrigerationEquipment
-        fields = ['id', 'area', 'equipment_category', 'system']
+        fields = ['id', 'area', 'equipment_category', 'system', 'power', 'quantity']
 
 
 class EquipmentSerializer(serializers.ModelSerializer):
