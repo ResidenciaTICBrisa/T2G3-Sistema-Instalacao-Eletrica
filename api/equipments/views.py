@@ -61,28 +61,10 @@ class GenericEquipmentCategoryDetail(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
 
 
-class EquipmentList(generics.ListAPIView):
-    queryset = Equipment.objects.all()
-    serializer_class = EquipmentSerializer
-    permission_classes = [IsAuthenticated, IsOwner]
-
-    def get_queryset(self):
-        user = self.request.user
-        queryset = super().get_queryset()
-        return queryset.filter(place_owner__user=user)
-
-
-class EquipmentCreate(generics.CreateAPIView):
+class EquipmentListCreateView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer
     permission_classes = [IsAuthenticated, IsOwner or IsEquipmentEditor]
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({
-            'request': self.request
-        })
-        return context
 
 
 class EquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -102,6 +84,12 @@ class EquipmentPhotoList(generics.ListCreateAPIView):
         return queryset.filter(equipment__place_owner__user=user)
 
 
+class EquipmentPhotoDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EquipmentPhoto.objects.all()
+    serializer_class = EquipmentPhotoSerializer
+    permission_classes = [IsAuthenticated, IsEquipmentOwner or IsEquipmentEditorPhoto]
+
+
 class EquipmentPhotoByEquipmentList(generics.ListAPIView):
     serializer_class = EquipmentPhotoSerializer
     permission_classes = [IsAuthenticated, IsEquipmentOwner]
@@ -110,12 +98,6 @@ class EquipmentPhotoByEquipmentList(generics.ListAPIView):
         equipment_id = self.kwargs['equipment_id']
         user = self.request.user
         return EquipmentPhoto.objects.filter(equipment_id=equipment_id, equipment__place_owner__user=user)
-
-
-class EquipmentPhotoDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = EquipmentPhoto.objects.all()
-    serializer_class = EquipmentPhotoSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentOwner]
 
 
 class RefrigerationEquipmentList(generics.ListCreateAPIView):
@@ -258,6 +240,7 @@ class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
                 return False
         return True
 
+
 class AtmosphericDischargeEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = AtmosphericDischargeEquipment.objects.all()
     serializer_class = AtmosphericDischargeEquipmentSerializer
@@ -305,6 +288,7 @@ class StructuredCablingEquipmentByAreaList(generics.ListAPIView):
             if not permission.has_object_permission(request, self, obj):
                 return False
         return True
+
 
 class StructuredCablingEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = StructuredCablingEquipment.objects.all()
@@ -402,6 +386,7 @@ class ElectricalCircuitEquipmentByAreaList(generics.ListAPIView):
             if not permission.has_object_permission(request, self, obj):
                 return False
         return True
+
 
 class ElectricalCircuitEquipmentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ElectricalCircuitEquipment.objects.all()
