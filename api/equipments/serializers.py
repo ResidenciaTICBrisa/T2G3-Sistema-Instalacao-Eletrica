@@ -181,8 +181,6 @@ class EquipmentSerializer(serializers.ModelSerializer):
         extra_kwargs = {'place_owner': {'read_only': True}}
 
     def create(self, validated_data):
-        request = self.context.get('request')
-        validated_data['place_owner'] = request.user.place_owner
 
         fire_alarm_data = validated_data.pop('fire_alarm_equipment', None)
         atmospheric_discharge_data = validated_data.pop('atmospheric_discharge_equipment', None)

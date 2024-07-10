@@ -30,7 +30,6 @@ class GenericEquipmentCategory(models.Model):
 class Equipment(models.Model):
     generic_equipment_category = models.ForeignKey(GenericEquipmentCategory, on_delete=models.CASCADE, null=True)
     personal_equipment_category = models.ForeignKey(PersonalEquipmentCategory, on_delete=models.CASCADE, null=True)
-    place_owner = models.ForeignKey(PlaceOwner, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         if self.generic_equipment_category is not None:

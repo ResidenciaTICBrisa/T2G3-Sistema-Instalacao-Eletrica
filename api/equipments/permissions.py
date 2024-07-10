@@ -1,4 +1,7 @@
 from rest_framework.permissions import BasePermission
+from .models import *
+
+system = [IluminationEquipment, ElectricalLoadEquipment,  ElectricalLineEquipment, ElectricalCircuitEquipment, DistributionBoardEquipment, StructuredCablingEquipment, AtmosphericDischargeEquipment, FireAlarmEquipment, RefrigerationEquipment]
 
 from users.models import PlaceOwner
 
@@ -12,8 +15,11 @@ def get_place_owner_or_create(user):
 
 class IsOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
-        get_place_owner_or_create(request.user)
-        return obj.place_owner == request.user.place_owner
+        for equipment in system:
+            equipment_obj = getattr(obj, equipment.__name__.lower(), None)
+            if equipment_obj and equipment_obj.area.place.place_owner:
+                return equipment_obj.area.place.place_owner == request.user.place_owner
+        return False
 
 
 class IsPlaceOwner(BasePermission):
@@ -23,21 +29,32 @@ class IsPlaceOwner(BasePermission):
         return False
 
 
-class IsEquipmentOwner(BasePermission):
+class IsEquipmentPhotoOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if obj.equipment and obj.equipment.place_owner:
-            return obj.equipment.place_owner == request.user.place_owner
+        if obj.equipment:
+            for equipment in system:
+                equipment_obj = getattr(obj.equipment, equipment.__name__.lower(), None)
+                if equipment_obj and equipment_obj.place_owner:
+                    if equipment_obj.place_owner == request.user.place_owner:
+                        return True
         return False
 
 
 class IsEquipmentEditor(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return obj.place_owner.places.editors.filter(user=request.user).exists()
-
+        for equipment in system:
+            equipment_obj = getattr(obj, equipment.__name__.lower(), None)
+            if equipment_obj and equipment_obj.area.place.editors.filter(user=request.user).exists():
+                return True
+        return False
 
 class IsEquipmentEditorPhoto(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return obj.equipment.place_owner.places.editors.filter(user=request.user).exists()
+        if obj.equipment:
+            for equipment in system:
+                equipment_obj = getattr(obj.equipment, equipment.__name__.lower(), None)
+                if equipment_obj and equipment_obj.area.place.editors.filter(user=request.user).exists():
+                    return True
 
 
 class IsSpecificEquipmentEditor(BasePermission):
