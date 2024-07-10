@@ -1,4 +1,4 @@
-# Sigeie
+# SIGE IE
 
 <div align="center">
     <img src="assets/logo.png" style="width:30vw"/>

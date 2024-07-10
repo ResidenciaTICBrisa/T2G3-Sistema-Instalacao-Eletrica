@@ -1,8 +1,8 @@
-site_name: "<div style='text-align: center;'><span style='font-family: Arial, sans-serif;'>Sigeie</span></div>"
-site_name: Sigeie
+site_name: "<div style='text-align: center;'><span style='font-family: Arial, sans-serif;'>SIGE IE</span></div>"
+site_name: SIGE IE
 
-theme:
-  name: material
+theme:  
+  name: lux
   icon:
     repo: fontawesome/brands/git-alt
   palette:

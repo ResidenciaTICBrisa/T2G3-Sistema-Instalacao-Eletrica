@@ -8,4 +8,6 @@ Cronograma do projeto:
 4 | Feito | Prototipação em baixa fidelidade, levantamento de requisitos e escrita das histórias de usuário, agendamento com o cliente para apresentar os resultados | 11/03/24 | 18/03/24
 5 | Feito | Reunião com o cliente para apresentar os resultados e validar, modelagem do diagrama entidade-relacionamento e codificação da release 1 | 18/03/24 | 25/03/24
 6 | Feito | Codificação da release 1 e atualização do diagrama entidade-relacionamento | 25/03/24 | 01/04/24
-7 | Feito | Codificação da release 1 e entrega da release 1 | 01/04/24 | 08/04/24
+7 | Feito | Codificação da release 1 e entrega da release 1 e entrega da tela de login e tela de cadastro | 01/04/24 | 08/04/24
+8 | Feito | Codificação da release 2 e atualização do diagrama entidade-relacionamento e produção das telas de gerenciar local,gerenciar SPDA e gerenciar salas| 08/04/24| 08/05/24
+9 | Feito | Entrega da realese 2 e atualização do diagrama entidade-relacionamento e planejamento para entrega das próximas releases| 08/05/24 | 01/07/24
