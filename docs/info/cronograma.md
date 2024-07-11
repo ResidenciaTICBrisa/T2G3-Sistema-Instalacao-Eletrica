@@ -11,3 +11,4 @@ Cronograma do projeto:
 7 | Feito | Codificação da release 1 e entrega da release 1 e entrega da tela de login e tela de cadastro | 01/04/24 | 08/04/24
 8 | Feito | Codificação da release 2 e atualização do diagrama entidade-relacionamento e produção das telas de gerenciar local,gerenciar SPDA e gerenciar salas| 08/04/24| 08/05/24
 9 | Feito | Entrega da realese 2 e atualização do diagrama entidade-relacionamento e planejamento para entrega das próximas releases| 08/05/24 | 01/07/24
+10| Feito | Codificação da realese 3, reunião com cliente com a apresentação do desenvolvimento do prototipo e aprovação jun to ao cliente| 01/07/2024 | 05/07/2024 
