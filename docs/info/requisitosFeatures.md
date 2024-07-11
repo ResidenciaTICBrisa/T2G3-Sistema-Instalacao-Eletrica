@@ -12,3 +12,4 @@
 | 9 | 4 | Gerenciar cabeamento estruturado |
 | 10 | 5 | Gerenciar sistema de proteção conta descargas atmosféricas (SPDA) |
 | 11 | 6 | Gerenciar sistema de detecção de alarme de incêndio (SDAI) |
+| 12 | 7 | Gerenciar sistema de Refrigeração|
