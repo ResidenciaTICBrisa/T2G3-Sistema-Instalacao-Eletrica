@@ -1,23 +1,7 @@
-site_name: "<div style='text-align: center;'><span style='font-family: Arial, sans-serif;'>SIGE IE</span></div>"
-site_name: SIGE IE
+site_name: "SIGE IE"
 
-theme:  
+theme:
   name: lux
-  icon:
-    repo: fontawesome/brands/git-alt
-  palette:
-    - scheme: default 
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Modo Escuro
-      primary: Blue
-      accent: Yellow
-    - scheme: slate
-      toggle:
-        icon: material/toggle-switch
-        name: Modo Claro  
-      primary: Blue
-      accent: Yellow
   favicon: assets/favicon.ico
   logo: assets/favicon.ico
   font:
@@ -34,44 +18,35 @@ theme:
     - navigation.tracking
     - navigation.tabs.sticky
   extra_css:
+    - theme/bootstrap.min.css
     - css/custom.css
 
 nav:
   - Landing Pages: landingPages/<!DOCTYPE html>.html
-  
   - Ínicio: index.md
-  
   - Subir o projeto:
-    - Backend: info/backend.md
-    - Frontend: info/frontend.md
-    - Contribuições: info/contribuir.md
-  
+      - Backend: info/backend.md
+      - Frontend: info/frontend.md
+      - Contribuições: info/contribuir.md
   - Atas de Reunião:
-    - Ata 1: atas/ata1.md
-    - Ata 2: atas/ata2.md
-    - Ata 3: atas/ata3.md
-
+      - Ata 1: atas/ata1.md
+      - Ata 2: atas/ata2.md
+      - Ata 3: atas/ata3.md
   - Arquitetura e Protótipo:
-    - Protótipo: info/prototipo.md
-    - Arquitetura: info/arquitetura.md
-    - Modelagem Banco de dados: info/modelagemBD.md
-
+      - Arquitetura: info/arquitetura.md
+      - Modelagem Banco de dados: info/modelagemBD.md
   - RoadMap:
-    - RoadMap: info/Roadmap.md
-   
+      - RoadMap: info/Roadmap.md
   - Cronograma:
-    - Cronograma: info/cronograma.md
-    - Releases : 
-        - Release 1: releases/Release1.md
-        - Release 2: releases/release2.md
-        - Release 3: releases/release3.md
-        - Release 4: releases/release4.md
-  
+      - Cronograma: info/cronograma.md
+      - Releases: 
+          - Release 1: releases/Release1.md
+          - Release 2: releases/release2.md
+          - Release 3: releases/release3.md
+          - Release 4: releases/release4.md
   - Requisitos de  Software:
-    - Épicos: info/requisitosEpicos.md
-    - Features: info/requisitosFeatures.md
+      - Épicos: info/requisitosEpicos.md
+      - Features: info/requisitosFeatures.md
 
 plugins:
   - search
-  - with-pdf
-
