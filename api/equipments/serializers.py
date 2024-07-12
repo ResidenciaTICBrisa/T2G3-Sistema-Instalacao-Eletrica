@@ -19,11 +19,12 @@ class GenericEquipmentCategorySerializer(serializers.ModelSerializer):
 
 
 class EquipmentPhotoSerializer(serializers.ModelSerializer):
-    photo = serializers.CharField()
+    photo = serializers.CharField(write_only=True)
+    photo_base64 = serializers.SerializerMethodField()
 
     class Meta:
         model = EquipmentPhoto
-        fields = '__all__'
+        fields = ['id', 'photo', 'photo_base64', 'description', 'equipment']
 
     def create(self, validated_data):
         photo_data = validated_data.pop('photo')
@@ -36,6 +37,12 @@ class EquipmentPhotoSerializer(serializers.ModelSerializer):
 
         equipment_photo = EquipmentPhoto.objects.create(photo=photo, **validated_data)
         return equipment_photo
+
+    def get_photo_base64(self, obj):
+        if obj.photo:
+            with obj.photo.open('rb') as image_file:
+                return 'data:image/jpeg;base64,' + base64.b64encode(image_file.read()).decode('utf-8')
+        return None
 
 
 class FireAlarmEquipmentSerializer(ValidateAreaMixin, serializers.ModelSerializer):
