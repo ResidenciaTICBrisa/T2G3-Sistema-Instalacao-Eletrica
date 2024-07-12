@@ -111,7 +111,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
               final int? areaId = args['areaId'];
 
               if (areaName != null &&
@@ -121,7 +121,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListIluminationEquipment(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -140,7 +140,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
               final int? areaId = args['areaId'];
 
               if (areaName != null &&
@@ -150,7 +150,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListCircuitEquipment(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -169,7 +169,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
               final int? areaId = args['areaId'];
 
               if (areaName != null &&
@@ -179,7 +179,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListElectricalLineEquipment(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -198,7 +198,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
               final int? areaId = args['areaId'];
 
               if (areaName != null &&
@@ -208,7 +208,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListAtmosphericEquipment(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -227,7 +227,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
               final int? areaId = args['areaId'];
 
               if (areaName != null &&
@@ -237,7 +237,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListDistributionBoard(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -257,7 +257,7 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int? areaId = args['areaId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
 
               if (areaName != null &&
                   localName != null &&
@@ -266,7 +266,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                   builder: (context) => ListFireAlarms(
                     areaName: areaName,
-                    categoryNumber: categoryNumber,
+                    systemId: systemId,
                     localName: localName,
                     localId: localId,
                     areaId: areaId,
@@ -287,7 +287,7 @@ class MyApp extends StatelessWidget {
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
               final int? areaId = args['areaId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
 
               if (areaName != null &&
                   localName != null &&
@@ -296,7 +296,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListRefrigerationEquipment(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -317,7 +317,7 @@ class MyApp extends StatelessWidget {
               final int? localId = args['localId'];
               final int? areaId = args['areaId'];
 
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
 
               if (areaName != null &&
                   localName != null &&
@@ -326,7 +326,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListStructuredCabling(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,
@@ -345,7 +345,7 @@ class MyApp extends StatelessWidget {
               final String? areaName = args['areaName']?.toString();
               final String? localName = args['localName']?.toString();
               final int? localId = args['localId'];
-              final int categoryNumber = args['categoryNumber'] ?? 0;
+              final int systemId = args['systemId'] ?? 0;
               final int? areaId = args['areaId'];
 
               if (areaName != null &&
@@ -355,7 +355,7 @@ class MyApp extends StatelessWidget {
                 return MaterialPageRoute(
                     builder: (context) => ListElectricalLoadEquipment(
                           areaName: areaName,
-                          categoryNumber: categoryNumber,
+                          systemId: systemId,
                           localName: localName,
                           localId: localId,
                           areaId: areaId,

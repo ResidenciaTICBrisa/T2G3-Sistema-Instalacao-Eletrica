@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_service.dart';
 import 'package:sige_ie/equipments/feature/fire_alarm/add_fire_alarm.dart';
 
 class ListFireAlarms extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListFireAlarms({
     super.key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -25,7 +25,7 @@ class ListFireAlarms extends StatefulWidget {
 }
 
 class _ListFireAlarmsState extends State<ListFireAlarms> {
-  late Future<List<FireAlarmEquipmentResponseModel>> _fireAlarmList;
+  late Future<List<FireAlarmEquipmentResponseByAreaModel>> _fireAlarmList;
   final FireAlarmEquipmentService _fireAlarmService =
       FireAlarmEquipmentService();
 
@@ -38,42 +38,42 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     _fireAlarmList = _fireAlarmService.getFireAlarmListByArea(widget.areaId);
   }
 
-  void navigateToAddEquipment(BuildContext context) {
+  void navigateToAddFireAlarm(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddFireAlarm(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,
-          equipmentId: null,
+          fireAlarmId: null,
         ),
       ),
     );
   }
 
-  void _editEquipment(BuildContext context, int equipmentId) {
+  void _editFireAlarm(BuildContext context, int fireAlarmId) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AddFireAlarm(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,
-          equipmentId: equipmentId,
+          fireAlarmId: fireAlarmId,
           isEdit: true,
         ),
       ),
     );
   }
 
-  Future<void> _deleteEquipment(BuildContext context, int equipmentId) async {
+  Future<void> _deleteFireAlarm(BuildContext context, int fireAlarmId) async {
     try {
-      await _fireAlarmService.deleteFireAlarm(equipmentId);
+      await _fireAlarmService.deleteFireAlarm(fireAlarmId);
       setState(() {
         _fireAlarmList =
             _fireAlarmService.getFireAlarmListByArea(widget.areaId);
@@ -94,7 +94,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
     }
   }
 
-  void _confirmDelete(BuildContext context, int equipmentId) {
+  void _confirmDelete(BuildContext context, int fireAlarmId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -113,7 +113,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
               child: const Text('Excluir'),
               onPressed: () {
                 Navigator.of(context).pop();
-                _deleteEquipment(context, equipmentId);
+                _deleteFireAlarm(context, fireAlarmId);
               },
             ),
           ],
@@ -172,7 +172,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                 ),
               ),
               const SizedBox(height: 20),
-              FutureBuilder<List<FireAlarmEquipmentResponseModel>>(
+              FutureBuilder<List<FireAlarmEquipmentResponseByAreaModel>>(
                 future: _fireAlarmList,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -185,7 +185,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        var equipment = snapshot.data![index];
+                        var fireAlarmEquipment = snapshot.data![index];
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
@@ -197,7 +197,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             title: Text(
-                              equipment.equipmentCategory,
+                              fireAlarmEquipment.equipmentCategory,
                               style: const TextStyle(
                                   color: AppColors.lightText,
                                   fontWeight: FontWeight.bold),
@@ -209,13 +209,13 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                                   icon: const Icon(Icons.edit,
                                       color: Colors.blue),
                                   onPressed: () =>
-                                      _editEquipment(context, equipment.id),
+                                      _editFireAlarm(context, fireAlarmEquipment.id),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete,
                                       color: Colors.red),
                                   onPressed: () =>
-                                      _confirmDelete(context, equipment.id),
+                                      _confirmDelete(context, fireAlarmEquipment.id),
                                 ),
                               ],
                             ),
@@ -243,7 +243,7 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => navigateToAddEquipment(context),
+          onPressed: () => navigateToAddFireAlarm(context),
           backgroundColor: AppColors.sigeIeYellow,
           child: const Icon(Icons.add, color: AppColors.sigeIeBlue),
         ),

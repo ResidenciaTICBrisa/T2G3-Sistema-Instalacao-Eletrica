@@ -6,14 +6,14 @@ import 'package:sige_ie/equipments/feature/distribuition_board/add_distribuition
 class ListDistributionBoard extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListDistributionBoard({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -60,7 +60,7 @@ class _ListDistributionBoardState extends State<ListDistributionBoard> {
       MaterialPageRoute(
         builder: (context) => AddDistribuitionBoard(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,

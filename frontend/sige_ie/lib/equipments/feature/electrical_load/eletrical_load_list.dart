@@ -6,14 +6,14 @@ import 'package:sige_ie/equipments/feature/electrical_load/add_electrical_load.d
 class ListElectricalLoadEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListElectricalLoadEquipment({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -72,7 +72,7 @@ class _ListElectricalLoadEquipmentState
       MaterialPageRoute(
         builder: (context) => AddElectricalLoadEquipmentScreen(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,

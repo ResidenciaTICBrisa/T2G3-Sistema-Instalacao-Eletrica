@@ -6,14 +6,14 @@ import 'package:sige_ie/equipments/feature/electrical_line/add_electrical_line.d
 class ListElectricalLineEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListElectricalLineEquipment({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -63,7 +63,7 @@ class _ListElectricalLineEquipmentState
       MaterialPageRoute(
         builder: (context) => AddElectricalLineScreen(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,

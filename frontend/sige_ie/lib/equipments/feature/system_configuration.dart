@@ -30,7 +30,7 @@ class SystemConfiguration extends StatefulWidget {
 
 class _SystemConfigurationState extends State<SystemConfiguration> {
   void navigateTo(String routeName, String areaName, String localName,
-      int localId, int areaId, int category) {
+      int localId, int areaId, int systemId) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -41,7 +41,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/atmosphericDischarges':
@@ -49,7 +49,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/fireAlarm':
@@ -57,7 +57,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/electricLoads':
@@ -65,7 +65,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/electricLines':
@@ -73,7 +73,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/circuits':
@@ -81,7 +81,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/distributionBoard':
@@ -89,7 +89,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/cooling':
@@ -97,7 +97,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             case '/lighting':
@@ -105,7 +105,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 areaName: areaName,
                 localName: localName,
                 localId: localId,
-                categoryNumber: category,
+                systemId: systemId,
                 areaId: areaId,
               );
             default:

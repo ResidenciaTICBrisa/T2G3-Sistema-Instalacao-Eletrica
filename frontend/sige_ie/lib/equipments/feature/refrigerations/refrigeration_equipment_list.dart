@@ -6,14 +6,14 @@ import 'package:sige_ie/equipments/feature/refrigerations/add_refrigeration.dart
 class ListRefrigerationEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListRefrigerationEquipment({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -63,7 +63,7 @@ class _ListRefrigerationEquipmentState
       MaterialPageRoute(
         builder: (context) => AddRefrigeration(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,

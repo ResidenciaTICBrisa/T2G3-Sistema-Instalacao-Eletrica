@@ -7,14 +7,14 @@ import 'package:sige_ie/equipments/feature/structured_cabling/add_structured_cab
 class ListStructuredCabling extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListStructuredCabling({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -45,7 +45,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
       MaterialPageRoute(
         builder: (context) => AddStructuredCabling(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,

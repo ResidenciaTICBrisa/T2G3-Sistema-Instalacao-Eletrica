@@ -21,8 +21,8 @@ class EquipmentService {
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<Map<String, dynamic>> getEquipmentById(int id) async {
-    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$id/');
+  Future<Map<String, dynamic>> getEquipmentById(int equipmentId) async {
+    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$equipmentId/');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200) {
@@ -38,7 +38,7 @@ class EquipmentService {
     }
   }
 
-  Future<bool> updateEquipmentType(int id, Map<String, dynamic> data) async {
+  Future<bool> updateEquipment(int id, Map<String, dynamic> data) async {
     var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$id/');
 
     try {
@@ -273,14 +273,14 @@ class EquipmentService {
 
   Future<int?> createRefrigerations(
       RefrigerationsEquipmentRequestModel
-          RefrigerationsEquipmentRequestModel) async {
+          refrigerationsEquipmentRequestModel) async {
     var url = Uri.parse(baseUrl);
 
     try {
       var response = await client.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(RefrigerationsEquipmentRequestModel.toJson()),
+        body: jsonEncode(refrigerationsEquipmentRequestModel.toJson()),
       );
 
       _logger.info('Response status code: ${response.statusCode}');

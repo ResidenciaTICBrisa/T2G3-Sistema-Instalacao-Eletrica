@@ -37,13 +37,13 @@ class StructuredCablingEquipmentService {
     }
   }
 
-  Future<void> deleteStructuredCabling(int equipmentId) async {
-    var url = Uri.parse('${baseUrl}structured-cabling/$equipmentId/');
+  Future<void> deleteStructuredCabling(int structuredCablingId) async {
+    var url = Uri.parse('${baseUrl}structured-cabling/$structuredCablingId/');
     try {
       var response = await client.delete(url);
       if (response.statusCode == 204) {
         _logger.info(
-            'Successfully deleted structured cabling equipment with ID: $equipmentId');
+            'Successfully deleted structured cabling equipment with ID: $structuredCablingId');
       } else {
         _logger.info(
             'Failed to delete structured cabling equipment with status code: ${response.statusCode}');

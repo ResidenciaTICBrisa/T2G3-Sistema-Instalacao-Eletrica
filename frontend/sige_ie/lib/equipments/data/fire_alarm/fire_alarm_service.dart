@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_equipment_request_model.dart';
@@ -14,7 +15,7 @@ class FireAlarmEquipmentService {
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
-  Future<List<FireAlarmEquipmentResponseModel>> getFireAlarmListByArea(
+  Future<List<FireAlarmEquipmentResponseByAreaModel>> getFireAlarmListByArea(
       int areaId) async {
     var url = Uri.parse('${baseUrl}fire-alarms/by-area/$areaId/');
     try {
@@ -23,7 +24,7 @@ class FireAlarmEquipmentService {
       if (response.statusCode == 200) {
         List<dynamic> dataList = jsonDecode(response.body);
         return dataList
-            .map((data) => FireAlarmEquipmentResponseModel.fromJson(data))
+            .map((data) => FireAlarmEquipmentResponseByAreaModel.fromJson(data))
             .toList();
       } else {
         _logger.info(
@@ -37,13 +38,13 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<void> deleteFireAlarm(int equipmentId) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/$equipmentId/');
+  Future<void> deleteFireAlarm(int fireAlarmId) async {
+    var url = Uri.parse('${baseUrl}fire-alarms/$fireAlarmId/');
     try {
       var response = await client.delete(url);
       if (response.statusCode == 204) {
         _logger.info(
-            'Successfully deleted fire alarm equipment with ID: $equipmentId');
+            'Successfully deleted fire alarm equipment with ID: $fireAlarmId');
       } else {
         _logger.info(
             'Failed to delete fire alarm equipment with status code: ${response.statusCode}');
@@ -56,12 +57,14 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<Map<String, dynamic>> getFireAlarmById(int id) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/$id/');
+  Future<FireAlarmEquipmentResponseModel> getFireAlarmById(
+      int fireAlarmId) async {
+    var url = Uri.parse('${baseUrl}fire-alarms/$fireAlarmId/');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        var jsonResponse = jsonDecode(response.body);
+        return FireAlarmEquipmentResponseModel.fromJson(jsonResponse);
       } else {
         _logger.info(
             'Failed to load fire alarm with status code: ${response.statusCode}');
@@ -73,9 +76,9 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<bool> updateFireAlarm(int id,
+  Future<bool> updateFireAlarm(int fireAlarmId,
       FireAlarmEquipmentRequestModel fireAlarmEquipmentRequestModel) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/$id/');
+    var url = Uri.parse('${baseUrl}fire-alarms/$fireAlarmId/');
 
     try {
       var response = await client.put(
@@ -85,7 +88,8 @@ class FireAlarmEquipmentService {
       );
 
       if (response.statusCode == 200) {
-        _logger.info('Successfully updated fire alarm equipment with ID: $id');
+        _logger.info(
+            'Successfully updated fire alarm equipment with ID: $fireAlarmId');
         return true;
       } else {
         _logger.info(

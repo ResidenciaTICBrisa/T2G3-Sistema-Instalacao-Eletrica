@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_service.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
+import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_response_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_service.dart';
@@ -20,7 +22,11 @@ class ImageData {
   File imageFile;
   String description;
 
-  ImageData(this.imageFile, this.description) : id = Random().nextInt(1000000);
+  ImageData({
+    int? id,
+    required this.imageFile,
+    required this.description,
+  }) : id = id ?? Random().nextInt(1000000);
 }
 
 List<ImageData> _images = [];
@@ -30,19 +36,19 @@ class AddFireAlarm extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
-  final int categoryNumber;
+  final int systemId;
   final int areaId;
-  final int? equipmentId;
+  final int? fireAlarmId;
   final bool isEdit;
 
   const AddFireAlarm({
     super.key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
-    this.equipmentId,
+    this.fireAlarmId,
     this.isEdit = false,
   });
 
@@ -65,29 +71,47 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   bool _isPersonalEquipmentCategorySelected = false;
   String? _newEquipmentTypeName;
   String? _selectedTypeToDelete;
-
+  int? equipmentId;
   List<Map<String, Object>> genericEquipmentTypes = [];
   List<Map<String, Object>> personalEquipmentTypes = [];
   Map<String, int> personalEquipmentMap = {};
+  FireAlarmEquipmentResponseModel? fireAlarmEquipmentResponseModel;
 
   @override
   void initState() {
     super.initState();
     _fetchEquipmentCategory();
-
-    if (widget.isEdit && widget.equipmentId != null) {
-      _fetchEquipmentDetails(widget.equipmentId!);
-      _fetchExistingPhotos(widget.equipmentId!);
+    if (widget.isEdit && widget.fireAlarmId != null) {
+      _initializeData(widget.fireAlarmId!);
     }
+  }
+
+  Future<void> _initializeData(int fireAlarmId) async {
+    try {
+      await _fetchFireAlarmEquipment(fireAlarmId);
+
+      if (fireAlarmEquipmentResponseModel != null) {
+        setState(() {
+          equipmentId = fireAlarmEquipmentResponseModel!.equipment;
+        });
+
+        _fetchEquipmentDetails(fireAlarmEquipmentResponseModel!.equipment);
+        _fetchExistingPhotos(fireAlarmEquipmentResponseModel!.equipment);
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  Future<void> _fetchFireAlarmEquipment(int fireAlarmId) async {
+    fireAlarmEquipmentResponseModel =
+        await fireAlarmService.getFireAlarmById(fireAlarmId);
   }
 
   Future<void> _fetchEquipmentDetails(int equipmentId) async {
     try {
-      final fireAlarmDetails =
-          await fireAlarmService.getFireAlarmById(equipmentId);
-
-      final equipmentDetails = await equipmentService
-          .getEquipmentById(fireAlarmDetails['equipment']);
+      final equipmentDetails =
+          await equipmentService.getEquipmentById(equipmentId);
 
       setState(() {
         _isPersonalEquipmentCategorySelected =
@@ -112,19 +136,25 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     }
   }
 
-  void _fetchExistingPhotos(int fireAlarmId) async {
+  void _fetchExistingPhotos(int equipmentId) async {
     try {
-      List<Map<String, dynamic>> photos =
-          await equipmentPhotoService.getPhotosByEquipmentId(fireAlarmId);
+      List<EquipmentPhotoResponseModel> photos =
+          await equipmentPhotoService.getPhotosByEquipmentId(equipmentId);
+
+      List<ImageData> imageList = [];
+
+      for (var photo in photos) {
+        File imageFile = await photo.toFile();
+        imageList.add(ImageData(
+          id: photo.id,
+          imageFile: imageFile,
+          description: photo.description ?? '',
+        ));
+      }
 
       setState(() {
-        _images = photos.map((photo) {
-          return ImageData(
-            File(photo['imagePath']),
-            photo['description'] ?? '',
-          );
-        }).toList();
-        categoryImagesMap[widget.categoryNumber] = _images;
+        _images = imageList;
+        categoryImagesMap[widget.systemId] = _images;
       });
     } catch (e) {
       print('Erro ao buscar fotos existentes: $e');
@@ -134,11 +164,11 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   Future<void> _fetchEquipmentCategory() async {
     List<EquipmentCategoryResponseModel> genericEquipmentCategoryList =
         await genericEquipmentCategoryService
-            .getAllGenericEquipmentCategoryBySystem(widget.categoryNumber);
+            .getAllGenericEquipmentCategoryBySystem(widget.systemId);
 
     List<EquipmentCategoryResponseModel> personalEquipmentCategoryList =
         await personalEquipmentCategoryService
-            .getAllPersonalEquipmentCategoryBySystem(widget.categoryNumber);
+            .getAllPersonalEquipmentCategoryBySystem(widget.systemId);
 
     setState(() {
       genericEquipmentTypes = genericEquipmentCategoryList
@@ -157,7 +187,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   @override
   void dispose() {
     _equipmentQuantityController.dispose();
-    categoryImagesMap[widget.categoryNumber]?.clear();
+    categoryImagesMap[widget.systemId]?.clear();
     super.dispose();
   }
 
@@ -211,15 +241,15 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     existingImage.description = description ?? '';
                   } else {
                     final imageData = ImageData(
-                      imageFile,
-                      description ?? '',
+                      imageFile: imageFile,
+                      description: description ?? '',
                     );
-                    final categoryNumber = widget.categoryNumber;
-                    if (!categoryImagesMap.containsKey(categoryNumber)) {
-                      categoryImagesMap[categoryNumber] = [];
+                    final systemId = widget.systemId;
+                    if (!categoryImagesMap.containsKey(systemId)) {
+                      categoryImagesMap[systemId] = [];
                     }
-                    categoryImagesMap[categoryNumber]!.add(imageData);
-                    _images = categoryImagesMap[categoryNumber]!;
+                    categoryImagesMap[systemId]!.add(imageData);
+                    _images = categoryImagesMap[systemId]!;
                   }
                 });
                 Navigator.of(context).pop();
@@ -286,23 +316,18 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       personalEquipmentCategory = null;
     }
 
-    final fireAlarmDetails =
-        await fireAlarmService.getFireAlarmById(widget.equipmentId!);
-    final equipmentId = fireAlarmDetails['equipment'];
-
     final Map<String, dynamic> equipmentTypeUpdate = {
       "generic_equipment_category": genericEquipmentCategory,
       "personal_equipment_category": personalEquipmentCategory,
-      "place_owner": fireAlarmDetails['place_owner'],
     };
 
-    bool typeUpdateSuccess = await equipmentService.updateEquipmentType(
-        equipmentId, equipmentTypeUpdate);
+    bool typeUpdateSuccess = await equipmentService.updateEquipment(
+        equipmentId!, equipmentTypeUpdate);
 
     if (typeUpdateSuccess) {
       final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
         area: widget.areaId,
-        system: widget.categoryNumber,
+        system: widget.systemId,
       );
 
       final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
@@ -313,7 +338,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       );
 
       bool fireAlarmUpdateSuccess = await fireAlarmService.updateFireAlarm(
-          widget.equipmentId!, fireAlarmEquipmentDetail);
+          widget.fireAlarmId!, fireAlarmEquipmentDetail);
 
       if (fireAlarmUpdateSuccess) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -327,7 +352,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           '/listFireAlarms',
           arguments: {
             'areaName': widget.areaName,
-            'categoryNumber': widget.categoryNumber,
+            'systemId': widget.systemId,
             'localName': widget.localName,
             'localId': widget.localId,
             'areaId': widget.areaId,
@@ -359,7 +384,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   }
 
   Future<void> _registerPersonalEquipmentType() async {
-    int systemId = widget.categoryNumber;
+    int systemId = widget.systemId;
     PersonalEquipmentCategoryRequestModel personalEquipmentTypeRequestModel =
         PersonalEquipmentCategoryRequestModel(
             name: _newEquipmentTypeName ?? '', system: systemId);
@@ -415,7 +440,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       return;
     }
 
-    int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
+    int personalCategoryId = personalEquipmentMap[_selectedTypeToDelete]!;
 
     showDialog(
       context: context,
@@ -436,7 +461,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 bool success = await personalEquipmentCategoryService
-                    .deletePersonalEquipmentCategory(equipmentId);
+                    .deletePersonalEquipmentCategory(personalCategoryId);
 
                 if (success) {
                   setState(() {
@@ -561,7 +586,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
 
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
       area: widget.areaId,
-      system: widget.categoryNumber,
+      system: widget.systemId,
     );
 
     final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
@@ -571,19 +596,19 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       fireAlarmRequestModel: fireAlarmModel,
     );
 
-    int? equipmentId;
+    int? fireAlarmId;
     if (widget.isEdit) {
-      equipmentId = widget.equipmentId;
+      fireAlarmId = widget.fireAlarmId;
       bool success = await fireAlarmService.updateFireAlarm(
-          equipmentId!, fireAlarmEquipmentDetail);
-      if (!success) equipmentId = null;
+          fireAlarmId!, fireAlarmEquipmentDetail);
+      if (!success) fireAlarmId = null;
     } else {
-      equipmentId =
+      fireAlarmId =
           await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
     }
 
-    if (equipmentId != null) {
-      print('Registering photos for equipment ID: $equipmentId');
+    if (equipmentId! != 0) {
+      print('Registering photos for equipment ID: $fireAlarmId');
       await Future.wait(_images.map((imageData) async {
         print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
@@ -591,7 +616,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
             photo: imageData.imageFile,
             description:
                 imageData.description.isEmpty ? null : imageData.description,
-            equipment: equipmentId!,
+            equipment: equipmentId,
           ),
         );
       }));
@@ -607,7 +632,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         '/listFireAlarms',
         arguments: {
           'areaName': widget.areaName,
-          'categoryNumber': widget.categoryNumber,
+          'systemId': widget.systemId,
           'localName': widget.localName,
           'localId': widget.localId,
           'areaId': widget.areaId,
@@ -656,7 +681,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               '/listFireAlarms',
               arguments: {
                 'areaName': widget.areaName,
-                'categoryNumber': widget.categoryNumber,
+                'systemId': widget.systemId,
                 'localName': widget.localName,
                 'localId': widget.localId,
                 'areaId': widget.areaId,
@@ -679,7 +704,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               ),
               child: Center(
                 child: Text(
-                    widget.equipmentId == null
+                    widget.fireAlarmId == null
                         ? 'Adicionar Equipamento'
                         : 'Editar Equipamento',
                     style: const TextStyle(

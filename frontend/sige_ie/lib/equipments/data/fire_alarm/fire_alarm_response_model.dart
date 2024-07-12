@@ -1,13 +1,13 @@
 class FireAlarmEquipmentResponseModel {
   int id;
   int area;
-  String equipmentCategory;
+  int equipment;
   int system;
 
   FireAlarmEquipmentResponseModel({
     required this.id,
     required this.area,
-    required this.equipmentCategory,
+    required this.equipment,
     required this.system,
   });
 
@@ -15,7 +15,7 @@ class FireAlarmEquipmentResponseModel {
     return FireAlarmEquipmentResponseModel(
       id: json['id'],
       area: json['area'],
-      equipmentCategory: json['equipment_category'],
+      equipment: json['equipment'],
       system: json['system'],
     );
   }

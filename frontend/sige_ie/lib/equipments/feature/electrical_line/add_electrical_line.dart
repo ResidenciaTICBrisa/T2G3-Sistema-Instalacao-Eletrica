@@ -30,13 +30,13 @@ class AddElectricalLineScreen extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
-  final int categoryNumber;
+  final int systemId;
   final int areaId;
 
   const AddElectricalLineScreen({
     super.key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -81,11 +81,11 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
   Future<void> _fetchEquipmentCategory() async {
     List<EquipmentCategoryResponseModel> genericEquipmentCategoryList =
         await genericEquipmentCategoryService
-            .getAllGenericEquipmentCategoryBySystem(widget.categoryNumber);
+            .getAllGenericEquipmentCategoryBySystem(widget.systemId);
 
     List<EquipmentCategoryResponseModel> personalEquipmentCategoryList =
         await personalEquipmentCategoryService
-            .getAllPersonalEquipmentCategoryBySystem(widget.categoryNumber);
+            .getAllPersonalEquipmentCategoryBySystem(widget.systemId);
 
     if (mounted) {
       setState(() {
@@ -106,7 +106,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
   @override
   void dispose() {
     _equipmentQuantityController.dispose();
-    categoryImagesMap[widget.categoryNumber]?.clear();
+    categoryImagesMap[widget.systemId]?.clear();
     super.dispose();
   }
 
@@ -157,12 +157,12 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
                   } else {
                     final imageData =
                         ImageData(imageFile, descriptionController.text);
-                    final categoryNumber = widget.categoryNumber;
-                    if (!categoryImagesMap.containsKey(categoryNumber)) {
-                      categoryImagesMap[categoryNumber] = [];
+                    final systemId = widget.systemId;
+                    if (!categoryImagesMap.containsKey(systemId)) {
+                      categoryImagesMap[systemId] = [];
                     }
-                    categoryImagesMap[categoryNumber]!.add(imageData);
-                    _images = categoryImagesMap[categoryNumber]!;
+                    categoryImagesMap[systemId]!.add(imageData);
+                    _images = categoryImagesMap[systemId]!;
                   }
                 });
                 Navigator.of(context).pop();
@@ -218,7 +218,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
   }
 
   Future<void> _registerPersonalEquipmentType() async {
-    int systemId = widget.categoryNumber;
+    int systemId = widget.systemId;
     PersonalEquipmentCategoryRequestModel personalEquipmentTypeRequestModel =
         PersonalEquipmentCategoryRequestModel(
             name: _newEquipmentTypeName ?? '', system: systemId);
@@ -411,7 +411,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
     final EletricalLineRequestModel electricalLineModel =
         EletricalLineRequestModel(
       area: widget.areaId,
-      system: widget.categoryNumber,
+      system: widget.systemId,
     );
 
     final EletricalLineEquipmentRequestModel electricalLineEquipmentDetail =
@@ -446,7 +446,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
         '/electricalLineList',
         arguments: {
           'areaName': widget.areaName,
-          'categoryNumber': widget.categoryNumber,
+          'systemId': widget.systemId,
           'localName': widget.localName,
           'localId': widget.localId,
           'areaId': widget.areaId,
@@ -495,7 +495,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               '/electricalLineList',
               arguments: {
                 'areaName': widget.areaName,
-                'categoryNumber': widget.categoryNumber,
+                'systemId': widget.systemId,
                 'localName': widget.localName,
                 'localId': widget.localId,
                 'areaId': widget.areaId,

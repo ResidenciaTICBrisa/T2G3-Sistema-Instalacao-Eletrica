@@ -6,14 +6,14 @@ import 'package:sige_ie/equipments/feature/atmospheric-discharges/add_atmospheri
 class ListAtmosphericEquipment extends StatefulWidget {
   final String areaName;
   final String localName;
-  final int categoryNumber;
+  final int systemId;
   final int localId;
   final int areaId;
 
   const ListAtmosphericEquipment({
     Key? key,
     required this.areaName,
-    required this.categoryNumber,
+    required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
@@ -61,7 +61,7 @@ class _ListAtmosphericEquipmentState extends State<ListAtmosphericEquipment> {
       MaterialPageRoute(
         builder: (context) => AddAtmosphericEquipmentScreen(
           areaName: widget.areaName,
-          categoryNumber: widget.categoryNumber,
+          systemId: widget.systemId,
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,

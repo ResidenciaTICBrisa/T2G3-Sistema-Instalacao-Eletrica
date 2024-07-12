@@ -71,8 +71,9 @@ class PersonalEquipmentCategoryService {
     }
   }
 
-  Future<bool> deletePersonalEquipmentCategory(int id) async {
-    var url = Uri.parse('${baseUrl}personal-equipment-types/$id/');
+  Future<bool> deletePersonalEquipmentCategory(int personalCategoryId) async {
+    var url =
+        Uri.parse('${baseUrl}personal-equipment-types/$personalCategoryId/');
 
     try {
       _logger.info('Sending DELETE request to $url');
