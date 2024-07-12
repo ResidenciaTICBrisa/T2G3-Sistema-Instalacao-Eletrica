@@ -1,19 +1,20 @@
-# SIGE IE
+<h1 align="center">SIGE IE </h1>
 
 <div align="center">
-    <img src="../assets/logo.png" style="width:30vw"/>
+    <img src="/docs/../assets/logo.png" style="width:25vw; border-radius: 70%;"/>
 </div>
 
-<h3 align="center">Sobre este projeto</h3>
+
+<br>
+<h4 align="center">Sobre este projeto</h4>
 
 Aplicativo web mobile desenvolvido para a Universidade de Brasília com objetivo de gerenciar as instalações elétricas e dar suporte ao retrofitting das instalações.
 
-#### Posição
-
+<h4 align="center">Posição</h4>
 O SIGE IE é um sistema da Universidade de Brasília para o gerenciamento de instalações elétricas com o objetivo de facilitar o cadastro das informações de instalação elétrica para ajudar na reforma da parte elétrica dos prédios e salas. Ele permite a automatização da geração de relatórios das instalações elétricas de cada lugar e a centralização dessas informações para uso dos responsáveis pelas instalações. As pessoas devem usar o SIGE IE porque ele simplifica e agiliza o processo de gerenciamento, principalmente do retrofitting de instalações elétricas, garantindo maior eficiência e segurança.
 
-#### Objetivos
 
+<h4 align="center">Objetivo</h4>
 Simplificar o cadastro e gerenciamento de informações de instalações elétricas e automatizar a geração de relatórios.
 
 #### Tecnologias
