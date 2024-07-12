@@ -1,7 +1,7 @@
 # SIGE IE
 
 <div align="center">
-    <img src="assets/logo.png" style="width:30vw"/>
+    <img src="../assets/logo.png" style="width:30vw"/>
 </div>
 
 <h3 align="center">Sobre este projeto</h3>

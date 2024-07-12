@@ -22,8 +22,7 @@ theme:
     - css/custom.css
 
 nav:
-  - Landing Pages: landingPages/<!DOCTYPE html>.html
-  - Ínicio: index.md
+  - Ínicio: info/home.md
   - Subir o projeto:
       - Backend: info/backend.md
       - Frontend: info/frontend.md
