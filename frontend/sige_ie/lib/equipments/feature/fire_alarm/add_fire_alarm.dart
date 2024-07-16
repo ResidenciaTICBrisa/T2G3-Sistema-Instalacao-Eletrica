@@ -492,6 +492,8 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
+                    _selectedType =
+                        null; // Limpando a seleção no dropdown principal
                     _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -546,7 +548,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
-                  children: _images.map((imageData) {
+                  children: _images
+                      .where((imageData) => !imageData.toDelete)
+                      .map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: GestureDetector(
