@@ -1,0 +1,17 @@
+.gradient {
+    background: linear-gradient(90deg, #003366 0%, #ffcc00 100%);
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    max-width: 300px; /* Tamanho máximo das imagens */
+    border-radius: 8px;
+    margin: 0 auto;
+}

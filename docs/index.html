@@ -6,26 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SIGE IE - Electrical Maintenance</title>
+    <link rel="icon" href="assets/favicon_transparent_32x32.png">
     <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" />
-    <style>
-        .gradient {
-            background: linear-gradient(90deg, #003366 0%, #ffcc00 100%);
-        }
-
-        .image-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .image-container img {
-            width: 100%;
-            height: auto;
-            max-width: 300px; /* Tamanho máximo das imagens */
-            border-radius: 8px;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="leading-normal tracking-normal text-white gradient" style="font-family: 'Source Sans Pro', sans-serif;">
@@ -234,53 +217,6 @@
         </button>
     </section>
 
-    <script>
-        var scrollpos = window.scrollY;
-        var header = document.getElementById("header");
-        var navcontent = document.getElementById("nav-content");
-        var navaction = document.getElementById("navAction");
-        var brandname = document.getElementById("brandname");
-        var toToggle = document.querySelectorAll(".toggleColour");
-
-        document.addEventListener("scroll", function () {
-            /*Apply classes for slide in bar*/
-            scrollpos = window.scrollY;
-
-            if (scrollpos > 10) {
-                header.classList.add("bg-white");
-                navaction.classList.remove("bg-white");
-                navaction.classList.add("gradient");
-                navaction.classList.remove("text-gray-800");
-                navaction.classList.add("text-white");
-                //Use to switch toggleColour colours
-                for (var i = 0; i < toToggle.length; i++) {
-                    toToggle[i].classList.add("text-gray-800");
-                    toToggle[i].classList.remove("text-white");
-                }
-                header.classList.add("shadow");
-                navcontent.classList.remove("bg-gray-100");
-                navcontent.classList.add("bg-white");
-            } else {
-                header.classList.remove("bg-white");
-                navaction.classList.remove("gradient");
-                navaction.classList.add("bg-white");
-                navaction.classList.remove("text-white");
-                navaction.classList.add("text-gray-800");
-                //Use to switch toggleColour colours
-                for (var i = 0; i < toToggle.length; i++) {
-                    toToggle[i].classList.add("text-white");
-                    toToggle[i].classList.remove("text-gray-800");
-                }
-
-                header.classList.remove("shadow");
-                navcontent.classList.remove("bg-white");
-                navcontent.classList.add("bg-gray-100");
-            }
-        });
-
-        document.getElementById('nav-toggle').addEventListener('click', function () {
-            document.getElementById('nav-content').classList.toggle('hidden');
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
