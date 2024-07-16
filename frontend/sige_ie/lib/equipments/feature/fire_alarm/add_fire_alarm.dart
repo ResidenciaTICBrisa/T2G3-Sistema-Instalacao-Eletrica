@@ -234,43 +234,26 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
             ),
             TextButton(
               child: const Text('Salvar'),
-              onPressed: () async {
-                String? description = descriptionController.text.isEmpty
-                    ? null
-                    : descriptionController.text;
-                if (existingImage != null) {
-                  existingImage.description = description ?? '';
-                  bool success = await equipmentPhotoService.updatePhoto(
-                    existingImage.id,
-                    EquipmentPhotoRequestModel(
-                      photo: existingImage.imageFile,
-                      description: existingImage.description,
-                      equipment: equipmentId!,
-                    ),
-                  );
-                  if (success) {
-                    setState(() {
-                      final index = _images
-                          .indexWhere((image) => image.id == existingImage.id);
-                      if (index != -1) {
-                        _images[index] = existingImage;
-                      }
-                    });
-                  }
-                } else {
-                  final imageData = ImageData(
-                    imageFile: imageFile,
-                    description: description ?? '',
-                  );
-                  final systemId = widget.systemId;
-                  if (!categoryImagesMap.containsKey(systemId)) {
-                    categoryImagesMap[systemId] = [];
-                  }
-                  categoryImagesMap[systemId]!.add(imageData);
-                  setState(() {
+              onPressed: () {
+                setState(() {
+                  String? description = descriptionController.text.isEmpty
+                      ? null
+                      : descriptionController.text;
+                  if (existingImage != null) {
+                    existingImage.description = description ?? '';
+                  } else {
+                    final imageData = ImageData(
+                      imageFile: imageFile,
+                      description: description ?? '',
+                    );
+                    final systemId = widget.systemId;
+                    if (!categoryImagesMap.containsKey(systemId)) {
+                      categoryImagesMap[systemId] = [];
+                    }
+                    categoryImagesMap[systemId]!.add(imageData);
                     _images = categoryImagesMap[systemId]!;
-                  });
-                }
+                  }
+                });
                 Navigator.of(context).pop();
               },
             ),
@@ -360,12 +343,14 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           widget.fireAlarmId!, fireAlarmEquipmentDetail);
 
       if (fireAlarmUpdateSuccess) {
+        // Delete photos marked for deletion
         await Future.wait(_images
             .where((imageData) => imageData.toDelete)
             .map((imageData) async {
           await equipmentPhotoService.deletePhoto(imageData.id);
         }));
 
+        // Update photo descriptions
         await Future.wait(_images
             .where((imageData) => !imageData.toDelete)
             .map((imageData) async {
@@ -644,17 +629,21 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     } else {
       fireAlarmId =
           await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
+      setState(() {
+        equipmentId = fireAlarmId;
+      });
     }
 
-    if (fireAlarmId != null) {
-      print('Registering photos for equipment ID: $fireAlarmId');
+    if (equipmentId != null && equipmentId != 0) {
+      print('Registering photos for equipment ID: $equipmentId');
       await Future.wait(_images.map((imageData) async {
         print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
-            description: imageData.description,
-            equipment: fireAlarmId!,
+            description:
+                imageData.description.isEmpty ? null : imageData.description,
+            equipment: equipmentId!,
           ),
         );
       }));
