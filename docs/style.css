@@ -15,3 +15,37 @@
     border-radius: 8px;
     margin: 0 auto;
 }
+
+.slick-slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.slick-prev,
+.slick-next {
+    color: #333;
+    font-size: 24px;
+    line-height: 1;
+    opacity: 0.75;
+    transition: opacity 0.3s ease;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+    opacity: 1;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    font-family: "slick";
+    font-size: 24px;
+}
+
+.slick-prev:before {
+    content: "←";
+}
+
+.slick-next:before {
+    content: "→";
+}
