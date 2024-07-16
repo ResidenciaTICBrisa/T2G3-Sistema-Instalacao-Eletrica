@@ -49,3 +49,42 @@
 .slick-next:before {
     content: "→";
 }
+
+nav a:hover {
+    color: #0000ff; /* Azul */
+}
+
+/* Modo Noturno */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode .bg-white {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .text-gray-800 {
+    color: #ffffff;
+}
+
+body.dark-mode .text-gray-600 {
+    color: #bbbbbb;
+}
+
+body.dark-mode .gradient {
+    background: linear-gradient(90deg, #333333 0%, #777777 100%);
+}
+
+body.dark-mode nav a {
+    color: #ffffff;
+}
+
+body.dark-mode .team-carousel .text-gray-800 {
+    color: #ffffff;
+}
+
+body.dark-mode .team-carousel .text-gray-600 {
+    color: #bbbbbb;
+}

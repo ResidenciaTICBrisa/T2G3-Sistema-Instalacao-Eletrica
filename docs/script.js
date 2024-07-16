@@ -73,3 +73,11 @@ $(document).ready(function () {
         ],
     });
 });
+
+document.getElementById("modeToggle").addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+    var modeText = document.body.classList.contains("dark-mode")
+        ? "Modo Claro"
+        : "Modo Noturno";
+    this.textContent = modeText;
+});
