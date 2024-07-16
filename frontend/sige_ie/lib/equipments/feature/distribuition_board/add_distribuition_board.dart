@@ -55,6 +55,12 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
 
   final _equipmentChargeController = TextEditingController();
   final _equipmentQuantityController = TextEditingController();
+  final _powerController = TextEditingController();
+  final _typeMaterialController = TextEditingController();
+  final _methodInstallationController = TextEditingController();
+  bool _dr = false;
+  bool _dps = false;
+  bool _grounding = false;
   String? _selectedType;
   String? _selectedTypeToDelete;
   String? _newEquipmentTypeName;
@@ -107,6 +113,9 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
   void dispose() {
     _equipmentChargeController.dispose();
     _equipmentQuantityController.dispose();
+    _powerController.dispose();
+    _typeMaterialController.dispose();
+    _methodInstallationController.dispose();
     categoryImagesMap[widget.systemId]?.clear();
     super.dispose();
   }
@@ -425,6 +434,12 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
       genericEquipmentCategory: genericEquipmentCategory,
       personalEquipmentCategory: personalEquipmentCategory,
       distributionRequestModel: distributionModel,
+      power: _powerController.text,
+      dr: _dr,
+      dps: _dps,
+      grounding: _grounding,
+      typeMaterial: _typeMaterialController.text,
+      methodInstallation: _methodInstallationController.text,
     );
 
     int? equipmentId =
@@ -461,6 +476,12 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
       setState(() {
         _equipmentChargeController.clear();
         _equipmentQuantityController.clear();
+        _powerController.clear();
+        _typeMaterialController.clear();
+        _methodInstallationController.clear();
+        _dr = false;
+        _dps = false;
+        _grounding = false;
         _selectedType = null;
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
@@ -493,6 +514,12 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
             setState(() {
               _equipmentChargeController.clear();
               _equipmentQuantityController.clear();
+              _powerController.clear();
+              _typeMaterialController.clear();
+              _methodInstallationController.clear();
+              _dr = false;
+              _dps = false;
+              _grounding = false;
               _selectedType = null;
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
@@ -610,7 +637,6 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -619,26 +645,7 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Especificação',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _equipmentChargeController,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
                   const Text('Quantidade',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -654,6 +661,111 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
                       ],
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Potência',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _powerController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('DR', style: TextStyle(fontSize: 16)),
+                          Checkbox(
+                            value: _dr,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                _dr = newValue ?? false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('DPS', style: TextStyle(fontSize: 16)),
+                          Checkbox(
+                            value: _dps,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                _dps = newValue ?? false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text('Aterramento',
+                              style: TextStyle(fontSize: 16)),
+                          Checkbox(
+                            value: _grounding,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                _grounding = newValue ?? false;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Text('Tipo de Material',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _typeMaterialController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Método de Instalação',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _methodInstallationController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding:
