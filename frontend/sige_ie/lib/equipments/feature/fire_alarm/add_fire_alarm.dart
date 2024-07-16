@@ -21,11 +21,13 @@ class ImageData {
   int id;
   File imageFile;
   String description;
+  bool toDelete;
 
   ImageData({
     int? id,
     required this.imageFile,
     required this.description,
+    this.toDelete = false,
   }) : id = id ?? Random().nextInt(1000000);
 }
 
@@ -232,26 +234,43 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
             ),
             TextButton(
               child: const Text('Salvar'),
-              onPressed: () {
-                setState(() {
-                  String? description = descriptionController.text.isEmpty
-                      ? null
-                      : descriptionController.text;
-                  if (existingImage != null) {
-                    existingImage.description = description ?? '';
-                  } else {
-                    final imageData = ImageData(
-                      imageFile: imageFile,
-                      description: description ?? '',
-                    );
-                    final systemId = widget.systemId;
-                    if (!categoryImagesMap.containsKey(systemId)) {
-                      categoryImagesMap[systemId] = [];
-                    }
-                    categoryImagesMap[systemId]!.add(imageData);
-                    _images = categoryImagesMap[systemId]!;
+              onPressed: () async {
+                String? description = descriptionController.text.isEmpty
+                    ? null
+                    : descriptionController.text;
+                if (existingImage != null) {
+                  existingImage.description = description ?? '';
+                  bool success = await equipmentPhotoService.updatePhoto(
+                    existingImage.id,
+                    EquipmentPhotoRequestModel(
+                      photo: existingImage.imageFile,
+                      description: existingImage.description,
+                      equipment: equipmentId!,
+                    ),
+                  );
+                  if (success) {
+                    setState(() {
+                      final index = _images
+                          .indexWhere((image) => image.id == existingImage.id);
+                      if (index != -1) {
+                        _images[index] = existingImage;
+                      }
+                    });
                   }
-                });
+                } else {
+                  final imageData = ImageData(
+                    imageFile: imageFile,
+                    description: description ?? '',
+                  );
+                  final systemId = widget.systemId;
+                  if (!categoryImagesMap.containsKey(systemId)) {
+                    categoryImagesMap[systemId] = [];
+                  }
+                  categoryImagesMap[systemId]!.add(imageData);
+                  setState(() {
+                    _images = categoryImagesMap[systemId]!;
+                  });
+                }
                 Navigator.of(context).pop();
               },
             ),
@@ -341,6 +360,26 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           widget.fireAlarmId!, fireAlarmEquipmentDetail);
 
       if (fireAlarmUpdateSuccess) {
+        await Future.wait(_images
+            .where((imageData) => imageData.toDelete)
+            .map((imageData) async {
+          await equipmentPhotoService.deletePhoto(imageData.id);
+        }));
+
+        await Future.wait(_images
+            .where((imageData) => !imageData.toDelete)
+            .map((imageData) async {
+          await equipmentPhotoService.updatePhoto(
+            imageData.id,
+            EquipmentPhotoRequestModel(
+              photo: imageData.imageFile,
+              description:
+                  imageData.description.isEmpty ? null : imageData.description,
+              equipment: equipmentId!,
+            ),
+          );
+        }));
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Detalhes do equipamento atualizados com sucesso.'),
@@ -607,16 +646,15 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
     }
 
-    if (equipmentId! != 0) {
+    if (fireAlarmId != null) {
       print('Registering photos for equipment ID: $fireAlarmId');
       await Future.wait(_images.map((imageData) async {
         print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
-            description:
-                imageData.description.isEmpty ? null : imageData.description,
-            equipment: equipmentId,
+            description: imageData.description,
+            equipment: fireAlarmId!,
           ),
         );
       }));
@@ -653,6 +691,13 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         ),
       );
     }
+  }
+
+  Future<void> _deletePhoto(int photoId) async {
+    setState(() {
+      _images.firstWhere((imageData) => imageData.id == photoId).toDelete =
+          true;
+    });
   }
 
   @override
@@ -831,7 +876,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     onPressed: _pickImage,
                   ),
                   Wrap(
-                    children: _images.map((imageData) {
+                    children: _images
+                        .where((imageData) => !imageData.toDelete)
+                        .map((imageData) {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
@@ -852,10 +899,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                             icon: const Icon(Icons.remove_circle,
                                 color: AppColors.warn),
                             onPressed: () {
-                              setState(() {
-                                _images.removeWhere(
-                                    (element) => element.id == imageData.id);
-                              });
+                              _deletePhoto(imageData.id);
                             },
                           ),
                         ],
