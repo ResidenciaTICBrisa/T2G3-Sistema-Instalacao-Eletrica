@@ -1,7 +1,7 @@
 <h1 align="center">SIGE IE </h1>
 
 <div align="center">
-    <img src="/docs/../assets/logo.png" style="width:25vw; border-radius: 70%;"/>
+    <img src="/docs/assets/logo.png" style="width:25vw; border-radius: 70%;"/>
 </div>
 
 
@@ -17,7 +17,8 @@ O SIGE IE é um sistema da Universidade de Brasília para o gerenciamento de ins
 <h4 align="center">Objetivo</h4>
 Simplificar o cadastro e gerenciamento de informações de instalações elétricas e automatizar a geração de relatórios.
 
-#### Tecnologias
+
+<h4 align="center">Tecnologias</h4>
 
 ##### Back-end
 
