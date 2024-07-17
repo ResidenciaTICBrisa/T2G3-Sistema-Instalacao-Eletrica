@@ -1,7 +1,9 @@
 <h1 align="center">SIGE IE </h1>
 
-<div align="center">
-    <img src="/docs/assets/default_transparent_1000x1000.png" style="width:25vw; border-radius: 70%;"/>
+<div style="text-align: center; margin: 20px;">
+    <img src="/docs/assets/default_transparent_1000x1000.png" 
+         style="width: 200px; height: auto; border-radius: 50%; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);" 
+         alt="Logo"/>
 </div>
 
 

@@ -1,10 +1,11 @@
 ### Ata de Reunião - Criação de Aplicativo Mobile para Retrofitting de Instalações Elétricas em Edificações
 
+--
 ### Detalhes da Reunião
 
-**Data:** 27 de Fevereiro de 2024  
-**Horário:** 14:00  
-**Local:** LDTEA 206
+   Data:27 de Fevereiro de 2024  
+   Horário:14 horas 
+   Local: LDTEA 206
 
 ---
 

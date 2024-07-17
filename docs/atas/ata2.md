@@ -1,8 +1,8 @@
-# Ata de Reunião - Apresentação do Protótipo com Tela de Login, Registro e Layout da Página do Aplicativo Mobile, Apresentação do Nome, Sistema e Subsistemas
+### Ata de Reunião - Apresentação do Protótipo com Tela de Login, Registro e Layout da Página do Aplicativo Mobile, Apresentação do Nome, Sistema e Subsistemas
 
 ---
 
-## Detalhes da Reunião
+### Detalhes da Reunião
 
     Data:20 de Março de 2024  
     Horário:14 horas  
@@ -10,7 +10,7 @@
 
 ---
 
-## Participantes
+### Participantes
 
 - **Danilo de Melo**
 - **Kauan Jóse**
