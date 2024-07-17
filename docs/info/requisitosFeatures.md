@@ -13,3 +13,4 @@
 | 10 | 5 | Gerenciar sistema de proteção conta descargas atmosféricas (SPDA) |
 | 11 | 6 | Gerenciar sistema de detecção de alarme de incêndio (SDAI) |
 | 12 | 7 | Gerenciar sistema de Refrigeração|
+| 13 | 8 | Gerar relatório |

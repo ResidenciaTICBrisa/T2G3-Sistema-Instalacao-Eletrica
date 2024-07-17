@@ -1,6 +1,6 @@
-# Guia de Configuração do Front-end
+### Guia de Configuração do Front-end
 
-## Como subir o front-end:
+### Como subir o front-end:
 
 Antes de começar, verifique se o Flutter SDK está atualizado e compatível com o projeto. Siga as instruções específicas para sua plataforma (Windows, macOS, Linux) disponíveis na documentação oficial do Flutter.
 
@@ -50,4 +50,3 @@ flutter pub get
 
 - No Android Studio: Escolha um dispositivo ou emulador na barra de ferramentas e clique em 'Run'.
 - No Visual Studio Code: Selecione um dispositivo ou emulador na barra de status e pressione `F5` ou utilize o comando `flutter run` na paleta de comandos.
-```
