@@ -38,6 +38,22 @@ class EquipmentPhotoSerializer(serializers.ModelSerializer):
         equipment_photo = EquipmentPhoto.objects.create(photo=photo, **validated_data)
         return equipment_photo
 
+    def update(self, instance, validated_data):
+        photo_data = validated_data.pop('photo', None)
+        if photo_data:
+            try:
+                format, imgstr = photo_data.split(';base64,')
+                ext = format.split('/')[-1]
+                photo = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+                instance.photo = photo
+            except ValueError:
+                raise serializers.ValidationError("Invalid image data")
+
+            instance.description = validated_data.get('description', instance.description)
+            instance.equipment = validated_data.get('equipment', instance.equipment)
+            instance.save()
+        return instance
+
     def get_photo_base64(self, obj):
         if obj.photo:
             with obj.photo.open('rb') as image_file:
