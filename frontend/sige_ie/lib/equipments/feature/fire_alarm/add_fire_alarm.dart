@@ -21,11 +21,13 @@ class ImageData {
   int id;
   File imageFile;
   String description;
+  bool toDelete;
 
   ImageData({
     int? id,
     required this.imageFile,
     required this.description,
+    this.toDelete = false,
   }) : id = id ?? Random().nextInt(1000000);
 }
 
@@ -341,6 +343,28 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           widget.fireAlarmId!, fireAlarmEquipmentDetail);
 
       if (fireAlarmUpdateSuccess) {
+        // Delete photos marked for deletion
+        await Future.wait(_images
+            .where((imageData) => imageData.toDelete)
+            .map((imageData) async {
+          await equipmentPhotoService.deletePhoto(imageData.id);
+        }));
+
+        // Update photo descriptions
+        await Future.wait(_images
+            .where((imageData) => !imageData.toDelete)
+            .map((imageData) async {
+          await equipmentPhotoService.updatePhoto(
+            imageData.id,
+            EquipmentPhotoRequestModel(
+              photo: imageData.imageFile,
+              description:
+                  imageData.description.isEmpty ? null : imageData.description,
+              equipment: equipmentId!,
+            ),
+          );
+        }));
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Detalhes do equipamento atualizados com sucesso.'),
@@ -468,6 +492,8 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
+                    _selectedType =
+                        null; // Limpando a seleção no dropdown principal
                     _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -522,7 +548,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
-                  children: _images.map((imageData) {
+                  children: _images
+                      .where((imageData) => !imageData.toDelete)
+                      .map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: GestureDetector(
@@ -605,10 +633,13 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     } else {
       fireAlarmId =
           await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
+      setState(() {
+        equipmentId = fireAlarmId;
+      });
     }
 
-    if (equipmentId! != 0) {
-      print('Registering photos for equipment ID: $fireAlarmId');
+    if (equipmentId != null && equipmentId != 0) {
+      print('Registering photos for equipment ID: $equipmentId');
       await Future.wait(_images.map((imageData) async {
         print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
@@ -616,7 +647,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
             photo: imageData.imageFile,
             description:
                 imageData.description.isEmpty ? null : imageData.description,
-            equipment: equipmentId,
+            equipment: equipmentId!,
           ),
         );
       }));
@@ -653,6 +684,13 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         ),
       );
     }
+  }
+
+  Future<void> _deletePhoto(int photoId) async {
+    setState(() {
+      _images.firstWhere((imageData) => imageData.id == photoId).toDelete =
+          true;
+    });
   }
 
   @override
@@ -831,7 +869,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     onPressed: _pickImage,
                   ),
                   Wrap(
-                    children: _images.map((imageData) {
+                    children: _images
+                        .where((imageData) => !imageData.toDelete)
+                        .map((imageData) {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
@@ -852,10 +892,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                             icon: const Icon(Icons.remove_circle,
                                 color: AppColors.warn),
                             onPressed: () {
-                              setState(() {
-                                _images.removeWhere(
-                                    (element) => element.id == imageData.id);
-                              });
+                              _deletePhoto(imageData.id);
                             },
                           ),
                         ],
