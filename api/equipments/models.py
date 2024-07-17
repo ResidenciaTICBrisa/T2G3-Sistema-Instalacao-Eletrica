@@ -87,6 +87,7 @@ class ElectricalLineEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="electrical_line_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=3)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'equipments_electrical_lines'
@@ -98,6 +99,7 @@ class ElectricalCircuitEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
     size = models.IntegerField(default=0)
     isolament = models.CharField(max_length=30, default=None)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'equipments_electrical_circuits'
@@ -113,6 +115,7 @@ class DistributionBoardEquipment(models.Model):
     grounding = models.BooleanField(default=False)
     type_material = models.CharField(max_length=30, null=True)
     method_installation = models.CharField(max_length=50, null=True)
+    quantity = models.IntegerField(default=0)
 
 
     class Meta:
@@ -123,6 +126,7 @@ class StructuredCablingEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="structured_cabling_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=6)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'equipments_structured_cabling'
@@ -132,6 +136,7 @@ class AtmosphericDischargeEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="atmospheric_discharge_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=7)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'equipments_atmospheric_discharges'
@@ -141,6 +146,7 @@ class FireAlarmEquipment(models.Model):
     area = models.ForeignKey(Area, on_delete=models.CASCADE, null=True, related_name="fire_alarm_equipment")
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True, related_name="fire_alarm")
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
+    quantity = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'equipments_fire_alarms'
