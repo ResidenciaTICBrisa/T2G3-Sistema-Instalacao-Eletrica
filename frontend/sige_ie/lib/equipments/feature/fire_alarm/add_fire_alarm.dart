@@ -66,7 +66,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       PersonalEquipmentCategoryService();
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
-  final _equipmentQuantityController = TextEditingController();
+  final TextEditingController _quantity = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
@@ -95,6 +95,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       if (fireAlarmEquipmentResponseModel != null) {
         setState(() {
           equipmentId = fireAlarmEquipmentResponseModel!.equipment;
+          _quantity.text = fireAlarmEquipmentResponseModel!.quantity.toString();
         });
 
         _fetchEquipmentDetails(fireAlarmEquipmentResponseModel!.equipment);
@@ -188,7 +189,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
 
   @override
   void dispose() {
-    _equipmentQuantityController.dispose();
+    _quantity.dispose();
     categoryImagesMap[widget.systemId]?.clear();
     super.dispose();
   }
@@ -330,6 +331,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
         area: widget.areaId,
         system: widget.systemId,
+        quantity: int.tryParse(_quantity.text),
       );
 
       final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
@@ -343,14 +345,12 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           widget.fireAlarmId!, fireAlarmEquipmentDetail);
 
       if (fireAlarmUpdateSuccess) {
-        // Delete photos marked for deletion
         await Future.wait(_images
             .where((imageData) => imageData.toDelete)
             .map((imageData) async {
           await equipmentPhotoService.deletePhoto(imageData.id);
         }));
 
-        // Update photo descriptions
         await Future.wait(_images
             .where((imageData) => !imageData.toDelete)
             .map((imageData) async {
@@ -383,7 +383,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           },
         );
         setState(() {
-          _equipmentQuantityController.clear();
+          _quantity.clear();
           _selectedType = null;
           _selectedPersonalEquipmentCategoryId = null;
           _selectedGenericEquipmentCategoryId = null;
@@ -492,8 +492,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
-                    _selectedType =
-                        null; // Limpando a seleção no dropdown principal
+                    _selectedType = null;
                     _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -519,7 +518,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentQuantityController.text.isEmpty ||
+    if (_quantity.text.isEmpty ||
         (_selectedType == null && _newEquipmentTypeName == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -543,7 +542,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentQuantityController.text),
+                Text(_quantity.text),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -615,6 +614,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: int.tryParse(_quantity.text),
     );
 
     final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
@@ -670,7 +670,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         },
       );
       setState(() {
-        _equipmentQuantityController.clear();
+        _quantity.clear();
         _selectedType = null;
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
@@ -708,7 +708,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             setState(() {
-              _equipmentQuantityController.clear();
+              _quantity.clear();
               _selectedType = null;
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
@@ -851,7 +851,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _equipmentQuantityController,
+                      controller: _quantity,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
