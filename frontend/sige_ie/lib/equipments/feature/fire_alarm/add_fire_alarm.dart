@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,11 +27,10 @@ class ImageData {
     required this.imageFile,
     required this.description,
     this.toDelete = false,
-  }) : id = id ?? Random().nextInt(1000000);
+  }) : id = id ?? -1; // Valor padrão indicando ID inexistente
 }
 
 List<ImageData> _images = [];
-Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddFireAlarm extends StatefulWidget {
   final String areaName;
@@ -158,7 +156,6 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
 
       setState(() {
         _images = imageList;
-        categoryImagesMap[widget.systemId] = _images;
       });
     } catch (e) {
       print('Erro ao buscar fotos existentes: $e');
@@ -191,7 +188,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   @override
   void dispose() {
     _quantity.dispose();
-    categoryImagesMap[widget.systemId]?.clear();
+    _images.clear();
     super.dispose();
   }
 
@@ -248,12 +245,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       imageFile: imageFile,
                       description: description ?? '',
                     );
-                    final systemId = widget.systemId;
-                    if (!categoryImagesMap.containsKey(systemId)) {
-                      categoryImagesMap[systemId] = [];
-                    }
-                    categoryImagesMap[systemId]!.add(imageData);
-                    _images = categoryImagesMap[systemId]!;
+                    _images.add(imageData);
                   }
                 });
                 Navigator.of(context).pop();
@@ -360,15 +352,29 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         await Future.wait(_images
             .where((imageData) => !imageData.toDelete)
             .map((imageData) async {
-          await equipmentPhotoService.updatePhoto(
-            imageData.id,
-            EquipmentPhotoRequestModel(
-              photo: imageData.imageFile,
-              description:
-                  imageData.description.isEmpty ? null : imageData.description,
-              equipment: equipmentId!,
-            ),
-          );
+          if (imageData.id == -1) {
+            // Verifique se o ID é -1 (não atribuído)
+            await equipmentPhotoService.createPhoto(
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          } else {
+            await equipmentPhotoService.updatePhoto(
+              imageData.id,
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          }
         }));
 
         ScaffoldMessenger.of(context).showSnackBar(
