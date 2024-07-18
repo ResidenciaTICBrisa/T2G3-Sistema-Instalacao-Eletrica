@@ -75,7 +75,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   List<Map<String, Object>> genericEquipmentTypes = [];
   List<Map<String, Object>> personalEquipmentTypes = [];
   Map<String, int> personalEquipmentMap = {};
-  FireAlarmEquipmentResponseModel? fireAlarmEquipmentResponseModel;
+  FireAlarmResponseModel? fireAlarmResponseModel;
 
   @override
   void initState() {
@@ -90,15 +90,15 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     try {
       await _fetchFireAlarmEquipment(fireAlarmId);
 
-      if (fireAlarmEquipmentResponseModel != null) {
+      if (fireAlarmResponseModel != null) {
         setState(() {
-          equipmentId = fireAlarmEquipmentResponseModel!.equipment;
-          _quantity.text = fireAlarmEquipmentResponseModel!.quantity.toString();
+          equipmentId = fireAlarmResponseModel!.equipment;
+          _quantity.text = fireAlarmResponseModel!.quantity.toString();
           print('Loaded quantity: ${_quantity.text}');
         });
 
-        _fetchEquipmentDetails(fireAlarmEquipmentResponseModel!.equipment);
-        _fetchExistingPhotos(fireAlarmEquipmentResponseModel!.equipment);
+        _fetchEquipmentDetails(fireAlarmResponseModel!.equipment);
+        _fetchExistingPhotos(fireAlarmResponseModel!.equipment);
       }
     } catch (error) {
       print('Error: $error');
@@ -106,7 +106,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   }
 
   Future<void> _fetchFireAlarmEquipment(int fireAlarmId) async {
-    fireAlarmEquipmentResponseModel =
+    fireAlarmResponseModel =
         await fireAlarmService.getFireAlarmById(fireAlarmId);
   }
 
@@ -330,17 +330,10 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         quantity: int.tryParse(_quantity.text),
       );
 
-      final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
-          FireAlarmEquipmentRequestModel(
-        genericEquipmentCategory: genericEquipmentCategory,
-        personalEquipmentCategory: personalEquipmentCategory,
-        fireAlarmRequestModel: fireAlarmModel,
-      );
-
       print('Fire Alarm Model: ${fireAlarmModel.toJson()}');
 
       bool fireAlarmUpdateSuccess = await fireAlarmService.updateFireAlarm(
-          widget.fireAlarmId!, fireAlarmEquipmentDetail);
+          widget.fireAlarmId!, fireAlarmModel);
 
       if (fireAlarmUpdateSuccess) {
         await Future.wait(_images
@@ -636,19 +629,10 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       fireAlarmRequestModel: fireAlarmModel,
     );
 
-    int? fireAlarmId;
-    if (widget.isEdit) {
-      fireAlarmId = widget.fireAlarmId;
-      bool success = await fireAlarmService.updateFireAlarm(
-          fireAlarmId!, fireAlarmEquipmentDetail);
-      if (!success) fireAlarmId = null;
-    } else {
-      fireAlarmId =
-          await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
-      setState(() {
-        equipmentId = fireAlarmId;
-      });
-    }
+    int? id = await equipmentService.createFireAlarm(fireAlarmEquipmentDetail);
+    setState(() {
+      equipmentId = id;
+    });
 
     if (equipmentId != null && equipmentId != 0) {
       print('Registering photos for equipment ID: $equipmentId');
