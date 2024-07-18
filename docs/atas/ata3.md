@@ -2,7 +2,7 @@
 
 ---
 
-## Detalhes da Reunião
+### Detalhes da Reunião
 
     Data: 20 de Junho de 2024  
     Horário: 15 horas  
@@ -10,7 +10,7 @@
 
 ---
 
-## Participantes
+### Participantes
 
 - **Danilo de Melo**
 - **Kauan Jóse**
@@ -20,7 +20,7 @@
 
 ---
 
-## Pauta
+### Pauta
 
 - Apresentação do protótipo inicial do aplicativo, incluindo os sistemas de:
   - **Iluminação**
@@ -38,7 +38,7 @@
 
 ---
 
-## Descrição
+### Descrição
 
 ### 1. Apresentação do Protótipo
 
@@ -82,6 +82,6 @@
 
 ---
 
-## Observações
+### Observações
 
 - Na presente reunião, houve a aprovação por parte do cliente das informações contidas em cada campo de cada sistema e subsistema. Ficou acordado também que possíveis alterações serão relatadas para mudanças futuras.

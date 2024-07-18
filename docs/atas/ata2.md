@@ -20,7 +20,7 @@
 
 ---
 
-## Pauta
+### Pauta
 
 - Apresentação do protótipo inicial do aplicativo, incluindo:
   - Tela de login
@@ -32,7 +32,7 @@
 
 ---
 
-## Descrição
+### Descrição
 
 ### 1. Apresentação do Protótipo
 
@@ -64,7 +64,7 @@
 
 ---
 
-## Próxima Reunião
+### Próxima Reunião
 
     Data:20 de Junho de 2024  
     Horário: 15 horas  
@@ -72,6 +72,6 @@
 
 ---
 
-## Observações
+### Observações
 
 - Na presente reunião, houve a aprovação por parte do cliente da logo criada, assim como de toda a interface e aprovação da divisão dos sistemas e subsistemas do protótipo apresentado.
