@@ -96,6 +96,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         setState(() {
           equipmentId = fireAlarmEquipmentResponseModel!.equipment;
           _quantity.text = fireAlarmEquipmentResponseModel!.quantity.toString();
+          print('Loaded quantity: ${_quantity.text}');
         });
 
         _fetchEquipmentDetails(fireAlarmEquipmentResponseModel!.equipment);
@@ -324,6 +325,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       "personal_equipment_category": personalEquipmentCategory,
     };
 
+    print('Quantity: ${_quantity.text}');
+    print('Equipment Type Update: $equipmentTypeUpdate');
+
     bool typeUpdateSuccess = await equipmentService.updateEquipment(
         equipmentId!, equipmentTypeUpdate);
 
@@ -340,6 +344,8 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         personalEquipmentCategory: personalEquipmentCategory,
         fireAlarmRequestModel: fireAlarmModel,
       );
+
+      print('Fire Alarm Model: ${fireAlarmModel.toJson()}');
 
       bool fireAlarmUpdateSuccess = await fireAlarmService.updateFireAlarm(
           widget.fireAlarmId!, fireAlarmEquipmentDetail);
@@ -861,6 +867,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                       ),
+                      onChanged: (value) {
+                        print('Quantity changed: $value');
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
