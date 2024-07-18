@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,11 +27,10 @@ class ImageData {
     required this.imageFile,
     required this.description,
     this.toDelete = false,
-  }) : id = id ?? Random().nextInt(1000000);
+  }) : id = id ?? -1; // Valor padrão indicando ID inexistente
 }
 
 List<ImageData> _images = [];
-Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddFireAlarm extends StatefulWidget {
   final String areaName;
@@ -66,7 +64,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       PersonalEquipmentCategoryService();
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
-  final _equipmentQuantityController = TextEditingController();
+  final TextEditingController _quantity = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
@@ -95,6 +93,8 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       if (fireAlarmEquipmentResponseModel != null) {
         setState(() {
           equipmentId = fireAlarmEquipmentResponseModel!.equipment;
+          _quantity.text = fireAlarmEquipmentResponseModel!.quantity.toString();
+          print('Loaded quantity: ${_quantity.text}');
         });
 
         _fetchEquipmentDetails(fireAlarmEquipmentResponseModel!.equipment);
@@ -156,7 +156,6 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
 
       setState(() {
         _images = imageList;
-        categoryImagesMap[widget.systemId] = _images;
       });
     } catch (e) {
       print('Erro ao buscar fotos existentes: $e');
@@ -188,8 +187,8 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
 
   @override
   void dispose() {
-    _equipmentQuantityController.dispose();
-    categoryImagesMap[widget.systemId]?.clear();
+    _quantity.dispose();
+    _images.clear();
     super.dispose();
   }
 
@@ -246,12 +245,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       imageFile: imageFile,
                       description: description ?? '',
                     );
-                    final systemId = widget.systemId;
-                    if (!categoryImagesMap.containsKey(systemId)) {
-                      categoryImagesMap[systemId] = [];
-                    }
-                    categoryImagesMap[systemId]!.add(imageData);
-                    _images = categoryImagesMap[systemId]!;
+                    _images.add(imageData);
                   }
                 });
                 Navigator.of(context).pop();
@@ -323,6 +317,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       "personal_equipment_category": personalEquipmentCategory,
     };
 
+    print('Quantity: ${_quantity.text}');
+    print('Equipment Type Update: $equipmentTypeUpdate');
+
     bool typeUpdateSuccess = await equipmentService.updateEquipment(
         equipmentId!, equipmentTypeUpdate);
 
@@ -330,6 +327,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
         area: widget.areaId,
         system: widget.systemId,
+        quantity: int.tryParse(_quantity.text),
       );
 
       final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
@@ -339,30 +337,44 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         fireAlarmRequestModel: fireAlarmModel,
       );
 
+      print('Fire Alarm Model: ${fireAlarmModel.toJson()}');
+
       bool fireAlarmUpdateSuccess = await fireAlarmService.updateFireAlarm(
           widget.fireAlarmId!, fireAlarmEquipmentDetail);
 
       if (fireAlarmUpdateSuccess) {
-        // Delete photos marked for deletion
         await Future.wait(_images
             .where((imageData) => imageData.toDelete)
             .map((imageData) async {
           await equipmentPhotoService.deletePhoto(imageData.id);
         }));
 
-        // Update photo descriptions
         await Future.wait(_images
             .where((imageData) => !imageData.toDelete)
             .map((imageData) async {
-          await equipmentPhotoService.updatePhoto(
-            imageData.id,
-            EquipmentPhotoRequestModel(
-              photo: imageData.imageFile,
-              description:
-                  imageData.description.isEmpty ? null : imageData.description,
-              equipment: equipmentId!,
-            ),
-          );
+          if (imageData.id == -1) {
+            // Verifique se o ID é -1 (não atribuído)
+            await equipmentPhotoService.createPhoto(
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          } else {
+            await equipmentPhotoService.updatePhoto(
+              imageData.id,
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          }
         }));
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -383,7 +395,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           },
         );
         setState(() {
-          _equipmentQuantityController.clear();
+          _quantity.clear();
           _selectedType = null;
           _selectedPersonalEquipmentCategoryId = null;
           _selectedGenericEquipmentCategoryId = null;
@@ -492,8 +504,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
-                    _selectedType =
-                        null; // Limpando a seleção no dropdown principal
+                    _selectedType = null;
                     _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -519,7 +530,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentQuantityController.text.isEmpty ||
+    if (_quantity.text.isEmpty ||
         (_selectedType == null && _newEquipmentTypeName == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -543,7 +554,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentQuantityController.text),
+                Text(_quantity.text),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -615,6 +626,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
     final FireAlarmRequestModel fireAlarmModel = FireAlarmRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: int.tryParse(_quantity.text),
     );
 
     final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =
@@ -670,7 +682,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         },
       );
       setState(() {
-        _equipmentQuantityController.clear();
+        _quantity.clear();
         _selectedType = null;
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
@@ -708,7 +720,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             setState(() {
-              _equipmentQuantityController.clear();
+              _quantity.clear();
               _selectedType = null;
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
@@ -851,7 +863,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _equipmentQuantityController,
+                      controller: _quantity,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
@@ -861,6 +873,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                       ),
+                      onChanged: (value) {
+                        print('Quantity changed: $value');
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
