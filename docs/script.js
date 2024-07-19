@@ -1,12 +1,13 @@
-var scrollpos = window.scrollY;
-var header = document.getElementById("header");
-var navcontent = document.getElementById("nav-content");
-var navaction = document.getElementById("navAction");
-var brandname = document.getElementById("brandname");
-var toToggle = document.querySelectorAll(".toggleColour");
+document.getElementById("modeToggle").addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
 
-document.getElementById("nav-toggle").addEventListener("click", function () {
-    document.getElementById("nav-content").classList.toggle("hidden");
+    if (document.body.classList.contains("dark-mode")) {
+        document.getElementById("image1").src = "assets/Electrician-black.gif";
+        document.getElementById("image2").src = "assets/Electrician2-black.gif";
+    } else {
+        document.getElementById("image1").src = "assets/Electrician.gif";
+        document.getElementById("image2").src = "assets/Electrician2.gif";
+    }
 });
 
 $(document).ready(function () {
@@ -36,23 +37,6 @@ $(document).ready(function () {
             },
         ],
     });
-});
-
-document.getElementById("nav-toggle").addEventListener("click", function () {
-    this.classList.toggle("open");
-    document.getElementById("nav-content").classList.toggle("hidden");
-});
-
-document.getElementById("modeToggle").addEventListener("click", function () {
-    document.body.classList.toggle("dark-mode");
-
-    if (document.body.classList.contains("dark-mode")) {
-        document.getElementById("image1").src = "assets/Electrician-black.gif";
-        document.getElementById("image2").src = "assets/Electrician2-black.gif";
-    } else {
-        document.getElementById("image1").src = "assets/Electrician.gif";
-        document.getElementById("image2").src = "assets/Electrician2.gif";
-    }
 });
 
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {

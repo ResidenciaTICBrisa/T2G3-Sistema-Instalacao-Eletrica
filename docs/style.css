@@ -68,31 +68,38 @@
 .slick-next:before {
     content: "→";
 }
+
 #logo {
     display: flex;
     align-items: center;
     height: 100%;
-    padding-right: 20px; 
+    padding-right: 20px;
 }
 
 #logo img {
-    width: 160px; 
+    width: 160px;
     height: auto;
     margin-left: 10px;
 }
-#nav-toggle {
-    cursor: pointer;
+
+@media (max-width: 820px) {
+    #nav-content {
+        display: none;
+    }
+    #modeToggleContainer {
+        flex-grow: 1;
+    }
+    #logo {
+        flex-grow: 1;
+        justify-content: center;
+    }
+    #navActionContainer {
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
 }
 
-#nav-content {
-    display: none;
-}
-
-#nav-toggle.open + #nav-content {
-    display: block;
-}
-
-@media (min-width: 1024px) {
+@media (min-width: 821px) {
     #nav-content {
         display: flex !important;
     }
@@ -116,33 +123,34 @@ nav {
 }
 
 .dark-mode nav {
-    background-color: #1f1f1f; 
+    background-color: #1f1f1f;
 }
+
 #header {
     background-color: #003366;
 }
 
 .dark-mode #header {
-    background-color: #1f1f1f; /
+    background-color: #1f1f1f;
 }
 
 .dark-mode .bg-white {
-    background-color: #1f1f1f; 
-    color: #ffffff; 
+    background-color: #1f1f1f;
+    color: #ffffff;
 }
 
 #nav-content {
-    background-color: transparent; 
+    background-color: transparent;
 }
 
 .dark-mode #navAction {
-    background-color: #ffcc00; 
-    color: #1f1f1f; 
+    background-color: #ffcc00;
+    color: #1f1f1f;
 }
 
 nav a {
-    color: #ffffff; 
-    transition: .3s;
+    color: #ffffff;
+    transition: 0.3s;
 }
 
 nav a:hover {
@@ -150,29 +158,29 @@ nav a:hover {
 }
 
 .dark-mode nav a {
-    color: #ffffff; 
+    color: #ffffff;
 }
 
 .dark-mode nav a:hover {
-    color: #ffcc00; 
+    color: #ffcc00;
 }
 
 #navAction {
-    background-color: #ffcc00; 
-    color: #003366; 
+    background-color: #ffcc00;
+    color: #003366;
 }
 
 #navAction:hover {
-    background-color: #ffa500; 
+    background-color: #ffa500;
 }
 
 .dark-mode #navAction {
-    background-color: #ffcc00; 
-    color: #1f1f1f; 
+    background-color: #ffcc00;
+    color: #1f1f1f;
 }
 
 .dark-mode #navAction:hover {
-    background-color: #ffa500; 
+    background-color: #ffa500;
 }
 
 .dark-mode nav {
