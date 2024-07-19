@@ -1,9 +1,9 @@
-.gradient {
-    display: none;
+.gradient-bg {
+    background: linear-gradient(to bottom, #003366, #ffcc00);
 }
 
-.gradient-bg {
-    background: linear-gradient(to bottom, #003366 0%, #ffcc00 100%);
+.gradient-bg-dark {
+    background: linear-gradient(to bottom, #333333, #777777);
 }
 
 .image-container {
@@ -31,10 +31,12 @@
     border-radius: 10px;
     text-decoration: none;
 }
+
 #modeToggle img {
     width: 30%;
     height: 30%;
 }
+
 #modeToggle img:hover {
     transform: scale(1.3);
 }
@@ -66,6 +68,116 @@
 .slick-next:before {
     content: "→";
 }
+#logo {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-right: 20px; 
+}
+
+#logo img {
+    width: 160px; 
+    height: auto;
+    margin-left: 10px;
+}
+#nav-toggle {
+    cursor: pointer;
+}
+
+#nav-content {
+    display: none;
+}
+
+#nav-toggle.open + #nav-content {
+    display: block;
+}
+
+@media (min-width: 1024px) {
+    #nav-content {
+        display: flex !important;
+    }
+}
+
+.navbar-item {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.navbar-item a {
+    padding: 0 15px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav {
+    background-color: #003366;
+}
+
+.dark-mode nav {
+    background-color: #1f1f1f; 
+}
+#header {
+    background-color: #003366;
+}
+
+.dark-mode #header {
+    background-color: #1f1f1f; /
+}
+
+.dark-mode .bg-white {
+    background-color: #1f1f1f; 
+    color: #ffffff; 
+}
+
+#nav-content {
+    background-color: transparent; 
+}
+
+.dark-mode #navAction {
+    background-color: #ffcc00; 
+    color: #1f1f1f; 
+}
+
+nav a {
+    color: #ffffff; 
+    transition: .3s;
+}
+
+nav a:hover {
+    color: #ffcc00;
+}
+
+.dark-mode nav a {
+    color: #ffffff; 
+}
+
+.dark-mode nav a:hover {
+    color: #ffcc00; 
+}
+
+#navAction {
+    background-color: #ffcc00; 
+    color: #003366; 
+}
+
+#navAction:hover {
+    background-color: #ffa500; 
+}
+
+.dark-mode #navAction {
+    background-color: #ffcc00; 
+    color: #1f1f1f; 
+}
+
+.dark-mode #navAction:hover {
+    background-color: #ffa500; 
+}
+
+.dark-mode nav {
+    background-color: #1f1f1f;
+}
 
 nav a:hover {
     color: #ffcc00;
@@ -89,14 +201,6 @@ body.dark-mode .text-gray-600 {
     color: #bbbbbb;
 }
 
-body.dark-mode .gradient-bg {
-    background: linear-gradient(to bottom, #333333 0%, #777777 100%);
-}
-
-body.dark-mode nav a {
-    color: #ffffff;
-}
-
 body.dark-mode .team-carousel .text-gray-800 {
     color: #ffffff;
 }
@@ -105,8 +209,50 @@ body.dark-mode .team-carousel .text-gray-600 {
     color: #bbbbbb;
 }
 
-.dark-mode-wave {
-    fill: #333333 !important;
+.waves {
+    position: relative;
+    width: 100%;
+    height: 15vh;
+    margin-bottom: -7px;
+    min-height: 100px;
+    max-height: 150px;
+}
+
+.parallax > use {
+    animation: move-forever 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+}
+
+.parallax > use:nth-child(1) {
+    animation-delay: -2s;
+    animation-duration: 7s;
+}
+
+.parallax > use:nth-child(2) {
+    animation-delay: -3s;
+    animation-duration: 10s;
+}
+
+.parallax > use:nth-child(3) {
+    animation-delay: -4s;
+    animation-duration: 13s;
+}
+
+.parallax > use:nth-child(4) {
+    animation-delay: -5s;
+    animation-duration: 20s;
+}
+
+@keyframes move-forever {
+    0% {
+        transform: translate3d(-90px, 0, 0);
+    }
+    100% {
+        transform: translate3d(85px, 0, 0);
+    }
+}
+
+.dark-mode .waves path {
+    fill: #333333;
 }
 
 footer {
@@ -115,7 +261,9 @@ footer {
     padding: 20px 0;
     text-align: center;
 }
-
+.dark-mode footer {
+    background-color: #1f1f1f;
+}
 footer a {
     color: #ffcc00;
     text-decoration: none;

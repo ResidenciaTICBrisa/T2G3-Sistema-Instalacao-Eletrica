@@ -24,7 +24,6 @@
         class="leading-normal tracking-normal text-gray-800"
         style="font-family: 'Source Sans Pro', sans-serif"
     >
-        <!--Nav-->
         <nav
             id="header"
             class="fixed w-full z-30 top-0 text-white bg-blue-800 shadow-lg"
@@ -32,18 +31,11 @@
             <div
                 class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2"
             >
-                <div class="pl-4 flex items-center">
+                <div class="flex items-center" id="logo">
                     <img
-                        src="assets/default_765x625.png"
+                        src="assets/default_transparent_765x625.png"
                         alt="SIGE IE Logo"
-                        class="h-8 mr-2"
                     />
-                    <a
-                        class="toggleColour no-underline hover:no-underline font-bold text-2xl lg:text-4xl"
-                        href="#"
-                    >
-                        SIGE IE
-                    </a>
                 </div>
                 <div class="block lg:hidden pr-4">
                     <button
@@ -69,33 +61,13 @@
                     <ul
                         class="list-reset lg:flex justify-end flex-1 items-center"
                     >
-                        <li class="mr-3">
-                            <b
-                                ><a
-                                    class="inline-block py-2 px-4 text-white font-bold no-underline hover:text-yellow-300"
-                                    href="#descricao"
-                                    >Descrição do Produto</a
-                                ></b
-                            >
+                        <li class="navbar-item">
+                            <a href="#descricao">Descrição do Produto</a>
                         </li>
-                        <li class="mr-3">
-                            <b
-                                ><a
-                                    class="inline-block text-white no-underline hover:text-yellow-300 py-2 px-4"
-                                    href="#funcionalidades"
-                                    >Funcionalidades</a
-                                ></b
-                            >
+                        <li class="navbar-item">
+                            <a href="#funcionalidades">Funcionalidades</a>
                         </li>
-                        <li class="mr-3">
-                            <b
-                                ><a
-                                    class="inline-block text-white no-underline hover:text-yellow-300 py-2 px-4"
-                                    href="#team"
-                                    >Time</a
-                                ></b
-                            >
-                        </li>
+                        <li class="navbar-item"><a href="#team">Time</a></li>
                     </ul>
                     <a
                         href="https://residenciaticbrisa.github.io/T2G3-Sistema-Instalacao-Eletrica/info/home"
@@ -123,25 +95,20 @@
             <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
         </nav>
 
-        <!--Hero-->
-        <div class="pt-24 bg-white dark:bg-gray-800 gradient-bg">
+        <div class="pt-24 gradient-bg dark:gradient-bg-dark">
             <div
                 class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center"
             >
-                <!--Left Col-->
-                <div
-                    class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left"
+                <h1
+                    class="w-full text-5xl font-bold leading-tight text-center text-white my-4"
                 >
-                    <p class="uppercase tracking-loose w-full"></p>
-                    <h1
-                        class="my-4 text-5xl font-bold leading-tight text-gray-800 dark:text-white"
-                    >
-                        Sistema de Auxilio para Operação e Manutenção de
-                        Instalação Elétrica.
-                    </h1>
-                    <p
-                        class="leading-normal text-2xl mb-8 text-gray-800 dark:text-gray-300"
-                    >
+                    Sistema de Auxilio para Operação e Manutenção de Instalação
+                    Elétrica.
+                </h1>
+                <div
+                    class="flex flex-col w-full md:w-1/2 justify-center items-start text-center md:text-left"
+                >
+                    <p class="leading-normal text-2xl mb-8 text-white">
                         Uma ferramenta concebida para facilitar o processo de
                         coleta de dados, essencial no suporte às operações e
                         manutenções e sistemas de instalação elétrica. Este
@@ -151,17 +118,50 @@
                         mais eficaz das instalações elétricas.
                     </p>
                 </div>
-                <!--Right Col-->
-                <div class="w-full md:w-3/5 py-6 text-center">
+                <div class="w-full md:w-1/2 py-6 text-center">
                     <img
                         class="w-full md:w-4/5 z-50"
                         src="assets/default_transparent_1000x1000.png"
                     />
                 </div>
             </div>
+            <svg
+                class="waves"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 24 150 28"
+                preserveAspectRatio="none"
+                shape-rendering="auto"
+            >
+                <defs>
+                    <path
+                        id="gentle-wave"
+                        d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"
+                    />
+                </defs>
+                <g class="parallax">
+                    <use
+                        href="#gentle-wave"
+                        x="48"
+                        y="0"
+                        fill="rgba(255,255,255,0.7)"
+                    />
+                    <use
+                        href="#gentle-wave"
+                        x="48"
+                        y="3"
+                        fill="rgba(255,255,255,0.5)"
+                    />
+                    <use
+                        href="#gentle-wave"
+                        x="48"
+                        y="5"
+                        fill="rgba(255,255,255,0.3)"
+                    />
+                    <use href="#gentle-wave" x="48" y="7" fill="#fff" />
+                </g>
+            </svg>
         </div>
 
-        <!-- Descrição do Produto -->
         <section class="bg-white border-b py-8 dark:bg-gray-800" id="descricao">
             <div class="container max-w-5xl mx-auto m-8">
                 <h2
@@ -217,7 +217,6 @@
             </div>
         </section>
 
-        <!-- Funcionalidades -->
         <section
             class="bg-white border-b py-8 dark:bg-gray-800"
             id="funcionalidades"
@@ -235,27 +234,23 @@
                 </div>
                 <div class="flex flex-wrap">
                     <div class="w-full sm:w-1/2 p-6">
+                        <h3
+                            class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
+                        >
+                            Gerenciamento de Instalações em Locais
+                        </h3>
                         <div class="flex">
-                            <div class="w-2/3">
-                                <h3
-                                    class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
-                                >
-                                    Gerenciamento de Instalações em Locais
-                                </h3>
-                                <p
-                                    class="text-gray-600 mb-8 dark:text-gray-300"
-                                >
-                                    Cadastre Locais e Gerenciar os sistemas de
-                                    instalações elétricas, sistema de
-                                    iluminação, cargas elétricas, linhas
-                                    elétricas, cabeamento estruturado, sistema
-                                    de refrigeração, sistema de alarme de
-                                    proteção contra incêndio, quadro de
-                                    distribuição, circuitos elétricos e sistema
-                                    de proteção contra Descargas
-                                    Atmosféricas.<br /><br />
-                                </p>
-                            </div>
+                            <p
+                                class="text-gray-600 mb-8 dark:text-gray-300 w-2/3"
+                            >
+                                Cadastre Locais e Gerenciar os sistemas de
+                                instalações elétricas, sistema de iluminação,
+                                cargas elétricas, linhas elétricas, cabeamento
+                                estruturado, sistema de refrigeração, sistema de
+                                alarme de proteção contra incêndio, quadro de
+                                distribuição, circuitos elétricos e sistema de
+                                proteção contra Descargas Atmosféricas.<br /><br />
+                            </p>
                             <div class="w-1/3 image-container">
                                 <img
                                     src="assets/adicionar.equipamentos.jpeg"
@@ -265,22 +260,20 @@
                         </div>
                     </div>
                     <div class="w-full sm:w-1/2 p-6">
+                        <h3
+                            class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
+                        >
+                            Cadastro de Locais
+                        </h3>
                         <div class="flex">
-                            <div class="w-2/3">
-                                <h3
-                                    class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
-                                >
-                                    Cadastro de Locais
-                                </h3>
-                                <p
-                                    class="text-gray-600 mb-8 dark:text-gray-300"
-                                >
-                                    Crie e mantenha um registro detalhado de
-                                    todos os locais e salas dentro da
-                                    instalação, facilitando a gestão e
-                                    manutenção das instalações elétricas.<br /><br />
-                                </p>
-                            </div>
+                            <p
+                                class="text-gray-600 mb-8 dark:text-gray-300 w-2/3"
+                            >
+                                Crie e mantenha um registro detalhado de todos
+                                os locais e salas dentro da instalação,
+                                facilitando a gestão e manutenção das
+                                instalações elétricas.<br /><br />
+                            </p>
                             <div class="w-1/3 image-container">
                                 <img
                                     src="assets/locais.jpeg"
@@ -292,23 +285,20 @@
                 </div>
                 <div class="flex flex-wrap flex-col-reverse sm:flex-row">
                     <div class="w-full sm:w-1/2 p-6 mt-6">
+                        <h3
+                            class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
+                        >
+                            Menu de Instalações
+                        </h3>
                         <div class="flex">
-                            <div class="w-2/3">
-                                <h3
-                                    class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
-                                >
-                                    Menu de Instalações
-                                </h3>
-                                <p
-                                    class="text-gray-600 mb-8 dark:text-gray-300"
-                                >
-                                    Acesse rapidamente todas as instalações
-                                    registradas e visualize informações
-                                    detalhadas sobre cada uma delas, incluindo
-                                    status de manutenção e histórico de
-                                    serviços.<br /><br />
-                                </p>
-                            </div>
+                            <p
+                                class="text-gray-600 mb-8 dark:text-gray-300 w-2/3"
+                            >
+                                Acesse rapidamente todas as instalações
+                                registradas e visualize informações detalhadas
+                                sobre cada uma delas, incluindo status de
+                                manutenção e histórico de serviços.<br /><br />
+                            </p>
                             <div class="w-1/3 image-container">
                                 <img
                                     src="assets/menu.instalaçoes.jpeg"
@@ -318,38 +308,32 @@
                         </div>
                     </div>
                     <div class="w-full sm:w-1/2 p-6 mt-6">
-                        <div class="align-middle">
-                            <div class="flex">
-                                <div class="w-2/3">
-                                    <h3
-                                        class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
-                                    >
-                                        Integração com Mapas
-                                    </h3>
-                                    <p
-                                        class="text-gray-600 mb-8 dark:text-gray-300"
-                                    >
-                                        O aplicativo conta com uma
-                                        funcionalidade de integração em tempo
-                                        real, permitindo o acompanhamento de
-                                        localizações e salas registradas. Os
-                                        usuários podem criar e atualizar locais
-                                        instantaneamente, garantindo que todas
-                                        as mudanças sejam refletidas no sistema
-                                        sem atrasos. Essa funcionalidade é
-                                        essencial para uma gestão eficiente de
-                                        ambientes dinâmicos, proporcionando uma
-                                        visão atualizada e precisa de todas as
-                                        localizações e salas monitoradas pelo
-                                        aplicativo.<br /><br />
-                                    </p>
-                                </div>
-                                <div class="w-1/3 image-container">
-                                    <img
-                                        src="assets/imagem.mapa.jpeg"
-                                        alt="Map Integration"
-                                    />
-                                </div>
+                        <h3
+                            class="text-3xl text-gray-800 font-bold leading-none mb-3 dark:text-white"
+                        >
+                            Integração com Mapas
+                        </h3>
+                        <div class="flex">
+                            <p
+                                class="text-gray-600 mb-8 dark:text-gray-300 w-2/3"
+                            >
+                                O aplicativo conta com uma funcionalidade de
+                                integração em tempo real, permitindo o
+                                acompanhamento de localizações e salas
+                                registradas. Os usuários podem criar e atualizar
+                                locais instantaneamente, garantindo que todas as
+                                mudanças sejam refletidas no sistema sem
+                                atrasos. Essa funcionalidade é essencial para
+                                uma gestão eficiente de ambientes dinâmicos,
+                                proporcionando uma visão atualizada e precisa de
+                                todas as localizações e salas monitoradas pelo
+                                aplicativo.<br /><br />
+                            </p>
+                            <div class="w-1/3 image-container">
+                                <img
+                                    src="assets/imagem.mapa.jpeg"
+                                    alt="Map Integration"
+                                />
                             </div>
                         </div>
                     </div>
@@ -357,7 +341,6 @@
             </div>
         </section>
 
-        <!-- Team -->
         <section class="bg-white py-8 dark:bg-gray-800" id="team">
             <div class="container max-w-5xl mx-auto m-8">
                 <h2
@@ -478,13 +461,9 @@
             </div>
         </section>
 
-        <!-- Footer -->
-        <footer class="bg-blue-800 text-white py-6">
+        <footer class="bg-blue-800 text-white py-6 dark:bg-black">
             <div class="container mx-auto px-4">
                 <p>&copy; 2024 SIGE IE. Todos os direitos reservados.</p>
-                <p>
-                    <a href="#header" class="text-yellow-300">Voltar ao topo</a>
-                </p>
             </div>
         </footer>
 
