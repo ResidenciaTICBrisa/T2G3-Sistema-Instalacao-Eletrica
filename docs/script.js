@@ -6,7 +6,6 @@ var brandname = document.getElementById("brandname");
 var toToggle = document.querySelectorAll(".toggleColour");
 
 document.addEventListener("scroll", function () {
-    /* Apply classes for slide in bar */
     scrollpos = window.scrollY;
 
     if (scrollpos > 10) {
@@ -29,7 +28,7 @@ document.addEventListener("scroll", function () {
         navaction.classList.add("bg-white");
         navaction.classList.remove("text-white");
         navaction.classList.add("text-gray-800");
-        // Use to switch toggleColour colours
+
         for (var i = 0; i < toToggle.length; i++) {
             toToggle[i].classList.add("text-white");
             toToggle[i].classList.remove("text-gray-800");
@@ -76,8 +75,21 @@ $(document).ready(function () {
 
 document.getElementById("modeToggle").addEventListener("click", function () {
     document.body.classList.toggle("dark-mode");
-    var modeText = document.body.classList.contains("dark-mode")
-        ? "Modo Claro"
-        : "Modo Noturno";
-    this.textContent = modeText;
+
+    if (document.body.classList.contains("dark-mode")) {
+        document.getElementById("image1").src = "assets/Electrician-black.gif";
+        document.getElementById("image2").src = "assets/Electrician2-black.gif";
+    } else {
+        document.getElementById("image1").src = "assets/Electrician.gif";
+        document.getElementById("image2").src = "assets/Electrician2.gif";
+    }
+});
+
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth",
+        });
+    });
 });
