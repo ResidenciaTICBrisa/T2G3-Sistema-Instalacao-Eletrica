@@ -41,7 +41,15 @@
                         />
                     </a>
                 </div>
-
+                <div
+                    id="nav-toggle"
+                    class="cursor-pointer lg:hidden flex items-center"
+                    onclick="toggleMenu()"
+                >
+                    <div class="bar1"></div>
+                    <div class="bar2"></div>
+                    <div class="bar3"></div>
+                </div>
                 <div
                     class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden mt-2 lg:mt-0 bg-white lg:bg-transparent text-black p-4 lg:p-0 z-20"
                     id="nav-content"
@@ -84,7 +92,6 @@
             </div>
             <hr class="border-b border-gray-100 opacity-25 my-0 py-0" />
         </nav>
-
         <div class="pt-24 gradient-bg dark:gradient-bg-dark">
             <div
                 class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center"

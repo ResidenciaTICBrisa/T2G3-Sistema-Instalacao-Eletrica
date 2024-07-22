@@ -1,3 +1,10 @@
+function toggleMenu() {
+    const navToggle = document.getElementById("nav-toggle");
+    const navContent = document.getElementById("nav-content");
+    navToggle.classList.toggle("open");
+    navContent.classList.toggle("open");
+}
+
 document.getElementById("modeToggle").addEventListener("click", function () {
     document.body.classList.toggle("dark-mode");
 
