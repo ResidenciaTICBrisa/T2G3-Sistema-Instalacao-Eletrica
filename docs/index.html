@@ -26,7 +26,7 @@
     >
         <nav
             id="header"
-            class="fixed w-full z-30 top-0 text-white bg-blue-800 shadow-lg"
+            class="fixed w-full z-30 top-0 text-white bg-blue-800 shadow-lg dark:bg-black"
         >
             <div
                 class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2"
@@ -63,7 +63,7 @@
                         <li class="navbar-item" id="func">
                             <a href="#funcionalidades">Funcionalidades</a>
                         </li>
-                        <li class="navbar-item" id="team">
+                        <li class="navbar-item" id="teamm">
                             <a href="#team">Time</a>
                         </li>
                     </ul>
@@ -85,7 +85,7 @@
                         <img
                             src="assets/day-and-night.png"
                             alt="Modo Noturno"
-                            class="h-6 w-6 hover:scale-110 transition-transform duration-300 ease-in-out"
+                            class="h-6 w-6 hover:scale-110 transition-transform duration-300 ease-in-out sun-moon"
                         />
                     </button>
                 </div>
@@ -459,8 +459,23 @@
         </section>
 
         <footer class="bg-blue-800 text-white py-6 dark:bg-black">
-            <div class="container mx-auto px-4">
-                <p>&copy; 2024 SIGE IE. Todos os direitos reservados.</p>
+            <div class="container mx-auto px-4 text-center">
+                <div class="download-app">
+                    <h2 class="mb-2">Baixe o nosso aplicativo:</h2>
+                    <a
+                        href="https://play.google.com/store/apps/details?id=com.example.app"
+                        target="_blank"
+                    >
+                        <img
+                            src="assets/google-play.png"
+                            alt="Disponível no Google Play"
+                            class="h-10 mx-auto"
+                        />
+                    </a>
+                </div>
+                <p class="mt-4">
+                    &copy; 2024 SIGE IE. Todos os direitos reservados.
+                </p>
             </div>
         </footer>
 
