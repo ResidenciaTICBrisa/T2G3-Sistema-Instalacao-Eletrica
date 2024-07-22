@@ -7,7 +7,7 @@
         display: none;
     }
     #nav-content .sun-moon {
-        width: 65px;
+        width: 60px;
         height: auto;
         display: block;
         margin: auto;
@@ -61,7 +61,7 @@
     width: 25px;
     height: 3px;
     background-color: white;
-    margin: 4px 0;
+    margin: 4px 8px;
     transition: 0.4s;
 }
 
@@ -344,4 +344,8 @@ footer p {
 
 .download-app p {
     margin: 0;
+}
+.download-app h2 {
+    font-size: 25px;
+    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
