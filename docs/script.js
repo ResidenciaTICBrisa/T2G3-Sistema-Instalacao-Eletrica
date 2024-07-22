@@ -11,9 +11,11 @@ document.getElementById("modeToggle").addEventListener("click", function () {
     if (document.body.classList.contains("dark-mode")) {
         document.getElementById("image1").src = "assets/Electrician-black.gif";
         document.getElementById("image2").src = "assets/Electrician2-black.gif";
+        document.querySelector(".gradient-bg").classList.add("dark-mode");
     } else {
         document.getElementById("image1").src = "assets/Electrician.gif";
         document.getElementById("image2").src = "assets/Electrician2.gif";
+        document.querySelector(".gradient-bg").classList.remove("dark-mode");
     }
 });
 

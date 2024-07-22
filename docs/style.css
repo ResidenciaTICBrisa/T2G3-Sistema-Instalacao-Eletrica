@@ -65,7 +65,7 @@
     background: linear-gradient(to bottom, #003366, #ffcc00);
 }
 
-.gradient-bg-dark {
+.dark-mode .gradient-bg {
     background: linear-gradient(to bottom, #333333, #777777);
 }
 
@@ -192,11 +192,9 @@ nav {
 #header {
     background-color: #003366;
 }
-
 .dark-mode #header {
     background-color: #1f1f1f;
 }
-
 .dark-mode .bg-white {
     background-color: #1f1f1f;
     color: #ffffff;
@@ -245,7 +243,6 @@ nav a:hover {
 .dark-mode #navAction:hover {
     background-color: #ffa500;
 }
-
 .dark-mode nav {
     background-color: #1f1f1f;
 }
@@ -253,7 +250,6 @@ nav a:hover {
 nav a:hover {
     color: #ffcc00;
 }
-
 body.dark-mode {
     background-color: #121212;
     color: #ffffff;
@@ -336,7 +332,6 @@ footer {
 .dark-mode footer {
     background-color: #1f1f1f;
 }
-
 footer a {
     color: #ffcc00;
     text-decoration: none;
