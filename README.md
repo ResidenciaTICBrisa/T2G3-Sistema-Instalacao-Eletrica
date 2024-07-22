@@ -8,8 +8,9 @@ SIGE IE
 ## Fase
 Release 1 ✔️ <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/1">Ir para milestone da release 1</a>
 
-Release 2 (atual) <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/2">Ir para milestone da release 2</a>
+Release 2 ✔️<a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/2">Ir para milestone da release 2</a>
 
+Release 3 (atual) <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/3">Ir para milestone da release 3</a>
 ## Visão geral do produto
 
 ### Sobre 
