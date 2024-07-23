@@ -11,10 +11,12 @@ document.getElementById("modeToggle").addEventListener("click", function () {
     if (document.body.classList.contains("dark-mode")) {
         document.getElementById("image1").src = "assets/Electrician-black.gif";
         document.getElementById("image2").src = "assets/Electrician2-black.gif";
+        document.getElementById("img-sun-moon").src = "assets/moon.png";
         document.querySelector(".gradient-bg").classList.add("dark-mode");
     } else {
         document.getElementById("image1").src = "assets/Electrician.gif";
         document.getElementById("image2").src = "assets/Electrician2.gif";
+        document.getElementById("img-sun-moon").src = "assets/sun.png";
         document.querySelector(".gradient-bg").classList.remove("dark-mode");
     }
 });
