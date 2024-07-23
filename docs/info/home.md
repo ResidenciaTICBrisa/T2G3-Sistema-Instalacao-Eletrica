@@ -1,10 +1,5 @@
 <h1 align="center">SIGE IE </h1>
 
-<div style="text-align: center; margin: 20px;">
-    <img src="/docs/assets/default_transparent_1000x1000.png" 
-         style="width: 300px; height: auto;" />
-         
-</div>
 
 
 <br>
