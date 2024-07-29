@@ -735,23 +735,27 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: const BoxDecoration(
-                color: AppColors.sigeIeBlue,
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(20)),
-              ),
-              child: Center(
-                child: Text(
+            Center(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+                decoration: const BoxDecoration(
+                  color: AppColors.sigeIeBlue,
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                ),
+                child: Center(
+                  child: Text(
                     widget.structuredCablingId == null
                         ? 'Adicionar Cabeamento Estruturado'
                         : 'Editar Cabeamento Estruturado',
                     style: const TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white)),
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ),
             Padding(
