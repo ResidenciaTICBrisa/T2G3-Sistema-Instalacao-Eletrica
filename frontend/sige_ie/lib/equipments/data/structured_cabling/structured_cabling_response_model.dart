@@ -1,23 +1,25 @@
-class StructuredCablingEquipmentResponseModel {
+class StructuredCablingResponseModel {
   int id;
   int area;
-  String equipmentCategory;
+  int equipment;
   int system;
+  int quantity;
 
-  StructuredCablingEquipmentResponseModel({
+  StructuredCablingResponseModel({
     required this.id,
     required this.area,
-    required this.equipmentCategory,
+    required this.equipment,
     required this.system,
+    required this.quantity,
   });
 
-  factory StructuredCablingEquipmentResponseModel.fromJson(
-      Map<String, dynamic> json) {
-    return StructuredCablingEquipmentResponseModel(
+  factory StructuredCablingResponseModel.fromJson(Map<String, dynamic> json) {
+    return StructuredCablingResponseModel(
       id: json['id'],
       area: json['area'],
-      equipmentCategory: json['equipment_category'],
+      equipment: json['equipment'],
       system: json['system'],
+      quantity: json['quantity'],
     );
   }
 }
