@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_request_model.dart.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_response_model.dart';
@@ -10,7 +11,7 @@ import 'package:sige_ie/main.dart';
 
 class EletricalLoadEquipmentService {
   final Logger _logger = Logger('EletricalLoadEquipmentService');
-  final String baseUrl = 'http://10.0.2.2:8000/api/';
+  final String baseUrl = '$urlUniversal/api/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );

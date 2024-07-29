@@ -3,13 +3,14 @@ import 'package:http_interceptor/http_interceptor.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_response_model.dart';
 
 class EquipmentPhotoService {
   final Logger _logger = Logger('EquipmentPhotoService');
-  final String baseUrl = 'http://10.0.2.2:8000/api/equipment-photos/';
+  final String baseUrl = '$urlUniversal/api/equipment-photos/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
@@ -52,7 +53,7 @@ class EquipmentPhotoService {
       int equipmentId) async {
     try {
       var url = Uri.parse(
-          'http://10.0.2.2:8000/api/equipment-photos/by-equipment/$equipmentId/');
+          '$urlUniversal/api/equipment-photos/by-equipment/$equipmentId/');
       _logger.info('Fetching photos from: $url');
       var photosResponse = await client.get(url);
 

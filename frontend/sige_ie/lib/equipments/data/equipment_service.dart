@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/equipments/data/atmospheric/atmospheric_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/distribution/distribution_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_equipment_request_model.dart';
@@ -16,13 +17,13 @@ import 'package:sige_ie/main.dart';
 
 class EquipmentService {
   final Logger _logger = Logger('EquipmentService');
-  final String baseUrl = 'http://10.0.2.2:8000/api/equipments/';
+  final String baseUrl = '$urlUniversal/api/equipments/';
   http.Client client = InterceptedClient.build(
     interceptors: [AuthInterceptor(cookieJar)],
   );
 
   Future<Map<String, dynamic>> getEquipmentById(int equipmentId) async {
-    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$equipmentId/');
+    var url = Uri.parse('$urlUniversal/api/equipments/$equipmentId/');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200) {
@@ -39,7 +40,7 @@ class EquipmentService {
   }
 
   Future<bool> updateEquipment(int id, Map<String, dynamic> data) async {
-    var url = Uri.parse('http://10.0.2.2:8000/api/equipments/$id/');
+    var url = Uri.parse('$urlUniversal/api/equipments/$id/');
 
     try {
       var response = await client.put(

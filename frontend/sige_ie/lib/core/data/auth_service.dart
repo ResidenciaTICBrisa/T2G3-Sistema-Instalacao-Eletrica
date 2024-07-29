@@ -3,11 +3,12 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/main.dart';
 
 class AuthService {
   static Future<String> fetchCsrfToken() async {
-    const String url = 'http://10.0.2.2:8000/api/csrfcookie/';
+    const String url = '$urlUniversal/api/csrfcookie/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -16,7 +17,7 @@ class AuthService {
 
       final csrfCookie = Cookie('csrftoken', csrfToken);
       cookieJar.saveFromResponse(
-          Uri.parse('http://10.0.2.2:8000/api/csrftoken/'), [csrfCookie]);
+          Uri.parse('$urlUniversal/api/csrftoken/'), [csrfCookie]);
 
       return csrfToken;
     } else {
@@ -25,7 +26,7 @@ class AuthService {
   }
 
   static Future<String> fetchSessionCookie() async {
-    const url = 'http://10.0.2.2:8000/api/sessioncookie/';
+    const url = '$urlUniversal/api/sessioncookie/';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
@@ -52,7 +53,7 @@ class AuthService {
     );
 
     final response =
-        await client.get(Uri.parse('http://10.0.2.2:8000/api/checkauth/'));
+        await client.get(Uri.parse('$urlUniversal/api/checkauth/'));
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -66,7 +67,7 @@ class AuthService {
     //var csrfToken = await fetchCsrfToken();
     //print(csrfToken);
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/login/');
+    var url = Uri.parse('$urlUniversal/api/login/');
 
     try {
       var response = await http.post(url,
@@ -88,8 +89,8 @@ class AuthService {
       }
 
       final cookie = Cookie('sessionid', sessionid!);
-      cookieJar.saveFromResponse(
-          Uri.parse('http://10.0.2.2:8000/api/login/'), [cookie]);
+      cookieJar
+          .saveFromResponse(Uri.parse('$urlUniversal/api/login/'), [cookie]);
 
       if (response.statusCode == 200) {
         //print("Login bem-sucedido: $data");
@@ -105,9 +106,9 @@ class AuthService {
   }
 
   Future<void> logout() async {
-    //final cookies = await cookieJar.loadForRequest(Uri.parse('http://10.0.2.2:8000/api/csrftoken/'));
+    //final cookies = await cookieJar.loadForRequest(Uri.parse('$urlUniversal/api/csrftoken/'));
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/logout/');
+    var url = Uri.parse('$urlUniversal/api/logout/');
 
     try {
       var client =
