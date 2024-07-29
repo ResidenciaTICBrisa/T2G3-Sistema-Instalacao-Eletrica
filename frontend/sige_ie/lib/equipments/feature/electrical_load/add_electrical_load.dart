@@ -102,10 +102,9 @@ class _AddElectricalLoadEquipmentScreenState
           equipmentId = electricalLoadResponseModel!.equipment;
           _quantityController.text =
               electricalLoadResponseModel!.quantity.toString();
-          _brandController.text = electricalLoadResponseModel!.brand ?? '';
-          _modelController.text = electricalLoadResponseModel!.model ?? '';
-          _powerController.text =
-              electricalLoadResponseModel!.power?.toString() ?? '';
+          _brandController.text = electricalLoadResponseModel!.brand;
+          _modelController.text = electricalLoadResponseModel!.model;
+          _powerController.text = electricalLoadResponseModel!.power.toString();
           print('Loaded quantity: ${_quantityController.text}');
         });
 
@@ -393,7 +392,7 @@ class _AddElectricalLoadEquipmentScreenState
         );
         Navigator.pushReplacementNamed(
           context,
-          '/listElectricalLoadEquipment',
+          '/listelectricalLoadEquipment',
           arguments: {
             'areaName': widget.areaName,
             'systemId': widget.systemId,
@@ -664,11 +663,18 @@ class _AddElectricalLoadEquipmentScreenState
       eletricalLoadRequestModel: electricalLoadModel,
     );
 
-    int? id = await equipmentService
-        .createElectricalLoad(electricalLoadEquipmentDetail);
-    setState(() {
-      equipmentId = id;
-    });
+    print('Payload being sent: ${electricalLoadEquipmentDetail.toJson()}');
+
+    try {
+      int? id = await equipmentService
+          .createElectricalLoad(electricalLoadEquipmentDetail);
+      setState(() {
+        equipmentId = id;
+      });
+      print('Equipment ID returned: $equipmentId');
+    } catch (e) {
+      print('Error during equipment creation: $e');
+    }
 
     if (equipmentId != null && equipmentId != 0) {
       print('Registering photos for equipment ID: $equipmentId');
@@ -692,7 +698,7 @@ class _AddElectricalLoadEquipmentScreenState
       );
       Navigator.pushReplacementNamed(
         context,
-        '/listElectricalLoadEquipment',
+        '/listelectricalLoadEquipment',
         arguments: {
           'areaName': widget.areaName,
           'systemId': widget.systemId,
@@ -754,7 +760,7 @@ class _AddElectricalLoadEquipmentScreenState
             });
             Navigator.pushReplacementNamed(
               context,
-              '/listElectricalLoadEquipment',
+              '/listelectricalLoadEquipment',
               arguments: {
                 'areaName': widget.areaName,
                 'systemId': widget.systemId,
