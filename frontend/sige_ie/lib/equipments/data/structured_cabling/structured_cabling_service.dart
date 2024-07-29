@@ -17,7 +17,7 @@ class StructuredCablingEquipmentService {
 
   Future<List<StructuredCablingEquipmentResponseByAreaModel>>
       getStructuredCablingListByArea(int areaId) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/by-area/$areaId/');
+    var url = Uri.parse('${baseUrl}structured-cabling/by-area/$areaId/');
     try {
       var response = await client.get(url);
 
@@ -29,38 +29,38 @@ class StructuredCablingEquipmentService {
             .toList();
       } else {
         _logger.info(
-            'Failed to load fire alarm equipment with status code: ${response.statusCode}');
+            'Failed to load structured cabling equipment with status code: ${response.statusCode}');
         _logger.info('Response body: ${response.body}');
-        throw Exception('Failed to load fire alarm equipment');
+        throw Exception('Failed to load structured cabling equipment');
       }
     } catch (e) {
-      _logger.info('Error during get fire alarm equipment list: $e');
-      throw Exception('Failed to load fire alarm equipment');
+      _logger.info('Error during get structured cabling equipment list: $e');
+      throw Exception('Failed to load structured cabling equipment');
     }
   }
 
   Future<void> deleteStructuredCabling(int structuredCablingId) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/$structuredCablingId/');
+    var url = Uri.parse('${baseUrl}structured-cabling/$structuredCablingId/');
     try {
       var response = await client.delete(url);
       if (response.statusCode == 204) {
         _logger.info(
-            'Successfully deleted fire alarm equipment with ID: $structuredCablingId');
+            'Successfully deleted structured cabling equipment with ID: $structuredCablingId');
       } else {
         _logger.info(
-            'Failed to delete fire alarm equipment with status code: ${response.statusCode}');
+            'Failed to delete structured cabling equipment with status code: ${response.statusCode}');
         _logger.info('Response body: ${response.body}');
-        throw Exception('Failed to delete fire alarm equipment');
+        throw Exception('Failed to delete structured cabling equipment');
       }
     } catch (e) {
-      _logger.info('Error during delete fire alarm equipment: $e');
-      throw Exception('Failed to delete fire alarm equipment');
+      _logger.info('Error during delete structured cabling equipment: $e');
+      throw Exception('Failed to delete structured cabling equipment');
     }
   }
 
   Future<StructuredCablingResponseModel> getStructuredCablingById(
       int structuredCablingId) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/$structuredCablingId/');
+    var url = Uri.parse('${baseUrl}structured-cabling/$structuredCablingId/');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200) {
@@ -68,18 +68,18 @@ class StructuredCablingEquipmentService {
         return StructuredCablingResponseModel.fromJson(jsonResponse);
       } else {
         _logger.info(
-            'Failed to load fire alarm with status code: ${response.statusCode}');
-        throw Exception('Failed to load fire alarm');
+            'Failed to load structured cabling with status code: ${response.statusCode}');
+        throw Exception('Failed to load structured cabling');
       }
     } catch (e) {
-      _logger.info('Error during get fire alarm: $e');
-      throw Exception('Failed to load fire alarm');
+      _logger.info('Error during get structured cabling: $e');
+      throw Exception('Failed to load structured cabling');
     }
   }
 
   Future<bool> updateStructuredCabling(int structuredCablingId,
       StructuredCablingRequestModel structuredCablingIdRequestModel) async {
-    var url = Uri.parse('${baseUrl}fire-alarms/$structuredCablingId/');
+    var url = Uri.parse('${baseUrl}structured-cabling/$structuredCablingId/');
 
     try {
       var response = await client.put(
@@ -90,15 +90,15 @@ class StructuredCablingEquipmentService {
 
       if (response.statusCode == 200) {
         _logger.info(
-            'Successfully updated fire alarm equipment with ID: $structuredCablingId');
+            'Successfully updated structured cabling equipment with ID: $structuredCablingId');
         return true;
       } else {
         _logger.info(
-            'Failed to update fire alarm equipment with status code: ${response.statusCode}');
+            'Failed to update structured cabling equipment with status code: ${response.statusCode}');
         return false;
       }
     } catch (e) {
-      _logger.info('Error during update fire alarm equipment: $e');
+      _logger.info('Error during update structured cabling equipment: $e');
       return false;
     }
   }
