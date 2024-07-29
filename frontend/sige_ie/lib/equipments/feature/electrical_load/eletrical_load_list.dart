@@ -28,7 +28,6 @@ class _ListElectricalLoadEquipmentState
     extends State<ListElectricalLoadEquipment> {
   List<String> equipmentList = [];
   bool isLoading = true;
-  // You may need to replace this with actual service integration
   final EletricalLoadEquipmentService _service =
       EletricalLoadEquipmentService();
   bool _isMounted = false;
@@ -88,6 +87,7 @@ class _ListElectricalLoadEquipmentState
   void _deleteEquipment(BuildContext context, String equipment) {
     // Implement the logic to delete the equipment
   }
+
   @override
   Widget build(BuildContext context) {
     String systemTitle = 'Cargas Elétricas';

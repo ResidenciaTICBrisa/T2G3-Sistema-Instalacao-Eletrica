@@ -211,6 +211,9 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
     TextEditingController descriptionController = TextEditingController(
       text: existingImage?.description ?? '',
     );
+
+    if (!mounted) return;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {

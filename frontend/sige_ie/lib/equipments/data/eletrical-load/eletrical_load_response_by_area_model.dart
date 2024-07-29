@@ -1,28 +1,29 @@
-class EletricalLoadResponseModel {
+class EletricalLoadEquipmentResponseByAreaModel {
   int id;
   int area;
-  int equipment;
+  String equipmentCategory;
   int system;
   int quantity;
-  int power;
-  String brand;
-  String model;
+  int? power;
+  String? brand;
+  String? model;
 
-  EletricalLoadResponseModel(
+  EletricalLoadEquipmentResponseByAreaModel(
       {required this.id,
       required this.area,
-      required this.equipment,
+      required this.equipmentCategory,
       required this.system,
       required this.quantity,
       required this.power,
       required this.brand,
       required this.model});
 
-  factory EletricalLoadResponseModel.fromJson(Map<String, dynamic> json) {
-    return EletricalLoadResponseModel(
+  factory EletricalLoadEquipmentResponseByAreaModel.fromJson(
+      Map<String, dynamic> json) {
+    return EletricalLoadEquipmentResponseByAreaModel(
       id: json['id'],
       area: json['area'],
-      equipment: json['equipment'],
+      equipmentCategory: json['equipment_category'],
       system: json['system'],
       quantity: json['quantity'],
       power: json['power'],
