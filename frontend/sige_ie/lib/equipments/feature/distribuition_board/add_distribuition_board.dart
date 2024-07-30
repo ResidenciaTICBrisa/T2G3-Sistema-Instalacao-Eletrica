@@ -434,12 +434,6 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
       genericEquipmentCategory: genericEquipmentCategory,
       personalEquipmentCategory: personalEquipmentCategory,
       distributionRequestModel: distributionModel,
-      power: _powerController.text,
-      dr: _dr,
-      dps: _dps,
-      grounding: _grounding,
-      typeMaterial: _typeMaterialController.text,
-      methodInstallation: _methodInstallationController.text,
     );
 
     int? equipmentId =
