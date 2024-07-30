@@ -4,7 +4,7 @@ class IluminationEquipmentResponseByAreaModel {
   String equipmentCategory;
   int system;
   int quantity;
-  int? power;
+  int power;
   String tecnology;
   String format;
 
