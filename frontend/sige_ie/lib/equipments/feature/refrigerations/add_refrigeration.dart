@@ -419,6 +419,8 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
         RefrigerationsRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: null,
+      power: null,
     );
 
     final RefrigerationsEquipmentRequestModel refrigerationsEquipmentDetail =
