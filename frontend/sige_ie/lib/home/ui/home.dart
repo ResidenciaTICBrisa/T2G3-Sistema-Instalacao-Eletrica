@@ -1,3 +1,4 @@
+import 'package:url_launcher/link.dart';
 import 'package:flutter/material.dart';
 import 'package:sige_ie/Teams/teams.dart';
 import 'package:sige_ie/config/app_styles.dart';
@@ -158,21 +159,25 @@ class _HomePageState extends State<HomePage> {
                         return AlertDialog(
                           title:
                               const Text('Informações sobre o Projeto Sigeie'),
-                          content: const SingleChildScrollView(
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        'Para saber mais sobre o projeto e seus desenvolvedores, acesse o link:\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        'https://residenciaticbrisa.github.io/T2G3-Sistema-Instalacao-Eletrica/',
-                                  ),
-                                ],
-                              ),
-                              style: TextStyle(fontSize: 16),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const Text(
+                                    'Para saber mais sobre o projeto e seus desenvolvedores, acesse o link:'),
+                                Link(
+                                  uri: Uri.parse(
+                                      'https://residenciaticbrisa.github.io/T2G3-Sistema-Instalacao-Eletrica/'),
+                                  target: LinkTarget.blank,
+                                  builder:
+                                      (BuildContext ctx, FollowLink? openLink) {
+                                    return TextButton.icon(
+                                      onPressed: openLink,
+                                      label: const Text('Projeto Sigeie'),
+                                      icon: const Icon(Icons.link),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                           actions: <Widget>[
