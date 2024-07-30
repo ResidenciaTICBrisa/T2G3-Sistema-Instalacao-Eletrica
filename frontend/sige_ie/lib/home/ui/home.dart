@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                                       (BuildContext ctx, FollowLink? openLink) {
                                     return TextButton.icon(
                                       onPressed: openLink,
-                                      label: const Text('Projeto Sigeie'),
+                                      label: const Text('Landing Page Sigeie'),
                                       icon: const Icon(Icons.link),
                                     );
                                   },
