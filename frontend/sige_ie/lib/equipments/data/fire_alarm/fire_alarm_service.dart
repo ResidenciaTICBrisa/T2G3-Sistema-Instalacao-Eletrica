@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_request_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_response_model.dart';
 import 'package:sige_ie/main.dart';
-import 'package:sige_ie/equipments/data/fire_alarm/fire_alarm_equipment_request_model.dart';
 
 class FireAlarmEquipmentService {
   final Logger _logger = Logger('FireAlarmEquipmentService');
@@ -57,14 +57,13 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<FireAlarmEquipmentResponseModel> getFireAlarmById(
-      int fireAlarmId) async {
+  Future<FireAlarmResponseModel> getFireAlarmById(int fireAlarmId) async {
     var url = Uri.parse('${baseUrl}fire-alarms/$fireAlarmId/');
     try {
       var response = await client.get(url);
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        return FireAlarmEquipmentResponseModel.fromJson(jsonResponse);
+        return FireAlarmResponseModel.fromJson(jsonResponse);
       } else {
         _logger.info(
             'Failed to load fire alarm with status code: ${response.statusCode}');
@@ -76,15 +75,15 @@ class FireAlarmEquipmentService {
     }
   }
 
-  Future<bool> updateFireAlarm(int fireAlarmId,
-      FireAlarmEquipmentRequestModel fireAlarmEquipmentRequestModel) async {
+  Future<bool> updateFireAlarm(
+      int fireAlarmId, FireAlarmRequestModel fireAlarmRequestModel) async {
     var url = Uri.parse('${baseUrl}fire-alarms/$fireAlarmId/');
 
     try {
       var response = await client.put(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(fireAlarmEquipmentRequestModel.toJson()),
+        body: jsonEncode(fireAlarmRequestModel.toJson()),
       );
 
       if (response.statusCode == 200) {
