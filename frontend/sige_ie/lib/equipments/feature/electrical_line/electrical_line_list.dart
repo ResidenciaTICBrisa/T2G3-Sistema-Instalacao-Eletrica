@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/eletrical_line/eletrical_line_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/eletrical_line/eletrical_line_service.dart';
 import 'package:sige_ie/equipments/feature/electrical_line/add_electrical_line.dart';
 
@@ -39,11 +40,12 @@ class _ListElectricalLineEquipmentState
 
   Future<void> fetchEquipmentList() async {
     try {
-      final List<String> equipmentList =
-          await _service.getElectricalLineListByArea(widget.areaId);
+      final List<EletricalLineEquipmentResponseByAreaModel> equipmentList =
+          await _service.getEletricalLineListByArea(widget.areaId);
       if (mounted) {
         setState(() {
-          this.equipmentList = equipmentList;
+/*           this.equipmentList = equipmentList;
+ */
           isLoading = false;
         });
       }
