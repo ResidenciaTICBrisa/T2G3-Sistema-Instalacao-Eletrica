@@ -412,7 +412,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
               children: <Widget>[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                   decoration: const BoxDecoration(
                     color: AppColors.sigeIeBlue,
                     borderRadius:

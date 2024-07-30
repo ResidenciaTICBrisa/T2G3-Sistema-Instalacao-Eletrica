@@ -24,7 +24,7 @@ class MapsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               decoration: const BoxDecoration(
                 color: Color(0xff123c75),
                 borderRadius:
