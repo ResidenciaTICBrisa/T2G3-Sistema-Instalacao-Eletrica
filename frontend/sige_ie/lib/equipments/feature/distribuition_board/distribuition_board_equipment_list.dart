@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/distribution/distribution_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/distribution/distribution_service.dart';
 import 'package:sige_ie/equipments/feature/distribuition_board/add_distribuition_board.dart';
 
@@ -36,11 +37,12 @@ class _ListDistributionBoardState extends State<ListDistributionBoard> {
 
   Future<void> fetchEquipmentList() async {
     try {
-      final List<String> equipmentList =
+      final List<DistributionEquipmentResponseByAreaModel> equipmentList =
           await _service.getDistributionListByArea(widget.areaId);
       if (mounted) {
         setState(() {
-          this.equipmentList = equipmentList;
+/*           this.equipmentList = equipmentList;
+ */
           isLoading = false;
         });
       }

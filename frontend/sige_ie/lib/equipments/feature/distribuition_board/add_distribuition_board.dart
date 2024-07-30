@@ -427,6 +427,13 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
     final DistributionRequestModel distributionModel = DistributionRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: null,
+      power: '',
+      dr: true,
+      dps: true,
+      grounding: true,
+      typeMaterial: '',
+      methodInstallation: '',
     );
 
     final DistributionEquipmentRequestModel distributionEquipmentDetail =
