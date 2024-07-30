@@ -2,7 +2,7 @@
     display: none;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1280px) {
     #nav-content {
         display: none;
     }
