@@ -27,7 +27,7 @@ class UserService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
+    var url = Uri.parse('$urlUniversal/api/users/$id/');
     try {
       var response = await client.put(url,
           headers: {'Content-Type': 'application/json'},
@@ -50,7 +50,7 @@ class UserService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
+    var url = Uri.parse('$urlUniversal/api/users/$id/');
     try {
       var response = await client
           .delete(url, headers: {'Content-Type': 'application/json'});
@@ -71,7 +71,7 @@ class UserService {
 
     try {
       final response =
-          await client.get(Uri.parse('http://10.0.2.2:8000/api/userauth'));
+          await client.get(Uri.parse('$urlUniversal/api/userauth'));
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
