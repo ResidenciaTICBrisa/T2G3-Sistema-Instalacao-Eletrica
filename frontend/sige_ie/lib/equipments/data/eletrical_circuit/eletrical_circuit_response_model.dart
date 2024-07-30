@@ -1,23 +1,29 @@
-class EletricalCircuitEquipmentResponseModel {
+class EletricalCircuitResponseModel {
   int id;
   int area;
-  String equipmentCategory;
+  int equipment;
   int system;
+  int quantity;
+  int size;
+  String isolament;
 
-  EletricalCircuitEquipmentResponseModel({
-    required this.id,
-    required this.area,
-    required this.equipmentCategory,
-    required this.system,
-  });
+  EletricalCircuitResponseModel(
+      {required this.id,
+      required this.area,
+      required this.equipment,
+      required this.system,
+      required this.quantity,
+      required this.size,
+      required this.isolament});
 
-  factory EletricalCircuitEquipmentResponseModel.fromJson(
-      Map<String, dynamic> json) {
-    return EletricalCircuitEquipmentResponseModel(
-      id: json['id'],
-      area: json['area'],
-      equipmentCategory: json['equipment_category'],
-      system: json['system'],
-    );
+  factory EletricalCircuitResponseModel.fromJson(Map<String, dynamic> json) {
+    return EletricalCircuitResponseModel(
+        id: json['id'],
+        area: json['area'],
+        equipment: json['equipment'],
+        system: json['system'],
+        quantity: json['quantity'],
+        size: json['size'],
+        isolament: json['isolament']);
   }
 }
