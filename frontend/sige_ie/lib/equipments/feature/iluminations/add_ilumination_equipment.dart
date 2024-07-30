@@ -419,6 +419,10 @@ class _AddIlluminationScreenState extends State<AddIluminationEquipmentScreen> {
     final IluminationRequestModel iluminationModel = IluminationRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: null,
+      format: '',
+      power: null,
+      tecnology: '',
     );
 
     final IluminationEquipmentRequestModel iluminationEquipmentDetail =

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/iluminations/ilumination_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/iluminations/ilumination_service.dart';
 import 'package:sige_ie/equipments/feature/iluminations/add_ilumination_equipment.dart';
 
@@ -37,11 +38,12 @@ class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
 
   Future<void> fetchEquipmentList() async {
     try {
-      final List<String> equipmentList =
+      final List<IluminationEquipmentResponseByAreaModel> equipmentList =
           await _service.getIluminationListByArea(widget.areaId);
       if (mounted) {
         setState(() {
-          this.equipmentList = equipmentList;
+/*           this.equipmentList = equipmentList;
+ */
           isLoading = false;
         });
       }
