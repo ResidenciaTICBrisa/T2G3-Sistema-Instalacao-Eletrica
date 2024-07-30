@@ -1,14 +1,14 @@
-class StructuredCablingResponseModel {
+class IluminationResponseModel {
   int id;
   int area;
   int equipment;
   int system;
   int quantity;
-  int? power;
+  int power;
   String tecnology;
   String format;
 
-  StructuredCablingResponseModel(
+  IluminationResponseModel(
       {required this.id,
       required this.area,
       required this.equipment,
@@ -18,8 +18,8 @@ class StructuredCablingResponseModel {
       required this.power,
       required this.tecnology});
 
-  factory StructuredCablingResponseModel.fromJson(Map<String, dynamic> json) {
-    return StructuredCablingResponseModel(
+  factory IluminationResponseModel.fromJson(Map<String, dynamic> json) {
+    return IluminationResponseModel(
         id: json['id'],
         area: json['area'],
         equipment: json['equipment'],
