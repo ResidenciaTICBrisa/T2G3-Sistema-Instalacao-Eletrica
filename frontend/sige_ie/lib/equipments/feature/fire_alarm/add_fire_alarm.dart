@@ -65,6 +65,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
   final TextEditingController _quantity = TextEditingController();
+  final TextEditingController _observationsController = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
@@ -189,6 +190,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   void dispose() {
     _quantity.dispose();
     _images.clear();
+    _observationsController.dispose();
     super.dispose();
   }
 
@@ -709,6 +711,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
               _images.clear();
+              _observationsController.clear();
             });
             Navigator.pushReplacementNamed(
               context,
@@ -827,7 +830,6 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -836,7 +838,6 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
                   const Text('Quantidade',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -861,6 +862,44 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                         print('Quantity changed: $value');
                       },
                     ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    'Observações',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _observationsController,
+                    maxLines: 3,
+                    maxLength: 500,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[300],
+                      hintText:
+                          'Digite suas observações aqui (máx 500 caracteres)',
+                      counterText: '',
+                    ),
+                    buildCounter: (
+                      BuildContext context, {
+                      required int currentLength,
+                      required bool isFocused,
+                      required int? maxLength,
+                    }) {
+                      return Text(
+                        '$currentLength / $maxLength',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: currentLength > maxLength!
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 15),
                   IconButton(
