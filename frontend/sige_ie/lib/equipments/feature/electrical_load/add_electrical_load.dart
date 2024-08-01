@@ -894,7 +894,7 @@ class _AddElectricalLoadEquipmentScreenState
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 10),
                   const Text('Marca',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
