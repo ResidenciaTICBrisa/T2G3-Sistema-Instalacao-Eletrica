@@ -528,7 +528,7 @@ class _AddEquipmentScreenState extends State<AddAtmosphericEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamento',
+                  const Text('Tipos de descargas atmosféricas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -539,7 +539,8 @@ class _AddEquipmentScreenState extends State<AddAtmosphericEquipmentScreen> {
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de equipamento',
+                                  'name':
+                                      'Selecione o tipo de descarga atmosférica',
                                   'id': -1,
                                   'type': -1
                                 }

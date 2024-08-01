@@ -540,7 +540,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamento',
+                  const Text('Tipos de refrigerações',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -551,7 +551,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de equipamento',
+                                  'name': 'Selecione o tipo de refrigeração',
                                   'id': -1,
                                   'type': -1
                                 }

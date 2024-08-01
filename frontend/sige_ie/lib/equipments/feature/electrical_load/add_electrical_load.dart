@@ -800,7 +800,7 @@ class _AddElectricalLoadEquipmentScreenState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamento',
+                  const Text('Tipos de cargas elétricas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -811,7 +811,7 @@ class _AddElectricalLoadEquipmentScreenState
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de equipamento',
+                                  'name': 'Selecione o tipo de carga elétrica',
                                   'id': -1,
                                   'type': -1
                                 }

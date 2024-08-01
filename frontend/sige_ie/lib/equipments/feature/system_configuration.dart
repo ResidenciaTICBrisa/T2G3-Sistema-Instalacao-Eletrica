@@ -210,7 +210,7 @@ class _SystemConfigurationState extends State<SystemConfiguration> {
                 ),
                 SystemIcon(
                   icon: Icons.power,
-                  label: 'LINHAS ELÉTRICAS',
+                  label: 'INSTALAÇÕES ELÉTRICAS',
                   onPressed: () => navigateTo('/electricLines', widget.areaName,
                       widget.localName, widget.localId, widget.areaId, 3),
                 ),

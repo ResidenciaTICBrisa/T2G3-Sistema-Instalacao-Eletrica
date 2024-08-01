@@ -84,7 +84,7 @@ class _ListElectricalLineEquipmentState
 
   @override
   Widget build(BuildContext context) {
-    String systemTitle = 'Linhas Elétricas';
+    String systemTitle = 'Instalações Elétricas';
 
     return Scaffold(
       appBar: AppBar(
