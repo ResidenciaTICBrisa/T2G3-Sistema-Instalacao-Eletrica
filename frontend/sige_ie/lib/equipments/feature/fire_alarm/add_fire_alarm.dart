@@ -551,6 +551,10 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_quantity.text),
                 const SizedBox(height: 10),
+                const Text('Observações:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_observationsController.text),
+                const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
@@ -673,6 +677,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
         _images.clear();
+        _observationsController.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -864,42 +869,41 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     ),
                   ),
                   const SizedBox(height: 15),
-                  const Text(
-                    'Observações',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  ),
+                  const Text('Observações',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: _observationsController,
-                    maxLines: 3,
-                    maxLength: 500,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[300],
-                      hintText:
-                          'Digite suas observações aqui (máx 500 caracteres)',
-                      counterText: '',
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    buildCounter: (
-                      BuildContext context, {
-                      required int currentLength,
-                      required bool isFocused,
-                      required int? maxLength,
-                    }) {
-                      return Text(
-                        '$currentLength / $maxLength',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: currentLength > maxLength!
-                              ? Colors.red
-                              : Colors.grey,
-                        ),
-                      );
-                    },
+                    child: TextField(
+                      controller: _observationsController,
+                      maxLines: 3,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText:
+                            'Digite suas observações aqui (máx 500 caracteres)',
+                      ),
+                      buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          required bool isFocused,
+                          required int? maxLength}) {
+                        return Text(
+                          '$currentLength / $maxLength',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: currentLength > maxLength!
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(height: 15),
                   IconButton(
