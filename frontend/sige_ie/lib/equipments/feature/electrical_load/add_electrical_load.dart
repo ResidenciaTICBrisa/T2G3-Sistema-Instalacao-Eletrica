@@ -72,6 +72,7 @@ class _AddElectricalLoadEquipmentScreenState
   final _modelController = TextEditingController();
   final _powerController = TextEditingController();
   final _quantityController = TextEditingController();
+  final _observationsController = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
@@ -198,7 +199,11 @@ class _AddElectricalLoadEquipmentScreenState
 
   @override
   void dispose() {
+    _brandController.dispose();
+    _modelController.dispose();
+    _powerController.dispose();
     _quantityController.dispose();
+    _observationsController.dispose();
     _images.clear();
     super.dispose();
   }
@@ -406,6 +411,7 @@ class _AddElectricalLoadEquipmentScreenState
           _modelController.clear();
           _powerController.clear();
           _quantityController.clear();
+          _observationsController.clear();
           _selectedType = null;
           _selectedPersonalEquipmentCategoryId = null;
           _selectedGenericEquipmentCategoryId = null;
@@ -579,6 +585,10 @@ class _AddElectricalLoadEquipmentScreenState
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_quantityController.text),
                 const SizedBox(height: 10),
+                const Text('Observações:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_observationsController.text),
+                const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
@@ -712,6 +722,7 @@ class _AddElectricalLoadEquipmentScreenState
         _modelController.clear();
         _powerController.clear();
         _quantityController.clear();
+        _observationsController.clear();
         _selectedType = null;
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
@@ -753,6 +764,7 @@ class _AddElectricalLoadEquipmentScreenState
               _modelController.clear();
               _powerController.clear();
               _quantityController.clear();
+              _observationsController.clear();
               _selectedType = null;
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
@@ -961,6 +973,43 @@ class _AddElectricalLoadEquipmentScreenState
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  const Text('Observações',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _observationsController,
+                      maxLines: 3,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText:
+                            'Digite suas observações aqui (máx 500 caracteres)',
+                      ),
+                      buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          required bool isFocused,
+                          required int? maxLength}) {
+                        return Text(
+                          '$currentLength / $maxLength',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: currentLength > maxLength!
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
