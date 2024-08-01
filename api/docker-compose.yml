@@ -29,9 +29,3 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      - DB_HOST=db
-      - DB_NAME=sigeie_db
-      - DB_USER=root
-      - DB_PASSWORD=root
-      - REDIS_HOST=redis
