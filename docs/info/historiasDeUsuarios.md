@@ -1,0 +1,10 @@
+#  História de Usuário
+
+Aqui estão as histórias de usuários mapeadas pelos épicos e features conforme o método SAFe.
+
+| Épico | Feature | Número | Prioridade | Título | Descrição | Critérios de aceitação |
+| --- | --- | --- | --- | --- | --- | --- | 
+| E1 | F1 | US1 | Alta | Cadastrar Usuário | Como usuário quero cadastrar no sistema para utilizar seus recursos e funcionalidades disponíveis | Atributos obrigatórios: id, nome, nome de usuário, e-mail, senha, está ativo, data de criação, grupos; <br><br> Os atributos nome de usuário e senha devem ter no mínimo 6 caracteres, e no máximo 23 e 200 caracteres, respectivamente; <br><br> Os atributos está ativo, data de criação são automáticos; A senha deve ser criptografada;<br><br> Os grupos são: criador, editor, usuário;<br><br> Observações: <br><br> Um usuário pertence ao grupo usuário quando cria uma nova conta; <br><br> Um usuário pertence ao grupo criador quando cria um lugar; <br><br> Um usuário pertence ao grupo editor quando edita um lugar; <br><br> |
+
+
+
