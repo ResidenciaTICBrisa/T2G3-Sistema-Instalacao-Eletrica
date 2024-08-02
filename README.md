@@ -8,7 +8,7 @@ SIGE IE
 ## Fase
 Release 1 ✔️ <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/1">Ir para milestone da release 1</a>
 
-Release 2 ✔️<a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/2">Ir para milestone da release 2</a>
+Release 2 ✔️ <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/2">Ir para milestone da release 2</a>
 
 Release 3 (atual) <a href="https://github.com/ResidenciaTICBrisa/T2G3-Sistema-Instalacao-Eletrica/milestone/3">Ir para milestone da release 3</a>
 ## Visão geral do produto
@@ -172,13 +172,13 @@ Vá para dentro da pasta raiz `api`:
    pip install -r requirements.txt
    ```
 
-3. Inicie o Docker, depois vá para o diretório `api/sigeie` e crie a imagem do banco de dados pela primeira vez:
+3. Inicie o Docker, depois vá para o diretório `api` e crie a imagem do banco de dados e da api pela primeira vez:
 
    ```
-   docker-compose up -d
+   docker-compose up --build
    ```
 
-4. Ainda no mesmo terminal, retorne para o diretório raiz `api` e aplique as migrações:
+4. Em outro terminal, retorne para o diretório raiz `api` e aplique as migrações:
 
    ```
    python manage.py makemigrations
@@ -187,12 +187,6 @@ Vá para dentro da pasta raiz `api`:
    ```
    python manage.py migrate
    ```
-
-5. Inicie o servidor:
-
-    ```
-    python manage.py runserver
-    ```
 
 Pronto, o servidor já está rodando com o banco de dados configurado.
 
@@ -210,7 +204,7 @@ Garanta que não haja nenhum processo que use o porto 8080, 3306 e 6379. Por fim
 - Atualizar as dependências, fazer as migrações e iniciar o servidor:
 
 ```
- source venv/bin/activate && pip install -r requirements.txt && python manage.py makemigrations && python manage.py migrate && python manage.py runserver
+ source venv/bin/activate && python manage.py makemigrations && python manage.py migrate
 ```
 
 Isso é tudo, pessoal.
