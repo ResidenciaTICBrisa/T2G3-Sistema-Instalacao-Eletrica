@@ -73,6 +73,7 @@ class _AddElectricalLoadEquipmentScreenState
   final _powerController = TextEditingController();
   final _quantityController = TextEditingController();
   final _observationsController = TextEditingController();
+
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
