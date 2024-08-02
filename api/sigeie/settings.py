@@ -20,13 +20,13 @@ INSTALLED_APPS = [
     'users',
     'places',
     'systems',
-    'equipments'
+    'equipments',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'sigeie.middleware.DisableCSRFMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -54,10 +54,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sigeie.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -75,7 +71,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://localhost:6379',
+        'LOCATION': 'redis://redis:6379',  # Mudança de localhost para redis
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -83,7 +79,6 @@ CACHES = {
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-
 SESSION_CACHE_ALIAS = 'default'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -116,9 +111,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
     ],
-    'DEFAULT_PERMISSION_CLASSES': {
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
-    }
+    ]
 }
 
 CORS_ALLOW_CREDENTIALS = True
@@ -136,4 +131,3 @@ EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
 EMAIL_HOST_USER = '1ae45caf98a722'
 EMAIL_HOST_PASSWORD = 'c6aa9de24a4720'
 EMAIL_PORT = '465'
-
