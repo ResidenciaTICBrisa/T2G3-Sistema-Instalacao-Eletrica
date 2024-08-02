@@ -1,3 +1,4 @@
+import 'package:url_launcher/link.dart';
 import 'package:flutter/material.dart';
 import 'package:sige_ie/Teams/teams.dart';
 import 'package:sige_ie/config/app_styles.dart';
@@ -158,77 +159,25 @@ class _HomePageState extends State<HomePage> {
                         return AlertDialog(
                           title:
                               const Text('Informações sobre o Projeto Sigeie'),
-                          content: const SingleChildScrollView(
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text:
-                                        'A criação do aplicativo Sigeie foi um esforço colaborativo de uma equipe dedicada de profissionais, cada um trazendo sua expertise para garantir o sucesso do projeto. Aqui está uma descrição detalhada da participação de cada membro, conforme a organização da equipe:\n\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '1. Loana Nunes Velasco - Cliente do Projeto\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '- Loana, docente do curso de Engenharia de Energia, atuou como cliente do projeto. Ela foi responsável por validar as entregas, garantindo que as necessidades e expectativas dos usuários finais fossem claramente comunicadas à equipe.\n\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '2. Pedro Lucas - Desenvolvedor Backend (Engenharia de Software)\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '- Pedro Lucas foi responsável por codificar o backend e configurar a infraestrutura necessária para o funcionamento do aplicativo. Ele contou com a colaboração de Kauan Jose e Oscar de Brito para garantir que o backend fosse seguro e escalável.\n\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '3. Danilo de Melo Ribeiro - Desenvolvedor Frontend e UX Design (Engenharia de Software)\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '- Danilo trabalhou no desenvolvimento do frontend do aplicativo, codificando a interface e realizando a integração com o backend. Ele projetou a interface do usuário, criou protótipos e realizou entrevistas com os clientes para garantir que o design fosse intuitivo e atendesse às necessidades dos usuários. Ele colaborou com Ramires Rocha e Pedro Lucas para construir uma interface responsiva e interativa.\n\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '4. Oscar de Brito - Analista de Requisitos (Engenharia de Software)\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '- Oscar levantou os requisitos do projeto, gerenciou a documentação e validou as especificações com o cliente. Ele contou com a colaboração de Ramires Rocha e Pedro Lucas para garantir que todos os requisitos fossem compreendidos e implementados corretamente.\n\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '5. Kauan Jose - Colaborador Backend (Engenharia de Software)\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '- Kauan colaborou no desenvolvimento do backend, fornecendo suporte essencial para Pedro Lucas. Ele ajudou a configurar a infraestrutura e garantir que o backend funcionasse de maneira eficiente e segura.\n\n',
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '6. Ramires Rocha - Colaborador Frontend (Engenharia Eletrônica)\n',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        '- Ramires colaborou no desenvolvimento do frontend, fornecendo suporte para Danilo de Melo Ribeiro. Ele ajudou a implementar funcionalidades e garantir que a interface fosse responsiva e interativa.\n\n',
-                                  ),
-                                ],
-                              ),
-                              style: TextStyle(fontSize: 16),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const Text(
+                                    'Para saber mais sobre o projeto e seus desenvolvedores, acesse o link:'),
+                                Link(
+                                  uri: Uri.parse(
+                                      'https://residenciaticbrisa.github.io/T2G3-Sistema-Instalacao-Eletrica/'),
+                                  target: LinkTarget.blank,
+                                  builder:
+                                      (BuildContext ctx, FollowLink? openLink) {
+                                    return TextButton.icon(
+                                      onPressed: openLink,
+                                      label: const Text('Landing Page Sigeie'),
+                                      icon: const Icon(Icons.link),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                           actions: <Widget>[

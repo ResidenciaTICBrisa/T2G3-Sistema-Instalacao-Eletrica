@@ -529,7 +529,7 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de linha elétrica',
+                  const Text('Tipos de instalações elétricas',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -540,7 +540,8 @@ class _AddEquipmentScreenState extends State<AddElectricalLineScreen> {
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de linha elétrica',
+                                  'name':
+                                      'Selecione o tipo de instalação elétrica',
                                   'id': -1,
                                   'type': -1
                                 }

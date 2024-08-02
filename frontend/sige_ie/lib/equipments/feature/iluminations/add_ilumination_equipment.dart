@@ -419,6 +419,10 @@ class _AddIlluminationScreenState extends State<AddIluminationEquipmentScreen> {
     final IluminationRequestModel iluminationModel = IluminationRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: null,
+      format: '',
+      power: null,
+      tecnology: '',
     );
 
     final IluminationEquipmentRequestModel iluminationEquipmentDetail =
@@ -538,7 +542,7 @@ class _AddIlluminationScreenState extends State<AddIluminationEquipmentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamento',
+                  const Text('Tipos de iluminação',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -549,7 +553,7 @@ class _AddIlluminationScreenState extends State<AddIluminationEquipmentScreen> {
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de equipamento',
+                                  'name': 'Selecione o tipo de iluminação',
                                   'id': -1,
                                   'type': -1
                                 }

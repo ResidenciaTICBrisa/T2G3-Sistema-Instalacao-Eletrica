@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_response_model.dart';
+import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/structured_cabling/structured_cabling_service.dart';
 import 'package:sige_ie/equipments/feature/structured_cabling/add_structured_cabling.dart';
 
@@ -25,18 +25,19 @@ class ListStructuredCabling extends StatefulWidget {
 }
 
 class _ListStructuredCablingState extends State<ListStructuredCabling> {
-  late Future<List<StructuredCablingEquipmentResponseModel>> _equipmentList;
+  late Future<List<StructuredCablingEquipmentResponseByAreaModel>>
+      _structuredCablingList;
   final StructuredCablingEquipmentService _service =
       StructuredCablingEquipmentService();
 
-  // Chave global para ScaffoldMessenger
   final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     super.initState();
-    _equipmentList = _service.getStructuredCablingListByArea(widget.areaId);
+    _structuredCablingList =
+        _service.getStructuredCablingListByArea(widget.areaId);
   }
 
   void navigateToAddEquipment(BuildContext context) {
@@ -54,15 +55,30 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
     );
   }
 
-  void _editEquipment(BuildContext context, int equipmentId) {
-    // Implement the logic to edit the equipment
+  void _editEquipment(BuildContext context, int structuredCablingId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddStructuredCabling(
+          areaName: widget.areaName,
+          systemId: widget.systemId,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
+          structuredCablingId: structuredCablingId,
+          isEdit: true,
+        ),
+      ),
+    );
   }
 
-  Future<void> _deleteEquipment(BuildContext context, int equipmentId) async {
+  Future<void> _deleteEquipment(
+      BuildContext context, int structuredCablingId) async {
     try {
-      await _service.deleteStructuredCabling(equipmentId);
+      await _service.deleteStructuredCabling(structuredCablingId);
       setState(() {
-        _equipmentList = _service.getStructuredCablingListByArea(widget.areaId);
+        _structuredCablingList =
+            _service.getStructuredCablingListByArea(widget.areaId);
       });
       _scaffoldMessengerKey.currentState?.showSnackBar(
         const SnackBar(
@@ -80,7 +96,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
     }
   }
 
-  void _confirmDelete(BuildContext context, int equipmentId) {
+  void _confirmDelete(BuildContext context, int structuredCablingId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -99,7 +115,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
               child: const Text('Excluir'),
               onPressed: () {
                 Navigator.of(context).pop();
-                _deleteEquipment(context, equipmentId);
+                _deleteEquipment(context, structuredCablingId);
               },
             ),
           ],
@@ -158,8 +174,9 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
                 ),
               ),
               const SizedBox(height: 20),
-              FutureBuilder<List<StructuredCablingEquipmentResponseModel>>(
-                future: _equipmentList,
+              FutureBuilder<
+                  List<StructuredCablingEquipmentResponseByAreaModel>>(
+                future: _structuredCablingList,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -171,7 +188,7 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
-                        var equipment = snapshot.data![index];
+                        var structuredCabling = snapshot.data![index];
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
@@ -183,10 +200,11 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             title: Text(
-                              equipment.equipmentCategory,
+                              structuredCabling.equipmentCategory,
                               style: const TextStyle(
-                                  color: AppColors.lightText,
-                                  fontWeight: FontWeight.bold),
+                                color: AppColors.lightText,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -194,14 +212,14 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
                                 IconButton(
                                   icon: const Icon(Icons.edit,
                                       color: Colors.blue),
-                                  onPressed: () =>
-                                      _editEquipment(context, equipment.id),
+                                  onPressed: () => _editEquipment(
+                                      context, structuredCabling.id),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete,
                                       color: Colors.red),
-                                  onPressed: () =>
-                                      _confirmDelete(context, equipment.id),
+                                  onPressed: () => _confirmDelete(
+                                      context, structuredCabling.id),
                                 ),
                               ],
                             ),
@@ -216,9 +234,10 @@ class _ListStructuredCablingState extends State<ListStructuredCabling> {
                         child: Text(
                           'Nenhum equipamento encontrado.',
                           style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
                     );

@@ -427,6 +427,13 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
     final DistributionRequestModel distributionModel = DistributionRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: null,
+      power: '',
+      dr: true,
+      dps: true,
+      grounding: true,
+      typeMaterial: '',
+      methodInstallation: '',
     );
 
     final DistributionEquipmentRequestModel distributionEquipmentDetail =
@@ -434,12 +441,6 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
       genericEquipmentCategory: genericEquipmentCategory,
       personalEquipmentCategory: personalEquipmentCategory,
       distributionRequestModel: distributionModel,
-      power: _powerController.text,
-      dr: _dr,
-      dps: _dps,
-      grounding: _grounding,
-      typeMaterial: _typeMaterialController.text,
-      methodInstallation: _methodInstallationController.text,
     );
 
     int? equipmentId =
@@ -564,7 +565,7 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de equipamento',
+                  const Text('Tipos de quadros de distribuição',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -575,7 +576,8 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de equipamento',
+                                  'name':
+                                      'Selecione o tipo de quadro de distribuição',
                                   'id': -1,
                                   'type': -1
                                 }

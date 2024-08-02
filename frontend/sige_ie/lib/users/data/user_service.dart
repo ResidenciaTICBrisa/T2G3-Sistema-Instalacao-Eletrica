@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
+import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/users/data/user_request_model.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
@@ -11,7 +12,7 @@ import 'package:sige_ie/users/data/user_response_model.dart';
 class UserService {
   final Logger _logger = Logger('UserService');
   Future<bool> register(UserRequestModel userRequestModel) async {
-    var url = Uri.parse('http://10.0.2.2:8000/api/users/');
+    var url = Uri.parse('$urlUniversal/api/users/');
 
     var response = await http.post(
       url,
@@ -26,7 +27,7 @@ class UserService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
+    var url = Uri.parse('$urlUniversal/api/users/$id/');
     try {
       var response = await client.put(url,
           headers: {'Content-Type': 'application/json'},
@@ -49,7 +50,7 @@ class UserService {
       interceptors: [AuthInterceptor(cookieJar)],
     );
 
-    var url = Uri.parse('http://10.0.2.2:8000/api/users/$id/');
+    var url = Uri.parse('$urlUniversal/api/users/$id/');
     try {
       var response = await client
           .delete(url, headers: {'Content-Type': 'application/json'});
@@ -70,7 +71,7 @@ class UserService {
 
     try {
       final response =
-          await client.get(Uri.parse('http://10.0.2.2:8000/api/userauth'));
+          await client.get(Uri.parse('$urlUniversal/api/userauth'));
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);

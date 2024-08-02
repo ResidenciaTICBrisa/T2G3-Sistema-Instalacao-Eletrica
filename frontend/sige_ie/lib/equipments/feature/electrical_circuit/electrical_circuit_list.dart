@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_service.dart';
 import 'package:sige_ie/equipments/feature/electrical_circuit/add_electrical_circuit.dart';
 
@@ -37,11 +38,11 @@ class _ListCircuitEquipmentState extends State<ListCircuitEquipment> {
 
   Future<void> fetchEquipmentList() async {
     try {
-      final List<String> equipmentList =
+      final List<EletricalCircuitEquipmentResponseByAreaModel> equipmentList =
           await _service.getEletricalCircuitListByArea(widget.areaId);
       if (mounted) {
         setState(() {
-          this.equipmentList = equipmentList;
+          /* this.equipmentList = equipmentList; */
           isLoading = false;
         });
       }

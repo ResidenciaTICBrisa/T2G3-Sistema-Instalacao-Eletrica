@@ -28,23 +28,26 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-    flutter:
-        sdk: flutter
-    shared_preferences: ^2.0.15
-    video_player: ^2.2.14
-    http: ^0.13.4
-    cookie_jar: ^4.0.8
-    http_interceptor: ^1.0.1
-    image_picker: ^0.8.5
-    mime: ^1.0.0
-    http_parser: ^4.0.2
-    cupertino_icons: ^1.0.6
-    get: ^4.6.5
-    google_maps_flutter: ^2.0.6
-    geolocator: ^9.0.2
-    logger: ^1.0.0
-    logging: ^1.2.0
-    path_provider: ^2.0.2
+  flutter:
+    sdk: flutter
+  url_launcher: ^6.0.20  # Ou a versão mais recente disponível
+  shared_preferences: ^2.0.15  # Ou a versão mais recente
+  video_player: ^2.2.14  # Ou a versão mais recente
+  http: ^0.13.6  # Ou a versão mais recente
+  cookie_jar: ^4.0.8  # Ou a versão mais recente
+  http_interceptor: ^1.0.2  # Ou a versão mais recente
+  image_picker: ^0.8.9  # Ou a versão mais recente
+  mime: ^1.0.0  # Ou a versão mais recente
+  http_parser: ^4.0.2  # Ou a versão mais recente
+  cupertino_icons: ^1.0.6  # Ou a versão mais recente
+  get: ^4.6.5  # Ou a versão mais recente
+  google_maps_flutter: ^2.6.1  # Ou a versão mais recente
+  geolocator: ^9.0.2  # Ou a versão mais recente
+  logger: ^1.4.0  # Ou a versão mais recente
+  logging: ^1.2.0  # Ou a versão mais recente
+  path_provider: ^2.0.2  # Ou a versão mais recente
+
+
 
 
 dev_dependencies:

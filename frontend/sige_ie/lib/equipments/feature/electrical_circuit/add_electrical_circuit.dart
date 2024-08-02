@@ -438,6 +438,9 @@ class _AddElectricalCircuitEquipmentScreenState
         EletricalCircuitRequestModel(
       area: widget.areaId,
       system: widget.systemId,
+      quantity: null,
+      size: null,
+      isolamento: '',
     );
 
     final EletricalCircuitEquipmentRequestModel

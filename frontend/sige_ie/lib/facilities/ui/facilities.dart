@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/areas/data/area_request_model.dart';
 import 'package:sige_ie/areas/data/area_response_model.dart';
+import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
 import 'package:sige_ie/places/data/place_response_model.dart';
 import 'package:sige_ie/places/data/place_service.dart';
@@ -370,8 +371,8 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
   }
 
   Future<void> _exportToPDF(int placeId) async {
-    final response = await http
-        .get(Uri.parse('http://10.0.2.2:8000/api/places/$placeId/report'));
+    final response =
+        await http.get(Uri.parse('$urlUniversal/api/places/$placeId/report'));
 
     if (response.statusCode == 200) {
       final directory = await getApplicationDocumentsDirectory();
@@ -411,7 +412,7 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
               children: <Widget>[
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 20),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                   decoration: const BoxDecoration(
                     color: AppColors.sigeIeBlue,
                     borderRadius:

@@ -1,7 +1,7 @@
-class DistributionResponseModel {
+class DistributionEquipmentResponseByAreaModel {
   int id;
   int area;
-  int equipment;
+  String equipmentCategory;
   int system;
   int quantity;
   String? power;
@@ -11,10 +11,10 @@ class DistributionResponseModel {
   String? typeMaterial;
   String? methodInstallation;
 
-  DistributionResponseModel(
+  DistributionEquipmentResponseByAreaModel(
       {required this.id,
       required this.area,
-      required this.equipment,
+      required this.equipmentCategory,
       required this.system,
       required this.quantity,
       required this.power,
@@ -24,11 +24,12 @@ class DistributionResponseModel {
       required this.typeMaterial,
       required this.methodInstallation});
 
-  factory DistributionResponseModel.fromJson(Map<String, dynamic> json) {
-    return DistributionResponseModel(
+  factory DistributionEquipmentResponseByAreaModel.fromJson(
+      Map<String, dynamic> json) {
+    return DistributionEquipmentResponseByAreaModel(
         id: json['id'],
         area: json['area'],
-        equipment: json['equipment'],
+        equipmentCategory: json['equipment_category'],
         system: json['system'],
         quantity: json['quantity'],
         power: json['power'],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/equipments/data/refrigerations/refrigerations_response_by_area_model.dart';
 import 'package:sige_ie/equipments/data/refrigerations/refrigerations_service.dart';
 import 'package:sige_ie/equipments/feature/refrigerations/add_refrigeration.dart';
 
@@ -39,11 +40,12 @@ class _ListRefrigerationEquipmentState
 
   Future<void> fetchEquipmentList() async {
     try {
-      final List<String> equipmentList =
+      final List<RefrigerationsEquipmentResponseByAreaModel> equipmentList =
           await _service.getRefrigerationsListByArea(widget.areaId);
       if (mounted) {
         setState(() {
-          this.equipmentList = equipmentList;
+/*           this.equipmentList = equipmentList;
+ */
           isLoading = false;
         });
       }
