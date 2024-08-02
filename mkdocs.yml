@@ -39,13 +39,14 @@ nav:
   - Cronograma:
       - Cronograma: info/cronograma.md
       - Releases: 
-          - Release 1: releases/Release1.md
+          - Release 1: releases/release1.md
           - Release 2: releases/release2.md
           - Release 3: releases/release3.md
           - Release 4: releases/release4.md
   - Requisitos de  Software:
       - Épicos: info/requisitosEpicos.md
       - Features: info/requisitosFeatures.md
+      - Histórias de Usuário: info/historiasDeUsuarios.md
 
 plugins:
   - search
