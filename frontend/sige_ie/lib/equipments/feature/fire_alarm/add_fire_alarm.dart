@@ -65,6 +65,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
   final TextEditingController _quantity = TextEditingController();
+  final TextEditingController _observationsController = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
@@ -189,6 +190,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
   void dispose() {
     _quantity.dispose();
     _images.clear();
+    _observationsController.dispose();
     super.dispose();
   }
 
@@ -549,6 +551,10 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_quantity.text),
                 const SizedBox(height: 10),
+                const Text('Observações:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_observationsController.text),
+                const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
@@ -671,6 +677,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
         _images.clear();
+        _observationsController.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -709,6 +716,7 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
               _images.clear();
+              _observationsController.clear();
             });
             Navigator.pushReplacementNamed(
               context,
@@ -827,7 +835,6 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -836,7 +843,6 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
                   const Text('Quantidade',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -859,6 +865,43 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
                       ),
                       onChanged: (value) {
                         print('Quantity changed: $value');
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Observações',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _observationsController,
+                      maxLines: 3,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText:
+                            'Digite suas observações aqui (máx 500 caracteres)',
+                      ),
+                      buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          required bool isFocused,
+                          required int? maxLength}) {
+                        return Text(
+                          '$currentLength / $maxLength',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: currentLength > maxLength!
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                        );
                       },
                     ),
                   ),
