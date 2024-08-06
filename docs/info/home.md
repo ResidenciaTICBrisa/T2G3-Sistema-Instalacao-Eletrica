@@ -1,5 +1,7 @@
 <h1 align="center">SIGE IE </h1>
-
+<p align="center">
+  <img src="../../assets/logo.png" alt="Logo" style="border-radius: 100%" width="200px">
+</p>
 
 
 <br>
