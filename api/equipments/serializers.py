@@ -120,7 +120,7 @@ class FireAlarmEquipmentResponseSerializer(ValidateAreaMixin, EquipmentCategoryM
 
     class Meta:
         model = FireAlarmEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'quantity', 'observation']
 
 
 class AtmosphericDischargeEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -128,7 +128,7 @@ class AtmosphericDischargeEquipmentResponseSerializer(EquipmentCategoryMixin, se
 
     class Meta:
         model = AtmosphericDischargeEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'quantity', 'observation']
 
 
 class StructuredCablingEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -136,7 +136,7 @@ class StructuredCablingEquipmentResponseSerializer(EquipmentCategoryMixin, seria
 
     class Meta:
         model = StructuredCablingEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'quantity', 'observation']
 
 
 class DistributionBoardEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -144,7 +144,7 @@ class DistributionBoardEquipmentResponseSerializer(EquipmentCategoryMixin, seria
 
     class Meta:
         model = DistributionBoardEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'power', 'dr', 'dps', 'grounding', 'type_material', 'method_installation', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'power', 'dr', 'dps', 'grounding', 'type_material', 'method_installation', 'quantity', 'observation']
 
 
 class ElectricalCircuitEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -152,7 +152,7 @@ class ElectricalCircuitEquipmentResponseSerializer(EquipmentCategoryMixin, seria
 
     class Meta:
         model = ElectricalCircuitEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'size', 'isolament', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'size', 'type_wire', 'type_circuit_breaker', 'observation']
 
 
 class ElectricalLineEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -160,7 +160,7 @@ class ElectricalLineEquipmentResponseSerializer(EquipmentCategoryMixin, serializ
 
     class Meta:
         model = ElectricalLineEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'quantity', 'observation']
 
 
 class ElectricalLoadEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -168,7 +168,7 @@ class ElectricalLoadEquipmentResponseSerializer(EquipmentCategoryMixin, serializ
 
     class Meta:
         model = ElectricalLoadEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'quantity', 'observation']
 
 
 class IluminationEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -176,7 +176,7 @@ class IluminationEquipmentResponseSerializer(EquipmentCategoryMixin, serializers
 
     class Meta:
         model = IluminationEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'quantity', 'observation']
 
 
 class RefrigerationEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):
@@ -184,7 +184,7 @@ class RefrigerationEquipmentResponseSerializer(EquipmentCategoryMixin, serialize
 
     class Meta:
         model = RefrigerationEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'power', 'quantity']
+        fields = ['id', 'area', 'equipment_category', 'system', 'power', 'quantity', 'observation']
 
 
 class EquipmentSerializer(serializers.ModelSerializer):

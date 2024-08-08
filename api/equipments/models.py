@@ -47,7 +47,6 @@ class EquipmentPhoto(models.Model):
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
     description = models.CharField(max_length=50, null=True)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True, related_name="ephoto")
-    observation = models.CharField(max_length=300, null=True)
 
 
     def __str__(self):
