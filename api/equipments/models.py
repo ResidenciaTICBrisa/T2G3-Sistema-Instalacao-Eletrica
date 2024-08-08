@@ -106,8 +106,8 @@ class ElectricalCircuitEquipment(models.Model):
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
     size = models.IntegerField(default=0)
-    type_wire = models.CharField(max_length=80)
-    type_circuit_breaker = models.CharField(max_length=80)
+    type_wire = models.CharField(max_length=80, null=True)
+    type_circuit_breaker = models.CharField(max_length=80, null=True)
     observation = models.CharField(max_length=300, null=True)
 
     class Meta:
