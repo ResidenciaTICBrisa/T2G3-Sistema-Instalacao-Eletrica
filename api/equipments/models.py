@@ -46,7 +46,8 @@ class Equipment(models.Model):
 class EquipmentPhoto(models.Model):
     photo = models.ImageField(null=True, upload_to='equipment_photos/')
     description = models.CharField(max_length=50, null=True)
-    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True, related_name="ephoto")
+
 
     def __str__(self):
         return self.description
@@ -63,6 +64,8 @@ class IluminationEquipment(models.Model):
     tecnology = models.CharField(max_length=30, default=None)
     format = models.CharField(max_length=30, default=None)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
 
     class Meta:
@@ -77,6 +80,8 @@ class ElectricalLoadEquipment(models.Model):
     model = models.CharField(max_length=50, default=None)
     power = models.IntegerField(default=0)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
 
     class Meta:
@@ -88,6 +93,8 @@ class ElectricalLineEquipment(models.Model):
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=3)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
     class Meta:
         db_table = 'equipments_electrical_lines'
@@ -98,8 +105,9 @@ class ElectricalCircuitEquipment(models.Model):
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
     size = models.IntegerField(default=0)
-    isolament = models.CharField(max_length=30, default=None)
-    quantity = models.IntegerField(default=0)
+    type_wire = models.CharField(max_length=80, null=True)
+    type_circuit_breaker = models.CharField(max_length=80, null=True)
+    observation = models.CharField(max_length=300, null=True)
 
     class Meta:
         db_table = 'equipments_electrical_circuits'
@@ -116,6 +124,8 @@ class DistributionBoardEquipment(models.Model):
     type_material = models.CharField(max_length=30, null=True)
     method_installation = models.CharField(max_length=50, null=True)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
 
     class Meta:
@@ -127,6 +137,8 @@ class StructuredCablingEquipment(models.Model):
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=6)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
     class Meta:
         db_table = 'equipments_structured_cabling'
@@ -137,6 +149,8 @@ class AtmosphericDischargeEquipment(models.Model):
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True)
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=7)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
     class Meta:
         db_table = 'equipments_atmospheric_discharges'
@@ -147,6 +161,8 @@ class FireAlarmEquipment(models.Model):
     equipment = models.OneToOneField(Equipment, on_delete=models.CASCADE, null=True, related_name="fire_alarm")
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
     class Meta:
         db_table = 'equipments_fire_alarms'
@@ -158,6 +174,8 @@ class RefrigerationEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=9)
     power = models.IntegerField(default=0)
     quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
 
     class Meta:
         db_table = 'equipments_refrigeration'
