@@ -108,7 +108,14 @@ class DistributionBoardEquipment(models.Model):
     dps = models.BooleanField(default=False)
     grounding = models.BooleanField(default=False)
     type_material = models.CharField(max_length=30, null=True)
+<<<<<<< Updated upstream
     method_installation = models.CharField(max_length=50, null=True)
+=======
+    method_installation = models.CharField(max_length=150, null=True)
+    quantity = models.IntegerField(default=0)
+    observation = models.CharField(max_length=300, null=True)
+
+>>>>>>> Stashed changes
 
 
     class Meta:

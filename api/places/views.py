@@ -12,8 +12,17 @@ from rest_framework.exceptions import NotFound
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+from reportlab.lib.colors import black,red
 from .models import Place, Area
 from .serializers import PlaceSerializer, AreaSerializer
+from weasyprint import HTML
+from django.templatetags.static import static
+from django.template.loader import render_to_string
+from PyPDF2 import PdfReader, PdfWriter
+from io import BytesIO
+from datetime import datetime
+import pytz
+
 
 
 def get_place_owner_or_create(user):
@@ -220,19 +229,6 @@ class GrantAccessViewSet(viewsets.ViewSet):
         return Response({'message': 'Access granted successfully'}, status=status.HTTP_200_OK)
 
 
-class Altura:
-    def __init__(self):
-        self.alt = 840
-
-    def get_alt(self, p, margin=30):
-        self.alt -= 40
-        if self.alt < margin:
-            p.showPage()
-            self.alt = 800
-            return self.alt
-        return self.alt
-
-
 def genericOrPersonal(system):
     if system.equipment.generic_equipment_category is not None:
         return system.equipment.generic_equipment_category
@@ -240,85 +236,183 @@ def genericOrPersonal(system):
         return system.equipment.personal_equipment_category
 
 
-class GeneratePDFView(APIView):
-    permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
-
+class PDFView(APIView):
+    permission_classes = [IsAuthenticated, IsPlaceOwner or IsPlaceEditor]
     def get(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-
         self.check_object_permissions(request, place)
 
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="place_{place.id}_report.pdf"'
-
-        p = canvas.Canvas(response, pagesize=A4)
-        alt = Altura()
-
-        p.setFont('Helvetica-Bold', 16)
-
-        p.drawString(205, alt.get_alt(p), f"Relatório do Local: {place.name}")
-
-        p.setFont('Helvetica-Bold', 14)
-        p.drawString(100, alt.get_alt(p), "Áreas:")
-
+        timezone = pytz.timezone('America/Sao_Paulo')
+        report_data = {
+            'report_date': f'{datetime.now(timezone).strftime("%d/%m/%Y")}',
+            'summary': f'Este relatório cobre as instalações elétricas do local: {place.name}',
+            'installations': [],
+            'generated_by': f'{request.user}'
+        }
+    
         for area in place.areas.all():
-            p.setFont('Helvetica-Bold', 14)
-            p.drawString(120, alt.get_alt(p), f"Relatório da Área: {area.name}")
-
             for system in area.fire_alarm_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({'image_url': image.photo.url, 'description': image.description})
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'observation': f'{system.observation}',
+                })
 
             for system in area.atmospheric_discharge_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.atmospheric_discharge_equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos
+                })
 
             for system in area.structured_cabling_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}'
+                })
 
             for system in area.distribution_board_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'power': f'{system.power}',
+                    'dr': f'{"Sim" if system.dr else "Não"}',
+                    'dps': f'{"Sim" if system.dps else "Não"}',
+                    'grounding': f'{"Sim" if system.grounding else "Não"}',
+                    'type_material': f'{system.type_material}',
+                    'method_installation': f'{system.method_installation}',
+                    'quantity': f'{system.quantity}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.electrical_circuit_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'size': f'{system.size}',
+                    'type_wire': f'{system.type_wire}',
+                    'type_circuit_breaker': f'{system.type_circuit_breaker}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.electrical_line_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.electrical_load_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'power': f'{system.power}',
+                    'brand': f'{system.brand}',
+                    'model': f'{system.model}',
+                    'observation': f'{system.observation}'                                    
+                })
 
             for system in area.ilumination_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'sistema': f'{system.system}',
+                    'tipo': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'power': f'{system.power}',
+                    'tecnology': f'{system.tecnology}',
+                    'format': f'{system.format}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.refrigeration_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'sistema': f'{system.system}',
+                    'tipo': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'power': f'{system.power}',
+                    'observation': f'{system.observation}'
+                    
+                })
+    
+        # Renderizar o template HTML com os dados do relatório
+        html_content = render_to_string('html/index.html', report_data)
 
-        p.showPage()
-        p.save()
+        # Gerar o PDF a partir do HTML renderizado
+        pdf1 = HTML(string=html_content).write_pdf()
+
+        # Retorna o PDF como uma resposta HTTP
+        response = HttpResponse(pdf1, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="relatorio.pdf"'
+        
         return response
