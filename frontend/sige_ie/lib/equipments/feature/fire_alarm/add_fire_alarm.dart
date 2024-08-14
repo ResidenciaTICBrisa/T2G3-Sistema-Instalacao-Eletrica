@@ -95,7 +95,10 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         setState(() {
           equipmentId = fireAlarmResponseModel!.equipment;
           _quantity.text = fireAlarmResponseModel!.quantity.toString();
+          _observationsController.text =
+              fireAlarmResponseModel!.observation ?? '';
           print('Loaded quantity: ${_quantity.text}');
+          print('Loaded observations: ${_observationsController.text}');
         });
 
         _fetchEquipmentDetails(fireAlarmResponseModel!.equipment);
@@ -172,18 +175,20 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         await personalEquipmentCategoryService
             .getAllPersonalEquipmentCategoryBySystem(widget.systemId);
 
-    setState(() {
-      genericEquipmentTypes = genericEquipmentCategoryList
-          .map((e) => {'id': e.id, 'name': e.name, 'type': 'generico'})
-          .toList();
-      personalEquipmentTypes = personalEquipmentCategoryList
-          .map((e) => {'id': e.id, 'name': e.name, 'type': 'pessoal'})
-          .toList();
-      personalEquipmentMap = {
-        for (var equipment in personalEquipmentCategoryList)
-          equipment.name: equipment.id
-      };
-    });
+    if (mounted) {
+      setState(() {
+        genericEquipmentTypes = genericEquipmentCategoryList
+            .map((e) => {'id': e.id, 'name': e.name, 'type': 'generico'})
+            .toList();
+        personalEquipmentTypes = personalEquipmentCategoryList
+            .map((e) => {'id': e.id, 'name': e.name, 'type': 'pessoal'})
+            .toList();
+        personalEquipmentMap = {
+          for (var equipment in personalEquipmentCategoryList)
+            equipment.name: equipment.id
+        };
+      });
+    }
   }
 
   @override
@@ -330,6 +335,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
         area: widget.areaId,
         system: widget.systemId,
         quantity: int.tryParse(_quantity.text),
+        observation: _observationsController.text.isNotEmpty
+            ? _observationsController.text
+            : null,
       );
 
       print('Fire Alarm Model: ${fireAlarmModel.toJson()}');
@@ -626,6 +634,9 @@ class _AddEquipmentScreenState extends State<AddFireAlarm> {
       area: widget.areaId,
       system: widget.systemId,
       quantity: int.tryParse(_quantity.text),
+      observation: _observationsController.text.isNotEmpty
+          ? _observationsController.text
+          : null,
     );
 
     final FireAlarmEquipmentRequestModel fireAlarmEquipmentDetail =

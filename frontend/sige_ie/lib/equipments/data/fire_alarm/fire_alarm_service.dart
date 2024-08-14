@@ -28,13 +28,18 @@ class FireAlarmEquipmentService {
             .map((data) => FireAlarmEquipmentResponseByAreaModel.fromJson(data))
             .toList();
       } else {
-        _logger.info(
-            'Failed to load fire alarm equipment with status code: ${response.statusCode}');
+        String errorMessage =
+            'Failed to load fire alarm equipment. Status code: ${response.statusCode}';
+        if (response.statusCode == 404) {
+          errorMessage = 'Fire alarm equipment not found for areaId $areaId';
+        }
+        _logger.warning(errorMessage);
         _logger.info('Response body: ${response.body}');
-        throw Exception('Failed to load fire alarm equipment');
+        throw Exception(errorMessage);
       }
     } catch (e) {
-      _logger.info('Error during get fire alarm equipment list: $e');
+      _logger
+          .severe('Error during get fire alarm equipment list from $url: $e');
       throw Exception('Failed to load fire alarm equipment');
     }
   }
