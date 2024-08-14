@@ -7,7 +7,6 @@ import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/eletrical_line/eletrical_line_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/eletrical_line/eletrical_line_request_model.dart';
 import 'package:sige_ie/equipments/data/equipment_service.dart';
-
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';

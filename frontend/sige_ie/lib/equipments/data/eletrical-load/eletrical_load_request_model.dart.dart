@@ -5,6 +5,7 @@ class EletricalLoadRequestModel {
   double? power;
   String? brand;
   String? model;
+  String? observation;
 
   EletricalLoadRequestModel(
       {required this.area,
@@ -12,7 +13,8 @@ class EletricalLoadRequestModel {
       required this.quantity,
       required this.power,
       required this.brand,
-      required this.model});
+      required this.model,
+      required this.observation});
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,7 +23,8 @@ class EletricalLoadRequestModel {
       'quantity': quantity,
       'power': power,
       'brand': brand,
-      'model': model
+      'model': model,
+      'observation': observation
     };
   }
 }
