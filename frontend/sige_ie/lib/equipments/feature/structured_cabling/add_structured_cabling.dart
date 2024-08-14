@@ -68,6 +68,7 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
   final TextEditingController _quantity = TextEditingController();
+  final TextEditingController _observationsController = TextEditingController();
   String? _selectedType;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
@@ -97,6 +98,8 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
         setState(() {
           equipmentId = structuredCablingResponseModel!.equipment;
           _quantity.text = structuredCablingResponseModel!.quantity.toString();
+          _observationsController.text =
+              structuredCablingResponseModel!.observation ?? '';
           print('Loaded quantity: ${_quantity.text}');
         });
 
@@ -191,6 +194,7 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
   @override
   void dispose() {
     _quantity.dispose();
+    _observationsController.dispose();
     _images.clear();
     super.dispose();
   }
@@ -335,6 +339,9 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
         area: widget.areaId,
         system: widget.systemId,
         quantity: int.tryParse(_quantity.text),
+        observation: _observationsController.text.isNotEmpty
+            ? _observationsController.text
+            : null,
       );
 
       print('Structured Cabling Model: ${structuredCablingModel.toJson()}');
@@ -400,6 +407,7 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
           _selectedPersonalEquipmentCategoryId = null;
           _selectedGenericEquipmentCategoryId = null;
           _images.clear();
+          _observationsController.clear();
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -556,6 +564,10 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Text(_quantity.text),
                 const SizedBox(height: 10),
+                const Text('Observações:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_observationsController.text),
+                const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
@@ -628,6 +640,9 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
       area: widget.areaId,
       system: widget.systemId,
       quantity: int.tryParse(_quantity.text),
+      observation: _observationsController.text.isNotEmpty
+          ? _observationsController.text
+          : null,
     );
 
     final StructuredCablingEquipmentRequestModel
@@ -681,6 +696,7 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
         _images.clear();
+        _observationsController.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -850,7 +866,7 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 8),
                   const Text('Quantidade',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -873,6 +889,43 @@ class _AddStructuredCablingScreenState extends State<AddStructuredCabling> {
                       ),
                       onChanged: (value) {
                         print('Quantity changed: $value');
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Observações',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _observationsController,
+                      maxLines: 3,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText:
+                            'Digite suas observações aqui (máx 500 caracteres)',
+                      ),
+                      buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          required bool isFocused,
+                          required int? maxLength}) {
+                        return Text(
+                          '$currentLength / $maxLength',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: currentLength > maxLength!
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                        );
                       },
                     ),
                   ),
