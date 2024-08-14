@@ -3,6 +3,8 @@ import 'package:sige_ie/core/data/auth_service.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/users/feature/change_password.dart';
+import 'package:sige_ie/users/feature/change_username.dart'; // Import da página ChangeUsernamePage
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -139,16 +141,30 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ChangePasswordPage()),
+                          );
+                        },
                         child: const Text(
                           'Mudar senha',
                           style: TextStyle(color: Colors.blue),
                         ),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const ChangeUsernamePage()),
+                          );
+                        },
                         child: const Text(
-                          'Mudar username',
+                          'Mudar usuário',
                           style: TextStyle(color: Colors.blue),
                         ),
                       ),
