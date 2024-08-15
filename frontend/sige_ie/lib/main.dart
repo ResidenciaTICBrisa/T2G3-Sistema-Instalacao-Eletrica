@@ -1,5 +1,6 @@
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
+import 'package:sige_ie/core/feature/register/recovery_password.dart';
 import 'package:sige_ie/core/ui/first_scren.dart';
 import 'package:sige_ie/core/feature/register/register.dart';
 import 'package:sige_ie/core/ui/splash_screen.dart';
@@ -18,6 +19,8 @@ import 'package:sige_ie/equipments/feature/system_configuration.dart';
 import 'package:sige_ie/places/feature/register/new_place.dart';
 import 'package:sige_ie/areas/feature/register/new_area.dart';
 import 'package:sige_ie/equipments/feature/electrical_circuit/electrical_circuit_list.dart';
+import 'package:sige_ie/users/feature/change_password.dart';
+import 'package:sige_ie/users/feature/change_username.dart';
 import 'core/feature/login/login.dart';
 
 void main() {
@@ -47,6 +50,15 @@ class MyApp extends StatelessWidget {
           case '/registerScreen':
             return MaterialPageRoute(
                 builder: (context) => const RegisterScreen());
+          case '/PasswordRecoveryScreen':
+            return MaterialPageRoute(
+                builder: (context) => const PasswordRecoveryScreen());
+          case '/ChangePasswordScreen':
+            return MaterialPageRoute(
+                builder: (context) => const ChangePasswordScreen());
+          case '/ChangeUsernameScreen':
+            return MaterialPageRoute(
+                builder: (context) => const ChangeUsernameScreen());
           case '/homeScreen':
             if (settings.arguments is Map) {
               final args = settings.arguments as Map;
