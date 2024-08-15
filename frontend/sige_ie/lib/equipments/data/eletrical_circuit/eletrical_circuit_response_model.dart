@@ -1,20 +1,22 @@
 class EletricalCircuitResponseModel {
   int id;
   int area;
-  int equipment;
   int system;
-  int quantity;
   int size;
-  String isolament;
+  int equipment;
+  String type_wire;
+  String type_circuit_breaker;
+  String? observation;
 
   EletricalCircuitResponseModel(
       {required this.id,
       required this.area,
       required this.equipment,
       required this.system,
-      required this.quantity,
       required this.size,
-      required this.isolament});
+      required this.observation,
+      required this.type_wire,
+      required this.type_circuit_breaker});
 
   factory EletricalCircuitResponseModel.fromJson(Map<String, dynamic> json) {
     return EletricalCircuitResponseModel(
@@ -22,8 +24,9 @@ class EletricalCircuitResponseModel {
         area: json['area'],
         equipment: json['equipment'],
         system: json['system'],
-        quantity: json['quantity'],
         size: json['size'],
-        isolament: json['isolament']);
+        observation: json['observation'],
+        type_wire: json['type_wire'],
+        type_circuit_breaker: json['type_circuit_breaker']);
   }
 }

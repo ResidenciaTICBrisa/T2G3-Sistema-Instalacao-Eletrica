@@ -1,86 +1,177 @@
-import 'dart:math';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
-import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_equipment_request_model.dart';
-import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_request_model.dart';
-import 'package:sige_ie/equipments/data/equipment_service.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_response_model.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_service.dart';
+
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
+import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_response_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_service.dart';
+import 'package:sige_ie/equipments/data/equipment_service.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_equipment_request_model.dart';
+import 'package:sige_ie/equipments/data/eletrical_circuit/eletrical_circuit_request_model.dart';
 import 'package:sige_ie/shared/data/personal-equipment-category/personal_equipment_category_request_model.dart';
 import 'package:sige_ie/shared/data/personal-equipment-category/personal_equipment_category_service.dart';
 
 class ImageData {
-  File imageFile;
   int id;
+  File imageFile;
   String description;
+  bool toDelete;
 
-  ImageData(this.imageFile, this.description) : id = Random().nextInt(1000000);
+  ImageData({
+    int? id,
+    required this.imageFile,
+    required this.description,
+    this.toDelete = false,
+  }) : id = id ?? -1;
 }
 
 List<ImageData> _images = [];
-Map<int, List<ImageData>> categoryImagesMap = {};
 
-class AddElectricalCircuitEquipmentScreen extends StatefulWidget {
+class AddElectricalCircuit extends StatefulWidget {
   final String areaName;
   final String localName;
   final int localId;
   final int systemId;
   final int areaId;
+  final int? electricalCircuitId;
+  final bool isEdit;
 
-  const AddElectricalCircuitEquipmentScreen({
+  const AddElectricalCircuit({
     super.key,
     required this.areaName,
     required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
+    this.electricalCircuitId,
+    this.isEdit = false,
   });
 
   @override
-  _AddElectricalCircuitEquipmentScreenState createState() =>
-      _AddElectricalCircuitEquipmentScreenState();
+  _AddEquipmentScreenState createState() => _AddEquipmentScreenState();
 }
 
-class _AddElectricalCircuitEquipmentScreenState
-    extends State<AddElectricalCircuitEquipmentScreen> {
+class _AddEquipmentScreenState extends State<AddElectricalCircuit> {
   EquipmentService equipmentService = EquipmentService();
+  EletricalCircuitEquipmentService electricalCircuitService =
+      EletricalCircuitEquipmentService();
   EquipmentPhotoService equipmentPhotoService = EquipmentPhotoService();
   PersonalEquipmentCategoryService personalEquipmentCategoryService =
       PersonalEquipmentCategoryService();
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
-
-  final _equipmentQuantityController = TextEditingController();
-  final _breakerLocationController = TextEditingController();
-  final _breakerStateController = TextEditingController();
-  final _wireTypeController = TextEditingController();
-  final _dimensionController = TextEditingController();
-  String? _selectedTypeToDelete;
-  String? _selectCircuitType;
-  String? _newEquipmentTypeName;
+  final TextEditingController _observationsController = TextEditingController();
+  final TextEditingController _conductorSpecificationController =
+      TextEditingController();
+  final TextEditingController _gaugeController = TextEditingController();
+  String? _selectedType;
+  String? _selectedCircuitBreaker;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
   bool _isPersonalEquipmentCategorySelected = false;
-
+  String? _newEquipmentTypeName;
+  String? _selectedTypeToDelete;
+  int? equipmentId;
   List<Map<String, Object>> genericEquipmentTypes = [];
   List<Map<String, Object>> personalEquipmentTypes = [];
   Map<String, int> personalEquipmentMap = {};
+  EletricalCircuitResponseModel? electricalCircuitResponseModel;
 
   @override
   void initState() {
     super.initState();
     _fetchEquipmentCategory();
+    if (widget.isEdit && widget.electricalCircuitId != null) {
+      _initializeData(widget.electricalCircuitId!);
+    }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _fetchEquipmentCategory();
+  Future<void> _initializeData(int electricalCircuitId) async {
+    try {
+      await _fetchElectricalCircuit(electricalCircuitId);
+
+      if (electricalCircuitResponseModel != null) {
+        setState(() {
+          equipmentId = electricalCircuitResponseModel!.equipment;
+          _observationsController.text =
+              electricalCircuitResponseModel!.observation ?? '';
+          _conductorSpecificationController.text =
+              electricalCircuitResponseModel!.type_wire;
+          _gaugeController.text =
+              electricalCircuitResponseModel!.size.toString();
+          _selectedCircuitBreaker =
+              electricalCircuitResponseModel!.type_circuit_breaker;
+
+          _fetchEquipmentDetails(electricalCircuitResponseModel!.equipment);
+          _fetchExistingPhotos(electricalCircuitResponseModel!.equipment);
+        });
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  Future<void> _fetchElectricalCircuit(int electricalCircuitId) async {
+    electricalCircuitResponseModel = await electricalCircuitService
+        .getEletricalCircuitById(electricalCircuitId);
+  }
+
+  Future<void> _fetchEquipmentDetails(int equipmentId) async {
+    try {
+      final equipmentDetails =
+          await equipmentService.getEquipmentById(equipmentId);
+
+      setState(() {
+        _isPersonalEquipmentCategorySelected =
+            equipmentDetails['personal_equipment_category'] != null;
+
+        if (_isPersonalEquipmentCategorySelected) {
+          _selectedPersonalEquipmentCategoryId =
+              equipmentDetails['personal_equipment_category'];
+          _selectedType = personalEquipmentTypes.firstWhere((element) =>
+                  element['id'] == _selectedPersonalEquipmentCategoryId)['name']
+              as String;
+        } else {
+          _selectedGenericEquipmentCategoryId =
+              equipmentDetails['generic_equipment_category'];
+          _selectedType = genericEquipmentTypes.firstWhere((element) =>
+                  element['id'] == _selectedGenericEquipmentCategoryId)['name']
+              as String;
+        }
+      });
+    } catch (e) {
+      print('Erro ao buscar detalhes do equipamento: $e');
+    }
+  }
+
+  void _fetchExistingPhotos(int equipmentId) async {
+    try {
+      List<EquipmentPhotoResponseModel> photos =
+          await equipmentPhotoService.getPhotosByEquipmentId(equipmentId);
+
+      List<ImageData> imageList = [];
+
+      for (var photo in photos) {
+        File imageFile = await photo.toFile();
+        imageList.add(ImageData(
+          id: photo.id,
+          imageFile: imageFile,
+          description: photo.description ?? '',
+        ));
+      }
+
+      setState(() {
+        _images = imageList;
+      });
+    } catch (e) {
+      print('Erro ao buscar fotos existentes: $e');
+    }
   }
 
   Future<void> _fetchEquipmentCategory() async {
@@ -110,12 +201,10 @@ class _AddElectricalCircuitEquipmentScreenState
 
   @override
   void dispose() {
-    _equipmentQuantityController.dispose();
-    _breakerLocationController.dispose();
-    _breakerStateController.dispose();
-    _wireTypeController.dispose();
-    _dimensionController.dispose();
-    categoryImagesMap[widget.systemId]?.clear();
+    _images.clear();
+    _observationsController.dispose();
+    _conductorSpecificationController.dispose();
+    _gaugeController.dispose();
     super.dispose();
   }
 
@@ -132,8 +221,9 @@ class _AddElectricalCircuitEquipmentScreenState
   }
 
   void _showImageDialog(File imageFile, {ImageData? existingImage}) {
-    TextEditingController descriptionController =
-        TextEditingController(text: existingImage?.description ?? '');
+    TextEditingController descriptionController = TextEditingController(
+      text: existingImage?.description ?? '',
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -161,17 +251,17 @@ class _AddElectricalCircuitEquipmentScreenState
               child: const Text('Salvar'),
               onPressed: () {
                 setState(() {
+                  String? description = descriptionController.text.isEmpty
+                      ? null
+                      : descriptionController.text;
                   if (existingImage != null) {
-                    existingImage.description = descriptionController.text;
+                    existingImage.description = description ?? '';
                   } else {
-                    final imageData =
-                        ImageData(imageFile, descriptionController.text);
-                    final systemId = widget.systemId;
-                    if (!categoryImagesMap.containsKey(systemId)) {
-                      categoryImagesMap[systemId] = [];
-                    }
-                    categoryImagesMap[systemId]!.add(imageData);
-                    _images = categoryImagesMap[systemId]!;
+                    final imageData = ImageData(
+                      imageFile: imageFile,
+                      description: description ?? '',
+                    );
+                    _images.add(imageData);
                   }
                 });
                 Navigator.of(context).pop();
@@ -189,11 +279,11 @@ class _AddElectricalCircuitEquipmentScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Adicionar novo tipo de Circuito Elétrico'),
+          title: const Text('Adicionar novo tipo de equipamento'),
           content: TextField(
             controller: typeController,
             decoration: const InputDecoration(
-                hintText: 'Digite o novo tipo de Circuito Elétrico'),
+                hintText: 'Digite o novo tipo de equipamento'),
           ),
           actions: <Widget>[
             TextButton(
@@ -211,7 +301,7 @@ class _AddElectricalCircuitEquipmentScreenState
                   });
                   _registerPersonalEquipmentType().then((_) {
                     setState(() {
-                      _selectCircuitType = null;
+                      _selectedType = null;
                       _selectedGenericEquipmentCategoryId = null;
                       _fetchEquipmentCategory();
                     });
@@ -226,6 +316,125 @@ class _AddElectricalCircuitEquipmentScreenState
     );
   }
 
+  void _updateEquipment() async {
+    int? genericEquipmentCategory;
+    int? personalEquipmentCategory;
+
+    if (_isPersonalEquipmentCategorySelected) {
+      genericEquipmentCategory = null;
+      personalEquipmentCategory = _selectedPersonalEquipmentCategoryId;
+    } else {
+      genericEquipmentCategory = _selectedGenericEquipmentCategoryId;
+      personalEquipmentCategory = null;
+    }
+
+    final Map<String, dynamic> equipmentTypeUpdate = {
+      "generic_equipment_category": genericEquipmentCategory,
+      "personal_equipment_category": personalEquipmentCategory,
+    };
+
+    print('Equipment Type Update: $equipmentTypeUpdate');
+
+    bool typeUpdateSuccess = await equipmentService.updateEquipment(
+        equipmentId!, equipmentTypeUpdate);
+
+    if (typeUpdateSuccess) {
+      final EletricalCircuitRequestModel electricalCircuitModel =
+          EletricalCircuitRequestModel(
+        area: widget.areaId,
+        system: widget.systemId,
+        observation: _observationsController.text.isNotEmpty
+            ? _observationsController.text
+            : null,
+        size: int.tryParse(_gaugeController.text),
+        type_wire: _conductorSpecificationController.text,
+        type_circuit_breaker: _selectedCircuitBreaker ?? '',
+      );
+
+      print('Electrical Circuit Model: ${electricalCircuitModel.toJson()}');
+
+      bool electricalCircuitUpdateSuccess =
+          await electricalCircuitService.updateEletricalCircuit(
+              widget.electricalCircuitId!, electricalCircuitModel);
+
+      if (electricalCircuitUpdateSuccess) {
+        await Future.wait(_images
+            .where((imageData) => imageData.toDelete)
+            .map((imageData) async {
+          await equipmentPhotoService.deletePhoto(imageData.id);
+        }));
+
+        await Future.wait(_images
+            .where((imageData) => !imageData.toDelete)
+            .map((imageData) async {
+          if (imageData.id == -1) {
+            await equipmentPhotoService.createPhoto(
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          } else {
+            await equipmentPhotoService.updatePhoto(
+              imageData.id,
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          }
+        }));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Detalhes do equipamento atualizados com sucesso.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacementNamed(
+          context,
+          '/electricalCircuitList',
+          arguments: {
+            'areaName': widget.areaName,
+            'systemId': widget.systemId,
+            'localName': widget.localName,
+            'localId': widget.localId,
+            'areaId': widget.areaId,
+          },
+        );
+        setState(() {
+          _selectedType = null;
+          _selectedPersonalEquipmentCategoryId = null;
+          _selectedGenericEquipmentCategoryId = null;
+          _images.clear();
+          _observationsController.clear();
+          _conductorSpecificationController.clear();
+          _gaugeController.clear();
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Falha ao atualizar os detalhes do equipamento.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao atualizar o tipo do equipamento.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> _registerPersonalEquipmentType() async {
     int systemId = widget.systemId;
     PersonalEquipmentCategoryRequestModel personalEquipmentTypeRequestModel =
@@ -238,7 +447,8 @@ class _AddElectricalCircuitEquipmentScreenState
     if (id != -1) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Equipamento registrado com sucesso.'),
+          content:
+              Text('Equipamento de circuito elétrico registrado com sucesso.'),
           backgroundColor: Colors.green,
         ),
       );
@@ -253,7 +463,8 @@ class _AddElectricalCircuitEquipmentScreenState
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Falha ao registrar o equipamento.'),
+          content:
+              Text('Falha ao registrar o equipamento de circuito elétrico.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -281,7 +492,7 @@ class _AddElectricalCircuitEquipmentScreenState
       return;
     }
 
-    int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
+    int personalCategoryId = personalEquipmentMap[_selectedTypeToDelete]!;
 
     showDialog(
       context: context,
@@ -302,13 +513,14 @@ class _AddElectricalCircuitEquipmentScreenState
               onPressed: () async {
                 Navigator.of(context).pop();
                 bool success = await personalEquipmentCategoryService
-                    .deletePersonalEquipmentCategory(equipmentId);
+                    .deletePersonalEquipmentCategory(personalCategoryId);
 
                 if (success) {
                   setState(() {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
+                    _selectedType = null;
                     _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -334,12 +546,11 @@ class _AddElectricalCircuitEquipmentScreenState
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentQuantityController.text.isEmpty ||
-        _breakerLocationController.text.isEmpty ||
-        _breakerStateController.text.isEmpty ||
-        _wireTypeController.text.isEmpty ||
-        _dimensionController.text.isEmpty ||
-        (_selectCircuitType == null && _newEquipmentTypeName == null)) {
+    if (_selectedType == null &&
+        _newEquipmentTypeName == null &&
+        _selectedCircuitBreaker == null &&
+        _conductorSpecificationController.text.isEmpty &&
+        _gaugeController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Por favor, preencha todos os campos.'),
@@ -358,32 +569,30 @@ class _AddElectricalCircuitEquipmentScreenState
               children: <Widget>[
                 const Text('Tipo:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_selectCircuitType ?? _newEquipmentTypeName ?? ''),
+                Text(_selectedType ?? _newEquipmentTypeName ?? ''),
                 const SizedBox(height: 10),
-                const Text('Quantidade:',
+                const Text('Disjuntor (tipo):',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentQuantityController.text),
+                Text(_selectedCircuitBreaker ?? ''),
                 const SizedBox(height: 10),
-                const Text('Disjuntor(Local):',
+                const Text('Especificação do Condutor:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_breakerLocationController.text),
+                Text(_conductorSpecificationController.text),
                 const SizedBox(height: 10),
-                const Text('Disjuntor(Estado):',
+                const Text('Bitola:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_breakerStateController.text),
+                Text(_gaugeController.text),
                 const SizedBox(height: 10),
-                const Text('Tipo de Fio:',
+                const Text('Observações:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_wireTypeController.text),
-                const SizedBox(height: 10),
-                const Text('Dimensão:',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_dimensionController.text),
+                Text(_observationsController.text),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
-                  children: _images.map((imageData) {
+                  children: _images
+                      .where((imageData) => !imageData.toDelete)
+                      .map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: GestureDetector(
@@ -391,8 +600,12 @@ class _AddElectricalCircuitEquipmentScreenState
                             existingImage: imageData),
                         child: Column(
                           children: [
-                            Image.file(imageData.imageFile,
-                                width: 100, height: 100, fit: BoxFit.cover),
+                            Image.file(
+                              imageData.imageFile,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
                             Text(imageData.description),
                           ],
                         ),
@@ -411,9 +624,16 @@ class _AddElectricalCircuitEquipmentScreenState
               },
             ),
             TextButton(
-              child: const Text('Adicionar'),
+              child: widget.isEdit
+                  ? const Text('Atualizar')
+                  : const Text('Adicionar'),
               onPressed: () {
-                _registerEquipment();
+                if (widget.isEdit) {
+                  _updateEquipment();
+                } else {
+                  _registerEquipment();
+                }
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -438,9 +658,12 @@ class _AddElectricalCircuitEquipmentScreenState
         EletricalCircuitRequestModel(
       area: widget.areaId,
       system: widget.systemId,
-      quantity: null,
-      size: null,
-      isolamento: '',
+      observation: _observationsController.text.isNotEmpty
+          ? _observationsController.text
+          : null,
+      size: int.tryParse(_gaugeController.text),
+      type_wire: _conductorSpecificationController.text,
+      type_circuit_breaker: _selectedCircuitBreaker ?? '',
     );
 
     final EletricalCircuitEquipmentRequestModel
@@ -451,16 +674,20 @@ class _AddElectricalCircuitEquipmentScreenState
       eletricalCircuitRequestModel: electricalCircuitModel,
     );
 
-    int? equipmentId = await equipmentService
+    int? id = await equipmentService
         .createElectricalCircuit(electricalCircuitEquipmentDetail);
+    setState(() {
+      equipmentId = id;
+    });
 
-    if (equipmentId != null) {
+    if (equipmentId != null && equipmentId != 0) {
       await Future.wait(_images.map((imageData) async {
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
-            description: imageData.description,
-            equipment: equipmentId,
+            description:
+                imageData.description.isEmpty ? null : imageData.description,
+            equipment: equipmentId!,
           ),
         );
       }));
@@ -483,15 +710,13 @@ class _AddElectricalCircuitEquipmentScreenState
         },
       );
       setState(() {
-        _equipmentQuantityController.clear();
-        _breakerLocationController.clear();
-        _breakerStateController.clear();
-        _wireTypeController.clear();
-        _dimensionController.clear();
-        _selectCircuitType = null;
+        _selectedType = null;
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
         _images.clear();
+        _observationsController.clear();
+        _conductorSpecificationController.clear();
+        _gaugeController.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -501,6 +726,13 @@ class _AddElectricalCircuitEquipmentScreenState
         ),
       );
     }
+  }
+
+  Future<void> _deletePhoto(int photoId) async {
+    setState(() {
+      _images.firstWhere((imageData) => imageData.id == photoId).toDelete =
+          true;
+    });
   }
 
   @override
@@ -517,6 +749,15 @@ class _AddElectricalCircuitEquipmentScreenState
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
+            setState(() {
+              _selectedType = null;
+              _selectedPersonalEquipmentCategoryId = null;
+              _selectedGenericEquipmentCategoryId = null;
+              _images.clear();
+              _observationsController.clear();
+              _conductorSpecificationController.clear();
+              _gaugeController.clear();
+            });
             Navigator.pushReplacementNamed(
               context,
               '/electricalCircuitList',
@@ -543,12 +784,16 @@ class _AddElectricalCircuitEquipmentScreenState
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
-              child: const Center(
-                child: Text('Adicionar Circuito Elétrico',
-                    style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white)),
+              child: Center(
+                child: Text(
+                  widget.electricalCircuitId == null
+                      ? 'Adicionar Equipamento'
+                      : 'Editar Equipamento',
+                  style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
               ),
             ),
             Padding(
@@ -574,12 +819,12 @@ class _AddElectricalCircuitEquipmentScreenState
                                 }
                               ] +
                               combinedTypes,
-                          value: _selectCircuitType,
+                          value: _selectedType,
                           onChanged: (newValue) {
                             if (newValue !=
                                 'Selecione o tipo de Circuito Elétrico') {
                               setState(() {
-                                _selectCircuitType = newValue;
+                                _selectedType = newValue;
                                 Map<String, Object> selected =
                                     combinedTypes.firstWhere((element) =>
                                         element['name'] == newValue);
@@ -631,17 +876,44 @@ class _AddElectricalCircuitEquipmentScreenState
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   TextButton(
                     onPressed: () {
                       setState(() {
-                        _selectCircuitType = null;
+                        _selectedType = null;
                       });
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Quantidade',
+                  const Text('Disjuntor (tipo)',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  DropdownButton<String>(
+                    hint: const Text(
+                      'Escolha um tipo',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    value: _selectedCircuitBreaker,
+                    isExpanded: true,
+                    underline: Container(),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedCircuitBreaker = newValue;
+                      });
+                    },
+                    items: const [
+                      DropdownMenuItem<String>(
+                        value: 'Magnético',
+                        child: Text('Magnético'),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'DR',
+                        child: Text('DR'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Especificação do Condutor',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -651,7 +923,27 @@ class _AddElectricalCircuitEquipmentScreenState
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _equipmentQuantityController,
+                      controller: _conductorSpecificationController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText: 'Digite a especificação do condutor',
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Bitola',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _gaugeController,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
@@ -660,11 +952,12 @@ class _AddElectricalCircuitEquipmentScreenState
                         border: InputBorder.none,
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText: 'Digite a bitola',
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Disjuntor(Local)',
+                  const SizedBox(height: 15),
+                  const Text('Observações',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -674,73 +967,30 @@ class _AddElectricalCircuitEquipmentScreenState
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _breakerLocationController,
-                      keyboardType: TextInputType.text,
+                      controller: _observationsController,
+                      maxLines: 3,
+                      maxLength: 500,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText:
+                            'Digite suas observações aqui (máx 500 caracteres)',
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Disjuntor(Estado)',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _breakerStateController,
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Tipo de Fio',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _wireTypeController,
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  const Text('Dimensão',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _dimensionController,
-                      keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
+                      buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          required bool isFocused,
+                          required int? maxLength}) {
+                        return Text(
+                          '$currentLength / $maxLength',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: currentLength > maxLength!
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -749,7 +999,9 @@ class _AddElectricalCircuitEquipmentScreenState
                     onPressed: _pickImage,
                   ),
                   Wrap(
-                    children: _images.map((imageData) {
+                    children: _images
+                        .where((imageData) => !imageData.toDelete)
+                        .map((imageData) {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
@@ -770,10 +1022,7 @@ class _AddElectricalCircuitEquipmentScreenState
                             icon: const Icon(Icons.remove_circle,
                                 color: AppColors.warn),
                             onPressed: () {
-                              setState(() {
-                                _images.removeWhere(
-                                    (element) => element.id == imageData.id);
-                              });
+                              _deletePhoto(imageData.id);
                             },
                           ),
                         ],
@@ -795,9 +1044,11 @@ class _AddElectricalCircuitEquipmentScreenState
                             borderRadius: BorderRadius.circular(10),
                           ))),
                       onPressed: _showConfirmationDialog,
-                      child: const Text(
-                        'ADICIONAR EQUIPAMENTO',
-                        style: TextStyle(
+                      child: Text(
+                        widget.isEdit
+                            ? 'ATUALIZAR EQUIPAMENTO'
+                            : 'ADICIONAR EQUIPAMENTO',
+                        style: const TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -816,12 +1067,12 @@ class _AddElectricalCircuitEquipmentScreenState
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Excluir tipo de Circuito Elétrico'),
+          title: const Text('Excluir tipo de equipamento'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Selecione um tipo de Circuito Elétrico para excluir:',
+                'Selecione um equipamento para excluir:',
                 textAlign: TextAlign.center,
               ),
               StatefulBuilder(
@@ -884,20 +1135,23 @@ class _AddElectricalCircuitEquipmentScreenState
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: DropdownButton<String>(
-        hint: Text(items.first['name'] as String,
+        hint: Text(
+            items.isNotEmpty
+                ? items.first['name'] as String
+                : 'Selecione uma opção',
             style: const TextStyle(color: Colors.grey)),
-        value: value,
+        value: items.any((item) => item['name'] == value) ? value : null,
         isExpanded: true,
         underline: Container(),
         onChanged: enabled ? onChanged : null,
-        items: items.map<DropdownMenuItem<String>>((Map<String, Object> value) {
+        items: items.map<DropdownMenuItem<String>>((Map<String, Object> item) {
           return DropdownMenuItem<String>(
-            value: value['name'] as String,
-            enabled: value['name'] != 'Selecione o tipo de Circuito Elétrico',
+            value: item['name'] as String,
+            enabled: item['name'] != 'Escolha um tipo',
             child: Text(
-              value['name'] as String,
+              item['name'] as String,
               style: TextStyle(
-                color: value['name'] == 'Selecione o tipo de Circuito Elétrico'
+                color: item['name'] == 'Escolha um tipo'
                     ? Colors.grey
                     : Colors.black,
               ),
