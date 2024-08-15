@@ -10,4 +10,5 @@ router.register(r'refuse_access', RefuseAccessViewSet, basename = 'refuse_access
 
 urlpatterns = [
     path('places/<int:pk>/report/', PDFView.as_view(), name='place-report'),
+    path('places/<int:pk>/report-csv', CSVView.as_view(), name='place-report-csv')
 ]
