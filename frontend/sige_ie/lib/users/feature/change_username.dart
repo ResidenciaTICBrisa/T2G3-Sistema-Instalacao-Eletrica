@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:sige_ie/core/data/auth_service.dart';
 import 'package:sige_ie/config/app_styles.dart';
 
-class ChangeUsernamePage extends StatefulWidget {
-  const ChangeUsernamePage({super.key});
+class ChangeUsernameScreen extends StatefulWidget {
+  const ChangeUsernameScreen({super.key});
 
   @override
-  _ChangeUsernamePageState createState() => _ChangeUsernamePageState();
+  _ChangeUsernameScreenState createState() => _ChangeUsernameScreenState();
 }
 
-class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
-  final AuthService authService = AuthService();
-  final TextEditingController currentPasswordController =
+class _ChangeUsernameScreenState extends State<ChangeUsernameScreen> {
+  final TextEditingController currentUsernameController =
       TextEditingController();
-  final TextEditingController newPasswordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
+  final TextEditingController newUsernameController = TextEditingController();
+  final TextEditingController confirmUsernameController =
       TextEditingController();
 
   @override
@@ -63,8 +61,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
                 ),
                 const SizedBox(height: 5),
                 TextField(
-                  controller: currentPasswordController,
-                  obscureText: true,
+                  controller: currentUsernameController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[300],
@@ -87,8 +84,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
                 ),
                 const SizedBox(height: 5),
                 TextField(
-                  controller: newPasswordController,
-                  obscureText: true,
+                  controller: newUsernameController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[300],
@@ -111,8 +107,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
                 ),
                 const SizedBox(height: 5),
                 TextField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
+                  controller: confirmUsernameController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey[300],
@@ -134,7 +129,59 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
                         width: 150,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final currentUsername =
+                                currentUsernameController.text.trim();
+                            final newUsername =
+                                newUsernameController.text.trim();
+                            final confirmUsername =
+                                confirmUsernameController.text.trim();
+
+                            if (currentUsername.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Por favor, insira seu usuário atual.'),
+                                ),
+                              );
+                            } else if (newUsername.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Por favor, insira o novo usuário.'),
+                                ),
+                              );
+                            } else if (confirmUsername.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Por favor, confirme o novo usuário.'),
+                                ),
+                              );
+                            } else if (newUsername == currentUsername) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'O novo usuário não pode ser igual ao usuário atual.'),
+                                ),
+                              );
+                            } else if (newUsername != confirmUsername) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Os novos usuários não coincidem.'),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text('Usuário alterado com sucesso.'),
+                                ),
+                              );
+                              // Aqui você pode chamar o serviço de alteração do usuário
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.sigeIeYellow,
                             shape: RoundedRectangleBorder(
