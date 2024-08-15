@@ -415,6 +415,7 @@ class PDFView(APIView):
                 })
     
 
+
         html_content = render_to_string('html/index.html', report_data)
 
 
@@ -568,8 +569,6 @@ class CSVView(APIView):
             refrigeration_data = []
             for area in place.areas.all():
                 for system in area.refrigeration_equipment.all():
-                    if(area.refrigeration_equipment.all() == null):
-                        break
                     refrigeration_data.append({
                         'Area': area.name,
                         'System': system.system,
@@ -586,6 +585,6 @@ class CSVView(APIView):
 
 
         response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename="equipamentos_combinados.xlsx"'
+        response['Content-Disposition'] = 'attachment; filename="equipamentos_relatorio.xlsx"'
         
         return response
