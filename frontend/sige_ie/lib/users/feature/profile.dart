@@ -3,7 +3,6 @@ import 'package:sige_ie/core/data/auth_service.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
 import 'package:sige_ie/users/data/user_service.dart';
 import 'package:sige_ie/config/app_styles.dart';
-// Import da página ChangeUsernamePage
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
