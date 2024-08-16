@@ -1,0 +1,241 @@
+[
+  {
+    "model": "systems.system",
+    "pk": 1,
+    "fields": {
+      "name": "Iluminação"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 2,
+    "fields": {
+      "name": "Cargas elétricas"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 3,
+    "fields": {
+      "name": "Linhas elétricas"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 4,
+    "fields": {
+      "name": "Circuitos elétricos"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 5,
+    "fields": {
+      "name": "Quadros de distribuição"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 6,
+    "fields": {
+      "name": "Cabeamento estruturado"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 7,
+    "fields": {
+      "name": "Proteção contra descargas atmosféricas (SPDA)"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 8,
+    "fields": {
+      "name": "Detecção de alarme de incêndio (SDAI)"
+    }
+  },
+  {
+    "model": "systems.system",
+    "pk": 9,
+    "fields": {
+      "name": "Refrigeração"
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 1,
+    "fields": {
+      "name": "Lâmpada Halógena",
+      "system": 1
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 2,
+    "fields": {
+      "name": "Lâmpada Fluorescente",
+      "system": 1
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 3,
+    "fields": {
+      "name": "Lâmpada LED",
+      "system": 1
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 4,
+    "fields": {
+      "name": "Lâmpada Incandescente",
+      "system": 1
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 5,
+    "fields": {
+      "name": "Lâmpadas Queimada",
+      "system": 1
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 6,
+    "fields": {
+      "name": "Interruptor",
+      "system": 3
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 7,
+    "fields": {
+      "name": "Tomada de uso geral (Tugs)",
+      "system": 4
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 8,
+    "fields": {
+      "name": "Tomada de uso específico (Tues)",
+      "system": 4
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 9,
+    "fields": {
+      "name": "Disjuntor bipolar",
+      "system": 5
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 10,
+    "fields": {
+      "name": "Disjuntor tripolar",
+      "system": 5
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 11,
+    "fields": {
+      "name": "Disjuntor termomagnético",
+      "system": 5
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 12,
+    "fields": {
+      "name": "Disjuntor magnético",
+      "system": 5
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 13,
+    "fields": {
+      "name": "Eletroduto",
+      "system": 6
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 14,
+    "fields": {
+      "name": "Eletrocalha",
+      "system": 6
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 15,
+    "fields": {
+      "name": "Para Raio Franklin",
+      "system": 7
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 16,
+    "fields": {
+      "name": "Para Raio Melsens",
+      "system": 7
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 17,
+    "fields": {
+      "name": "Para raio Radioativo",
+      "system": 7
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 18,
+    "fields": {
+      "name": "Alarme de incêndio",
+      "system": 8
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 19,
+    "fields": {
+      "name": "Sensor de fumaça",
+      "system": 8
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 20,
+    "fields": {
+      "name": "Sensor de temperatura",
+      "system": 8
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 21,
+    "fields": {
+      "name": "Acionadores",
+      "system": 8
+    }
+  },
+  {
+    "model": "equipments.genericequipmentcategory",
+    "pk": 22,
+    "fields": {
+      "name": "Ar-condicionado",
+      "system": 9
+    }
+  }
+]

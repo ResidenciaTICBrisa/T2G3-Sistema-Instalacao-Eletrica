@@ -1,5 +1,4 @@
 from datetime import datetime
-import csv
 import pytz
 import io
 import pandas as pd
@@ -104,10 +103,11 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def area(self, request, pk=None, area_pk=None):
         place = self.get_object()
         area = get_object_or_404(place.areas.all(), pk=area_pk)
-        if(request.user.place_owner == area.place.place_owner or area.place.editors.filter(user=request.user).exists()):
+        if (request.user.place_owner == area.place.place_owner or area.place.editors.filter(
+                user=request.user).exists()):
             serializer = AreaSerializer(area)
             return Response(serializer.data)
-        return Response({"Error" : "You're not the owner or editor of this Area"})
+        return Response({"Error": "You're not the owner or editor of this Area"})
 
 
 class AreaViewSet(viewsets.ModelViewSet):
@@ -200,6 +200,7 @@ class RefuseAccessViewSet(viewsets.ViewSet):
 
         return Response({'message': 'Access revoked successfully'}, status=status.HTTP_200_OK)
 
+
 class GrantAccessViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsPlaceOwner]
 
@@ -247,6 +248,7 @@ def genericOrPersonal(system):
 
 class PDFView(APIView):
     permission_classes = [IsAuthenticated, IsPlaceOwner or IsPlaceEditor]
+
     def get(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
         self.check_object_permissions(request, place)
@@ -258,7 +260,7 @@ class PDFView(APIView):
             'installations': [],
             'generated_by': f'{request.user}'
         }
-    
+
         for area in place.areas.all():
             for system in area.fire_alarm_equipment.all():
                 photos = []
@@ -338,7 +340,6 @@ class PDFView(APIView):
                     'photos': photos,
                     'size': f'{system.size}',
                     'type_wire': f'{system.type_wire}',
-                    'type_circuit_breaker': f'{system.type_circuit_breaker}',
                     'observation': f'{system.observation}'
                 })
 
@@ -374,7 +375,7 @@ class PDFView(APIView):
                     'power': f'{system.power}',
                     'brand': f'{system.brand}',
                     'model': f'{system.model}',
-                    'observation': f'{system.observation}'                                    
+                    'observation': f'{system.observation}'
                 })
 
             for system in area.ilumination_equipment.all():
@@ -411,38 +412,30 @@ class PDFView(APIView):
                     'quantity': f'{system.quantity}',
                     'power': f'{system.power}',
                     'observation': f'{system.observation}'
-                    
-                })
-    
 
+                })
 
         html_content = render_to_string('html/index.html', report_data)
 
-
         pdf1 = HTML(string=html_content).write_pdf()
-
 
         response = HttpResponse(pdf1, content_type='application/pdf')
         response['Content-Disposition'] = 'inline; filename="relatorio.pdf"'
-        
+
         return response
-
-
 
 
 class CSVView(APIView):
     permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
 
     def get(self, request, pk=None):
-    
+
         place = get_object_or_404(Place, pk=pk)
         self.check_object_permissions(request, place)
 
         output = io.BytesIO()
 
-  
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
-            
 
             fire_alarm_data = []
             for area in place.areas.all():
@@ -457,7 +450,6 @@ class CSVView(APIView):
             fire_alarm_df = pd.DataFrame(fire_alarm_data)
             fire_alarm_df.to_excel(writer, sheet_name='Fire Alarm Equipment', index=False)
 
-
             atmospheric_discharge_data = []
             for area in place.areas.all():
                 for system in area.atmospheric_discharge_equipment.all():
@@ -470,7 +462,6 @@ class CSVView(APIView):
             atmospheric_discharge_df = pd.DataFrame(atmospheric_discharge_data)
             atmospheric_discharge_df.to_excel(writer, sheet_name='Atmospheric Discharge Equipment', index=False)
 
- 
             structured_cabling_data = []
             for area in place.areas.all():
                 for system in area.structured_cabling_equipment.all():
@@ -483,7 +474,6 @@ class CSVView(APIView):
                     })
             structured_cabling_df = pd.DataFrame(structured_cabling_data)
             structured_cabling_df.to_excel(writer, sheet_name='Structured Cabling Equipment', index=False)
-
 
             distribution_board_data = []
             for area in place.areas.all():
@@ -504,7 +494,6 @@ class CSVView(APIView):
             distribution_board_df = pd.DataFrame(distribution_board_data)
             distribution_board_df.to_excel(writer, sheet_name='Distribution Board Equipment', index=False)
 
-
             electrical_circuit_data = []
             for area in place.areas.all():
                 for system in area.electrical_circuit_equipment.all():
@@ -514,7 +503,6 @@ class CSVView(APIView):
                         'Type': genericOrPersonal(system),
                         'Size': system.size,
                         'Type Wire': system.type_wire,
-                        'Type Circuit Breaker': system.type_circuit_breaker,
                         'Observation': system.observation
                     })
             electrical_circuit_df = pd.DataFrame(electrical_circuit_data)
@@ -565,7 +553,6 @@ class CSVView(APIView):
             illumination_df = pd.DataFrame(illumination_data)
             illumination_df.to_excel(writer, sheet_name='Illumination Equipment', index=False)
 
-
             refrigeration_data = []
             for area in place.areas.all():
                 for system in area.refrigeration_equipment.all():
@@ -580,11 +567,10 @@ class CSVView(APIView):
             refrigeration_df = pd.DataFrame(refrigeration_data)
             refrigeration_df.to_excel(writer, sheet_name='Refrigeration Equipment', index=False)
 
-
         output.seek(0)
 
-
-        response = HttpResponse(output, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response = HttpResponse(output,
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename="equipamentos_relatorio.xlsx"'
-        
+
         return response

@@ -1,6 +1,9 @@
 version: "3.9"
 services:
   db:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
     image: mysql:8.1.0
     restart: always
     environment:
@@ -21,7 +24,9 @@ services:
       - "6379:6379"
 
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     container_name: sigeie_web
     command: >
@@ -29,6 +34,7 @@ services:
         pip install -r requirements.txt
         python manage.py makemigrations &&
         python manage.py migrate &&
+        python manage.py loaddata sigeie/fixtures/initial_data.json &&
         python manage.py runserver 0.0.0.0:8000
       "
     volumes:
