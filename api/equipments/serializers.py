@@ -152,7 +152,7 @@ class ElectricalCircuitEquipmentResponseSerializer(EquipmentCategoryMixin, seria
 
     class Meta:
         model = ElectricalCircuitEquipment
-        fields = ['id', 'area', 'equipment_category', 'system', 'size', 'type_wire', 'type_circuit_breaker', 'observation']
+        fields = ['id', 'area', 'equipment_category', 'system', 'size', 'type_wire', 'observation']
 
 
 class ElectricalLineEquipmentResponseSerializer(EquipmentCategoryMixin, serializers.ModelSerializer):

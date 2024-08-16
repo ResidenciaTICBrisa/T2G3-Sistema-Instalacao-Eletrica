@@ -15,7 +15,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .permissions import IsOwner
-from .serializers import UserSerializer, UserLoginSerializer, UserUpdateSerializer
+from .serializers import UserSerializer, UserLoginSerializer, UserUpdateSerializer, UsernameSerializer, \
+    PasswordSerializer
 
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
@@ -92,7 +93,41 @@ class LogoutView(APIView):
         return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
 
 
-class Email(APIView):
+class ChangeUsername(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = UsernameSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data["username"]
+            user = request.user
+            user.username = username
+            user.save()
+            logout(request)
+            return Response({'message': 'Changed username successfully'}, status=status.HTTP_200_OK)
+
+
+class ChangePassword(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        serializer = PasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            password = serializer.validated_data["password"]
+            confirm_password = serializer.validated_data["confirm_password"]
+
+            if password != confirm_password:
+                return Response({'message': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = request.user
+            user.set_password(password)
+            user.save()
+            logout(request)
+            return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EmailView(APIView):
     permission_classes = []
 
     def post(self, request, *args, **kwargs):
