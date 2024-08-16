@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sige_ie/config/app_styles.dart';
+import 'package:sige_ie/users/data/password_request_model.dart';
+import 'package:sige_ie/users/data/user_service.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -9,11 +11,16 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final TextEditingController currentPasswordController =
-      TextEditingController();
+  UserService userService = UserService();
+
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,30 +59,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                Text(
-                  'Senha Atual',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                TextField(
-                  controller: currentPasswordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[300],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 15.0, horizontal: 10.0),
-                    isDense: true,
-                  ),
-                ),
-                const SizedBox(height: 15),
                 Text(
                   'Nova Senha',
                   style: TextStyle(
@@ -132,22 +115,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         width: 150,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: () {
-                            final currentPassword =
-                                currentPasswordController.text.trim();
+                          onPressed: () async {
                             final newPassword =
                                 newPasswordController.text.trim();
                             final confirmPassword =
                                 confirmPasswordController.text.trim();
 
-                            if (currentPassword.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Por favor, insira sua senha atual.'),
-                                ),
-                              );
-                            } else if (newPassword.isEmpty) {
+                            if (newPassword.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content:
@@ -161,13 +135,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                       Text('Por favor, confirme a nova senha.'),
                                 ),
                               );
-                            } else if (newPassword == currentPassword) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'A nova senha não pode ser igual à senha atual.'),
-                                ),
-                              );
                             } else if (newPassword != confirmPassword) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -176,12 +143,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 ),
                               );
                             } else {
+                              final passwordRequestModel = PasswordRequestModel(
+                                  password: newPassword,
+                                  confirmPassword: confirmPassword);
+                              bool success = await userService
+                                  .changePassword(passwordRequestModel);
+                              if (success) {
+                                _showSnackBar(
+                                    'Senha alterada com sucesso. Entre novamente com a nova senha.');
+                                Navigator.pushReplacementNamed(
+                                    context, '/loginScreen');
+                              } else {
+                                _showSnackBar('Falha ao alterar a senha.');
+                              }
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Senha alterada com sucesso.'),
                                 ),
                               );
-                              // Aqui você pode chamar o serviço de alteração da senha
                             }
                           },
                           style: ElevatedButton.styleFrom(

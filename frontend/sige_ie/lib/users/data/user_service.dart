@@ -6,11 +6,14 @@ import 'package:logging/logging.dart';
 import 'package:sige_ie/core/data/auth_interceptor.dart';
 import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/main.dart';
+import 'package:sige_ie/users/data/password_request_model.dart';
 import 'package:sige_ie/users/data/user_request_model.dart';
 import 'package:sige_ie/users/data/user_response_model.dart';
+import 'package:sige_ie/users/data/username_request_model.dart';
 
 class UserService {
   final Logger _logger = Logger('UserService');
+
   Future<bool> register(UserRequestModel userRequestModel) async {
     var url = Uri.parse('$urlUniversal/api/users/');
 
@@ -41,6 +44,48 @@ class UserService {
         return false;
       }
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> changePassword(PasswordRequestModel passwordRequestModel) async {
+    var client = InterceptedClient.build(
+      interceptors: [AuthInterceptor(cookieJar)],
+    );
+
+    var url = Uri.parse('$urlUniversal/api/change_password/');
+    try {
+      var response = await client.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(passwordRequestModel.toJson()));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      _logger.info('Erro ao atualizar password: $e');
+      return false;
+    }
+  }
+
+  Future<bool> changeUsername(UsernameRequestModel usernameRequestModel) async {
+    var client = InterceptedClient.build(
+      interceptors: [AuthInterceptor(cookieJar)],
+    );
+
+    var url = Uri.parse('$urlUniversal/api/change_username/');
+    try {
+      var response = await client.post(url,
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(usernameRequestModel.toJson()));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      _logger.info('Erro ao atualizar username: $e');
       return false;
     }
   }
