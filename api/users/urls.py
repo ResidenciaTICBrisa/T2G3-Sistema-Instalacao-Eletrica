@@ -1,7 +1,6 @@
 # urls.py
 from django.urls import path
-from .views import GetCSRFToken, GetSessionCookie, CheckAuthenticatedView, UserCreateView, AuthenticatedUserView, UserDetailView, LoginView, LogoutView, Email, PasswordResetConfirmView
-from django.urls import include
+from .views import GetCSRFToken, GetSessionCookie, CheckAuthenticatedView, UserCreateView, AuthenticatedUserView, UserDetailView, LoginView, LogoutView, ChangeUsername, ChangePassword, Email, PasswordResetConfirmView
 
 urlpatterns = [
     path('csrfcookie/', GetCSRFToken.as_view(), name='csrf-cookie'),
@@ -12,6 +11,8 @@ urlpatterns = [
     path('users/<pk>/', UserDetailView.as_view(), name='user_detail'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('recover/', Email.as_view()),
-    path('reset/', PasswordResetConfirmView.as_view())
+    path('change_username/', ChangeUsername.as_view(), name='change username'),
+    path('change_password/', ChangePassword.as_view(), name='change password'),
+    path('recover/', Email.as_view(), name='Email'),
+    path('reset/', PasswordResetConfirmView.as_view(), name='password-reset'),
 ]

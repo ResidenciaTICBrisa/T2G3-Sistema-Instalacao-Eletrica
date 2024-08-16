@@ -48,6 +48,11 @@ class UsernameSerializer(serializers.Serializer):
     username = serializers.CharField(min_length=6, max_length=23, required=True)
 
 
+class PasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=6, max_length=200, write_only=True)
+    confirm_password = serializers.CharField(min_length=6, max_length=200, write_only=True)
+
+
 class UserUpdateSerializer(serializers.Serializer):
     first_name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
