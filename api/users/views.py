@@ -101,10 +101,18 @@ class ChangeUsername(APIView):
         if serializer.is_valid():
             username = serializer.validated_data["username"]
             user = request.user
-            user.username = username
-            user.save()
-            logout(request)
-            return Response({'message': 'Changed username successfully'}, status=status.HTTP_200_OK)
+            try:
+                user.username = username
+                user.save()
+                logout(request)
+                return Response({'message': 'Username changed successfully'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response({'error': 'Failed to change username', 'details': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(
+                {'error': 'Invalid data',
+                 'details': serializer.errors
+                 }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ChangePassword(APIView):
