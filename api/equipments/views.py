@@ -220,7 +220,7 @@ class AtmosphericDischargeEquipmentList(generics.ListCreateAPIView):
 
 class AtmosphericDischargeEquipmentByAreaList(generics.ListAPIView):
     serializer_class = AtmosphericDischargeEquipmentResponseSerializer
-    permission_classes = [IsAuthenticated, IsEquipmentOwner, IsSpecificEquipmentEditor]
+    permission_classes = [IsAuthenticated, IsEquipmentOwner | IsSpecificEquipmentEditor]
 
     def get_queryset(self):
         area_id = self.kwargs['area_id']

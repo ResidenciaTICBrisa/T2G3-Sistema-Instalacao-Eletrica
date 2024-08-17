@@ -74,23 +74,29 @@ class _ListAtmosphericEquipmentState extends State<ListAtmosphericEquipment> {
       BuildContext context, int dischargeId) async {
     try {
       await _atmosphericService.deleteAtmospheric(dischargeId);
-      setState(() {
-        _atmosphericList =
-            _atmosphericService.getAtmosphericListByArea(widget.areaId);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Equipamento deletado com sucesso'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if (mounted) {
+        // Verifica se o widget ainda está montado
+        setState(() {
+          _atmosphericList =
+              _atmosphericService.getAtmosphericListByArea(widget.areaId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Equipamento deletado com sucesso'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Falha ao deletar o equipamento'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        // Verifica se o widget ainda está montado
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Falha ao deletar o equipamento'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
