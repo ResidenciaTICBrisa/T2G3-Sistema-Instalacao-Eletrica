@@ -1,12 +1,14 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/refrigerations/refrigerations_equipment_request_model.dart';
 import 'package:sige_ie/equipments/data/refrigerations/refrigerations_request_model.dart';
+import 'package:sige_ie/equipments/data/refrigerations/refrigerations_response_model.dart';
+import 'package:sige_ie/equipments/data/refrigerations/refrigerations_service.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_request_model.dart';
+import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_response_model.dart';
 import 'package:sige_ie/shared/data/equipment-photo/equipment_photo_service.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_response_model.dart';
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_service.dart';
@@ -18,12 +20,17 @@ class ImageData {
   int id;
   File imageFile;
   String description;
+  bool toDelete;
 
-  ImageData(this.imageFile, this.description) : id = Random().nextInt(1000000);
+  ImageData({
+    int? id,
+    required this.imageFile,
+    required this.description,
+    this.toDelete = false,
+  }) : id = id ?? -1; // Valor padrão indicando ID inexistente
 }
 
 List<ImageData> _images = [];
-Map<int, List<ImageData>> categoryImagesMap = {};
 
 class AddRefrigeration extends StatefulWidget {
   final String areaName;
@@ -31,6 +38,8 @@ class AddRefrigeration extends StatefulWidget {
   final int localId;
   final int systemId;
   final int areaId;
+  final int? refrigerationId;
+  final bool isEdit;
 
   const AddRefrigeration({
     super.key,
@@ -39,6 +48,8 @@ class AddRefrigeration extends StatefulWidget {
     required this.localName,
     required this.localId,
     required this.areaId,
+    this.refrigerationId,
+    this.isEdit = false,
   });
 
   @override
@@ -47,35 +58,114 @@ class AddRefrigeration extends StatefulWidget {
 
 class _AddRefrigerationState extends State<AddRefrigeration> {
   EquipmentService equipmentService = EquipmentService();
+  RefrigerationsEquipmentService refrigerationService =
+      RefrigerationsEquipmentService();
   EquipmentPhotoService equipmentPhotoService = EquipmentPhotoService();
   PersonalEquipmentCategoryService personalEquipmentCategoryService =
       PersonalEquipmentCategoryService();
   GenericEquipmentCategoryService genericEquipmentCategoryService =
       GenericEquipmentCategoryService();
-
-  final _equipmentQuantityController = TextEditingController();
-  final _equipmentPowerController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _powerController = TextEditingController();
+  final TextEditingController _observationsController = TextEditingController();
   String? _selectedType;
-  String? _selectedTypeToDelete;
-  String? _newEquipmentTypeName;
   int? _selectedGenericEquipmentCategoryId;
   int? _selectedPersonalEquipmentCategoryId;
   bool _isPersonalEquipmentCategorySelected = false;
-
+  String? _newEquipmentTypeName;
+  String? _selectedTypeToDelete;
+  int? equipmentId;
   List<Map<String, Object>> genericEquipmentTypes = [];
   List<Map<String, Object>> personalEquipmentTypes = [];
   Map<String, int> personalEquipmentMap = {};
+  RefrigerationsResponseModel? refrigerationResponseModel;
 
   @override
   void initState() {
     super.initState();
     _fetchEquipmentCategory();
+    if (widget.isEdit && widget.refrigerationId != null) {
+      _initializeData(widget.refrigerationId!);
+    }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _fetchEquipmentCategory();
+  Future<void> _initializeData(int refrigerationId) async {
+    try {
+      await _fetchRefrigerationEquipment(refrigerationId);
+
+      if (refrigerationResponseModel != null) {
+        setState(() {
+          equipmentId = refrigerationResponseModel!.equipment;
+          _quantityController.text =
+              refrigerationResponseModel!.quantity.toString();
+          _powerController.text = refrigerationResponseModel!.power.toString();
+          _observationsController.text =
+              refrigerationResponseModel!.observation ?? '';
+        });
+
+        _fetchEquipmentDetails(refrigerationResponseModel!.equipment);
+        _fetchExistingPhotos(refrigerationResponseModel!.equipment);
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
+  Future<void> _fetchRefrigerationEquipment(int refrigerationId) async {
+    refrigerationResponseModel =
+        await refrigerationService.getRefrigerationsById(refrigerationId);
+  }
+
+  Future<void> _fetchEquipmentDetails(int equipmentId) async {
+    try {
+      final equipmentDetails =
+          await equipmentService.getEquipmentById(equipmentId);
+
+      setState(() {
+        _isPersonalEquipmentCategorySelected =
+            equipmentDetails['personal_equipment_category'] != null;
+
+        if (_isPersonalEquipmentCategorySelected) {
+          _selectedPersonalEquipmentCategoryId =
+              equipmentDetails['personal_equipment_category'];
+          _selectedType = personalEquipmentTypes.firstWhere((element) =>
+                  element['id'] == _selectedPersonalEquipmentCategoryId)['name']
+              as String;
+        } else {
+          _selectedGenericEquipmentCategoryId =
+              equipmentDetails['generic_equipment_category'];
+          _selectedType = genericEquipmentTypes.firstWhere((element) =>
+                  element['id'] == _selectedGenericEquipmentCategoryId)['name']
+              as String;
+        }
+      });
+    } catch (e) {
+      print('Erro ao buscar detalhes do equipamento: $e');
+    }
+  }
+
+  void _fetchExistingPhotos(int equipmentId) async {
+    try {
+      List<EquipmentPhotoResponseModel> photos =
+          await equipmentPhotoService.getPhotosByEquipmentId(equipmentId);
+
+      List<ImageData> imageList = [];
+
+      for (var photo in photos) {
+        File imageFile = await photo.toFile();
+        imageList.add(ImageData(
+          id: photo.id,
+          imageFile: imageFile,
+          description: photo.description ?? '',
+        ));
+      }
+
+      setState(() {
+        _images = imageList;
+      });
+    } catch (e) {
+      print('Erro ao buscar fotos existentes: $e');
+    }
   }
 
   Future<void> _fetchEquipmentCategory() async {
@@ -105,9 +195,10 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
 
   @override
   void dispose() {
-    _equipmentQuantityController.dispose();
-    _equipmentPowerController.dispose();
-    categoryImagesMap[widget.systemId]?.clear();
+    _quantityController.dispose();
+    _powerController.dispose();
+    _images.clear();
+    _observationsController.dispose();
     super.dispose();
   }
 
@@ -124,8 +215,9 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
   }
 
   void _showImageDialog(File imageFile, {ImageData? existingImage}) {
-    TextEditingController descriptionController =
-        TextEditingController(text: existingImage?.description ?? '');
+    TextEditingController descriptionController = TextEditingController(
+      text: existingImage?.description ?? '',
+    );
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -153,17 +245,17 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
               child: const Text('Salvar'),
               onPressed: () {
                 setState(() {
+                  String? description = descriptionController.text.isEmpty
+                      ? null
+                      : descriptionController.text;
                   if (existingImage != null) {
-                    existingImage.description = descriptionController.text;
+                    existingImage.description = description ?? '';
                   } else {
-                    final imageData =
-                        ImageData(imageFile, descriptionController.text);
-                    final systemId = widget.systemId;
-                    if (!categoryImagesMap.containsKey(systemId)) {
-                      categoryImagesMap[systemId] = [];
-                    }
-                    categoryImagesMap[systemId]!.add(imageData);
-                    _images = categoryImagesMap[systemId]!;
+                    final imageData = ImageData(
+                      imageFile: imageFile,
+                      description: description ?? '',
+                    );
+                    _images.add(imageData);
                   }
                 });
                 Navigator.of(context).pop();
@@ -218,6 +310,120 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
     );
   }
 
+  void _updateRefrigeration() async {
+    int? genericEquipmentCategory;
+    int? personalEquipmentCategory;
+
+    if (_isPersonalEquipmentCategorySelected) {
+      genericEquipmentCategory = null;
+      personalEquipmentCategory = _selectedPersonalEquipmentCategoryId;
+    } else {
+      genericEquipmentCategory = _selectedGenericEquipmentCategoryId;
+      personalEquipmentCategory = null;
+    }
+
+    final Map<String, dynamic> equipmentTypeUpdate = {
+      "generic_equipment_category": genericEquipmentCategory,
+      "personal_equipment_category": personalEquipmentCategory,
+    };
+
+    bool typeUpdateSuccess = await equipmentService.updateEquipment(
+        equipmentId!, equipmentTypeUpdate);
+
+    if (typeUpdateSuccess) {
+      final RefrigerationsRequestModel refrigerationModel =
+          RefrigerationsRequestModel(
+        area: widget.areaId,
+        system: widget.systemId,
+        quantity: int.tryParse(_quantityController.text),
+        power: int.tryParse(_powerController.text),
+        observation: _observationsController.text.isNotEmpty
+            ? _observationsController.text
+            : null,
+      );
+
+      bool refrigerationUpdateSuccess = await refrigerationService
+          .updateRefrigerations(widget.refrigerationId!, refrigerationModel);
+
+      if (refrigerationUpdateSuccess) {
+        await Future.wait(_images
+            .where((imageData) => imageData.toDelete)
+            .map((imageData) async {
+          await equipmentPhotoService.deletePhoto(imageData.id);
+        }));
+
+        await Future.wait(_images
+            .where((imageData) => !imageData.toDelete)
+            .map((imageData) async {
+          if (imageData.id == -1) {
+            await equipmentPhotoService.createPhoto(
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          } else {
+            await equipmentPhotoService.updatePhoto(
+              imageData.id,
+              EquipmentPhotoRequestModel(
+                photo: imageData.imageFile,
+                description: imageData.description.isEmpty
+                    ? null
+                    : imageData.description,
+                equipment: equipmentId!,
+              ),
+            );
+          }
+        }));
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Detalhes do equipamento de refrigeração atualizados com sucesso.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacementNamed(
+          context,
+          '/listRefrigerationEquipment',
+          arguments: {
+            'areaName': widget.areaName,
+            'systemId': widget.systemId,
+            'localName': widget.localName,
+            'localId': widget.localId,
+            'areaId': widget.areaId,
+          },
+        );
+        setState(() {
+          _quantityController.clear();
+          _powerController.clear();
+          _selectedType = null;
+          _selectedPersonalEquipmentCategoryId = null;
+          _selectedGenericEquipmentCategoryId = null;
+          _images.clear();
+          _observationsController.clear();
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Falha ao atualizar os detalhes do equipamento.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao atualizar o tipo do equipamento.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   Future<void> _registerPersonalEquipmentType() async {
     int systemId = widget.systemId;
     PersonalEquipmentCategoryRequestModel personalEquipmentTypeRequestModel =
@@ -230,7 +436,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
     if (id != -1) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Equipamento registrado com sucesso.'),
+          content: Text('Equipamento de refrigeração registrado com sucesso.'),
           backgroundColor: Colors.green,
         ),
       );
@@ -245,7 +451,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Falha ao registrar o equipamento.'),
+          content: Text('Falha ao registrar o equipamento de refrigeração.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -273,15 +479,15 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
       return;
     }
 
-    int equipmentId = personalEquipmentMap[_selectedTypeToDelete]!;
+    int personalCategoryId = personalEquipmentMap[_selectedTypeToDelete]!;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Confirmar Exclusão'),
-          content:
-              const Text('Tem certeza de que deseja excluir este equipamento?'),
+          content: const Text(
+              'Tem certeza de que deseja excluir este tipo de equipamento?'),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -294,25 +500,27 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
               onPressed: () async {
                 Navigator.of(context).pop();
                 bool success = await personalEquipmentCategoryService
-                    .deletePersonalEquipmentCategory(equipmentId);
+                    .deletePersonalEquipmentCategory(personalCategoryId);
 
                 if (success) {
                   setState(() {
                     personalEquipmentTypes.removeWhere(
                         (element) => element['name'] == _selectedTypeToDelete);
                     _selectedTypeToDelete = null;
+                    _selectedType = null;
                     _fetchEquipmentCategory();
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Equipamento excluído com sucesso.'),
+                      content:
+                          Text('Tipo de equipamento excluído com sucesso.'),
                       backgroundColor: Colors.green,
                     ),
                   );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Falha ao excluir o equipamento.'),
+                      content: Text('Falha ao excluir o tipo de equipamento.'),
                       backgroundColor: Colors.red,
                     ),
                   );
@@ -326,8 +534,8 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
   }
 
   void _showConfirmationDialog() {
-    if (_equipmentQuantityController.text.isEmpty ||
-        _equipmentPowerController.text.isEmpty ||
+    if (_quantityController.text.isEmpty ||
+        _powerController.text.isEmpty ||
         (_selectedType == null && _newEquipmentTypeName == null)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -351,16 +559,22 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                 const SizedBox(height: 10),
                 const Text('Quantidade:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentQuantityController.text),
+                Text(_quantityController.text),
                 const SizedBox(height: 10),
-                const Text('Potência (KW):',
+                const Text('Potência:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(_equipmentPowerController.text),
+                Text(_powerController.text),
+                const SizedBox(height: 10),
+                const Text('Observações:',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(_observationsController.text),
                 const SizedBox(height: 10),
                 const Text('Imagens:',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Wrap(
-                  children: _images.map((imageData) {
+                  children: _images
+                      .where((imageData) => !imageData.toDelete)
+                      .map((imageData) {
                     return Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: GestureDetector(
@@ -392,9 +606,16 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
               },
             ),
             TextButton(
-              child: const Text('Adicionar'),
+              child: widget.isEdit
+                  ? const Text('Atualizar')
+                  : const Text('Adicionar'),
               onPressed: () {
-                _registerEquipment();
+                if (widget.isEdit) {
+                  _updateRefrigeration();
+                } else {
+                  _registerRefrigeration();
+                }
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -403,7 +624,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
     );
   }
 
-  void _registerEquipment() async {
+  void _registerRefrigeration() async {
     int? genericEquipmentCategory;
     int? personalEquipmentCategory;
 
@@ -415,38 +636,48 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
       personalEquipmentCategory = null;
     }
 
-    final RefrigerationsRequestModel refrigerationsModel =
+    final RefrigerationsRequestModel refrigerationModel =
         RefrigerationsRequestModel(
       area: widget.areaId,
       system: widget.systemId,
-      quantity: null,
-      power: null,
+      quantity: int.tryParse(_quantityController.text),
+      power: int.tryParse(_powerController.text),
+      observation: _observationsController.text.isNotEmpty
+          ? _observationsController.text
+          : null,
     );
 
-    final RefrigerationsEquipmentRequestModel refrigerationsEquipmentDetail =
+    final RefrigerationsEquipmentRequestModel refrigerationEquipmentDetail =
         RefrigerationsEquipmentRequestModel(
       genericEquipmentCategory: genericEquipmentCategory,
       personalEquipmentCategory: personalEquipmentCategory,
-      refrigerationsRequestModel: refrigerationsModel,
+      refrigerationsRequestModel: refrigerationModel,
     );
 
-    int? equipmentId = await equipmentService
-        .createRefrigerations(refrigerationsEquipmentDetail);
+    int? id = await equipmentService
+        .createRefrigerations(refrigerationEquipmentDetail);
+    setState(() {
+      equipmentId = id;
+    });
 
-    if (equipmentId != null) {
+    if (equipmentId != null && equipmentId != 0) {
+      print('Registering photos for equipment ID: $equipmentId');
       await Future.wait(_images.map((imageData) async {
+        print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,
-            description: imageData.description,
-            equipment: equipmentId,
+            description:
+                imageData.description.isEmpty ? null : imageData.description,
+            equipment: equipmentId!,
           ),
         );
       }));
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Detalhes do equipamento registrados com sucesso.'),
+          content: Text(
+              'Detalhes do equipamento de refrigeração registrados com sucesso.'),
           backgroundColor: Colors.green,
         ),
       );
@@ -462,12 +693,13 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
         },
       );
       setState(() {
-        _equipmentQuantityController.clear();
-        _equipmentPowerController.clear();
+        _quantityController.clear();
+        _powerController.clear();
         _selectedType = null;
         _selectedPersonalEquipmentCategoryId = null;
         _selectedGenericEquipmentCategoryId = null;
         _images.clear();
+        _observationsController.clear();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -477,6 +709,13 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
         ),
       );
     }
+  }
+
+  Future<void> _deletePhoto(int photoId) async {
+    setState(() {
+      _images.firstWhere((imageData) => imageData.id == photoId).toDelete =
+          true;
+    });
   }
 
   @override
@@ -494,12 +733,13 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             setState(() {
-              _equipmentQuantityController.clear();
-              _equipmentPowerController.clear();
+              _quantityController.clear();
+              _powerController.clear();
               _selectedType = null;
               _selectedPersonalEquipmentCategoryId = null;
               _selectedGenericEquipmentCategoryId = null;
               _images.clear();
+              _observationsController.clear();
             });
             Navigator.pushReplacementNamed(
               context,
@@ -527,9 +767,12 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                 borderRadius:
                     BorderRadius.vertical(bottom: Radius.circular(20)),
               ),
-              child: const Center(
-                child: Text('Adicionar equipamento',
-                    style: TextStyle(
+              child: Center(
+                child: Text(
+                    widget.refrigerationId == null
+                        ? 'Adicionar Equipamento'
+                        : 'Editar Equipamento',
+                    style: const TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white)),
@@ -540,7 +783,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  const Text('Tipos de refrigerações',
+                  const Text('Tipos de Equipamento de Refrigeração',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                   const SizedBox(height: 8),
@@ -551,7 +794,8 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                         child: _buildStyledDropdown(
                           items: [
                                 {
-                                  'name': 'Selecione o tipo de refrigeração',
+                                  'name':
+                                      'Selecione o tipo de equipamento de refrigeração',
                                   'id': -1,
                                   'type': -1
                                 }
@@ -559,7 +803,8 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                               combinedTypes,
                           value: _selectedType,
                           onChanged: (newValue) {
-                            if (newValue != 'Selecione o tipo de equipamento') {
+                            if (newValue !=
+                                'Selecione o tipo de equipamento de refrigeração') {
                               setState(() {
                                 _selectedType = newValue;
                                 Map<String, Object> selected =
@@ -613,7 +858,6 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   TextButton(
                     onPressed: () {
                       setState(() {
@@ -622,27 +866,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                     },
                     child: const Text('Limpar seleção'),
                   ),
-                  const SizedBox(height: 30),
-                  const Text('Potência (KW)',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                  const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextField(
-                      controller: _equipmentPowerController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 15),
                   const Text('Quantidade',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
@@ -653,7 +877,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextField(
-                      controller: _equipmentQuantityController,
+                      controller: _quantityController,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
                         FilteringTextInputFormatter.digitsOnly
@@ -663,6 +887,66 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                       ),
+                      onChanged: (value) {
+                        print('Quantidade modificada: $value');
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Potência (KW)',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _powerController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  const Text('Observações',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  const SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      controller: _observationsController,
+                      maxLines: 3,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                        hintText:
+                            'Digite suas observações aqui (máx 500 caracteres)',
+                      ),
+                      buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          required bool isFocused,
+                          required int? maxLength}) {
+                        return Text(
+                          '$currentLength / $maxLength',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: currentLength > maxLength!
+                                ? Colors.red
+                                : Colors.grey,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(height: 15),
@@ -671,7 +955,9 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                     onPressed: _pickImage,
                   ),
                   Wrap(
-                    children: _images.map((imageData) {
+                    children: _images
+                        .where((imageData) => !imageData.toDelete)
+                        .map((imageData) {
                       return Stack(
                         alignment: Alignment.topRight,
                         children: [
@@ -692,10 +978,7 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                             icon: const Icon(Icons.remove_circle,
                                 color: AppColors.warn),
                             onPressed: () {
-                              setState(() {
-                                _images.removeWhere(
-                                    (element) => element.id == imageData.id);
-                              });
+                              _deletePhoto(imageData.id);
                             },
                           ),
                         ],
@@ -717,9 +1000,11 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
                             borderRadius: BorderRadius.circular(10),
                           ))),
                       onPressed: _showConfirmationDialog,
-                      child: const Text(
-                        'ADICIONAR EQUIPAMENTO',
-                        style: TextStyle(
+                      child: Text(
+                        widget.isEdit
+                            ? 'ATUALIZAR EQUIPAMENTO'
+                            : 'ADICIONAR EQUIPAMENTO',
+                        style: const TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -815,11 +1100,13 @@ class _AddRefrigerationState extends State<AddRefrigeration> {
         items: items.map<DropdownMenuItem<String>>((Map<String, Object> value) {
           return DropdownMenuItem<String>(
             value: value['name'] as String,
-            enabled: value['name'] != 'Selecione o tipo de equipamento',
+            enabled: value['name'] !=
+                'Selecione o tipo de equipamento de refrigeração',
             child: Text(
               value['name'] as String,
               style: TextStyle(
-                color: value['name'] == 'Selecione o tipo de equipamento'
+                color: value['name'] ==
+                        'Selecione o tipo de equipamento de refrigeração'
                     ? Colors.grey
                     : Colors.black,
               ),

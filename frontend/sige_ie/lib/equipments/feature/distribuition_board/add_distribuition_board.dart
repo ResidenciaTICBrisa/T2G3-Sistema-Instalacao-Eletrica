@@ -714,12 +714,8 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
       equipmentId = id;
     });
 
-    print('Response ID: $id');
-
     if (equipmentId != null && equipmentId != 0) {
-      print('Registering photos for equipment ID: $equipmentId');
       await Future.wait(_images.map((imageData) async {
-        print('Creating photo with description: "${imageData.description}"');
         await equipmentPhotoService.createPhoto(
           EquipmentPhotoRequestModel(
             photo: imageData.imageFile,

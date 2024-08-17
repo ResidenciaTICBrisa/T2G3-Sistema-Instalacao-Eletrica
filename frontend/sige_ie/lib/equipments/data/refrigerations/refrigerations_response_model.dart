@@ -5,6 +5,7 @@ class RefrigerationsResponseModel {
   int system;
   int quantity;
   int power;
+  String? observation;
 
   RefrigerationsResponseModel(
       {required this.id,
@@ -12,7 +13,8 @@ class RefrigerationsResponseModel {
       required this.equipment,
       required this.system,
       required this.quantity,
-      required this.power});
+      required this.power,
+      required this.observation});
 
   factory RefrigerationsResponseModel.fromJson(Map<String, dynamic> json) {
     return RefrigerationsResponseModel(
@@ -21,6 +23,7 @@ class RefrigerationsResponseModel {
         equipment: json['equipment'],
         system: json['system'],
         quantity: json['quantity'],
-        power: json['power']);
+        power: json['power'],
+        observation: json['observation']);
   }
 }
