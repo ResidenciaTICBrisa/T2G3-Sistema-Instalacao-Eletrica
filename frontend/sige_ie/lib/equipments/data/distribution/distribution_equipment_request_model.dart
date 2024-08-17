@@ -15,7 +15,7 @@ class DistributionEquipmentRequestModel {
     return {
       'generic_equipment_category': genericEquipmentCategory,
       'personal_equipment_category': personalEquipmentCategory,
-      'structured_cabling_equipment': distributionRequestModel?.toJson(),
+      'distribution_board_equipment': distributionRequestModel?.toJson(),
     };
   }
 }
