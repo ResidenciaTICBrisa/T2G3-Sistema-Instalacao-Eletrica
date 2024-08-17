@@ -4,14 +4,15 @@ class EletricalLineEquipmentResponseByAreaModel {
   String equipmentCategory;
   int system;
   int quantity;
+  String? observation;
 
-  EletricalLineEquipmentResponseByAreaModel({
-    required this.id,
-    required this.area,
-    required this.equipmentCategory,
-    required this.system,
-    required this.quantity,
-  });
+  EletricalLineEquipmentResponseByAreaModel(
+      {required this.id,
+      required this.area,
+      required this.equipmentCategory,
+      required this.system,
+      required this.quantity,
+      required this.observation});
 
   factory EletricalLineEquipmentResponseByAreaModel.fromJson(
       Map<String, dynamic> json) {
@@ -21,6 +22,7 @@ class EletricalLineEquipmentResponseByAreaModel {
       equipmentCategory: json['equipment_category'],
       system: json['system'],
       quantity: json['quantity'],
+      observation: json['observation'],
     );
   }
 }
