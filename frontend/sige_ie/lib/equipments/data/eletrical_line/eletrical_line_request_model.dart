@@ -1,4 +1,5 @@
 class EletricalLineRequestModel {
+  /* obs */
   int? area;
   int? system;
   int? quantity;

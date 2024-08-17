@@ -1,33 +1,29 @@
 class IluminationEquipmentResponseByAreaModel {
-  int id;
-  int area;
-  String equipmentCategory;
-  int system;
-  int quantity;
-  int power;
-  String tecnology;
-  String format;
+  final int id;
+  final int area;
+  final String equipmentCategory;
+  final int system;
+  final int quantity;
+  final String observation;
 
-  IluminationEquipmentResponseByAreaModel(
-      {required this.id,
-      required this.area,
-      required this.equipmentCategory,
-      required this.system,
-      required this.quantity,
-      required this.format,
-      required this.power,
-      required this.tecnology});
+  IluminationEquipmentResponseByAreaModel({
+    required this.id,
+    required this.area,
+    required this.equipmentCategory,
+    required this.system,
+    required this.quantity,
+    required this.observation,
+  });
 
   factory IluminationEquipmentResponseByAreaModel.fromJson(
       Map<String, dynamic> json) {
     return IluminationEquipmentResponseByAreaModel(
-        id: json['id'],
-        area: json['area'],
-        equipmentCategory: json['equipment_category'],
-        system: json['system'],
-        quantity: json['quantity'],
-        format: json['format'],
-        power: json['power'],
-        tecnology: json['tecnology']);
+      id: json['id'],
+      area: json['area'],
+      equipmentCategory: json['equipment_category'],
+      system: json['system'],
+      quantity: json['quantity'],
+      observation: json['observation'],
+    );
   }
 }

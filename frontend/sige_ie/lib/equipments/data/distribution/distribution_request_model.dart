@@ -1,8 +1,9 @@
 class DistributionRequestModel {
+  /* Obs e power = int? */
   int? area;
   int? system;
   int? quantity;
-  String? power;
+  int? power;
   bool dr;
   bool dps;
   bool grounding;

@@ -428,7 +428,7 @@ class _AddDistribuitionBoardState extends State<AddDistribuitionBoard> {
       area: widget.areaId,
       system: widget.systemId,
       quantity: null,
-      power: '',
+      power: null,
       dr: true,
       dps: true,
       grounding: true,

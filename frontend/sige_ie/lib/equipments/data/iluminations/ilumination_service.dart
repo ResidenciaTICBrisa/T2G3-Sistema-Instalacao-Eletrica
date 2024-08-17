@@ -21,6 +21,8 @@ class IluminationEquipmentService {
     var url = Uri.parse('${baseUrl}iluminations/by-area/$areaId/');
     try {
       var response = await client.get(url);
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         List<dynamic> dataList = jsonDecode(response.body);

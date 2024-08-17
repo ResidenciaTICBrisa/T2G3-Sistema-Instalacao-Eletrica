@@ -1,4 +1,5 @@
 class RefrigerationsRequestModel {
+  /* obs */
   int? area;
   int? system;
   int? quantity;
