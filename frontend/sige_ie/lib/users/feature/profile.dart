@@ -139,16 +139,20 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, '/ChangePasswordScreen');
+                        },
                         child: const Text(
                           'Mudar senha',
                           style: TextStyle(color: Colors.blue),
                         ),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.pushNamed(context, '/ChangeUsernameScreen');
+                        },
                         child: const Text(
-                          'Mudar username',
+                          'Mudar usuário',
                           style: TextStyle(color: Colors.blue),
                         ),
                       ),
