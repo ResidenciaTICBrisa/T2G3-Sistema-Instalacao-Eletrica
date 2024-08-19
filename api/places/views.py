@@ -1,3 +1,7 @@
+from datetime import datetime
+import pytz
+import io
+import pandas as pd
 from rest_framework.views import APIView
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -99,10 +103,11 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def area(self, request, pk=None, area_pk=None):
         place = self.get_object()
         area = get_object_or_404(place.areas.all(), pk=area_pk)
-        if(request.user.place_owner == area.place.place_owner or area.place.editors.filter(user=request.user).exists()):
+        if (request.user.place_owner == area.place.place_owner or area.place.editors.filter(
+                user=request.user).exists()):
             serializer = AreaSerializer(area)
             return Response(serializer.data)
-        return Response({"Error" : "You're not the owner or editor of this Area"})
+        return Response({"Error": "You're not the owner or editor of this Area"})
 
 
 class AreaViewSet(viewsets.ModelViewSet):
@@ -195,6 +200,7 @@ class RefuseAccessViewSet(viewsets.ViewSet):
 
         return Response({'message': 'Access revoked successfully'}, status=status.HTTP_200_OK)
 
+
 class GrantAccessViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated, IsPlaceOwner]
 
@@ -241,25 +247,20 @@ def genericOrPersonal(system):
 
 
 class GeneratePDFView(APIView):
-    permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
+    permission_classes = [IsAuthenticated, IsPlaceOwner or IsPlaceEditor]
 
     def get(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
 
         self.check_object_permissions(request, place)
 
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = f'attachment; filename="place_{place.id}_report.pdf"'
-
-        p = canvas.Canvas(response, pagesize=A4)
-        alt = Altura()
-
-        p.setFont('Helvetica-Bold', 16)
-
-        p.drawString(205, alt.get_alt(p), f"Relatório do Local: {place.name}")
-
-        p.setFont('Helvetica-Bold', 14)
-        p.drawString(100, alt.get_alt(p), "Áreas:")
+        timezone = pytz.timezone('America/Sao_Paulo')
+        report_data = {
+            'report_date': f'{datetime.now(timezone).strftime("%d/%m/%Y")}',
+            'summary': f'Este relatório cobre as instalações elétricas do local: {place.name}',
+            'installations': [],
+            'generated_by': f'{request.user}'
+        }
 
         for area in place.areas.all():
             p.setFont('Helvetica-Bold', 14)
@@ -290,10 +291,21 @@ class GeneratePDFView(APIView):
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
             for system in area.electrical_circuit_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'size': f'{system.size}',
+                    'type_wire': f'{system.type_wire}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.electrical_line_equipment.all():
                 if (system == None):
@@ -302,10 +314,23 @@ class GeneratePDFView(APIView):
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
             for system in area.electrical_load_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'power': f'{system.power}',
+                    'brand': f'{system.brand}',
+                    'model': f'{system.model}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.ilumination_equipment.all():
                 if (system == None):
@@ -314,11 +339,179 @@ class GeneratePDFView(APIView):
                 p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
 
             for system in area.refrigeration_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'sistema': f'{system.system}',
+                    'tipo': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'power': f'{system.power}',
+                    'observation': f'{system.observation}'
 
-        p.showPage()
-        p.save()
+                })
+
+        html_content = render_to_string('html/index.html', report_data)
+
+        pdf1 = HTML(string=html_content).write_pdf()
+
+        response = HttpResponse(pdf1, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="relatorio.pdf"'
+
+        return response
+
+
+class CSVView(APIView):
+    permission_classes = [IsAuthenticated, IsPlaceOwner | IsPlaceEditor]
+
+    def get(self, request, pk=None):
+
+        place = get_object_or_404(Place, pk=pk)
+        self.check_object_permissions(request, place)
+
+        output = io.BytesIO()
+
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+
+            fire_alarm_data = []
+            for area in place.areas.all():
+                for system in area.fire_alarm_equipment.all():
+                    fire_alarm_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Quantity': system.quantity,
+                        'Observation': system.observation
+                    })
+            fire_alarm_df = pd.DataFrame(fire_alarm_data)
+            fire_alarm_df.to_excel(writer, sheet_name='Fire Alarm Equipment', index=False)
+
+            atmospheric_discharge_data = []
+            for area in place.areas.all():
+                for system in area.atmospheric_discharge_equipment.all():
+                    atmospheric_discharge_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Observation': system.observation
+                    })
+            atmospheric_discharge_df = pd.DataFrame(atmospheric_discharge_data)
+            atmospheric_discharge_df.to_excel(writer, sheet_name='Atmospheric Discharge Equipment', index=False)
+
+            structured_cabling_data = []
+            for area in place.areas.all():
+                for system in area.structured_cabling_equipment.all():
+                    structured_cabling_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Quantity': system.quantity,
+                        'Observation': system.observation
+                    })
+            structured_cabling_df = pd.DataFrame(structured_cabling_data)
+            structured_cabling_df.to_excel(writer, sheet_name='Structured Cabling Equipment', index=False)
+
+            distribution_board_data = []
+            for area in place.areas.all():
+                for system in area.distribution_board_equipment.all():
+                    distribution_board_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Power': system.power,
+                        'DR': 'Sim' if system.dr else 'Não',
+                        'DPS': 'Sim' if system.dps else 'Não',
+                        'Grounding': 'Sim' if system.grounding else 'Não',
+                        'Type Material': system.type_material,
+                        'Method Installation': system.method_installation,
+                        'Quantity': system.quantity,
+                        'Observation': system.observation
+                    })
+            distribution_board_df = pd.DataFrame(distribution_board_data)
+            distribution_board_df.to_excel(writer, sheet_name='Distribution Board Equipment', index=False)
+
+            electrical_circuit_data = []
+            for area in place.areas.all():
+                for system in area.electrical_circuit_equipment.all():
+                    electrical_circuit_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Size': system.size,
+                        'Type Wire': system.type_wire,
+                        'Observation': system.observation
+                    })
+            electrical_circuit_df = pd.DataFrame(electrical_circuit_data)
+            electrical_circuit_df.to_excel(writer, sheet_name='Electrical Circuit Equipment', index=False)
+
+            electrical_line_data = []
+            for area in place.areas.all():
+                for system in area.electrical_line_equipment.all():
+                    electrical_line_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Quantity': system.quantity,
+                        'Observation': system.observation
+                    })
+            electrical_line_df = pd.DataFrame(electrical_line_data)
+            electrical_line_df.to_excel(writer, sheet_name='Electrical Line Equipment', index=False)
+
+            electrical_load_data = []
+            for area in place.areas.all():
+                for system in area.electrical_load_equipment.all():
+                    electrical_load_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Quantity': system.quantity,
+                        'Power': system.power,
+                        'Brand': system.brand,
+                        'Model': system.model,
+                        'Observation': system.observation
+                    })
+            electrical_load_df = pd.DataFrame(electrical_load_data)
+            electrical_load_df.to_excel(writer, sheet_name='Electrical Load Equipment', index=False)
+
+            illumination_data = []
+            for area in place.areas.all():
+                for system in area.ilumination_equipment.all():
+                    illumination_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Quantity': system.quantity,
+                        'Power': system.power,
+                        'Technology': system.tecnology,
+                        'Format': system.format,
+                        'Observation': system.observation
+                    })
+            illumination_df = pd.DataFrame(illumination_data)
+            illumination_df.to_excel(writer, sheet_name='Illumination Equipment', index=False)
+
+            refrigeration_data = []
+            for area in place.areas.all():
+                for system in area.refrigeration_equipment.all():
+                    refrigeration_data.append({
+                        'Area': area.name,
+                        'System': system.system,
+                        'Type': genericOrPersonal(system),
+                        'Quantity': system.quantity,
+                        'Power': system.power,
+                        'Observation': system.observation
+                    })
+            refrigeration_df = pd.DataFrame(refrigeration_data)
+            refrigeration_df.to_excel(writer, sheet_name='Refrigeration Equipment', index=False)
+
+        output.seek(0)
+
+        response = HttpResponse(output,
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="equipamentos_relatorio.xlsx"'
+
         return response

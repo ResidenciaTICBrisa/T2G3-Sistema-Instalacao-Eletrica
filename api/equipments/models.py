@@ -48,7 +48,6 @@ class EquipmentPhoto(models.Model):
     description = models.CharField(max_length=50, null=True)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True, related_name="ephoto")
 
-
     def __str__(self):
         return self.description
 
@@ -66,8 +65,6 @@ class IluminationEquipment(models.Model):
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
 
-
-
     class Meta:
         db_table = 'equipments_illuminations'
 
@@ -82,8 +79,6 @@ class ElectricalLoadEquipment(models.Model):
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
 
-
-
     class Meta:
         db_table = 'equipments_electrical_loads'
 
@@ -95,7 +90,6 @@ class ElectricalLineEquipment(models.Model):
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
 
-
     class Meta:
         db_table = 'equipments_electrical_lines'
 
@@ -106,7 +100,6 @@ class ElectricalCircuitEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=4)
     size = models.IntegerField(default=0)
     type_wire = models.CharField(max_length=80, null=True)
-    type_circuit_breaker = models.CharField(max_length=80, null=True)
     observation = models.CharField(max_length=300, null=True)
 
     class Meta:
@@ -126,8 +119,6 @@ class DistributionBoardEquipment(models.Model):
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
 
-
-
     class Meta:
         db_table = 'equipments_distribution_boards'
 
@@ -138,7 +129,6 @@ class StructuredCablingEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=6)
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
-
 
     class Meta:
         db_table = 'equipments_structured_cabling'
@@ -151,7 +141,6 @@ class AtmosphericDischargeEquipment(models.Model):
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
 
-
     class Meta:
         db_table = 'equipments_atmospheric_discharges'
 
@@ -162,7 +151,6 @@ class FireAlarmEquipment(models.Model):
     system = models.ForeignKey(System, on_delete=models.CASCADE, default=8)
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
-
 
     class Meta:
         db_table = 'equipments_fire_alarms'
@@ -175,7 +163,6 @@ class RefrigerationEquipment(models.Model):
     power = models.IntegerField(default=0)
     quantity = models.IntegerField(default=0)
     observation = models.CharField(max_length=300, null=True)
-
 
     class Meta:
         db_table = 'equipments_refrigeration'
