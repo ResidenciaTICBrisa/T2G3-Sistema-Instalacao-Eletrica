@@ -5,6 +5,7 @@ import pandas as pd
 from rest_framework.views import APIView
 from django.db.models import Q
 from django.contrib.auth.models import User
+from weasyprint import HTML
 from users.models import PlaceOwner, PlaceEditor
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -18,6 +19,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from .models import Place, Area
 from .serializers import PlaceSerializer, AreaSerializer
+from django.template.loader import render_to_string
 
 
 def get_place_owner_or_create(user):
@@ -251,7 +253,6 @@ class GeneratePDFView(APIView):
 
     def get(self, request, pk=None):
         place = get_object_or_404(Place, pk=pk)
-
         self.check_object_permissions(request, place)
 
         timezone = pytz.timezone('America/Sao_Paulo')
@@ -263,32 +264,69 @@ class GeneratePDFView(APIView):
         }
 
         for area in place.areas.all():
-            p.setFont('Helvetica-Bold', 14)
-            p.drawString(120, alt.get_alt(p), f"Relatório da Área: {area.name}")
-
             for system in area.fire_alarm_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({'image_url': image.photo.url, 'description': image.description})
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'observation': f'{system.observation}',
+                })
 
             for system in area.atmospheric_discharge_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.atmospheric_discharge_equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos
+                })
 
             for system in area.structured_cabling_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}'
+                })
 
             for system in area.distribution_board_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'power': f'{system.power}',
+                    'dr': f'{"Sim" if system.dr else "Não"}',
+                    'dps': f'{"Sim" if system.dps else "Não"}',
+                    'grounding': f'{"Sim" if system.grounding else "Não"}',
+                    'type_material': f'{system.type_material}',
+                    'method_installation': f'{system.method_installation}',
+                    'quantity': f'{system.quantity}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.electrical_circuit_equipment.all():
                 photos = []
@@ -308,10 +346,20 @@ class GeneratePDFView(APIView):
                 })
 
             for system in area.electrical_line_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'system': f'{system.system}',
+                    'type': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.electrical_load_equipment.all():
                 photos = []
@@ -333,10 +381,23 @@ class GeneratePDFView(APIView):
                 })
 
             for system in area.ilumination_equipment.all():
-                if (system == None):
-                    break
-                p.setFont('Helvetica', 12)
-                p.drawString(140, alt.get_alt(p), f"Sistema: {system.system} - Tipo: {genericOrPersonal(system)}")
+                photos = []
+                for image in system.equipment.ephoto.all():
+                    photos.append({
+                        'image_url': image.photo.url,
+                        'description': image.description
+                    })
+                report_data['installations'].append({
+                    'area': f'{area.name}',
+                    'sistema': f'{system.system}',
+                    'tipo': f'{genericOrPersonal(system)}',
+                    'photos': photos,
+                    'quantity': f'{system.quantity}',
+                    'power': f'{system.power}',
+                    'tecnology': f'{system.tecnology}',
+                    'format': f'{system.format}',
+                    'observation': f'{system.observation}'
+                })
 
             for system in area.refrigeration_equipment.all():
                 photos = []
