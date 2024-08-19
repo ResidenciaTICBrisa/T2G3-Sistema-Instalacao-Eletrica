@@ -7,10 +7,6 @@ import 'package:sige_ie/places/data/place_response_model.dart';
 import 'package:sige_ie/places/data/place_service.dart';
 import '../../config/app_styles.dart';
 import '../../areas/data/area_service.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 
 class FacilitiesPage extends StatefulWidget {
   const FacilitiesPage({super.key});
@@ -371,28 +367,11 @@ class _FacilitiesPageState extends State<FacilitiesPage> {
   }
 
   Future<void> _exportToPDF(int placeId) async {
-    final response =
-        await http.get(Uri.parse('$urlUniversal/api/places/$placeId/report'));
-
-    if (response.statusCode == 200) {
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = path.join(directory.path, 'report_$placeId.pdf');
-      final file = File(filePath);
-      await file.writeAsBytes(response.bodyBytes);
-
-      ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
-        SnackBar(content: Text('PDF baixado com sucesso: $filePath')),
-      );
-    } else {
-      ScaffoldMessenger.of(_scaffoldContext).showSnackBar(
-        const SnackBar(content: Text('Falha ao baixar o PDF')),
-      );
-    }
+    _placeService.downloadFile('$urlUniversal/api/places/$placeId/report-pdf/', 'document.pdf',);
   }
 
-  void _exportToExcel(int placeId) {
-    // Implement your Excel export logic here
-    print("Export to Excel for place $placeId");
+  Future<void> _exportToExcel(int placeId) async {
+    _placeService.downloadFile('$urlUniversal/api/places/$placeId/report-csv/', 'report.xlsx',);
   }
 
   @override
