@@ -7,6 +7,8 @@ import 'package:sige_ie/core/data/universalURL.dart';
 import 'package:sige_ie/main.dart';
 import 'package:sige_ie/places/data/place_request_model.dart';
 import 'package:sige_ie/places/data/place_response_model.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class PlaceService {
   final Logger _logger = Logger('PlaceService');
@@ -110,4 +112,25 @@ class PlaceService {
       return false;
     }
   }
+
+  Future<void> downloadFile(String url, String fileName) async {
+      try {
+        // Fazer a solicitação HTTP para o backend
+        final response = await client.get(Uri.parse(url));
+
+        if (response.statusCode == 200) {
+          // Salvar o arquivo localmente
+          final directory = await getApplicationDocumentsDirectory();
+          final filePath = '${directory.path}/$fileName';
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+          _logger.info('Arquivo baixado com sucesso');
+        } else {
+          throw Exception('Falha ao baixar o arquivo');
+        }
+      } catch (e) {
+        _logger.info('Error during donwload file: $e');
+      }
+    }
+
 }

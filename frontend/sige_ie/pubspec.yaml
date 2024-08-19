@@ -48,8 +48,6 @@ dependencies:
   path_provider: ^2.0.2  # Ou a versão mais recente
 
 
-
-
 dev_dependencies:
     flutter_test:
         sdk: flutter
