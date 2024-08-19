@@ -31,6 +31,7 @@ services:
     container_name: sigeie_web
     command: >
       sh -c "
+        pip install -r requirements.txt
         python manage.py makemigrations &&
         python manage.py migrate &&
         python manage.py loaddata sigeie/fixtures/initial_data.json &&

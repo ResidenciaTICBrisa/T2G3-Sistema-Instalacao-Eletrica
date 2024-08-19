@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            box-sizing: border-box;
+            width: 100%;
+        }
+        h1, h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 15px;
+            margin-top: 40px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .equipment-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            page-break-inside: avoid;
+        }
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .equipment-header h3 {
+            font-size: 18px;
+            margin: 0;
+            color: #555;
+        }
+        .equipment-header p {
+            font-size: 14px;
+            color: #888;
+        }
+        .equipment-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .detail-item {
+            width: 48%;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #333;
+        }
+        .detail-item strong {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .equipment-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .equipment-image {
+            margin: 10px;
+            text-align: center;
+        }
+        .equipment-image img {
+            width: 200px;
+            height: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .equipment-image p {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #666;
+        }
+        footer {
+            margin-top: 50px;
+            font-size: 12px;
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Relatório de Instalações Elétricas</h1>
+        <p>Data: {{ report_date }}</p>
+    </header>
+
+    <section>
+        <h2>Resumo</h2>
+        <p>{{ summary }}</p>
+    </section>
+
+    <section>
+        <h2>Detalhes das Instalações</h2>
+        {% for installation in installations %}
+        <div class="equipment-card">
+            <div class="equipment-header">
+                <h3>{{ installation.area }}</h3>
+                <p> <strong>{{ installation.system }} </strong></p>
+            </div>
+            <div class="equipment-details">
+                <div class="detail-item">
+                    <strong>Tipo:</strong>
+                    <p>{{ installation.type }}</p>
+                </div>
+                {% if installation.system == 'Sistema de Iluminação' %}
+                <div class="detail-item">
+                    <strong>Potência:</strong>
+                    <p>{{ installation.power }} KW</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Tecnologia</strong>
+                    <p>{{  installation.tecnology }} </p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Formato</strong>
+                    <p>{{  installation.format }} </p>
+                </div>
+                {% endif %}
+
+                {% if installation.system == 'Cargas Elétricas' %}
+                <div class="detail-item">
+                    <strong>Marca:</strong>
+                    <p>{{ installation.brand }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Modelo:</strong>
+                    <p>{{ installation.model }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Potência:</strong>
+                    <p>{{ installation.power }} KW</p>
+                </div>
+
+                {% endif %}
+
+                {% if installation.system == 'Circuitos Elétricos' %}
+
+                <div class="detail-item">
+                    <strong>Tamanho:</strong>
+                    <p>{{ installation.size }} m</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Tipo de fio:</strong>
+                    <p>{{ installation.type_wire }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Tipo do disjuntor:</strong>
+                    <p>{{ installation.type_circuit_breaker }}</p>
+                </div>
+
+                {% endif %}
+
+                {% if installation.system == 'Quadros de Distribuição' %}
+                <div class="detail-item">
+                    <strong>Potência:</strong>
+                    <p>{{ installation.power }} KW</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>DR:</strong>
+                    <p>{{ installation.dr }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>DP:</strong>
+                    <p>{{ installation.dp }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>DPS:</strong>
+                    <p>{{ installation.dp }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Aterramento:</strong>
+                    <p>{{ installation.grounding }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Tipo de Material:</strong>
+                    <p>{{ installation.type_material }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Método de Instalação:</strong>
+                    <p>{{ installation.method_installation }}</p>
+                </div>
+
+                {% endif %}
+
+                {% if installation.system == 'Sistema de Refrigeração' %}
+                <div class="detail-item">
+                    <strong>Potência:</strong>
+                    <p>{{ installation.power}}</p>
+                </div>
+                {% endif %}
+
+                <div class="detail-item">
+                    <strong>Quantidade:</strong>
+                    <p>{{ installation.quantity }}</p>
+                </div>
+
+                <div class="detail-item">
+                    <strong>Observações:</strong>
+                    <p>{{ installation.observation }}</p>
+                </div>
+
+
+                <!-- Adicione outros campos conforme necessário -->
+            </div>
+            <div class="equipment-images">
+                {% for image in installation.photos %}
+                <div class="equipment-image">
+                    <img src="http://192.168.1.123:8000{{ image.image_url }}" alt="Imagem do Equipamento">
+                    <p>{{ image.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    <footer>
+        <p>Relatório gerado por: {{ generated_by }}</p>
+    </footer>
+</body>
+</html>

@@ -8,6 +8,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '10.0.2.2', '192.168.1.142', '192.168.15.36']
 
+MEDIA_URL = '/media/'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
