@@ -248,7 +248,7 @@ def genericOrPersonal(system):
         return system.equipment.personal_equipment_category
 
 
-class GeneratePDFView(APIView):
+class PDFView(APIView):
     permission_classes = [IsAuthenticated, IsPlaceOwner or IsPlaceEditor]
 
     def get(self, request, pk=None):
