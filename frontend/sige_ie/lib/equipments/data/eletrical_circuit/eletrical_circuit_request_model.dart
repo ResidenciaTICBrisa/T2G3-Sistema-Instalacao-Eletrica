@@ -1,23 +1,26 @@
 class EletricalCircuitRequestModel {
   int? area;
   int? system;
-  int? quantity;
   int? size;
-  String isolamento;
+  String? type_wire;
+  String? type_circuit_breaker;
+  String? observation;
   EletricalCircuitRequestModel(
       {required this.area,
       required this.system,
-      required this.quantity,
       required this.size,
-      required this.isolamento});
+      required this.type_wire,
+      required this.type_circuit_breaker,
+      required this.observation});
 
   Map<String, dynamic> toJson() {
     return {
       'area': area,
       'system': system,
-      'quantity': quantity,
       'size': size,
-      'isolamento': isolamento
+      'observation': observation,
+      'type_wire': type_wire,
+      'type_circuit_breaker': type_circuit_breaker
     };
   }
 }

@@ -208,14 +208,14 @@ class _ListFireAlarmsState extends State<ListFireAlarms> {
                                 IconButton(
                                   icon: const Icon(Icons.edit,
                                       color: Colors.blue),
-                                  onPressed: () =>
-                                      _editFireAlarm(context, fireAlarmEquipment.id),
+                                  onPressed: () => _editFireAlarm(
+                                      context, fireAlarmEquipment.id),
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete,
                                       color: Colors.red),
-                                  onPressed: () =>
-                                      _confirmDelete(context, fireAlarmEquipment.id),
+                                  onPressed: () => _confirmDelete(
+                                      context, fireAlarmEquipment.id),
                                 ),
                               ],
                             ),

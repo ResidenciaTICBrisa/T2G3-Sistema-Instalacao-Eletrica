@@ -15,6 +15,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 from .models import Place, Area
 from .serializers import PlaceSerializer, AreaSerializer
 from django.template.loader import render_to_string

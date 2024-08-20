@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sige_ie/config/app_styles.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_equipment_request_model.dart';
-import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_request_model.dart.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_response_model.dart';
 import 'package:sige_ie/equipments/data/eletrical-load/eletrical_load_service.dart';
 import 'package:sige_ie/equipments/data/equipment_service.dart';
@@ -15,6 +14,8 @@ import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment
 import 'package:sige_ie/shared/data/generic-equipment-category/generic_equipment_category_service.dart';
 import 'package:sige_ie/shared/data/personal-equipment-category/personal_equipment_category_request_model.dart';
 import 'package:sige_ie/shared/data/personal-equipment-category/personal_equipment_category_service.dart';
+
+import '../../data/eletrical-load/eletrical_load_request_model.dart.dart';
 
 class ImageData {
   int id;
@@ -27,7 +28,7 @@ class ImageData {
     required this.imageFile,
     required this.description,
     this.toDelete = false,
-  }) : id = id ?? -1; // Valor padrão indicando ID inexistente
+  }) : id = id ?? -1;
 }
 
 List<ImageData> _images = [];
@@ -107,6 +108,8 @@ class _AddElectricalLoadEquipmentScreenState
           _brandController.text = electricalLoadResponseModel!.brand;
           _modelController.text = electricalLoadResponseModel!.model;
           _powerController.text = electricalLoadResponseModel!.power.toString();
+          _observationsController.text =
+              electricalLoadResponseModel!.observation ?? '';
           print('Loaded quantity: ${_quantityController.text}');
         });
 
@@ -349,6 +352,9 @@ class _AddElectricalLoadEquipmentScreenState
         brand: _brandController.text,
         model: _modelController.text,
         power: double.tryParse(_powerController.text),
+        observation: _observationsController.text.isNotEmpty
+            ? _observationsController.text
+            : null,
       );
 
       print('Electrical Load Model: ${electricalLoadModel.toJson()}');
@@ -665,6 +671,9 @@ class _AddElectricalLoadEquipmentScreenState
       brand: _brandController.text,
       model: _modelController.text,
       power: double.tryParse(_powerController.text),
+      observation: _observationsController.text.isNotEmpty
+          ? _observationsController.text
+          : null,
     );
 
     final EletricalLoadEquipmentRequestModel electricalLoadEquipmentDetail =

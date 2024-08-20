@@ -12,13 +12,13 @@ class ListIluminationEquipment extends StatefulWidget {
   final int areaId;
 
   const ListIluminationEquipment({
-    Key? key,
+    super.key,
     required this.areaName,
     required this.systemId,
     required this.localName,
     required this.localId,
     required this.areaId,
-  }) : super(key: key);
+  });
 
   @override
   _ListIluminationEquipmentState createState() =>
@@ -26,38 +26,21 @@ class ListIluminationEquipment extends StatefulWidget {
 }
 
 class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
-  List<String> equipmentList = [];
-  bool isLoading = true;
-  final IluminationEquipmentService _service = IluminationEquipmentService();
+  late Future<List<IluminationEquipmentResponseByAreaModel>> _iluminationList;
+  final IluminationEquipmentService _iluminationService =
+      IluminationEquipmentService();
+
+  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
     super.initState();
-    fetchEquipmentList();
+    _iluminationList =
+        _iluminationService.getIluminationListByArea(widget.areaId);
   }
 
-  Future<void> fetchEquipmentList() async {
-    try {
-      final List<IluminationEquipmentResponseByAreaModel> equipmentList =
-          await _service.getIluminationListByArea(widget.areaId);
-      if (mounted) {
-        setState(() {
-/*           this.equipmentList = equipmentList;
- */
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print('Error fetching equipment list: $e');
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
-  }
-
-  void navigateToAddEquipment(BuildContext context) {
+  void navigateToAddIlumination(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -67,141 +50,208 @@ class _ListIluminationEquipmentState extends State<ListIluminationEquipment> {
           localName: widget.localName,
           localId: widget.localId,
           areaId: widget.areaId,
+          iluminationId: null,
         ),
       ),
     );
   }
 
-  void _editEquipment(BuildContext context, String equipment) {
-    // Implement the logic to edit the equipment
+  void _editIlumination(BuildContext context, int iluminationId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddIluminationEquipmentScreen(
+          areaName: widget.areaName,
+          systemId: widget.systemId,
+          localName: widget.localName,
+          localId: widget.localId,
+          areaId: widget.areaId,
+          iluminationId: iluminationId,
+          isEdit: true,
+        ),
+      ),
+    );
   }
 
-  void _deleteEquipment(BuildContext context, String equipment) {
-    // Implement the logic to delete the equipment
+  Future<void> _deleteIlumination(
+      BuildContext context, int iluminationId) async {
+    try {
+      await _iluminationService.deleteIlumination(iluminationId);
+      setState(() {
+        _iluminationList =
+            _iluminationService.getIluminationListByArea(widget.areaId);
+      });
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text('Equipamento deletado com sucesso'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      _scaffoldMessengerKey.currentState?.showSnackBar(
+        const SnackBar(
+          content: Text('Falha ao deletar o equipamento'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _confirmDelete(BuildContext context, int iluminationId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content: const Text(
+              'Você tem certeza que deseja excluir este equipamento?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Excluir'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteIlumination(context, iluminationId);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     String systemTitle = 'Iluminação';
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.sigeIeBlue,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pushReplacementNamed(
-              context,
-              '/systemLocation',
-              arguments: {
-                'areaName': widget.areaName,
-                'localName': widget.localName,
-                'localId': widget.localId,
-                'areaId': widget.areaId,
-              },
-            );
-          },
+    return ScaffoldMessenger(
+      key: _scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.sigeIeBlue,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              Navigator.pushReplacementNamed(
+                context,
+                '/systemLocation',
+                arguments: {
+                  'areaName': widget.areaName,
+                  'localName': widget.localName,
+                  'localId': widget.localId,
+                  'areaId': widget.areaId,
+                },
+              );
+            },
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
-              decoration: const BoxDecoration(
-                color: AppColors.sigeIeBlue,
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(20)),
-              ),
-              child: Center(
-                child: Text(
-                  '${widget.areaName} - $systemTitle',
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.lightText,
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 35),
+                decoration: const BoxDecoration(
+                  color: AppColors.sigeIeBlue,
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.circular(20)),
+                ),
+                child: Center(
+                  child: Text(
+                    '${widget.areaName} - $systemTitle',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.lightText,
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : equipmentList.isNotEmpty
-                          ? Column(
-                              children: equipmentList.map((equipment) {
-                                return Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.sigeIeBlue,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 10),
-                                            child: Text(
-                                              equipment,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.edit,
-                                              color: Colors.blue),
-                                          onPressed: () => _editEquipment(
-                                              context, equipment),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.delete,
-                                              color: Colors.red),
-                                          onPressed: () => _deleteEquipment(
-                                              context, equipment),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            )
-                          : const Center(
-                              child: Text(
-                                'Você ainda não tem equipamentos',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
+              const SizedBox(height: 20),
+              FutureBuilder<List<IluminationEquipmentResponseByAreaModel>>(
+                future: _iluminationList,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Erro: ${snapshot.error}'));
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        var iluminationEquipment = snapshot.data![index];
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: AppColors.sigeIeBlue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            title: Text(
+                              iluminationEquipment.equipmentCategory,
+                              style: const TextStyle(
+                                color: AppColors.lightText,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                  const SizedBox(height: 40),
-                ],
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit,
+                                      color: Colors.blue),
+                                  onPressed: () => _editIlumination(
+                                      context, iluminationEquipment.id),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () => _confirmDelete(
+                                      context, iluminationEquipment.id),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Center(
+                        child: Text(
+                          'Nenhum equipamento encontrado.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => navigateToAddEquipment(context),
-        backgroundColor: AppColors.sigeIeYellow,
-        child: const Icon(Icons.add, color: AppColors.sigeIeBlue),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => navigateToAddIlumination(context),
+          backgroundColor: AppColors.sigeIeYellow,
+          child: const Icon(Icons.add, color: AppColors.sigeIeBlue),
+        ),
       ),
     );
   }

@@ -29,14 +29,12 @@ class MapsController extends GetxController {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Verifique se o serviço de localização está habilitado
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       Get.snackbar('Erro', 'Serviço de localização está desabilitado.');
       return;
     }
 
-    // Verifique se a permissão de localização é concedida
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -51,7 +49,6 @@ class MapsController extends GetxController {
       return;
     }
 
-    // Obtenha a localização atual
     final Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 

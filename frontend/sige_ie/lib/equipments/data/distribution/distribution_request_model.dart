@@ -2,12 +2,13 @@ class DistributionRequestModel {
   int? area;
   int? system;
   int? quantity;
-  String? power;
-  bool dr;
-  bool dps;
-  bool grounding;
+  int? power;
+  bool? dr;
+  bool? dps;
+  bool? grounding;
   String? typeMaterial;
   String? methodInstallation;
+  String? observation;
 
   DistributionRequestModel(
       {required this.area,
@@ -18,7 +19,9 @@ class DistributionRequestModel {
       required this.dps,
       required this.grounding,
       required this.typeMaterial,
-      required this.methodInstallation});
+      required this.methodInstallation,
+      required this.observation});
+
   Map<String, dynamic> toJson() {
     return {
       'area': area,
@@ -30,6 +33,7 @@ class DistributionRequestModel {
       'grounding': grounding,
       'type_material': typeMaterial,
       'method_installation': methodInstallation,
+      'observation': observation
     };
   }
 }

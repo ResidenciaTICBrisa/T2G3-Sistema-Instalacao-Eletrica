@@ -1,10 +1,10 @@
 class RefrigerationsEquipmentResponseByAreaModel {
-  int id;
-  int area;
-  String equipmentCategory;
-  int system;
-  int quantity;
-  int power;
+  final int id;
+  final int area;
+  final String equipmentCategory;
+  final int system;
+  final int quantity;
+  final String observation;
 
   RefrigerationsEquipmentResponseByAreaModel(
       {required this.id,
@@ -12,7 +12,7 @@ class RefrigerationsEquipmentResponseByAreaModel {
       required this.equipmentCategory,
       required this.system,
       required this.quantity,
-      required this.power});
+      required this.observation});
 
   factory RefrigerationsEquipmentResponseByAreaModel.fromJson(
       Map<String, dynamic> json) {
@@ -22,6 +22,6 @@ class RefrigerationsEquipmentResponseByAreaModel {
         equipmentCategory: json['equipment_category'],
         system: json['system'],
         quantity: json['quantity'],
-        power: json['power']);
+        observation: json['observation']);
   }
 }

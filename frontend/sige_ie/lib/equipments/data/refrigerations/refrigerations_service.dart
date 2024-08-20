@@ -18,7 +18,7 @@ class RefrigerationsEquipmentService {
 
   Future<List<RefrigerationsEquipmentResponseByAreaModel>>
       getRefrigerationsListByArea(int areaId) async {
-    var url = Uri.parse('${baseUrl}refrigerations/by-area/$areaId/');
+    var url = Uri.parse('${baseUrl}refrigeration/by-area/$areaId/');
     try {
       var response = await client.get(url);
 

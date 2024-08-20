@@ -7,6 +7,7 @@ class IluminationResponseModel {
   int power;
   String tecnology;
   String format;
+  String? observation;
 
   IluminationResponseModel(
       {required this.id,
@@ -16,7 +17,8 @@ class IluminationResponseModel {
       required this.quantity,
       required this.format,
       required this.power,
-      required this.tecnology});
+      required this.tecnology,
+      required this.observation});
 
   factory IluminationResponseModel.fromJson(Map<String, dynamic> json) {
     return IluminationResponseModel(
@@ -27,6 +29,7 @@ class IluminationResponseModel {
         quantity: json['quantity'],
         format: json['format'],
         power: json['power'],
-        tecnology: json['tecnology']);
+        tecnology: json['tecnology'],
+        observation: json['observation']);
   }
 }

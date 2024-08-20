@@ -3,8 +3,9 @@ class IluminationRequestModel {
   int? system;
   int? quantity;
   int? power;
-  String tecnology;
-  String format;
+  String? tecnology;
+  String? format;
+  String? observation;
 
   IluminationRequestModel(
       {required this.area,
@@ -12,7 +13,8 @@ class IluminationRequestModel {
       required this.quantity,
       required this.format,
       required this.power,
-      required this.tecnology});
+      required this.tecnology,
+      required this.observation});
 
   Map<String, dynamic> toJson() {
     return {
@@ -21,7 +23,8 @@ class IluminationRequestModel {
       'quantity': quantity,
       'format': format,
       'power': power,
-      'tecnology': tecnology
+      'tecnology': tecnology,
+      'observation': observation
     };
   }
 }
